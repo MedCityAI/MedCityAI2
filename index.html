@@ -48,6 +48,77 @@
 						</div>
 						<a href="#one" class="more scrolly">Learn More</a>
 					</section>
+				<!-- Replace One -->
+				<!-- Counter Section -->
+				<section id="stats" class="wrapper style1 special">
+				  <div class="inner" style="display: flex; justify-content: space-around; text-align: center;">
+				    <div class="counter-item">
+				      <h2 class="count" data-target="10">0</h2>
+				      <p>articles published today</p>
+				    </div>
+				    <div class="counter-item">
+				      <h2 class="count" data-target="50">0</h2>
+				      <p>articles published this week</p>
+				    </div>
+				    <div class="counter-item">
+				      <h2 class="count" data-target="1000">0</h2>
+				      <p>articles published this year</p>
+				    </div>
+				  </div>
+				</section>
+				
+				<style>
+				  #stats {
+				    padding: 4em 0;
+				  }
+				
+				  .counter-item h2 {
+				    font-size: 3em;
+				    margin: 0.2em 0;
+				    color: #333;
+				  }
+				
+				  .counter-item p {
+				    font-size: 1.2em;
+				    color: #666;
+				  }
+				</style>
+				
+				<script>
+				  // Animate counters when visible
+				  const counters = document.querySelectorAll('.count');
+				  const speed = 1000; // total animation duration in ms
+				
+				  const animateCounter = (counter) => {
+				    const target = +counter.getAttribute('data-target');
+				    let start = 0;
+				    const increment = target / (speed / 16); // approx 60fps
+				
+				    const update = () => {
+				      start += increment;
+				      if (start < target) {
+				        counter.textContent = Math.ceil(start);
+				        requestAnimationFrame(update);
+				      } else {
+				        counter.textContent = target;
+				      }
+				    };
+				    update();
+				  };
+				
+				  const observer = new IntersectionObserver((entries) => {
+				    entries.forEach(entry => {
+				      if (entry.isIntersecting) {
+				        animateCounter(entry.target);
+				        observer.unobserve(entry.target);
+				      }
+				    });
+				  }, { threshold: 0.5 });
+				
+				  counters.forEach(counter => observer.observe(counter));
+				</script>
+
+
 
 				<!-- One -->
 					<section id="one" class="wrapper style1 special">
@@ -170,6 +241,7 @@
 	</body>
 
 </html>
+
 
 
 
