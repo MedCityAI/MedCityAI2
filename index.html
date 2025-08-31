@@ -12,7 +12,65 @@
 	</head>
 	<body class="landing is-preload">
 
-		<!-- Page Wrapper -->
+			<script>
+			// Global variables
+			var VarTot = 0, VarDay = 0, VarWeek = 0, VarMonth = 0;
+
+
+				// Fetch and process CSV from database/pubmed_results.csv
+				async function fetchAndRecordVars() {
+					const csvPath = '../database/pubmed_results.csv';
+					try {
+						const response = await fetch(csvPath);
+						if (!response.ok) throw new Error('CSV not found');
+						const csvText = await response.text();
+
+						// Parse CSV (assume first row is header, date is in column H, index 7, format YYYY/MM/DD)
+						const rows = csvText.trim().split('\n');
+						const now = new Date();
+						VarTot = 0; VarDay = 0; VarWeek = 0; VarMonth = 0;
+
+						for (let i = 1; i < rows.length; i++) {
+							const cols = rows[i].split(',');
+							if (cols.length < 8) continue; // skip if not enough columns
+							// Parse date in format YYYY/MM/DD
+							const dateStr = cols[7].trim();
+							const parts = dateStr.split('/');
+							if (parts.length !== 3) continue;
+							const entryDate = new Date(parts[0], parts[1] - 1, parts[2]);
+							if (isNaN(entryDate)) continue;
+							VarTot++;
+							const diffMs = now - entryDate;
+							const diffDays = diffMs / (1000 * 60 * 60 * 24);
+							if (diffDays <= 1) VarDay++;
+							if (diffDays <= 7) VarWeek++;
+							if (diffDays <= 30) VarMonth++;
+						}
+					} catch (err) {
+						console.error('Error loading CSV:', err);
+					}
+				}
+
+			// Call at start
+			fetchAndRecordVars().then(() => {
+				// Update Banner
+				const bannerLink = document.querySelector('a.more.scrolly');
+				if (bannerLink) bannerLink.textContent = `Papers Indexed: ${VarTot}`;
+
+				// Update One section counters
+				const counts = document.querySelectorAll('.count');
+				if (counts.length >= 3) {
+					counts[0].setAttribute('data-target', VarDay);
+					counts[1].setAttribute('data-target', VarWeek);
+					counts[2].setAttribute('data-target', VarMonth);
+					// Optionally, update immediately:
+					counts[0].textContent = VarDay;
+					counts[1].textContent = VarWeek;
+					counts[2].textContent = VarMonth;
+				}
+			});
+			</script>
+			<!-- Page Wrapper -->
 			<div id="page-wrapper">
 
 				<!-- Header -->
@@ -35,7 +93,7 @@
 							</ul>
 						</nav>
 					</header>
-
+				<!-- here is where I'd like to open one folder up database/pubmed_results.csv and then export three variables VarTot (number of total entries) VarDay (number of entries in past 24 hours) VarWeek (number of entries in past 7 days) VarMonth (number of entries in past 30 days) and then have those variables populate the following sections below% -->
 				<!-- Banner -->
 					<section id="banner">
 						<div class="inner">
@@ -44,9 +102,9 @@
 							from beneath the corntower</p>
 						    <div style="display: flex; justify-content: space-around; text-align: center; margin-top: 2em;">
 						</div>
-						<a href="#one" class="more scrolly"> Papers Indexed: 16000 </a>
+						<a href="#one" class="more scrolly"> Papers Indexed: 16000 </a> <!-- replace 16000 with VarTot -->
 					</section>
-
+				
 				<!-- One -->
 					<section id="one" class="wrapper style1 special">
 						<div class="inner">
@@ -58,15 +116,15 @@
 						    <!-- Numbers Section -->
 						    <div style="display: flex; justify-content: space-around; text-align: center; margin-top: 2em;">
 						      <div class="stat-item">
-						        <h2 class="count" data-target="10">0</h2>
+						        <h2 class="count" data-target="10">0</h2> <!-- replace 10 with VarDay -->
 						        <p>published today</p>
 						      </div>
 						      <div class="stat-item">
-						        <h2 class="count" data-target="100">0</h2>
+						        <h2 class="count" data-target="100">0</h2> <!-- replace 100 with VarWeek -->
 						        <p>published this week</p>
 						      </div>
 						      <div class="stat-item">
-						        <h2 class="count" data-target="10000">0</h2>
+						        <h2 class="count" data-target="10000">0</h2> <!-- replace 10000 with VarMonth -->
 						        <p>published this month</p>
 						      </div>
 						    </div>
