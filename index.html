@@ -102,7 +102,11 @@
 							from beneath the corntower</p>
 						    <div style="display: flex; justify-content: space-around; text-align: center; margin-top: 2em;">
 						</div>
-						<a href="#one" class="more scrolly"> Papers Indexed: 16000 </a> <!-- replace 16000 with VarTot -->
+						<a href="#one" class="more scrolly"> Papers Indexed:  <span id="VarTot"></span> </a> <!-- replace 16000 with VarTot -->
+						<script>
+  							let VarTot = 16001;
+  							document.getElementById("VarTot").textContent = VarTot;
+						</script>
 					</section>
 				
 				<!-- One -->
