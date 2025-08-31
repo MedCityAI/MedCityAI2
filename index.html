@@ -44,7 +44,7 @@
 							from beneath the corntower</p>
 						    <div style="display: flex; justify-content: space-around; text-align: center; margin-top: 2em;">
 						</div>
-						<a href="#one" class="more scrolly"> Total Indexed: 16000 </a>
+						<a href="#one" class="more scrolly"> Total Publications Indexed: 16000 </a>
 					</section>
 
 				<!-- One -->
@@ -85,7 +85,7 @@
 						    const increment = target / (speed / 16); // approx 60fps
 						
 						    const update = () => {
-						      start += increment;
+						      start += increment/2;
 						      if (start < target) {
 						        counter.textContent = Math.ceil(start);
 						        requestAnimationFrame(update);
