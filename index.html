@@ -19,7 +19,7 @@
 
 				// Fetch and process CSV from database/pubmed_results.csv
 				async function fetchAndRecordVars() {
-					const csvPath = '.../database/pubmed_results.csv';
+					const csvPath = './database/pubmed_results.csv';
 					try {
 						const response = await fetch(csvPath);
 						if (!response.ok) throw new Error('CSV not found');
