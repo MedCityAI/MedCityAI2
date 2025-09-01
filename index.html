@@ -53,9 +53,8 @@
 
 			// Call at start
 			fetchAndRecordVars().then(() => {
-				// Update Banner
-				const bannerLink = document.querySelector('a.more.scrolly');
-				if (bannerLink) bannerLink.textContent = `Papers Indexed: ${VarTot}`;
+				const bannerSpan = document.getElementById("VarTot");
+				if (bannerSpan) bannerSpan.textContent = VarTot;
 
 				// Update One section counters
 				const counts = document.querySelectorAll('.count');
@@ -63,7 +62,6 @@
 					counts[0].setAttribute('data-target', VarDay);
 					counts[1].setAttribute('data-target', VarWeek);
 					counts[2].setAttribute('data-target', VarMonth);
-					// Optionally, update immediately:
 					counts[0].textContent = VarDay;
 					counts[1].textContent = VarWeek;
 					counts[2].textContent = VarMonth;
@@ -103,9 +101,7 @@
 						    <div style="display: flex; justify-content: space-around; text-align: center; margin-top: 2em;">
 						</div>
 						<a href="#one" class="more scrolly"> Papers Indexed:  <span id="VarTot"></span> </a> <!-- replace 16000 with VarTot -->
-						<script>
-  							document.getElementById("VarTot").textContent = VarTot;
-						</script>
+
 					</section>
 				
 				<!-- One -->
