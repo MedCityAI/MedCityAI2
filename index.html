@@ -28,24 +28,24 @@
 						// Parse CSV (assume first row is header, date is in column H, index 7, format YYYY/MM/DD)
 						const rows = csvText.trim().split('\n');
 						const now = new Date();
-						VarTot = 0; VarDay = 0; VarWeek = 0; VarMonth = 0;
+								VarTot = rows.length - 1; // exclude header
+								VarDay = 0; VarWeek = 0; VarMonth = 0;
 
-						for (let i = 1; i < rows.length; i++) {
-							const cols = rows[i].split(',');
-							if (cols.length < 8) continue; // skip if not enough columns
-							// Parse date in format YYYY/MM/DD
-							const dateStr = cols[7].trim();
-							const parts = dateStr.split('/');
-							if (parts.length !== 3) continue;
-							const entryDate = new Date(parts[0], parts[1] - 1, parts[2]);
-							if (isNaN(entryDate)) continue;
-							VarTot++;
-							const diffMs = now - entryDate;
-							const diffDays = diffMs / (1000 * 60 * 60 * 24);
-							if (diffDays <= 1) VarDay++;
-							if (diffDays <= 7) VarWeek++;
-							if (diffDays <= 30) VarMonth++;
-						}
+								for (let i = 1; i < rows.length; i++) {
+									const cols = rows[i].split(',');
+									if (cols.length < 8) continue; // skip if not enough columns
+									// Parse date in format YYYY/MM/DD
+									const dateStr = cols[7].trim();
+									const parts = dateStr.split('/');
+									if (parts.length !== 3) continue;
+									const entryDate = new Date(parts[0], parts[1] - 1, parts[2]);
+									if (isNaN(entryDate)) continue;
+									const diffMs = now - entryDate;
+									const diffDays = diffMs / (1000 * 60 * 60 * 24);
+									if (diffDays <= 1) VarDay++;
+									if (diffDays <= 7) VarWeek++;
+									if (diffDays <= 30) VarMonth++;
+								}
 					} catch (err) {
 						console.error('Error loading CSV:', err);
 					}
@@ -104,7 +104,6 @@
 						</div>
 						<a href="#one" class="more scrolly"> Papers Indexed:  <span id="VarTot"></span> </a> <!-- replace 16000 with VarTot -->
 						<script>
-  							let VarTot = 16001;
   							document.getElementById("VarTot").textContent = VarTot;
 						</script>
 					</section>
