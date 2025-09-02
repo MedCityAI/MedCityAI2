@@ -79,7 +79,7 @@ fig1 = px.choropleth(
     range_color=[min_val, second_highest]
 )
 fig1.show()
-
+fig1.write_html("state_map.html", include_plotlyjs="cdn")
 
 second_highest2 = country_counts["Count"].nlargest(2).iloc[-1]
 min_val2 = country_counts["Count"].min()

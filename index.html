@@ -42,17 +42,6 @@
 			fetchAndRecordVars().then(() => {
 				const bannerSpan = document.getElementById("VarTot");
 				if (bannerSpan) bannerSpan.textContent = VarTot;
-
-				// Update One section counters
-				const counts = document.querySelectorAll('.count');
-				if (counts.length >= 3) {
-					counts[0].setAttribute('data-target', VarDay);
-					counts[1].setAttribute('data-target', VarWeek);
-					counts[2].setAttribute('data-target', VarMonth);
-					counts[0].textContent = VarDay;
-					counts[1].textContent = VarWeek;
-					counts[2].textContent = VarMonth;
-				}
 			});
 			</script>
 			<!-- Page Wrapper -->
