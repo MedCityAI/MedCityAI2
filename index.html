@@ -41,7 +41,13 @@
 			// Call at start
 			fetchAndRecordVars().then(() => {
 				const bannerSpan = document.getElementById("VarTot");
+				const bannerDay = document.getElementById("VarDay");
+				const bannerWeek = document.getElementById("VarWeek");
+				const bannerMonth = document.getElementById("VarMonth");
 				if (bannerSpan) bannerSpan.textContent = VarTot;
+				if (bannerDay) bannerDay.textContent = VarDay;
+				if (bannerWeek) bannerWeek.textContent = VarWeek;
+				if (bannerMonth) bannerMonth.textContent = VarMonth;
 			});
 			</script>
 			<!-- Page Wrapper -->
