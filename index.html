@@ -91,22 +91,23 @@
 						    <!-- Numbers Section -->
 						    <div style="display: flex; justify-content: space-around; text-align: center; margin-top: 2em;">
 						      <div class="stat-item">
-						        <h2 class="count" id="VarDay" data-target="0">0</h2> <!-- replace 10 with VarDay -->
-						        <p>new today</p>
+						        <!-- <h2 class="count" id="VarDay" data-target="0">0</h2> -->
+						        <h2 id="VarDay">0</h2> <!-- dynamically replaced by JS -->								<p>new today</p>
 						      </div>
 						      <div class="stat-item">
-						        <h2 class="count" id="VarWeek" data-target="0">0</h2> <!-- replace 100 with VarWeek -->
-						        <p>new this week</p>
+						        <!-- <h2 class="count" id="VarWeek" data-target="0">0</h2> replace 100 with VarWeek -->
+						        <h2 id="VarWeek">0</h2> <!-- dynamically replaced by JS -->						        
+								<p>new this week</p>
 						      </div>
 						      <div class="stat-item">
-						        <h2 class="count" id="VarMonth" data-target="0">0</h2> <!-- replace 10000 with VarMonth -->
+						        <h2 id="VarMonth">0</h2> <!-- replace 10000 with VarMonth -->
 						        <p>new this month</p>
 						      </div>
 						    </div>
 						  </div>
 						</section>
 			
-						
+						<!--
 						<script>
 						  // Animate counters when visible
 						  const counters = document.querySelectorAll('.count');
@@ -128,7 +129,7 @@
 						    };
 						    update();
 						  };
-						
+						  
 						  const observer = new IntersectionObserver((entries) => {
 						    entries.forEach(entry => {
 						      if (entry.isIntersecting) {
@@ -140,7 +141,7 @@
 						
 						  counters.forEach(counter => observer.observe(counter));
 						</script>
-
+						-->
 				
 				<!-- Two -->
 					<section id="two" class="wrapper alt style2">
