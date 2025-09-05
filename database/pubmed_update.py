@@ -5,13 +5,14 @@ from datetime import datetime, timedelta
 import xml.etree.ElementTree as ET
 
 CSV_FILE = "pubmed_results.csv"
+TXT_FILE = "summary_stats.txt"
 
 def get_pubmed_results():
     end_date = datetime.utcnow()
     start_date = end_date - timedelta(days=1)
     start_str = start_date.strftime("%Y/%m/%d")
     end_str = end_date.strftime("%Y/%m/%d")
-    date_query = f'("{start_str}"[PDAT] : "{end_str}"[PDAT])'
+    date_query = f'("{start_str}"[EDAT] : "{end_str}"[EDAT])'
 
     aff_query = "'Rochester, MN' OR 'Rochester, Minnesota' OR 'Rochester, Min' OR 'Rochester, Minn'"
     full_query = f"{date_query} AND {aff_query}"
@@ -61,6 +62,70 @@ def get_pubmed_results():
 
     return results
 
+
+def get_summary_stats():
+    end_date = datetime.utcnow()
+    start_date_day = end_date - timedelta(days=1)
+    start_date_week = end_date - timedelta(days=7)
+    start_date_month = end_date - timedelta(days=30)
+    start_str_day = start_date_day.strftime("%Y/%m/%d")
+    start_str_week = start_date_week.strftime("%Y/%m/%d")
+    start_str_month = start_date_month.strftime("%Y/%m/%d")
+    end_str = end_date.strftime("%Y/%m/%d")
+    date_query_day = f'("{start_str_day}"[EDAT] : "{end_str}"[EDAT])'
+    date_query_week = f'("{start_str_week}"[EDAT] : "{end_str}"[EDAT])'
+    date_query_month = f'("{start_str_month}"[EDAT] : "{end_str}"[EDAT])'
+
+    aff_query = "'Rochester, MN' OR 'Rochester, Minnesota' OR 'Rochester, Min' OR 'Rochester, Minn'"
+    full_query_day = f"{date_query_day} AND {aff_query}"
+    full_query_week = f"{date_query_week} AND {aff_query}"
+    full_query_month = f"{date_query_month} AND {aff_query}"
+
+    params_day = {
+        "db": "pubmed",
+        "term": full_query_day,
+        "retmax": "100",
+        "retmode": "json"
+    }
+    params_week = {
+        "db": "pubmed",
+        "term": full_query_week,
+        "retmax": "100",
+        "retmode": "json"
+    }
+    params_month = {
+        "db": "pubmed",
+        "term": full_query_month,
+        "retmax": "100",
+        "retmode": "json"
+    }
+
+    esearch_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
+    r_day = requests.get(esearch_url, params=params_day)
+    r_day.raise_for_status()
+    pmids_day = r_day.json().get("esearchresult", {}).get("idlist", [])
+
+    r_week = requests.get(esearch_url, params=params_week)
+    r_week.raise_for_status()
+    pmids_week = r_week.json().get("esearchresult", {}).get("idlist", [])
+
+    r_month = requests.get(esearch_url, params=params_month)
+    r_month.raise_for_status()
+    pmids_month = r_month.json().get("esearchresult", {}).get("idlist", [])
+    VarDay = len(pmids_day)
+    VarWeek = len(pmids_week) 
+    VarMonth = len(pmids_month)
+    VarTot = VarDay + VarWeek + VarMonth
+
+    open(TXT_FILE, "w").close()
+    open(TXT_FILE, "w")
+    with open(TXT_FILE, "a") as f:
+        f.write(f"VarTot={VarTot}\n")
+        f.write(f"VarDay={VarDay}\n")
+        f.write(f"VarWeek={VarWeek}\n")
+        f.write(f"VarMonth={VarMonth}\n")
+
+
 def save_to_csv(results):
     existing = set()
     if os.path.isfile(CSV_FILE):
@@ -76,8 +141,10 @@ def save_to_csv(results):
             if row[0] not in existing:
                 writer.writerow(row)
 
+
 if __name__ == "__main__":
     new = get_pubmed_results()
+    get_summary_stats()
     if new:
         save_to_csv(new)
         print(f"Added {len(new)} new results.")
