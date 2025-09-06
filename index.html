@@ -126,6 +126,7 @@
 						</section>
 						
 						
+
 						<style>
 						.scroll-container {
 						width: 100%;
@@ -135,21 +136,20 @@
 						margin-top: 2em;
 						}
 
-						/* Key: horizontal scroll with drag/swipe */
 						.scroll-content {
 						display: flex;
 						gap: 2em;
 						overflow-x: auto;
 						scroll-behavior: smooth;
-						scrollbar-width: none;      /* Firefox */
-						-webkit-overflow-scrolling: touch; /* iOS smooth scroll */
+						scrollbar-width: none;           /* Firefox */
+						-webkit-overflow-scrolling: touch; /* iOS */
 						}
 						.scroll-content::-webkit-scrollbar {
-						display: none;              /* Chrome/Safari */
+						display: none;                   /* Chrome/Safari */
 						}
 
 						.scroll-content img {
-						height: 500px;
+						height: 400px;
 						border-radius: 8px;
 						object-fit: cover;
 						box-shadow: 0 2px 6px rgba(0,0,0,0.4);
@@ -157,6 +157,14 @@
 						}
 						</style>
 
+						<script>
+						const scrollContent = document.getElementById("scrollContent");
+
+						scrollContent.addEventListener("wheel", (e) => {
+						e.preventDefault();
+						scrollContent.scrollLeft += e.deltaY; // map vertical wheel to horizontal scroll
+						});
+						</script>
 			
 						<!--
 						<script>
