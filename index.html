@@ -141,12 +141,10 @@
 						gap: 2em;
 						overflow-x: auto;
 						scroll-behavior: smooth;
-						scrollbar-width: none;           /* Firefox */
-						-webkit-overflow-scrolling: touch; /* iOS */
+						scrollbar-width: none;          
+						-webkit-overflow-scrolling: touch; /* allows smooth touch scrolling */
 						}
-						.scroll-content::-webkit-scrollbar {
-						display: none;                   /* Chrome/Safari */
-						}
+						.scroll-content::-webkit-scrollbar { display: none; }
 
 						.scroll-content img {
 						height: 400px;
@@ -158,20 +156,27 @@
 						</style>
 
 						<script>
-						const scroll = document.getElementById("scroll");
+						const scroll = document.getElementById('scroll');
+						let isPaused = false;
 
-						function wheelHandler(e) {
-						e.preventDefault();
-						scroll.scrollLeft += e.deltaY;
+						// Pause auto-scroll on hover (desktop)
+						scroll.addEventListener('mouseenter', () => isPaused = true);
+						scroll.addEventListener('mouseleave', () => isPaused = false);
+
+						// Only auto-scroll on non-touch devices
+						if (!('ontouchstart' in window)) {
+						function autoScroll() {
+							if (!isPaused) {
+							scroll.scrollLeft += 1; // adjust speed here
+							// Loop back to start when reaching the end
+							if (scroll.scrollLeft >= scroll.scrollWidth - scroll.clientWidth) {
+								scroll.scrollLeft = 0;
+							}
+							}
+							requestAnimationFrame(autoScroll);
 						}
-
-						scroll.addEventListener("mouseenter", () => {
-						scroll.addEventListener("wheel", wheelHandler, { passive: false });
-						});
-
-						scroll.addEventListener("mouseleave", () => {
-						scroll.removeEventListener("wheel", wheelHandler);
-						});
+						autoScroll();
+						}
 						</script>
 
 			
