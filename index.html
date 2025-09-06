@@ -114,48 +114,67 @@
 
 						  
 						<!-- Scrolling Image Strip -->
-						<div id="scroll" class="scroll">
-						<img src="./database/featured/img1.jpg">
-						<img src="./database/featured/img2.jpg">
-						<img src="./database/featured/img3.jpg">
-						<img src="./database/featured/img4.jpg">
+						<div class="scroll-container">
+							<div class="scroll-content">
+							<img src="./database/featured/img1.jpg" alt="Featured 1">
+							<img src="./database/featured/img2.jpg" alt="Featured 2">
+							<img src="./database/featured/img3.jpg" alt="Featured 3">
+							<img src="./database/featured/img4.jpg" alt="Featured 4">
+							<!-- Repeat or generate dynamically -->
+							</div>
 						</div>
+						</section>
+						
+						
 
 						<style>
-						.scroll{
-						display:flex;
-						gap:2em;
-						overflow-x:auto;
-						scroll-behavior:smooth;
-						-webkit-overflow-scrolling:touch;
-						scrollbar-width:none;
+						.scroll-container {
+						width: 100%;
+						overflow: hidden;
+						background: #08e9ad00;
+						padding: 10px 0;
+						margin-top: 2em;
 						}
-						.scroll::-webkit-scrollbar{display:none}
-						.scroll img{height:250px;flex-shrink:0;border-radius:8px;object-fit:cover}
-						.scroll:hover{cursor:grab}
+
+						.scroll-content {
+						display: flex;
+						gap: 2em;
+						overflow-x: auto;
+						scroll-behavior: smooth;
+						scrollbar-width: none;           /* Firefox */
+						-webkit-overflow-scrolling: touch; /* iOS */
+						}
+						.scroll-content::-webkit-scrollbar {
+						display: none;                   /* Chrome/Safari */
+						}
+
+						.scroll-content img {
+						height: 400px;
+						border-radius: 8px;
+						object-fit: cover;
+						box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+						flex-shrink: 0;
+						}
 						</style>
 
 						<script>
-						(() => {
-						const el = document.getElementById('scroll');
-						let over = false;
-						el.addEventListener('mouseenter', ()=> over = true);
-						el.addEventListener('mouseleave', ()=> over = false);
+						const scroll = document.getElementById("scroll");
 
-						window.addEventListener('wheel', e => {
-							if (!over) return;                 // only when hovering
-							if (Math.abs(e.deltaY) < 0.1) return;
-							e.preventDefault();                // stop vertical page scroll
-							// convert deltaMode to pixels (lines/pages → pixels)
-							let delta = e.deltaY;
-							if (e.deltaMode === 1) delta *= 16;
-							else if (e.deltaMode === 2) delta *= window.innerHeight;
-							el.scrollLeft += delta;            // map vertical wheel → horizontal scroll
-						}, { passive: false });
-						})();
+						function wheelHandler(e) {
+						e.preventDefault();
+						scroll.scrollLeft += e.deltaY;
+						}
+
+						scroll.addEventListener("mouseenter", () => {
+						scroll.addEventListener("wheel", wheelHandler, { passive: false });
+						});
+
+						scroll.addEventListener("mouseleave", () => {
+						scroll.removeEventListener("wheel", wheelHandler);
+						});
 						</script>
 
-
+			
 						<!--
 						<script>
 						  // Animate counters when visible
