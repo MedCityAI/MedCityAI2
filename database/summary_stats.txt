@@ -1,4 +1,4 @@
-VarTot=1578
-VarDay=522
-VarWeek=523
-VarMonth=533
+VarTot=412
+VarDay=17
+VarWeek=77
+VarMonth=318

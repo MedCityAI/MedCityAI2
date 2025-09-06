@@ -1,20 +1,20 @@
 import requests
 import csv
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import xml.etree.ElementTree as ET
 
 CSV_FILE = "./database/pubmed_results.csv"
 TXT_FILE = "./database/summary_stats.txt"
 
 def get_pubmed_results():
-    end_date = datetime.utcnow()
+    end_date = datetime.now(timezone.utc)
     start_date = end_date - timedelta(days=1)
     start_str = start_date.strftime("%Y/%m/%d")
     end_str = end_date.strftime("%Y/%m/%d")
-    date_query = f'("{start_str}"[EDAT] : "{end_str}"[EDAT])'
+    date_query = f'("{start_str}" : "{end_str}"[edat])'
 
-    aff_query = "'Rochester, MN' OR 'Rochester, Minnesota' OR 'Rochester, Min' OR 'Rochester, Minn'"
+    aff_query = "'Rochester'[AD] AND 'Minnesota'[AD]"
     full_query = f"{date_query} AND {aff_query}"
 
     params = {
@@ -64,19 +64,22 @@ def get_pubmed_results():
 
 
 def get_summary_stats():
-    end_date = datetime.utcnow()
+    end_date = datetime.now(timezone.utc)
+    print(f"End date (UTC): {end_date}")
     start_date_day = end_date - timedelta(days=1)
+    print(f"Start date (UTC): {start_date_day}")
     start_date_week = end_date - timedelta(days=7)
     start_date_month = end_date - timedelta(days=30)
     start_str_day = start_date_day.strftime("%Y/%m/%d")
     start_str_week = start_date_week.strftime("%Y/%m/%d")
     start_str_month = start_date_month.strftime("%Y/%m/%d")
     end_str = end_date.strftime("%Y/%m/%d")
-    date_query_day = f'("{start_str_day}"[EDAT] : "{end_str}"[EDAT])'
-    date_query_week = f'("{start_str_week}"[EDAT] : "{end_str}"[EDAT])'
-    date_query_month = f'("{start_str_month}"[EDAT] : "{end_str}"[EDAT])'
+    print(f"Start date string (day): {start_str_day}")
+    date_query_day = f'("{start_str_day}" : "{end_str}"[edat])'
+    date_query_week = f'("{start_str_week}" : "{end_str}"[edat])'
+    date_query_month = f'("{start_str_month}" : "{end_str}"[edat])'
 
-    aff_query = "'Rochester, MN'[AD] OR 'Rochester, Minnesota'[AD] OR 'Rochester, Min'[AD] OR 'Rochester, Minn'[AD]"
+    aff_query = "'Rochester'[AD] AND 'Minnesota'[AD]"
     full_query_day = f"{date_query_day} AND {aff_query}"
     full_query_week = f"{date_query_week} AND {aff_query}"
     full_query_month = f"{date_query_month} AND {aff_query}"
