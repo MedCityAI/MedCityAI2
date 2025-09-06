@@ -1,0 +1,4 @@
+VarTot=300
+VarDay=100
+VarWeek=100
+VarMonth=1001

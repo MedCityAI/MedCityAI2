@@ -4,8 +4,8 @@ import os
 from datetime import datetime, timedelta
 import xml.etree.ElementTree as ET
 
-CSV_FILE = "pubmed_results.csv"
-TXT_FILE = "summary_stats.txt"
+CSV_FILE = "./database/pubmed_results.csv"
+TXT_FILE = "./database/summary_stats.txt"
 
 def get_pubmed_results():
     end_date = datetime.utcnow()
@@ -76,7 +76,7 @@ def get_summary_stats():
     date_query_week = f'("{start_str_week}"[EDAT] : "{end_str}"[EDAT])'
     date_query_month = f'("{start_str_month}"[EDAT] : "{end_str}"[EDAT])'
 
-    aff_query = "'Rochester, MN' OR 'Rochester, Minnesota' OR 'Rochester, Min' OR 'Rochester, Minn'"
+    aff_query = "'Rochester, MN'[AD] OR 'Rochester, Minnesota'[AD] OR 'Rochester, Min'[AD] OR 'Rochester, Minn'[AD]"
     full_query_day = f"{date_query_day} AND {aff_query}"
     full_query_week = f"{date_query_week} AND {aff_query}"
     full_query_month = f"{date_query_month} AND {aff_query}"
@@ -84,41 +84,35 @@ def get_summary_stats():
     params_day = {
         "db": "pubmed",
         "term": full_query_day,
-        "retmax": "100",
+        "rettype": "count",
         "retmode": "json"
     }
     params_week = {
         "db": "pubmed",
         "term": full_query_week,
-        "retmax": "100",
+        "rettype": "count",
         "retmode": "json"
     }
     params_month = {
         "db": "pubmed",
         "term": full_query_month,
-        "retmax": "100",
+        "rettype": "count",
         "retmode": "json"
     }
 
     esearch_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
-    r_day = requests.get(esearch_url, params=params_day)
-    r_day.raise_for_status()
-    pmids_day = r_day.json().get("esearchresult", {}).get("idlist", [])
+    r_day = requests.get(esearch_url, params=params_day).json()
+    VarDay = int(r_day["esearchresult"]["count"])
+    
+    r_week = requests.get(esearch_url, params=params_week).json()
+    VarWeek = int(r_week["esearchresult"]["count"])
 
-    r_week = requests.get(esearch_url, params=params_week)
-    r_week.raise_for_status()
-    pmids_week = r_week.json().get("esearchresult", {}).get("idlist", [])
-
-    r_month = requests.get(esearch_url, params=params_month)
-    r_month.raise_for_status()
-    pmids_month = r_month.json().get("esearchresult", {}).get("idlist", [])
-    VarDay = len(pmids_day)
-    VarWeek = len(pmids_week) 
-    VarMonth = len(pmids_month)
+    r_month = requests.get(esearch_url, params=params_month).json()
+    VarMonth = int(r_month["esearchresult"]["count"])
+    
     VarTot = VarDay + VarWeek + VarMonth
 
     open(TXT_FILE, "w").close()
-    open(TXT_FILE, "w")
     with open(TXT_FILE, "a") as f:
         f.write(f"VarTot={VarTot}\n")
         f.write(f"VarDay={VarDay}\n")
