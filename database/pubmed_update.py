@@ -79,7 +79,7 @@ def get_summary_stats():
     date_query_week = f'("{start_str_week}" : "{end_str}"[edat])'
     date_query_month = f'("{start_str_month}" : "{end_str}"[edat])'
 
-    aff_query = "'Rochester'[AD] AND 'Minnesota'[AD]"
+    aff_query = "'Mayo'[AD] AND ('Minnesota'[AD] OR 'MN'[AD])"
     full_query_day = f"{date_query_day} AND {aff_query}"
     full_query_week = f"{date_query_week} AND {aff_query}"
     full_query_month = f"{date_query_month} AND {aff_query}"
