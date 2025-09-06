@@ -158,13 +158,22 @@
 						</style>
 
 						<script>
-						const scrollContent = document.getElementById("scrollContent");
+						const scroll = document.getElementById("scroll");
 
-						scrollContent.addEventListener("wheel", (e) => {
+						function wheelHandler(e) {
 						e.preventDefault();
-						scrollContent.scrollLeft += e.deltaY; // map vertical wheel to horizontal scroll
+						scroll.scrollLeft += e.deltaY;
+						}
+
+						scroll.addEventListener("mouseenter", () => {
+						scroll.addEventListener("wheel", wheelHandler, { passive: false });
+						});
+
+						scroll.addEventListener("mouseleave", () => {
+						scroll.removeEventListener("wheel", wheelHandler);
 						});
 						</script>
+
 			
 						<!--
 						<script>
