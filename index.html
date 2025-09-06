@@ -127,35 +127,36 @@
 						
 						
 						<style>
-						/* Scrolling image strip styles */
 						.scroll-container {
-						overflow: hidden;
-						position: relative;
 						width: 100%;
-						background: #08e9ad00; /* background behind images */
+						overflow: hidden;
+						background: #08e9ad00;
 						padding: 10px 0;
 						margin-top: 2em;
 						}
 
+						/* Key: horizontal scroll with drag/swipe */
 						.scroll-content {
 						display: flex;
 						gap: 2em;
-						animation: scroll-left 30s linear infinite;
+						overflow-x: auto;
+						scroll-behavior: smooth;
+						scrollbar-width: none;      /* Firefox */
+						-webkit-overflow-scrolling: touch; /* iOS smooth scroll */
+						}
+						.scroll-content::-webkit-scrollbar {
+						display: none;              /* Chrome/Safari */
 						}
 
 						.scroll-content img {
-						height: 200px;   /* adjust size */
-						width: auto;
+						height: 200px;
 						border-radius: 8px;
 						object-fit: cover;
 						box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-						}
-
-						@keyframes scroll-left {
-						0% { transform: translateX(100%); }
-						100% { transform: translateX(-100%); }
+						flex-shrink: 0;
 						}
 						</style>
+
 			
 						<!--
 						<script>
