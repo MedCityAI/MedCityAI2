@@ -78,7 +78,20 @@ fig1 = px.choropleth(
     scope="usa",
     range_color=[min_val, second_highest]
 )
-fig1.show()
+
+fig1.update_layout(
+    title_text="Co-author Affiliations By State",
+    title_x=0.5,  # center the title
+    coloraxis_colorbar=dict(
+        orientation="h",  # horizontal
+        y=-0.1,           # push it down below the map
+        x=0.5,            # center it
+        xanchor="center",
+        yanchor="top"
+    )
+)
+
+#fig1.show()
 fig1.write_html("state_map.html", include_plotlyjs="cdn")
 
 second_highest2 = country_counts["Count"].nlargest(2).iloc[-1]
@@ -94,3 +107,18 @@ fig2 = px.choropleth(
 )
 
 
+fig2.update_layout(
+    title_text="Co-author Affiliations By Country",
+    title_x=0.5,  # center the title
+    coloraxis_colorbar=dict(
+        orientation="h",  # horizontal
+        y=-0.1,           # push it down below the map
+        x=0.5,            # center it
+        xanchor="center",
+        yanchor="top"
+    )
+)
+
+fig2.show()
+
+fig2.write_html("world_map.html", include_plotlyjs="cdn")
