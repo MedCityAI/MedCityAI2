@@ -81,22 +81,23 @@ fig1 = px.choropleth(
 
 fig1.update_layout(
     title_text="Co-author Affiliations By State",
-    title_x=0.5,  # center the title
-    margin=dict(l=0, r=0, t=50, b=0),  # remove left/right/bottom margins
+    title_x=0.5,
+    autosize=False,  # disable autoscaling
+    width=1000,      # fixed width
+    height=600,      # fixed height
+    margin=dict(l=0, r=0, t=50, b=0),
     geo=dict(
-        projection_scale=1,  # zoom in to fill space
-        center=dict(lat=20, lon=0),  # recenter if needed
-        fitbounds="locations"  # make map fit your data
+        fitbounds="locations",  # tightly fit to your data
+        projection_scale=1
     ),
     coloraxis_colorbar=dict(
-        orientation="h",  # horizontal
-        y=-0.1,           # push it down below the map
-        x=0.5,            # center it
+        orientation="h",
+        y=-0.1,
+        x=0.5,
         xanchor="center",
         yanchor="top"
     )
 )
-
 #fig1.show()
 fig1.write_html("state_map.html", include_plotlyjs="cdn")
 
@@ -115,17 +116,19 @@ fig2 = px.choropleth(
 
 fig2.update_layout(
     title_text="Co-author Affiliations By Country",
-    title_x=0.5,  # center the title
-    margin=dict(l=0, r=0, t=50, b=0),  # remove left/right/bottom margins
+    title_x=0.5,
+    autosize=False,  # disable autoscaling
+    width=1000,      # fixed width
+    height=600,      # fixed height
+    margin=dict(l=0, r=0, t=50, b=0),
     geo=dict(
-        projection_scale=1,  # zoom in to fill space
-        center=dict(lat=20, lon=0),  # recenter if needed
-        fitbounds="locations"  # make map fit your data
+        fitbounds="locations",  # tightly fit to your data
+        projection_scale=1
     ),
     coloraxis_colorbar=dict(
-        orientation="h",  # horizontal
-        y=-0.1,           # push it down below the map
-        x=0.5,            # center it
+        orientation="h",
+        y=-0.1,
+        x=0.5,
         xanchor="center",
         yanchor="top"
     )
