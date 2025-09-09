@@ -112,6 +112,23 @@
 						    </div>
 						  </div>
 
+
+						<!-- Dropdown Menu -->
+						<label for="pubmed-query">Filter by Topic:</label>
+						<select id="pubmed-query" onchange="fetchPubMedResults()">
+						<option value="everything" selected>Everything</option>
+						<option value="genai">Generative AI</option>
+						<option value="deeplearning">Deep Learning</option>
+						<option value="informatics">Informatics</option>
+						<option value="radiology">Radiology</option>
+						</select>
+
+						<!-- Results will render here -->
+						<div id="pubmed-results" style="margin-top:20px; text-align:left;"></div>
+
+
+
+
 						<div class="scroll-container">
 						<div class="scroll-content">
 							<img src="./database/featured/img1.jpg" alt="1">
@@ -161,7 +178,66 @@
 						100% { transform: translateX(-50%); }
 						}
 						</style>
-			
+						
+						<script>
+						async function fetchPubMedResults() {
+						const queryType = document.getElementById("pubmed-query").value;
+						
+						// Define queries
+						const queries = {
+							everything: `("Mayo"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))`,
+							genai: `(("Generative AI" OR "Large language model" OR "chatgpt") AND "Mayo"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))`,
+							deeplearning: `(("Deep learning" OR "Neural network") AND "Mayo"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))`,
+							informatics: `("informatics" AND "Mayo"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))`,
+							radiology: `(("CT" OR "MRI" OR "ultrasound" OR "radiology") AND "Mayo"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))`
+						};
+
+						const term = queries[queryType];
+						const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(term)}&retmax=10&sort=pub+date&retmode=json`;
+
+						try {
+							const esearchRes = await fetch(esearchUrl);
+							const esearchData = await esearchRes.json();
+							const ids = esearchData.esearchresult.idlist;
+
+							if (ids.length === 0) {
+							document.getElementById("pubmed-results").innerHTML = "<p>No results found.</p>";
+							return;
+							}
+
+							// Fetch summaries
+							const esummaryUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=${ids.join(",")}&retmode=json`;
+							const esummaryRes = await fetch(esummaryUrl);
+							const esummaryData = await esummaryRes.json();
+
+							// Build results HTML
+							let resultsHTML = "<ul>";
+							ids.forEach(id => {
+							const article = esummaryData.result[id];
+							if (article) {
+								const title = article.title || "No title";
+								const authors = article.authors?.length ? `${article.authors[0].name} et al.` : "Unknown";
+								const journal = article.fulljournalname || "Unknown Journal";
+								const pubdate = article.epubdate || article.pubdate || "No date";
+
+								resultsHTML += `<li>
+								<strong>${title}</strong><br>
+								${authors} <em>${journal}</em>. ${pubdate}
+								</li>`;
+							}
+							});
+							resultsHTML += "</ul>";
+
+							document.getElementById("pubmed-results").innerHTML = resultsHTML;
+						} catch (error) {
+							console.error(error);
+							document.getElementById("pubmed-results").innerHTML = "<p>Error fetching results.</p>";
+						}
+						}
+
+						// Fetch default ("everything") on page load
+						document.addEventListener("DOMContentLoaded", fetchPubMedResults);
+						</script>
 						<!--
 						<script>
 						  // Animate counters when visible
