@@ -82,7 +82,6 @@ fig1 = px.choropleth(
 fig1.update_layout(
     title_text="Co-author Affiliations By State",
     title_x=0.5,
-    autosize=True,  # disable autoscaling
     margin=dict(l=0, r=0, t=50, b=0),
     geo=dict(
         fitbounds="locations",  # tightly fit to your data
@@ -115,7 +114,6 @@ fig2 = px.choropleth(
 fig2.update_layout(
     title_text="Co-author Affiliations By Country",
     title_x=0.5,
-    autosize=True,  # disable autoscaling
     margin=dict(l=0, r=0, t=50, b=0),
     geo=dict(
         fitbounds="locations",  # tightly fit to your data
