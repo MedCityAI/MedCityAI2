@@ -83,9 +83,7 @@ fig1.update_layout(
     title_text="Co-author Affiliations By State",
     title_x=0.5,
     autosize=True,  # disable autoscaling
-    width=1000,      # fixed width
-    height=600,      # fixed height
-    margin=dict(l=0, r=0, t=0, b=0),
+    margin=dict(l=0, r=0, t=50, b=0),
     geo=dict(
         fitbounds="locations",  # tightly fit to your data
         projection_scale=1
@@ -118,9 +116,7 @@ fig2.update_layout(
     title_text="Co-author Affiliations By Country",
     title_x=0.5,
     autosize=True,  # disable autoscaling
-    width=1000,      # fixed width
-    height=600,      # fixed height
-    margin=dict(l=0, r=0, t=0, b=0),
+    margin=dict(l=0, r=0, t=50, b=0),
     geo=dict(
         fitbounds="locations",  # tightly fit to your data
         projection_scale=1
