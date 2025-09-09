@@ -112,77 +112,54 @@
 						    </div>
 						  </div>
 
-						  
-						<!-- Scrolling Image Strip -->
 						<div class="scroll-container">
-							<div class="scroll-content">
-							<img src="./database/featured/img1.jpg" alt="Featured 1">
-							<img src="./database/featured/img2.jpg" alt="Featured 2">
-							<img src="./database/featured/img3.jpg" alt="Featured 3">
-							<img src="./database/featured/img4.jpg" alt="Featured 4">
-							<img src="./database/featured/img5.jpg" alt="Featured 5">
-							<img src="./database/featured/img6.jpg" alt="Featured 6">
-							<img src="./database/featured/img7.jpg" alt="Featured 7">
-							<img src="./database/featured/img8.jpg" alt="Featured 8">
-							<!-- Repeat or generate dynamically -->
-							</div>
-						</div>
-						</section>
-						
-						
+						<div class="scroll-content">
+							<img src="./database/featured/img1.jpg" alt="1">
+							<img src="./database/featured/img2.jpg" alt="2">
+							<img src="./database/featured/img3.jpg" alt="3">
+							<img src="./database/featured/img4.jpg" alt="4">
+							<img src="./database/featured/img5.jpg" alt="5">
+							<img src="./database/featured/img6.jpg" alt="6">
+							<img src="./database/featured/img7.jpg" alt="7">
+							<img src="./database/featured/img8.jpg" alt="8">
 
+							<!-- Duplicate for looping effect -->
+							<img src="./database/featured/img1.jpg" alt="1">
+							<img src="./database/featured/img2.jpg" alt="2">
+							<img src="./database/featured/img3.jpg" alt="3">
+							<img src="./database/featured/img4.jpg" alt="4">
+							<img src="./database/featured/img5.jpg" alt="5">
+							<img src="./database/featured/img6.jpg" alt="6">
+							<img src="./database/featured/img7.jpg" alt="7">
+							<img src="./database/featured/img8.jpg" alt="8">
+						</div>
+						</div>
+						
 						<style>
 						.scroll-container {
 						width: 100%;
 						overflow: hidden;
-						background: #08e9ad00;
-						padding: 10px 0;
-						margin-top: 2em;
 						}
 
 						.scroll-content {
 						display: flex;
-						gap: 2em;
-						overflow-x: auto;
-						scroll-behavior: smooth;
-						scrollbar-width: none;          
-						-webkit-overflow-scrolling: touch; /* allows smooth touch scrolling */
+						animation: scroll 30s linear infinite;
 						}
-						.scroll-content::-webkit-scrollbar { display: none; }
 
 						.scroll-content img {
-						height: 300px;
+						height: 200px;
+						margin-right: 20px;
+						flex-shrink: 0;
 						border-radius: 8px;
 						object-fit: cover;
-						box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-						flex-shrink: 0;
+						}
+
+						/* Scroll Animation */
+						@keyframes scroll {
+						0% { transform: translateX(0); }
+						100% { transform: translateX(-50%); }
 						}
 						</style>
-
-						<script>
-						const scroll = document.getElementById('scroll');
-						let isPaused = false;
-
-						// Pause auto-scroll on hover (desktop)
-						scroll.addEventListener('mouseenter', () => isPaused = true);
-						scroll.addEventListener('mouseleave', () => isPaused = false);
-
-						// Only auto-scroll on non-touch devices
-						if (!('ontouchstart' in window)) {
-						function autoScroll() {
-							if (!isPaused) {
-							scroll.scrollLeft += 1; // adjust speed here
-							// Loop back to start when reaching the end
-							if (scroll.scrollLeft >= scroll.scrollWidth - scroll.clientWidth) {
-								scroll.scrollLeft = 0;
-							}
-							}
-							requestAnimationFrame(autoScroll);
-						}
-						autoScroll();
-						}
-						</script>
-
 			
 						<!--
 						<script>
