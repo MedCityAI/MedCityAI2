@@ -84,7 +84,7 @@ fig1.update_layout(
     title_x=0.5,
     margin=dict(l=0, r=0, t=50, b=0),
     geo=dict(
-        projection_scale=1.2
+        projection_scale=1.1
     ),
     coloraxis_colorbar=dict(
         orientation="h",
@@ -115,7 +115,7 @@ fig2.update_layout(
     title_x=0.5,
     margin=dict(l=0, r=0, t=50, b=0),
     geo=dict(
-        projection_scale=1.2
+        projection_scale=1.1
     ),
     coloraxis_colorbar=dict(
         orientation="h",
