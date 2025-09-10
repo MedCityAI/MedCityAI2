@@ -112,23 +112,6 @@
 						    </div>
 						  </div>
 
-
-						<!-- Dropdown Menu -->
-						<label for="pubmed-query">Filter by Topic:</label>
-						<select id="pubmed-query" onchange="fetchPubMedResults()">
-						<option value="everything" selected>Everything</option>
-						<option value="genai">Generative AI</option>
-						<option value="deeplearning">Deep Learning</option>
-						<option value="informatics">Informatics</option>
-						<option value="radiology">Radiology</option>
-						</select>
-
-						<!-- Results will render here -->
-						<div id="pubmed-results" style="margin-top:20px; text-align:left;"></div>
-
-
-
-
 						<div class="scroll-container">
 						<div class="scroll-content">
 							<img src="./database/featured/img1.jpg" alt="1">
@@ -152,6 +135,23 @@
 						</div>
 						</div>
 						
+						
+						<!-- Dropdown Menu -->
+						<label for="pubmed-query">Filter by Topic:</label>
+						<select id="pubmed-query" onchange="fetchPubMedResults()">
+						<option value="everything" selected>Everything</option>
+						<option value="genai">Generative AI</option>
+						<option value="deeplearning">Deep Learning</option>
+						<option value="informatics">Informatics</option>
+						<option value="radiology">Radiology</option>
+						</select>
+
+						<!-- Results will render here -->
+						<div id="pubmed-results" style="margin-top:20px; text-align:left;"></div>
+
+
+
+
 						<style>
 						.scroll-container {
 						width: 100%;
@@ -160,13 +160,13 @@
 
 						.scroll-content {
 						display: flex;
-						animation: scroll 10s linear infinite;
+						animation: scroll 5s linear infinite;
 						}
 
 						.scroll-content img {
-						height: 300px;
+						height: 250px;
 						margin-right: 20px;
-						margin-bottom: 40px;
+						margin-bottom: 80px;
 						flex-shrink: 0;
 						border-radius: 12px;
 						object-fit: cover;
