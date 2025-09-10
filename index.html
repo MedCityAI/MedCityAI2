@@ -112,6 +112,20 @@
 						    </div>
 						  </div>
 
+						<!-- Dropdown + Results Container -->
+						<div class="pubmed-container">
+						<select id="pubmed-query" onchange="fetchPubMedResults()">
+							<option value="everything" selected>Everything</option>
+							<option value="genai">Generative AI</option>
+							<option value="deeplearning">Deep Learning</option>
+							<option value="informatics">Informatics</option>
+							<option value="radiology">Radiology</option>
+						</select>
+
+						<!-- Results will render here -->
+						<div id="pubmed-results" style="margin-top:20px; text-align:left;"></div>
+						</div>
+
 						<div class="scroll-container">
 						<div class="scroll-content">
 							<img src="./database/featured/img1.jpg" alt="1">
@@ -135,21 +149,6 @@
 						</div>
 						</div>
 						
-						<!-- Dropdown + Results Container -->
-						<div class="pubmed-container">
-						<label for="pubmed-query">Filter by Topic:</label>
-						<select id="pubmed-query" onchange="fetchPubMedResults()">
-							<option value="everything" selected>Everything</option>
-							<option value="genai">Generative AI</option>
-							<option value="deeplearning">Deep Learning</option>
-							<option value="informatics">Informatics</option>
-							<option value="radiology">Radiology</option>
-						</select>
-
-						<!-- Results will render here -->
-						<div id="pubmed-results" style="margin-top:20px; text-align:left;"></div>
-						</div>
-
 						<style>
 						/* Add margin on left/right */
 						.pubmed-container {
