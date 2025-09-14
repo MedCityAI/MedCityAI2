@@ -47,11 +47,14 @@
 					<article id="main">
 						<header>
 													
-							<title>Med City AI - PubMed Search</title>
-							<meta charset="utf-8" />
-							<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-							<link rel="stylesheet" href="assets/css/main.css" />
-							<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+							<h1>Med City AI</h1>
+							<p>Search Articles from Rochester, MN</p>
+
+							<div class="search-container">
+								<input type="text" id="searchInput" class="search-bar" placeholder="Search Papers (e.g. Generative AI)..." />
+								<button class="search-button" onclick="searchPubMed()">Search</button>
+							</div>
+
 							<style>
 								/* Adjust styling to match PubMed-like feel */
 								.search-container {
@@ -97,13 +100,6 @@
 
 
 						<body class="landing is-preload">
-
-							<!-- Search Box -->
-							<div class="search-container">
-								<input type="text" id="searchInput" class="search-bar" placeholder="Search PubMed..." />
-								<button class="search-button" onclick="searchPubMed()">Search</button>
-							</div>
-
 							<!-- Results -->
 							<div id="results" class="results"></div>
 
