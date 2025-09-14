@@ -7,150 +7,225 @@
 <!--
     MedCityAI - PubMed Search Page
 -->
+
+
 <html>
-<head>
-    <title>Med City AI - PubMed Search</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <link rel="stylesheet" href="assets/css/main.css" />
-    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-    <style>
-        /* Adjust styling to match PubMed-like feel */
-        .search-container {
-            text-align: center;
-            margin: 30px auto;
-        }
-        .search-bar {
-            width: 60%;
-            padding: 12px;
-            font-size: 16px;
-        }
-        .search-button {
-            padding: 12px 20px;
-            font-size: 16px;
-            margin-left: 10px;
-        }
-        .results {
-            max-width: 900px;
-            margin: 40px auto;
-            text-align: left;
-        }
-        .result-item {
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #ddd;
-        }
-        .result-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: #0056a3;
-            text-decoration: none;
-        }
-        .pagination {
-            text-align: center;
-            margin: 30px;
-        }
-        .pagination button {
-            margin: 0 5px;
-            padding: 8px 16px;
-        }
-    </style>
-</head>
-<body class="landing is-preload">
+	<head>
+		<title>Generic - Spectral by HTML5 UP</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
 
-    <!-- Search Box -->
-    <div class="search-container">
-        <input type="text" id="searchInput" class="search-bar" placeholder="Search PubMed..." />
-        <button class="search-button" onclick="searchPubMed()">Search</button>
-    </div>
+		<!-- Page Wrapper -->
+			<div id="page-wrapper">
 
-    <!-- Results -->
-    <div id="results" class="results"></div>
+				<!-- Header -->
+					<header id="header">
+						<h1><a href="index.html">Spectral</a></h1>
+						<nav id="nav">
+							<ul>
+								<li class="special">
+									<a href="#menu" class="menuToggle"><span>Menu</span></a>
+									<div id="menu">
+										<ul>
+											<li><a href="index.html">Home</a></li>
+											<li><a href="generic.html">Generic</a></li>
+											<li><a href="elements.html">Elements</a></li>
+											<li><a href="#">Sign Up</a></li>
+											<li><a href="#">Log In</a></li>
+										</ul>
+									</div>
+								</li>
+							</ul>
+						</nav>
+					</header>
 
-    <!-- Pagination -->
-    <div class="pagination">
-        <button onclick="prevPage()">Previous</button>
-        <span id="pageNumber">Page 1</span>
-        <button onclick="nextPage()">Next</button>
-    </div>
+				<!-- Main -->
+					<article id="main">
+						<header>
+													
+							<title>Med City AI - PubMed Search</title>
+							<meta charset="utf-8" />
+							<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+							<link rel="stylesheet" href="assets/css/main.css" />
+							<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+							<style>
+								/* Adjust styling to match PubMed-like feel */
+								.search-container {
+									text-align: center;
+									margin: 30px auto;
+								}
+								.search-bar {
+									width: 60%;
+									padding: 12px;
+									font-size: 16px;
+								}
+								.search-button {
+									padding: 12px 20px;
+									font-size: 16px;
+									margin-left: 10px;
+								}
+								.results {
+									max-width: 900px;
+									margin: 40px auto;
+									text-align: left;
+								}
+								.result-item {
+									margin-bottom: 25px;
+									padding-bottom: 15px;
+									border-bottom: 1px solid #ddd;
+								}
+								.result-title {
+									font-size: 18px;
+									font-weight: bold;
+									color: #0056a3;
+									text-decoration: none;
+								}
+								.pagination {
+									text-align: center;
+									margin: 30px;
+								}
+								.pagination button {
+									margin: 0 5px;
+									padding: 8px 16px;
+								}
+							</style>
+						</header>						
 
-<script>
-    let currentPage = 1;
-    const resultsPerPage = 10;
-    let currentQuery = "";
-    let totalResults = 0;
 
-    async function searchPubMed(page = 1) {
-        const query = document.getElementById("searchInput").value.trim();
-        if (!query) return;
+						<body class="landing is-preload">
 
-        currentQuery = query;
-        currentPage = page;
+							<!-- Search Box -->
+							<div class="search-container">
+								<input type="text" id="searchInput" class="search-bar" placeholder="Search PubMed..." />
+								<button class="search-button" onclick="searchPubMed()">Search</button>
+							</div>
 
-        const start = (page - 1) * resultsPerPage + 1;
+							<!-- Results -->
+							<div id="results" class="results"></div>
 
-        try {
-            // Step 1: Search PubMed (get PMIDs)
-            const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retstart=${start-1}&retmax=${resultsPerPage}&usehistory=y&retmode=json`;
-            const searchResp = await fetch(esearchUrl);
-            const searchData = await searchResp.json();
+							<!-- Pagination -->
+							<div class="pagination">
+								<button onclick="prevPage()">Previous</button>
+								<span id="pageNumber">Page 1</span>
+								<button onclick="nextPage()">Next</button>
+							</div>
 
-            totalResults = parseInt(searchData.esearchresult.count);
-            const pmids = searchData.esearchresult.idlist;
+						<script>
+							let currentPage = 1;
+							const resultsPerPage = 10;
+							let currentQuery = "";
+							let totalResults = 0;
 
-            if (pmids.length === 0) {
-                document.getElementById("results").innerHTML = "<p>No results found.</p>";
-                return;
-            }
+							async function searchPubMed(page = 1) {
+								const query = document.getElementById("searchInput").value.trim();
+								if (!query) return;
 
-            // Step 2: Fetch article details
-            const esummaryUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=${pmids.join(",")}&retmode=json`;
-            const summaryResp = await fetch(esummaryUrl);
-            const summaryData = await summaryResp.json();
+								currentQuery = query;
+								currentPage = page;
 
-            // Step 3: Render results
-            const resultsDiv = document.getElementById("results");
-            resultsDiv.innerHTML = "";
-            pmids.forEach(pmid => {
-                const article = summaryData.result[pmid];
-                if (!article) return;
+								const start = (page - 1) * resultsPerPage + 1;
 
-                const title = article.title || "No title";
-                const authors = (article.authors || []).map(a => a.name).join(", ");
-                const source = article.source || "";
-                const pubdate = article.pubdate || "";
-                const citation = `${source}. ${pubdate}. PMID: ${pmid}`;
+								try {
+									// Step 1: Search PubMed (get PMIDs)
+									const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retstart=${start-1}&retmax=${resultsPerPage}&usehistory=y&retmode=json`;
+									const searchResp = await fetch(esearchUrl);
+									const searchData = await searchResp.json();
 
-                const item = document.createElement("div");
-                item.className = "result-item";
-                item.innerHTML = `
-                    <a href="https://pubmed.ncbi.nlm.nih.gov/${pmid}/" target="_blank" class="result-title">${title}</a>
-                    <div>${authors}</div>
-                    <div><em>${citation}</em></div>
-                `;
-                resultsDiv.appendChild(item);
-            });
+									totalResults = parseInt(searchData.esearchresult.count);
+									const pmids = searchData.esearchresult.idlist;
 
-            // Update page display
-            document.getElementById("pageNumber").textContent = `Page ${currentPage}`;
-        } catch (err) {
-            console.error("Error fetching PubMed results:", err);
-            document.getElementById("results").innerHTML = "<p>Error retrieving results.</p>";
-        }
-    }
+									if (pmids.length === 0) {
+										document.getElementById("results").innerHTML = "<p>No results found.</p>";
+										return;
+									}
 
-    function nextPage() {
-        if ((currentPage * resultsPerPage) < totalResults) {
-            searchPubMed(currentPage + 1);
-        }
-    }
+									// Step 2: Fetch article details
+									const esummaryUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=${pmids.join(",")}&retmode=json`;
+									const summaryResp = await fetch(esummaryUrl);
+									const summaryData = await summaryResp.json();
 
-    function prevPage() {
-        if (currentPage > 1) {
-            searchPubMed(currentPage - 1);
-        }
-    }
-</script>
+									// Step 3: Render results
+									const resultsDiv = document.getElementById("results");
+									resultsDiv.innerHTML = "";
+									pmids.forEach(pmid => {
+										const article = summaryData.result[pmid];
+										if (!article) return;
 
-</body>
+										const title = article.title || "No title";
+										const authors = (article.authors || []).map(a => a.name).join(", ");
+										const source = article.source || "";
+										const pubdate = article.pubdate || "";
+										const citation = `${source}. ${pubdate}. PMID: ${pmid}`;
+
+										const item = document.createElement("div");
+										item.className = "result-item";
+										item.innerHTML = `
+											<a href="https://pubmed.ncbi.nlm.nih.gov/${pmid}/" target="_blank" class="result-title">${title}</a>
+											<div>${authors}</div>
+											<div><em>${citation}</em></div>
+										`;
+										resultsDiv.appendChild(item);
+									});
+
+									// Update page display
+									document.getElementById("pageNumber").textContent = `Page ${currentPage}`;
+								} catch (err) {
+									console.error("Error fetching PubMed results:", err);
+									document.getElementById("results").innerHTML = "<p>Error retrieving results.</p>";
+								}
+							}
+
+							function nextPage() {
+								if ((currentPage * resultsPerPage) < totalResults) {
+									searchPubMed(currentPage + 1);
+								}
+							}
+
+							function prevPage() {
+								if (currentPage > 1) {
+									searchPubMed(currentPage - 1);
+								}
+							}
+						</script>
+
+						</body>
+
+
+
+
+
+
+						</section>
+					</article>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<ul class="icons">
+							<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+							<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+							<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+							<li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
+							<li><a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+						</ul>
+						<ul class="copyright">
+							<li>&copy; Untitled</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+						</ul>
+					</footer>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
 </html>
