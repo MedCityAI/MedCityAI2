@@ -38,14 +38,16 @@
         }
 
         .
-        /* Remove custom button styling → use browser default */
         .search-button {
             margin-left: 6px;
             font-size: 16px;
-            border-radius: 8px 0 0 8px;
-			background: #2d2c44e4;
-            background-color: rgba(66, 62, 91, 0.966);
-            color: #30456d;
+            padding: 12px 20px;            /* Better spacing */
+            border: none;                  /* Remove default borders */
+            border-radius: 0 8px 8px 0;    /* Rounded right edges */
+            background-color: #365d88;     /* Bootstrap-style blue */
+            color: #ffffff;                   /* White text */
+            cursor: pointer;               /* Pointer on hover */
+            transition: background-color 0.3s ease;
         }
 
         /* Results */
