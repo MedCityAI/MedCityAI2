@@ -24,6 +24,9 @@
             background-color: rgba(255, 255, 255, 0.70);
             max-width: 720px;
             color: #000000;
+            border-radius: 10px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+            padding: 5px;
         }
 
         .search-bar {
@@ -36,26 +39,27 @@
         }
 
         .search-button {
-            display: flex;                 /* Use flexbox */
-            align-items: center;           /* Vertically center */
-            justify-content: center;       /* Horizontally center */
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin-left: 6px;
             font-size: 16px;
-            padding: 12px 20px;            /* Better spacing */
-            border: none;                  /* Remove default borders */
-            background-color: #365d88;     /* Bootstrap-style blue */
-            color: #ffffff;                   /* White text */
-            cursor: pointer;               /* Pointer on hover */
+            padding: 12px 20px;
+            border: none;
+            background-color: #365d88;
+            color: #ffffff;
+            cursor: pointer;
+            border-radius: 0 8px 8px 0;
             transition: background-color 0.3s ease;
         }
         
         .search-button:hover {
-            background-color: #274960;     /* Darker blue on hover */
+            background-color: #274960;
         }
 
         .search-bar::placeholder {
-            color: #333 !important;   /* Darker gray */
-            opacity: 1;       /* Prevents it from appearing washed out */
+            color: #333 !important;
+            opacity: 1;
         }
 
         /* Results */
@@ -66,19 +70,20 @@
         }
 
         .result-item {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
             margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #ddd;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
         }
 
         .result-title {
             display: block;
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 600;
             color: #0056a3;
             text-decoration: none;
-            margin-bottom: 6px;
-			outline: none;
+            margin-bottom: 8px;
         }
 
         .result-title:hover {
@@ -94,7 +99,32 @@
         .result-citation {
             color: #666;
             font-size: 13px;
+            margin-bottom: 10px;
         }
+
+        /* Share Buttons */
+        .share-buttons {
+            margin-top: 10px;
+        }
+
+        .share-buttons a {
+            display: inline-block;
+            margin-right: 10px;
+            font-size: 13px;
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .share-buttons a:hover {
+            opacity: 0.85;
+        }
+
+        .twitter { background: #1DA1F2; }
+        .linkedin { background: #0A66C2; }
+        .facebook { background: #3b5998; }
 
         /* Pagination */
         .pagination {
@@ -109,6 +139,7 @@
             background: #fff;
             cursor: pointer;
             font-size: 14px;
+            border-radius: 6px;
         }
 
         .pagination button:hover {
@@ -237,13 +268,19 @@
                     const source = article.source || "";
                     const pubdate = article.pubdate || "";
                     const citation = `${source}. ${pubdate}. PMID: ${pmid}`;
+                    const url = `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`;
 
                     const item = document.createElement("div");
                     item.className = "result-item";
                     item.innerHTML = `
-                        <a href="https://pubmed.ncbi.nlm.nih.gov/${pmid}/" target="_blank" class="result-title">${title}</a>
+                        <a href="${url}" target="_blank" class="result-title">${title}</a>
                         <div class="result-authors">${authors}</div>
                         <div class="result-citation"><em>${citation}</em></div>
+                        <div class="share-buttons">
+                            <a class="twitter" href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}" target="_blank">Twitter</a>
+                            <a class="linkedin" href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}" target="_blank">LinkedIn</a>
+                            <a class="facebook" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" target="_blank">Facebook</a>
+                        </div>
                     `;
                     resultsDiv.appendChild(item);
                 });
