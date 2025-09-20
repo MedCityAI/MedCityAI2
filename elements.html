@@ -306,4 +306,179 @@
         }
     </script>
 </body>
+
+
+<style>
+/* 🔹 Spinner */
+#loadingSpinner {
+  display: none;
+  text-align: center;
+  margin: 20px;
+}
+#loadingSpinner div {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #365d88;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  margin: auto;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+/* 🔹 Result hover */
+.result-item {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.result-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+/* 🔹 Pagination active state */
+.pagination button.active {
+  background-color: #365d88;
+  color: white;
+  border-color: #365d88;
+}
+
+/* 🔹 Dark mode */
+body.dark {
+  background: #121212;
+  color: #f1f1f1;
+}
+body.dark .search-container {
+  background: rgba(30, 30, 30, 0.9);
+}
+body.dark .search-bar {
+  background: #1e1e1e;
+  color: #f1f1f1;
+  border: 1px solid #555;
+}
+body.dark .result-item {
+  background: #1e1e1e;
+}
+body.dark .result-title {
+  color: #4da3ff;
+}
+body.dark .pagination button {
+  background: #1e1e1e;
+  border: 1px solid #555;
+  color: #f1f1f1;
+}
+body.dark .pagination button.active {
+  background: #4da3ff;
+  border-color: #4da3ff;
+}
+.dark-toggle {
+  cursor: pointer;
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background: #365d88;
+  color: #fff;
+}
+</style>
+
+<!-- 🔹 Dark mode toggle -->
+<button class="dark-toggle" onclick="toggleDarkMode()">🌙 Dark</button>
+
+<!-- 🔹 Spinner -->
+<div id="loadingSpinner"><div></div></div>
+
+<script>
+function toggleDarkMode() {
+  document.body.classList.toggle("dark");
+  const btn = document.querySelector(".dark-toggle");
+  btn.textContent = document.body.classList.contains("dark") ? "☀️ Light" : "🌙 Dark";
+}
+
+// 🔹 Modify searchPubMed to include spinner + keyword highlighting
+async function searchPubMed(page = 1) {
+  const query = document.getElementById("searchInput").value.trim();
+  if (!query) return;
+
+  currentQuery = query;
+  currentPage = page;
+
+  const start = (page - 1) * resultsPerPage + 1;
+
+  // Show spinner
+  document.getElementById("loadingSpinner").style.display = "block";
+  document.getElementById("results").innerHTML = "";
+
+  try {
+    const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retstart=${start-1}&retmax=${resultsPerPage}&usehistory=y&retmode=json`;
+    const searchResp = await fetch(esearchUrl);
+    const searchData = await searchResp.json();
+
+    totalResults = parseInt(searchData.esearchresult.count);
+    const pmids = searchData.esearchresult.idlist;
+
+    if (pmids.length === 0) {
+      document.getElementById("results").innerHTML = "<p>No results found.</p>";
+      return;
+    }
+
+    const esummaryUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=${pmids.join(",")}&retmode=json`;
+    const summaryResp = await fetch(esummaryUrl);
+    const summaryData = await summaryResp.json();
+
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = "";
+    pmids.forEach(pmid => {
+      const article = summaryData.result[pmid];
+      if (!article) return;
+
+      let title = article.title || "No title";
+      const authors = (article.authors || []).map(a => a.name).join(", ");
+      const source = article.source || "";
+      const pubdate = article.pubdate || "";
+      const citation = `${source}. ${pubdate}. PMID: ${pmid}`;
+      const url = `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`;
+
+      // Highlight query in title
+      const regex = new RegExp(`(${query})`, "gi");
+      title = title.replace(regex, `<mark>$1</mark>`);
+
+      const item = document.createElement("div");
+      item.className = "result-item";
+      item.innerHTML = `
+        <a href="${url}" target="_blank" class="result-title">${title}</a>
+        <div class="result-authors">${authors}</div>
+        <div class="result-citation"><em>${citation}</em></div>
+        <div class="share-buttons">
+            <a class="twitter" href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(article.title)}" target="_blank">Twitter</a>
+            <a class="linkedin" href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}" target="_blank">LinkedIn</a>
+            <a class="facebook" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" target="_blank">Facebook</a>
+        </div>
+      `;
+      resultsDiv.appendChild(item);
+    });
+
+    // Update pagination
+    const pageButtons = document.querySelectorAll(".pagination button");
+    pageButtons.forEach(btn => btn.classList.remove("active"));
+    if (pageButtons.length >= 3) { // previous, number, next
+      pageButtons[1].classList.add("active");
+    }
+
+    document.getElementById("pageNumber").textContent = `Page ${currentPage}`;
+  } catch (err) {
+    console.error("Error fetching PubMed results:", err);
+    document.getElementById("results").innerHTML = "<p>Error retrieving results.</p>";
+  } finally {
+    // Hide spinner
+    document.getElementById("loadingSpinner").style.display = "none";
+  }
+}
+</script>
+
+
+
 </html>
