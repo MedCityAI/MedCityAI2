@@ -307,6 +307,9 @@
     </script>
 </body>
 
+
+
+
 <style>
 /* 🔹 Spinner */
 #loadingSpinner {
@@ -327,8 +330,20 @@
   100% { transform: rotate(360deg); }
 }
 
+/* 🔹 Results background */
+.results {
+  background: #f7f7f7;
+  padding: 20px;
+  border-radius: 12px;
+}
+
 /* 🔹 Result hover */
 .result-item {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .result-item:hover {
@@ -336,19 +351,29 @@
   box-shadow: 0 6px 12px rgba(0,0,0,0.1);
 }
 
-/* 🔹 Mini abstract snippet */
-.result-abstract {
-  margin-top: 8px;
-  font-size: 14px;
-  color: #444;
-  line-height: 1.4em;
+/* 🔹 Pagination */
+.pagination {
+  text-align: center;
+  margin: 30px 0;
 }
-
-/* 🔹 Pagination active state */
+.pagination button {
+  margin: 0 4px;
+  padding: 8px 16px;
+  border: none;
+  background: #e0e0e0;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 20px;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+.pagination button:hover {
+  background: #365d88;
+  color: #fff;
+}
 .pagination button.active {
   background-color: #365d88;
-  color: white;
-  border-color: #365d88;
+  color: #fff;
+  font-weight: bold;
 }
 </style>
 
@@ -368,6 +393,7 @@ async function searchPubMed(page = 1) {
   // Show spinner
   document.getElementById("loadingSpinner").style.display = "block";
   document.getElementById("results").innerHTML = "";
+  document.querySelector(".pagination").style.display = "none"; // hide until we know
 
   try {
     const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retstart=${start-1}&retmax=${resultsPerPage}&usehistory=y&retmode=json`;
@@ -382,14 +408,6 @@ async function searchPubMed(page = 1) {
       return;
     }
 
-    // 🔹 Use efetch to get abstracts
-    const efetchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${pmids.join(",")}&retmode=xml`;
-    const efetchResp = await fetch(efetchUrl);
-    const efetchText = await efetchResp.text();
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(efetchText, "text/xml");
-
-    // 🔹 Use esummary for metadata (title, authors, source, pubdate)
     const esummaryUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=${pmids.join(",")}&retmode=json`;
     const summaryResp = await fetch(esummaryUrl);
     const summaryData = await summaryResp.json();
@@ -408,16 +426,9 @@ async function searchPubMed(page = 1) {
       const citation = `${source}. ${pubdate}. PMID: ${pmid}`;
       const url = `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`;
 
-      // 🔹 Highlight query in title
+      // Highlight query in title
       const regex = new RegExp(`(${query})`, "gi");
       title = title.replace(regex, `<mark>$1</mark>`);
-
-      // 🔹 Extract abstract snippet from efetch XML
-      let abstract = "";
-      const abstractNode = xmlDoc.querySelector(`PubmedArticle MedlineCitation[PMID="${pmid}"] Abstract AbstractText`);
-      if (abstractNode && abstractNode.textContent) {
-        abstract = abstractNode.textContent.trim().substring(0, 250) + "...";
-      }
 
       const item = document.createElement("div");
       item.className = "result-item";
@@ -425,7 +436,6 @@ async function searchPubMed(page = 1) {
         <a href="${url}" target="_blank" class="result-title">${title}</a>
         <div class="result-authors">${authors}</div>
         <div class="result-citation"><em>${citation}</em></div>
-        ${abstract ? `<div class="result-abstract">${abstract}</div>` : ""}
         <div class="share-buttons">
             <a class="twitter" href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(article.title)}" target="_blank">Twitter</a>
             <a class="linkedin" href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}" target="_blank">LinkedIn</a>
@@ -435,14 +445,12 @@ async function searchPubMed(page = 1) {
       resultsDiv.appendChild(item);
     });
 
-    // Update pagination
-    const pageButtons = document.querySelectorAll(".pagination button");
-    pageButtons.forEach(btn => btn.classList.remove("active"));
-    if (pageButtons.length >= 3) { // previous, number, next
-      pageButtons[1].classList.add("active");
+    // 🔹 Update pagination (only if there are results)
+    const totalPages = Math.ceil(totalResults / resultsPerPage);
+    if (totalPages > 1) {
+      document.querySelector(".pagination").style.display = "block";
+      document.getElementById("pageNumber").textContent = `Page ${currentPage} of ${totalPages}`;
     }
-
-    document.getElementById("pageNumber").textContent = `Page ${currentPage}`;
   } catch (err) {
     console.error("Error fetching PubMed results:", err);
     document.getElementById("results").innerHTML = "<p>Error retrieving results.</p>";
@@ -452,6 +460,7 @@ async function searchPubMed(page = 1) {
   }
 }
 </script>
+
 
 
 
