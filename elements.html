@@ -309,106 +309,65 @@
 
 
 
-
 <style>
-/* 🔹 Spinner */
-#loadingSpinner {
-  display: none;
-  text-align: center;
-  margin: 20px;
-}
-#loadingSpinner div {
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #365d88;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  margin: auto;
-  animation: spin 1s linear infinite;
-}
-@keyframes spin {
-  100% { transform: rotate(360deg); }
-}
+    body {
+        font-family: Arial, sans-serif;
+        background: #f5f5f5; /* light gray full background */
+        color: #000;
+        margin: 0;
+        padding: 0;
+    }
 
-/* 🔹 Results background */
-.results {
-  background: #f7f7f7;
-  padding: 20px;
-  border-radius: 12px;
-}
+    /* Results */
+    .results {
+        max-width: 900px;
+        margin: 40px auto;
+        text-align: left;
+    }
 
-/* 🔹 Result hover */
-.result-item {
-  background: #fff;
-  border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 25px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.result-item:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-}
+    .result-item {
+        background: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
 
-/* 🔹 Page background */
-body {
-  background: #f7f7f7; /* full light gray background */
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-}
+    /* Pagination */
+    .pagination {
+        text-align: center;
+        margin: 30px 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+    }
 
-/* 🔹 Container for results */
-.results {
-  max-width: 900px;
-  margin: 30px auto;
-  background: #fff;
-  padding: 25px;
-  border-radius: 10px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-}
+    .pagination button {
+        border: 1px solid #ccc;
+        background: #fff;
+        cursor: pointer;
+        font-size: 14px;
+        border-radius: 6px;
+        padding: 6px 12px;
+        transition: all 0.2s ease;
+    }
 
-/* 🔹 Individual result card */
-.result-item {
-  border-bottom: 1px solid #e5e5e5;
-  padding: 20px 0;
-}
-.result-item:last-child {
-  border-bottom: none;
-}
+    .pagination button:hover {
+        background: #e6e6e6;
+    }
 
-/* 🔹 Pagination (PubMed style) */
-.pagination {
-  text-align: center;
-  margin: 25px 0;
-  font-size: 14px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-}
-.pagination button {
-  border: none;
-  background: none;
-  color: #3366cc;
-  cursor: pointer;
-  font-size: 14px;
-}
-.pagination button:disabled {
-  color: #aaa;
-  cursor: default;
-}
-.pagination input {
-  width: 50px;
-  text-align: center;
-  padding: 4px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
+    .pagination button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .page-info {
+        font-weight: 500;
+        padding: 0 10px;
+    }
 </style>
-
 
 <script>
     let currentPage = 1;
@@ -436,7 +395,7 @@ body {
         const start = (page - 1) * resultsPerPage + 1;
 
         try {
-            // Step 1: Search PubMed (get PMIDs)
+            // Step 1: Search PubMed
             const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retstart=${start-1}&retmax=${resultsPerPage}&usehistory=y&retmode=json&api_key=${apiKey}`;
             const searchResp = await fetch(esearchUrl);
             const searchData = await searchResp.json();
@@ -449,10 +408,10 @@ body {
 
             if (pmids.length === 0) {
                 resultsDiv.innerHTML = "<p>No results found.</p>";
-                paginationDiv.style.display = "none"; // Hide pagination if no results
+                paginationDiv.style.display = "none";
                 return;
             } else {
-                paginationDiv.style.display = "block";
+                paginationDiv.style.display = "flex";
             }
 
             // Step 2: Fetch article details
@@ -488,13 +447,25 @@ body {
                 resultsDiv.appendChild(item);
             });
 
-            // Update page display with total pages
-            const totalPages = Math.ceil(totalResults / resultsPerPage);
-            document.getElementById("pageNumber").textContent = `Page ${currentPage} of ${totalPages}`;
+            // Update pagination
+            renderPagination();
         } catch (err) {
             console.error("Error fetching PubMed results:", err);
             document.getElementById("results").innerHTML = "<p>Error retrieving results.</p>";
         }
+    }
+
+    function renderPagination() {
+        const paginationDiv = document.querySelector(".pagination");
+        const totalPages = Math.ceil(totalResults / resultsPerPage);
+
+        paginationDiv.innerHTML = `
+            <button onclick="firstPage()" ${currentPage === 1 ? "disabled" : ""}>«</button>
+            <button onclick="prevPage()" ${currentPage === 1 ? "disabled" : ""}>‹</button>
+            <span class="page-info">Page ${currentPage} of ${totalPages}</span>
+            <button onclick="nextPage()" ${currentPage === totalPages ? "disabled" : ""}>›</button>
+            <button onclick="lastPage()" ${currentPage === totalPages ? "disabled" : ""}>»</button>
+        `;
     }
 
     function nextPage() {
@@ -510,6 +481,23 @@ body {
         throttle(() => {
             if (currentPage > 1) {
                 searchPubMed(currentPage - 1);
+            }
+        });
+    }
+
+    function firstPage() {
+        throttle(() => {
+            if (currentPage !== 1) {
+                searchPubMed(1);
+            }
+        });
+    }
+
+    function lastPage() {
+        throttle(() => {
+            const totalPages = Math.ceil(totalResults / resultsPerPage);
+            if (currentPage !== totalPages) {
+                searchPubMed(totalPages);
             }
         });
     }
