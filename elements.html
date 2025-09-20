@@ -307,7 +307,6 @@
     </script>
 </body>
 
-
 <style>
 /* 🔹 Spinner */
 #loadingSpinner {
@@ -337,68 +336,26 @@
   box-shadow: 0 6px 12px rgba(0,0,0,0.1);
 }
 
+/* 🔹 Mini abstract snippet */
+.result-abstract {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #444;
+  line-height: 1.4em;
+}
+
 /* 🔹 Pagination active state */
 .pagination button.active {
   background-color: #365d88;
   color: white;
   border-color: #365d88;
 }
-
-/* 🔹 Dark mode */
-body.dark {
-  background: #121212;
-  color: #f1f1f1;
-}
-body.dark .search-container {
-  background: rgba(30, 30, 30, 0.9);
-}
-body.dark .search-bar {
-  background: #1e1e1e;
-  color: #f1f1f1;
-  border: 1px solid #555;
-}
-body.dark .result-item {
-  background: #1e1e1e;
-}
-body.dark .result-title {
-  color: #4da3ff;
-}
-body.dark .pagination button {
-  background: #1e1e1e;
-  border: 1px solid #555;
-  color: #f1f1f1;
-}
-body.dark .pagination button.active {
-  background: #4da3ff;
-  border-color: #4da3ff;
-}
-.dark-toggle {
-  cursor: pointer;
-  position: absolute;
-  right: 20px;
-  top: 20px;
-  padding: 6px 12px;
-  border: none;
-  border-radius: 6px;
-  background: #365d88;
-  color: #fff;
-}
 </style>
-
-<!-- 🔹 Dark mode toggle -->
-<button class="dark-toggle" onclick="toggleDarkMode()">🌙 Dark</button>
 
 <!-- 🔹 Spinner -->
 <div id="loadingSpinner"><div></div></div>
 
 <script>
-function toggleDarkMode() {
-  document.body.classList.toggle("dark");
-  const btn = document.querySelector(".dark-toggle");
-  btn.textContent = document.body.classList.contains("dark") ? "☀️ Light" : "🌙 Dark";
-}
-
-// 🔹 Modify searchPubMed to include spinner + keyword highlighting
 async function searchPubMed(page = 1) {
   const query = document.getElementById("searchInput").value.trim();
   if (!query) return;
@@ -425,12 +382,21 @@ async function searchPubMed(page = 1) {
       return;
     }
 
+    // 🔹 Use efetch to get abstracts
+    const efetchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${pmids.join(",")}&retmode=xml`;
+    const efetchResp = await fetch(efetchUrl);
+    const efetchText = await efetchResp.text();
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(efetchText, "text/xml");
+
+    // 🔹 Use esummary for metadata (title, authors, source, pubdate)
     const esummaryUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=${pmids.join(",")}&retmode=json`;
     const summaryResp = await fetch(esummaryUrl);
     const summaryData = await summaryResp.json();
 
     const resultsDiv = document.getElementById("results");
     resultsDiv.innerHTML = "";
+
     pmids.forEach(pmid => {
       const article = summaryData.result[pmid];
       if (!article) return;
@@ -442,9 +408,16 @@ async function searchPubMed(page = 1) {
       const citation = `${source}. ${pubdate}. PMID: ${pmid}`;
       const url = `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`;
 
-      // Highlight query in title
+      // 🔹 Highlight query in title
       const regex = new RegExp(`(${query})`, "gi");
       title = title.replace(regex, `<mark>$1</mark>`);
+
+      // 🔹 Extract abstract snippet from efetch XML
+      let abstract = "";
+      const abstractNode = xmlDoc.querySelector(`PubmedArticle MedlineCitation[PMID="${pmid}"] Abstract AbstractText`);
+      if (abstractNode && abstractNode.textContent) {
+        abstract = abstractNode.textContent.trim().substring(0, 250) + "...";
+      }
 
       const item = document.createElement("div");
       item.className = "result-item";
@@ -452,6 +425,7 @@ async function searchPubMed(page = 1) {
         <a href="${url}" target="_blank" class="result-title">${title}</a>
         <div class="result-authors">${authors}</div>
         <div class="result-citation"><em>${citation}</em></div>
+        ${abstract ? `<div class="result-abstract">${abstract}</div>` : ""}
         <div class="share-buttons">
             <a class="twitter" href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(article.title)}" target="_blank">Twitter</a>
             <a class="linkedin" href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}" target="_blank">LinkedIn</a>
@@ -478,6 +452,7 @@ async function searchPubMed(page = 1) {
   }
 }
 </script>
+
 
 
 
