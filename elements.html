@@ -351,114 +351,168 @@
   box-shadow: 0 6px 12px rgba(0,0,0,0.1);
 }
 
-/* 🔹 Pagination */
+/* 🔹 Page background */
+body {
+  background: #f7f7f7; /* full light gray background */
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* 🔹 Container for results */
+.results {
+  max-width: 900px;
+  margin: 30px auto;
+  background: #fff;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+}
+
+/* 🔹 Individual result card */
+.result-item {
+  border-bottom: 1px solid #e5e5e5;
+  padding: 20px 0;
+}
+.result-item:last-child {
+  border-bottom: none;
+}
+
+/* 🔹 Pagination (PubMed style) */
 .pagination {
   text-align: center;
-  margin: 30px 0;
+  margin: 25px 0;
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
 }
 .pagination button {
-  margin: 0 4px;
-  padding: 8px 16px;
   border: none;
-  background: #e0e0e0;
+  background: none;
+  color: #3366cc;
   cursor: pointer;
   font-size: 14px;
-  border-radius: 20px;
-  transition: background 0.3s ease, color 0.3s ease;
 }
-.pagination button:hover {
-  background: #365d88;
-  color: #fff;
+.pagination button:disabled {
+  color: #aaa;
+  cursor: default;
 }
-.pagination button.active {
-  background-color: #365d88;
-  color: #fff;
-  font-weight: bold;
+.pagination input {
+  width: 50px;
+  text-align: center;
+  padding: 4px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 </style>
 
-<!-- 🔹 Spinner -->
-<div id="loadingSpinner"><div></div></div>
 
 <script>
-async function searchPubMed(page = 1) {
-  const query = document.getElementById("searchInput").value.trim();
-  if (!query) return;
+    let currentPage = 1;
+    const resultsPerPage = 10;
+    let currentQuery = "";
+    let totalResults = 0;
+    const apiKey = "f268c3234d234e2dc69edd7e7dac66d20108";
 
-  currentQuery = query;
-  currentPage = page;
-
-  const start = (page - 1) * resultsPerPage + 1;
-
-  // Show spinner
-  document.getElementById("loadingSpinner").style.display = "block";
-  document.getElementById("results").innerHTML = "";
-  document.querySelector(".pagination").style.display = "none"; // hide until we know
-
-  try {
-    const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retstart=${start-1}&retmax=${resultsPerPage}&usehistory=y&retmode=json`;
-    const searchResp = await fetch(esearchUrl);
-    const searchData = await searchResp.json();
-
-    totalResults = parseInt(searchData.esearchresult.count);
-    const pmids = searchData.esearchresult.idlist;
-
-    if (pmids.length === 0) {
-      document.getElementById("results").innerHTML = "<p>No results found.</p>";
-      return;
+    // Prevent rapid-fire clicks (throttle to 300ms)
+    let isThrottled = false;
+    function throttle(fn) {
+        if (isThrottled) return;
+        isThrottled = true;
+        fn();
+        setTimeout(() => { isThrottled = false; }, 300);
     }
 
-    const esummaryUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=${pmids.join(",")}&retmode=json`;
-    const summaryResp = await fetch(esummaryUrl);
-    const summaryData = await summaryResp.json();
+    async function searchPubMed(page = 1) {
+        const query = document.getElementById("searchInput").value.trim();
+        if (!query) return;
 
-    const resultsDiv = document.getElementById("results");
-    resultsDiv.innerHTML = "";
+        currentQuery = query;
+        currentPage = page;
 
-    pmids.forEach(pmid => {
-      const article = summaryData.result[pmid];
-      if (!article) return;
+        const start = (page - 1) * resultsPerPage + 1;
 
-      let title = article.title || "No title";
-      const authors = (article.authors || []).map(a => a.name).join(", ");
-      const source = article.source || "";
-      const pubdate = article.pubdate || "";
-      const citation = `${source}. ${pubdate}. PMID: ${pmid}`;
-      const url = `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`;
+        try {
+            // Step 1: Search PubMed (get PMIDs)
+            const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retstart=${start-1}&retmax=${resultsPerPage}&usehistory=y&retmode=json&api_key=${apiKey}`;
+            const searchResp = await fetch(esearchUrl);
+            const searchData = await searchResp.json();
 
-      // Highlight query in title
-      const regex = new RegExp(`(${query})`, "gi");
-      title = title.replace(regex, `<mark>$1</mark>`);
+            totalResults = parseInt(searchData.esearchresult.count);
+            const pmids = searchData.esearchresult.idlist;
 
-      const item = document.createElement("div");
-      item.className = "result-item";
-      item.innerHTML = `
-        <a href="${url}" target="_blank" class="result-title">${title}</a>
-        <div class="result-authors">${authors}</div>
-        <div class="result-citation"><em>${citation}</em></div>
-        <div class="share-buttons">
-            <a class="twitter" href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(article.title)}" target="_blank">Twitter</a>
-            <a class="linkedin" href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}" target="_blank">LinkedIn</a>
-            <a class="facebook" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" target="_blank">Facebook</a>
-        </div>
-      `;
-      resultsDiv.appendChild(item);
-    });
+            const resultsDiv = document.getElementById("results");
+            const paginationDiv = document.querySelector(".pagination");
 
-    // 🔹 Update pagination (only if there are results)
-    const totalPages = Math.ceil(totalResults / resultsPerPage);
-    if (totalPages > 1) {
-      document.querySelector(".pagination").style.display = "block";
-      document.getElementById("pageNumber").textContent = `Page ${currentPage} of ${totalPages}`;
+            if (pmids.length === 0) {
+                resultsDiv.innerHTML = "<p>No results found.</p>";
+                paginationDiv.style.display = "none"; // Hide pagination if no results
+                return;
+            } else {
+                paginationDiv.style.display = "block";
+            }
+
+            // Step 2: Fetch article details
+            const esummaryUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=${pmids.join(",")}&retmode=json&api_key=${apiKey}`;
+            const summaryResp = await fetch(esummaryUrl);
+            const summaryData = await summaryResp.json();
+
+            // Step 3: Render results
+            resultsDiv.innerHTML = "";
+            pmids.forEach(pmid => {
+                const article = summaryData.result[pmid];
+                if (!article) return;
+
+                const title = article.title || "No title";
+                const authors = (article.authors || []).map(a => a.name).join(", ");
+                const source = article.source || "";
+                const pubdate = article.pubdate || "";
+                const citation = `${source}. ${pubdate}. PMID: ${pmid}`;
+                const url = `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`;
+
+                const item = document.createElement("div");
+                item.className = "result-item";
+                item.innerHTML = `
+                    <a href="${url}" target="_blank" class="result-title">${title}</a>
+                    <div class="result-authors">${authors}</div>
+                    <div class="result-citation"><em>${citation}</em></div>
+                    <div class="share-buttons">
+                        <a class="twitter" href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}" target="_blank">Twitter</a>
+                        <a class="linkedin" href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}" target="_blank">LinkedIn</a>
+                        <a class="facebook" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" target="_blank">Facebook</a>
+                    </div>
+                `;
+                resultsDiv.appendChild(item);
+            });
+
+            // Update page display with total pages
+            const totalPages = Math.ceil(totalResults / resultsPerPage);
+            document.getElementById("pageNumber").textContent = `Page ${currentPage} of ${totalPages}`;
+        } catch (err) {
+            console.error("Error fetching PubMed results:", err);
+            document.getElementById("results").innerHTML = "<p>Error retrieving results.</p>";
+        }
     }
-  } catch (err) {
-    console.error("Error fetching PubMed results:", err);
-    document.getElementById("results").innerHTML = "<p>Error retrieving results.</p>";
-  } finally {
-    // Hide spinner
-    document.getElementById("loadingSpinner").style.display = "none";
-  }
-}
+
+    function nextPage() {
+        throttle(() => {
+            const totalPages = Math.ceil(totalResults / resultsPerPage);
+            if (currentPage < totalPages) {
+                searchPubMed(currentPage + 1);
+            }
+        });
+    }
+
+    function prevPage() {
+        throttle(() => {
+            if (currentPage > 1) {
+                searchPubMed(currentPage - 1);
+            }
+        });
+    }
 </script>
 
 
