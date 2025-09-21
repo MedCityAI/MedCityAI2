@@ -229,13 +229,15 @@
     async function searchPubMed(page = 1) {
       const query = document.getElementById("searchInput").value.trim();
       if (!query) return;
+      
+      full_query = `${query} AND (Rochester[Affiliation] OR Minnesota[Affiliation])`;
 
-      currentQuery = query;
+      currentQuery = full_query;
       currentPage = page;
       const start = (page - 1) * resultsPerPage + 1;
 
       try {
-        const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retstart=${start-1}&retmax=${resultsPerPage}&usehistory=y&retmode=json&api_key=${apiKey}`;
+        const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(full_query)}&retstart=${start-1}&retmax=${resultsPerPage}&usehistory=y&retmode=json&api_key=${apiKey}`;
         const searchResp = await fetch(esearchUrl);
         const searchData = await searchResp.json();
         totalResults = parseInt(searchData.esearchresult.count);
