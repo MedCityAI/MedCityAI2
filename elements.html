@@ -1,4 +1,5 @@
 <script>
+document.addEventListener("DOMContentLoaded", () => {
     let currentPage = 1;
     const resultsPerPage = 10;
     let currentQuery = "";
@@ -14,120 +15,204 @@
         setTimeout(() => { isThrottled = false; }, 300);
     }
 
+    function showStatus(html) {
+        const resultsDiv = document.getElementById("results");
+        resultsDiv.innerHTML = html;
+    }
+
+    function affiliationMatchesRochester(aff) {
+        if (!aff) return false;
+        const s = aff.toLowerCase();
+        // tolerant matching: "rochester" + any variant of MN / Minnesota / Minn.
+        if (s.includes("rochester") && (s.includes("mn") || s.includes("minnesota") || s.includes("minn"))) return true;
+        // sometimes affiliation has "rochester, minn." or "rochester, minn"
+        if (s.includes("rochester") && (s.includes("minn") || s.includes("minn."))) return true;
+        // also allow explicit "rochester, mn" token
+        if (s.includes("rochester, mn") || s.includes("rochester, minn")) return true;
+        return false;
+    }
+
+    // Robustly collect affiliation strings for an Author node
+    function getAuthorAffiliations(authorNode, articleNode) {
+        let affs = [];
+        // direct <Affiliation> under the author (some variations)
+        authorNode.querySelectorAll("Affiliation, AffiliationInfo > Affiliation").forEach(n => {
+            if (n.textContent) affs.push(n.textContent.trim());
+        });
+
+        // If nothing, try AffiliationRef (linking)
+        if (affs.length === 0) {
+            const refs = Array.from(authorNode.querySelectorAll("AffiliationRef")).map(r => r.textContent.trim());
+            if (refs.length) {
+                // map by searching affiliation elements in the article that have ID or an index
+                articleNode.querySelectorAll("Affiliation").forEach(n => {
+                    const idAttr = (n.getAttribute("ID") || n.getAttribute("Id") || n.getAttribute("id") || "").trim();
+                    const text = n.textContent ? n.textContent.trim() : "";
+                    if (idAttr && refs.includes(idAttr)) affs.push(text);
+                    // sometimes the Affiliation text contains a bracketed number like "[1]" — skip mapping heuristics in that case
+                });
+            }
+        }
+
+        // Fallback: if still nothing, pull any Affiliation in article (not ideal but helps)
+        if (affs.length === 0) {
+            articleNode.querySelectorAll("Affiliation").forEach(n => {
+                if (n.textContent) affs.push(n.textContent.trim());
+            });
+        }
+
+        // remove duplicates
+        return Array.from(new Set(affs));
+    }
+
     async function searchPubMed(page = 1) {
-        const query = document.getElementById("searchInput").value.trim();
-        if (!query) return;
-        
-        // Append affiliation filter for Mayo Clinic, Rochester, MN
-        aff_query = "'Mayo'[AD] AND ('Minnesota'[AD] OR 'MN'[AD])";
-        full_query = `${query} AND ${aff_query}`;
-
-        currentQuery = full_query;
-        currentPage = page;
-
-        const start = (page - 1) * resultsPerPage + 1;
-
         try {
-            // Step 1: Search PubMed
-            const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retstart=${start-1}&retmax=${resultsPerPage}&usehistory=y&retmode=json&api_key=${apiKey}`;
+            const rawQuery = document.getElementById("searchInput").value.trim();
+            if (!rawQuery) {
+                showStatus("<p>Please enter a search term.</p>");
+                return;
+            }
+
+            // affiliation filter (Mayo Clinic, Rochester)
+            const aff_query = "'Mayo'[AD] AND ('Minnesota'[AD] OR 'MN'[AD])";
+            const full_query = `${rawQuery} AND ${aff_query}`;
+
+            currentQuery = full_query;
+            currentPage = page;
+
+            const start = (page - 1) * resultsPerPage + 1;
+
+            showStatus(`<p>Searching for: <strong>${full_query}</strong> — fetching results...</p>`);
+
+            // Step 1: esearch to get PMIDs
+            const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(full_query)}&retstart=${start-1}&retmax=${resultsPerPage}&usehistory=y&retmode=json&api_key=${apiKey}`;
             const searchResp = await fetch(esearchUrl);
+            if (!searchResp.ok) throw new Error(`esearch failed: ${searchResp.status} ${searchResp.statusText}`);
             const searchData = await searchResp.json();
 
-            totalResults = parseInt(searchData.esearchresult.count);
-            const pmids = searchData.esearchresult.idlist;
+            totalResults = parseInt(searchData?.esearchresult?.count || 0, 10);
+            const pmids = searchData?.esearchresult?.idlist || [];
 
             const resultsDiv = document.getElementById("results");
             const paginationDiv = document.querySelector(".pagination");
 
-            if (pmids.length === 0) {
+            if (!pmids || pmids.length === 0) {
                 resultsDiv.innerHTML = "<p>No results found.</p>";
-                paginationDiv.style.display = "none";
+                if (paginationDiv) paginationDiv.style.display = "none";
                 return;
             } else {
-                paginationDiv.style.display = "flex";
+                if (paginationDiv) paginationDiv.style.display = "flex";
             }
 
-            // Step 2: Fetch full article details (XML)
-            const efetchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${pmids.join(",")}&retmode=xml&api_key=${apiKey}`;
+            showStatus(`<p>Found ${totalResults} results — fetching article details for ${pmids.length} PMIDs...</p>`);
+
+            // Step 2: efetch (single call for the page of PMIDs)
+            const efetchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${encodeURIComponent(pmids.join(","))}&retmode=xml&api_key=${apiKey}`;
             const efetchResp = await fetch(efetchUrl);
+            if (!efetchResp.ok) throw new Error(`efetch failed: ${efetchResp.status} ${efetchResp.statusText}`);
             const efetchXml = await efetchResp.text();
 
             const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(efetchXml, "text/xml");
+            const xmlDoc = parser.parseFromString(efetchXml, "application/xml");
+
+            // If XML parser yields parsererror, show it
+            if (xmlDoc.querySelector("parsererror")) {
+                console.error("XML parse error", xmlDoc.querySelector("parsererror").textContent);
+                throw new Error("Failed to parse efetch XML response.");
+            }
 
             // Step 3: Render results
             resultsDiv.innerHTML = "";
             const articles = xmlDoc.querySelectorAll("PubmedArticle");
 
             articles.forEach(article => {
-                const pmid = article.querySelector("PMID")?.textContent || "";
-                const title = article.querySelector("ArticleTitle")?.textContent || "No title";
-                const journal = article.querySelector("Journal > Title")?.textContent || "";
-                const pubdate = article.querySelector("PubDate Year")?.textContent || "";
+                try {
+                    const pmid = article.querySelector("PMID")?.textContent || "";
+                    // ArticleTitle may include nested tags; use .textContent
+                    const title = article.querySelector("ArticleTitle")?.textContent || "No title";
+                    const journal = article.querySelector("Journal > Title")?.textContent || "";
+                    // Try several date locations
+                    let pubdate = "";
+                    const pubYearNode = article.querySelector("PubDate > Year") || article.querySelector("JournalIssue > PubDate > Year") || article.querySelector("ArticleDate > Year");
+                    if (pubYearNode) pubdate = pubYearNode.textContent;
+                    else pubdate = article.querySelector("PubDate")?.textContent?.trim() || "";
 
-                let authors = [];
-                article.querySelectorAll("Author").forEach(authorNode => {
-                    const lastName = authorNode.querySelector("LastName")?.textContent || "";
-                    const foreName = authorNode.querySelector("ForeName")?.textContent || "";
-                    const name = `${foreName} ${lastName}`.trim();
+                    let authors = [];
+                    // handle Author and CollectiveName
+                    article.querySelectorAll("Author").forEach(authorNode => {
+                        const lastName = authorNode.querySelector("LastName")?.textContent || "";
+                        const foreName = authorNode.querySelector("ForeName")?.textContent || "";
+                        const initials = authorNode.querySelector("Initials")?.textContent || "";
+                        const collective = authorNode.querySelector("CollectiveName")?.textContent || "";
+                        const name = collective || `${foreName} ${lastName}`.trim() || initials || "";
 
-                    // Collect affiliations
-                    let affiliations = [];
-                    authorNode.querySelectorAll("Affiliation").forEach(aff => {
-                        affiliations.push(aff.textContent);
+                        // Collect affiliations robustly
+                        const affiliations = getAuthorAffiliations(authorNode, article);
+
+                        // Determine whether to underline (Rochester, MN)
+                        let displayName = name;
+                        const match = affiliations.some(a => affiliationMatchesRochester(a));
+                        if (match && name) {
+                            // underline + optional style hook
+                            displayName = `<u class="mcai-rochester">${escapeHtml(name)}</u>`;
+                        } else {
+                            displayName = escapeHtml(name);
+                        }
+                        if (name) authors.push(displayName);
                     });
 
-                    // Check for Rochester, MN
-                    let displayName = name;
-                    if (affiliations.some(a => a.includes("Rochester, MN"))) {
-                        displayName = `<u>${displayName}</u>`;
-                    }
-                    if (name) authors.push(displayName);
-                });
+                    const authorsHtml = authors.join(", ") || "<em>No authors listed</em>";
+                    const citation = `${escapeHtml(journal)}. ${escapeHtml(pubdate)}. PMID: ${escapeHtml(pmid)}`;
+                    const url = `https://pubmed.ncbi.nlm.nih.gov/${encodeURIComponent(pmid)}/`;
 
-                const authorsHtml = authors.join(", ");
-                const citation = `${journal}. ${pubdate}. PMID: ${pmid}`;
-                const url = `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`;
-
-                const item = document.createElement("div");
-                item.className = "result-item";
-                item.innerHTML = `
-                    <a href="${url}" target="_blank" class="result-title">${title}</a>
-                    <div class="result-authors">${authorsHtml}</div>
-                    <div class="result-citation"><em>${citation}</em></div>
-                    <div class="share-buttons">
-                        <a class="twitter" href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}" target="_blank">Twitter</a>
-                        <a class="linkedin" href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}" target="_blank">LinkedIn</a>
-                        <a class="facebook" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" target="_blank">Facebook</a>
-                    </div>
-                `;
-                resultsDiv.appendChild(item);
+                    const item = document.createElement("div");
+                    item.className = "result-item";
+                    item.innerHTML = `
+                        <a href="${url}" target="_blank" class="result-title">${escapeHtml(title)}</a>
+                        <div class="result-authors">${authorsHtml}</div>
+                        <div class="result-citation"><em>${citation}</em></div>
+                        <div class="share-buttons">
+                            <a class="twitter" href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}" target="_blank">Twitter</a>
+                            <a class="linkedin" href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}" target="_blank">LinkedIn</a>
+                            <a class="facebook" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" target="_blank">Facebook</a>
+                        </div>
+                    `;
+                    resultsDiv.appendChild(item);
+                } catch (innerErr) {
+                    console.error("Error rendering article:", innerErr);
+                }
             });
 
             // Update pagination
             renderPagination();
         } catch (err) {
             console.error("Error fetching PubMed results:", err);
-            document.getElementById("results").innerHTML = "<p>Error retrieving results.</p>";
+            const resultsDiv = document.getElementById("results");
+            resultsDiv.innerHTML = `<div style="color:darkred"><strong>Error:</strong> ${escapeHtml(err.message || String(err))}</div>`;
         }
     }
 
     function renderPagination() {
         const paginationDiv = document.querySelector(".pagination");
-        const totalPages = Math.ceil(totalResults / resultsPerPage);
-
+        if (!paginationDiv) return;
+        const totalPages = Math.max(1, Math.ceil(totalResults / resultsPerPage));
         paginationDiv.innerHTML = `
-            <button onclick="firstPage()" ${currentPage === 1 ? "disabled" : ""}>«</button>
-            <button onclick="prevPage()" ${currentPage === 1 ? "disabled" : ""}>‹</button>
+            <button type="button" ${currentPage === 1 ? "disabled" : ""} id="firstBtn">«</button>
+            <button type="button" ${currentPage === 1 ? "disabled" : ""} id="prevBtn">‹</button>
             <span class="page-info">Page ${currentPage} of ${totalPages}</span>
-            <button onclick="nextPage()" ${currentPage === totalPages ? "disabled" : ""}>›</button>
-            <button onclick="lastPage()" ${currentPage === totalPages ? "disabled" : ""}>»</button>
+            <button type="button" ${currentPage === totalPages ? "disabled" : ""} id="nextBtn">›</button>
+            <button type="button" ${currentPage === totalPages ? "disabled" : ""} id="lastBtn">»</button>
         `;
+
+        document.getElementById("firstBtn").addEventListener("click", () => firstPage());
+        document.getElementById("prevBtn").addEventListener("click", () => prevPage());
+        document.getElementById("nextBtn").addEventListener("click", () => nextPage());
+        document.getElementById("lastBtn").addEventListener("click", () => lastPage());
     }
 
     function nextPage() {
         throttle(() => {
-            const totalPages = Math.ceil(totalResults / resultsPerPage);
+            const totalPages = Math.max(1, Math.ceil(totalResults / resultsPerPage));
             if (currentPage < totalPages) {
                 searchPubMed(currentPage + 1);
             }
@@ -152,10 +237,45 @@
 
     function lastPage() {
         throttle(() => {
-            const totalPages = Math.ceil(totalResults / resultsPerPage);
+            const totalPages = Math.max(1, Math.ceil(totalResults / resultsPerPage));
             if (currentPage !== totalPages) {
                 searchPubMed(totalPages);
             }
         });
     }
+
+    // Small helper to avoid XSS when injecting some text content into innerHTML (we still use some innerHTML for markup)
+    function escapeHtml(str) {
+        if (!str) return "";
+        return String(str)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    // wire search button (if you use inline onclick attr, this is optional)
+    const searchBtn = document.querySelector(".search-button");
+    if (searchBtn) searchBtn.addEventListener("click", () => searchPubMed(1));
+
+    // optional: wire Enter key for the input
+    const input = document.getElementById("searchInput");
+    if (input) {
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") searchPubMed(1);
+        });
+    }
+
+    // Expose for console if needed for debugging
+    window.searchPubMed = searchPubMed;
+});
 </script>
+
+<style>
+/* optional style for underlined Rochester authors to make them more visible */
+.mcai-rochester {
+    text-decoration-thickness: 2px;
+    text-underline-offset: 2px;
+}
+</style>
