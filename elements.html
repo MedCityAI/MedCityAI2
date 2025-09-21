@@ -18,7 +18,11 @@
         const query = document.getElementById("searchInput").value.trim();
         if (!query) return;
 
-        currentQuery = query;
+        aff_query = "'Mayo'[AD] AND ('Minnesota'[AD] OR 'MN'[AD])"
+        
+        full_query = f"{query} AND {aff_query}"
+
+        currentQuery = full_query;
         currentPage = page;
 
         const start = (page - 1) * resultsPerPage + 1;
