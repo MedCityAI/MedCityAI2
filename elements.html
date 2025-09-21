@@ -254,7 +254,7 @@
                     });
 
                     let displayName = name;
-                    if (affiliations.some(a => /Rochester, MN/i.test(a))) {
+                    if (affiliations.some(a => /Rochester/i.test(a))) {
                         displayName = `<u>${displayName}</u>`;
                     }
                     if (name) authors.push(displayName);
