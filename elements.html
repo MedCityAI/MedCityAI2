@@ -17,10 +17,10 @@
     async function searchPubMed(page = 1) {
         const query = document.getElementById("searchInput").value.trim();
         if (!query) return;
-
-        aff_query = "'Mayo'[AD] AND ('Minnesota'[AD] OR 'MN'[AD])"
         
-        full_query = f"{query} AND {aff_query}"
+        // Append affiliation filter for Mayo Clinic, Rochester, MN
+        aff_query = "'Mayo'[AD] AND ('Minnesota'[AD] OR 'MN'[AD])";
+        full_query = `${query} AND ${aff_query}`;
 
         currentQuery = full_query;
         currentPage = page;
