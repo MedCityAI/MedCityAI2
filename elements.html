@@ -1,217 +1,184 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-  <title>Med City AI - PubMed Search</title>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-  <link rel="stylesheet" href="assets/css/main.css" />
-  <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+    <title>Med City AI - PubMed Search</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+    <style>
+        /* ========================= PubMed-like Search Styling ========================== */
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            color: #000;
+            margin: 0;
+            padding: 0;
+        }
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5; /* light gray full background */
-      color: #000;
-      margin: 0;
-      padding: 0;
-    }
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin: 30px auto;
+            background-color: rgba(255, 255, 255, 0.70);
+            max-width: 720px;
+            color: #000;
+            border-radius: 10px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+            padding: 5px;
+        }
 
-    .search-container {
-      display: flex;
-      justify-content: center;
-      margin: 30px auto;
-      background-color: rgba(255, 255, 255, 0.70);
-      max-width: 720px;
-      border-radius: 10px;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.05);
-      padding: 5px;
-    }
+        .search-bar {
+            flex: 1;
+            padding: 12px 16px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 8px 0 0 8px;
+            color: #000;
+        }
 
-    .search-bar {
-      flex: 1;
-      padding: 12px 16px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 8px 0 0 8px;
-      color: #000;
-    }
+        .search-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 6px;
+            font-size: 16px;
+            padding: 12px 20px;
+            border: none;
+            background-color: #365d88;
+            color: #ffffff;
+            cursor: pointer;
+            border-radius: 0 8px 8px 0;
+            transition: background-color 0.3s ease;
+        }
 
-    .search-button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-left: 6px;
-      font-size: 16px;
-      padding: 12px 20px;
-      border: none;
-      background-color: #365d88;
-      color: #ffffff;
-      cursor: pointer;
-      border-radius: 0 8px 8px 0;
-      transition: background-color 0.3s ease;
-    }
+        .search-button:hover { background-color: #274960; }
 
-    .search-button:hover { background-color: #274960; }
+        .search-bar::placeholder { color: #333 !important; opacity: 1; }
 
-    .search-bar::placeholder { color: #333 !important; opacity: 1; }
+        /* Results */
+        .results {
+            max-width: 900px;
+            margin: 40px auto;
+            text-align: left;
+        }
 
-    /* Results */
-    .results {
-      max-width: 900px;
-      margin: 40px auto;
-      text-align: left;
-    }
+        .result-item {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
 
-    .result-item {
-      background: #fff;
-      border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    }
+        .result-title {
+            display: block;
+            font-size: 20px;
+            font-weight: 600;
+            color: #0056a3;
+            text-decoration: none;
+            margin-bottom: 8px;
+        }
 
-    .result-title {
-      display: block;
-      font-size: 20px;
-      font-weight: 600;
-      color: #0056a3;
-      text-decoration: none;
-      margin-bottom: 8px;
-    }
+        .result-title:hover { text-decoration: underline; }
 
-    .result-title:hover { text-decoration: underline; }
+        .result-authors { color: #333; font-size: 14px; margin-bottom: 4px; }
 
-    .result-authors {
-      color: #333;
-      font-size: 14px;
-      margin-bottom: 4px;
-    }
+        .result-citation { color: #666; font-size: 13px; margin-bottom: 10px; }
 
-    .result-citation {
-      color: #666;
-      font-size: 13px;
-      margin-bottom: 10px;
-    }
+        /* Share Buttons */
+        .share-buttons { margin-top: 10px; }
+        .share-buttons a {
+            display: inline-block;
+            margin-right: 10px;
+            font-size: 13px;
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
 
-    /* Share Buttons */
-    .share-buttons {
-      margin-top: 10px;
-    }
+        .share-buttons a:hover { opacity: 0.85; }
+        .twitter { background: #1DA1F2; }
+        .linkedin { background: #0A66C2; }
+        .facebook { background: #3b5998; }
 
-    .share-buttons a {
-      display: inline-block;
-      margin-right: 10px;
-      font-size: 13px;
-      color: #fff;
-      padding: 6px 10px;
-      border-radius: 6px;
-      text-decoration: none;
-      transition: opacity 0.3s ease;
-    }
+        /* Pagination */
+        .pagination {
+            text-align: center;
+            margin: 30px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
 
-    .share-buttons a:hover { opacity: 0.85; }
-    .twitter { background: #1DA1F2; }
-    .linkedin { background: #0A66C2; }
-    .facebook { background: #3b5998; }
+        .pagination button {
+            border: 1px solid #ccc;
+            background: #fff;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 6px;
+            padding: 6px 12px;
+            transition: all 0.2s ease;
+        }
 
-    /* Pagination */
-    .pagination {
-      text-align: center;
-      margin: 30px 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-      font-size: 14px;
-    }
-
-    .pagination button {
-      border: 1px solid #ccc;
-      background: #fff;
-      cursor: pointer;
-      font-size: 14px;
-      border-radius: 6px;
-      padding: 6px 12px;
-      transition: all 0.2s ease;
-    }
-
-    .pagination button:hover { background: #e6e6e6; }
-    .pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
-    .page-info { font-weight: 500; padding: 0 10px; }
-  </style>
+        .pagination button:hover { background: #e6e6e6; }
+        .pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .page-info { font-weight: 500; padding: 0 10px; }
+    </style>
 </head>
-<body class="is-preload">
 
-  <!-- Page Wrapper -->
-  <div id="page-wrapper">
+<body class="is-preload">
+<div id="page-wrapper">
 
     <!-- Header -->
     <header id="header">
-      <h1><a href="index.html">Med City AI</a></h1>
-      <nav id="nav">
-        <ul>
-          <li class="special">
-            <a href="#menu" class="menuToggle"><span>Menu</span></a>
-            <div id="menu">
-              <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="generic.html">Generic</a></li>
-                <li><a href="elements.html">Elements</a></li>
-                <li><a href="#">Sign Up</a></li>
-                <li><a href="#">Log In</a></li>
-              </ul>
-            </div>
-          </li>
-        </ul>
-      </nav>
+        <h1><a href="index.html">Med City AI</a></h1>
     </header>
 
     <!-- Main -->
     <article id="main">
-      <header>
-        <h1>Med City AI</h1>
-        <p>Search Articles from Rochester, MN</p>
+        <header>
+            <h1>Med City AI</h1>
+            <p>Search Articles from Rochester, MN</p>
 
-        <!-- Search Bar -->
-        <div class="search-container">
-          <input type="text" id="searchInput" class="search-bar" placeholder="Search Papers (e.g. Generative AI)..." />
-          <button class="search-button" onclick="searchPubMed()">Search</button>
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-bar" placeholder="Search Papers (e.g. Generative AI)..." />
+                <button class="search-button" onclick="searchPubMed()">Search</button>
+            </div>
+        </header>
+
+        <!-- Results -->
+        <div id="results" class="results"></div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <button onclick="firstPage()">«</button>
+            <button onclick="prevPage()">‹</button>
+            <span class="page-info" id="pageNumber">Page 1</span>
+            <button onclick="nextPage()">›</button>
+            <button onclick="lastPage()">»</button>
         </div>
-      </header>
-
-      <!-- Results -->
-      <div id="results" class="results"></div>
-
-      <!-- Pagination -->
-      <div class="pagination"></div>
     </article>
 
     <!-- Footer -->
     <footer id="footer">
-      <ul class="icons">
-        <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-        <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-        <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-        <li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
-        <li><a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
-      </ul>
-      <ul class="copyright">
-        <li>&copy; Untitled</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-      </ul>
+        <ul class="icons">
+            <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+            <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+        </ul>
+        <ul class="copyright">
+            <li>&copy; Untitled</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+        </ul>
     </footer>
-  </div>
+</div>
 
-  <!-- Scripts -->
-  <script src="assets/js/jquery.min.js"></script>
-  <script src="assets/js/jquery.scrollex.min.js"></script>
-  <script src="assets/js/jquery.scrolly.min.js"></script>
-  <script src="assets/js/browser.min.js"></script>
-  <script src="assets/js/breakpoints.min.js"></script>
-  <script src="assets/js/util.js"></script>
-  <script src="assets/js/main.js"></script>
-
-  <!-- PubMed Search Script -->
-  <script>
+<!-- PubMed Search Script -->
+<script>
     let currentPage = 1;
     const resultsPerPage = 10;
     let currentQuery = "";
@@ -220,124 +187,116 @@
 
     let isThrottled = false;
     function throttle(fn) {
-      if (isThrottled) return;
-      isThrottled = true;
-      fn();
-      setTimeout(() => { isThrottled = false; }, 300);
+        if (isThrottled) return;
+        isThrottled = true;
+        fn();
+        setTimeout(() => { isThrottled = false; }, 300);
     }
 
     async function searchPubMed(page = 1) {
-      const query = document.getElementById("searchInput").value.trim();
-      if (!query) return;
-      
-      full_query = `${query} AND (Rochester[Affiliation] OR Minnesota[Affiliation])`;
+        const query = document.getElementById("searchInput").value.trim();
+        if (!query) return;
 
-      currentQuery = full_query;
-      currentPage = page;
-      const start = (page - 1) * resultsPerPage + 1;
+        const affQuery = "'Mayo'[AD] AND ('Minnesota'[AD] OR 'MN'[AD])";
+        const fullQuery = `${query} AND ${affQuery}`;
 
-      try {
-        const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(full_query)}&retstart=${start-1}&retmax=${resultsPerPage}&usehistory=y&retmode=json&api_key=${apiKey}`;
-        const searchResp = await fetch(esearchUrl);
-        const searchData = await searchResp.json();
-        totalResults = parseInt(searchData.esearchresult.count);
-        const pmids = searchData.esearchresult.idlist;
+        currentQuery = fullQuery;
+        currentPage = page;
 
-        const resultsDiv = document.getElementById("results");
-        const paginationDiv = document.querySelector(".pagination");
+        const start = (page - 1) * resultsPerPage;
 
-        if (pmids.length === 0) {
-          resultsDiv.innerHTML = "<p>No results found.</p>";
-          paginationDiv.style.display = "none";
-          return;
-        } else {
-          paginationDiv.style.display = "flex";
-        }
+        try {
+            // Step 1: Get PMIDs via esearch
+            const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(fullQuery)}&retstart=${start}&retmax=${resultsPerPage}&usehistory=y&retmode=json&api_key=${apiKey}`;
+            const searchResp = await fetch(esearchUrl);
+            const searchData = await searchResp.json();
 
-        const esummaryUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=${pmids.join(",")}&retmode=json&api_key=${apiKey}`;
-        const summaryResp = await fetch(esummaryUrl);
-        const summaryData = await summaryResp.json();
+            totalResults = parseInt(searchData.esearchresult.count);
+            const pmids = searchData.esearchresult.idlist;
 
-        resultsDiv.innerHTML = "";
-        pmids.forEach(pmid => {
-          const article = summaryData.result[pmid];
-          if (!article) return;
+            const resultsDiv = document.getElementById("results");
+            const paginationDiv = document.querySelector(".pagination");
 
-          const title = article.title || "No title";
-          const authorsList = (article.authors || []).map(a => {
-            let name = a.name || "";
-            // underline Rochester MN affiliated authors
-            if ((a.affiliation || "").toLowerCase().includes("rochester") || (a.affiliation || "").toLowerCase().includes("minnesota")) {
-              return `<u>${name}</u>`;
+            if (pmids.length === 0) {
+                resultsDiv.innerHTML = "<p>No results found.</p>";
+                paginationDiv.style.display = "none";
+                return;
+            } else {
+                paginationDiv.style.display = "flex";
             }
-            return name;
-          }).join(", ");
 
-          const source = article.source || "";
-          const pubdate = article.pubdate || "";
-          const citation = `${source}. ${pubdate}. PMID: ${pmid}`;
-          const url = `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`;
+            // Step 2: Fetch full article details via efetch
+            const efetchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${pmids.join(",")}&retmode=xml&api_key=${apiKey}`;
+            const efetchResp = await fetch(efetchUrl);
+            const efetchXml = await efetchResp.text();
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(efetchXml, "text/xml");
 
-          const item = document.createElement("div");
-          item.className = "result-item";
-          item.innerHTML = `
-            <a href="${url}" target="_blank" class="result-title">${title}</a>
-            <div class="result-authors">${authorsList}</div>
-            <div class="result-citation"><em>${citation}</em></div>
-            <div class="share-buttons">
-              <a class="twitter" href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}" target="_blank">Twitter</a>
-              <a class="linkedin" href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}" target="_blank">LinkedIn</a>
-              <a class="facebook" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" target="_blank">Facebook</a>
-            </div>
-          `;
-          resultsDiv.appendChild(item);
-        });
+            // Step 3: Render results
+            resultsDiv.innerHTML = "";
+            const articles = xmlDoc.querySelectorAll("PubmedArticle");
 
-        renderPagination();
-      } catch (err) {
-        console.error("Error fetching PubMed results:", err);
-        document.getElementById("results").innerHTML = "<p>Error retrieving results.</p>";
-      }
+            articles.forEach(article => {
+                const pmid = article.querySelector("PMID")?.textContent || "";
+                const title = article.querySelector("ArticleTitle")?.textContent || "No title";
+                const journal = article.querySelector("Journal > Title")?.textContent || "";
+                const pubdate = article.querySelector("PubDate Year")?.textContent || "";
+
+                let authors = [];
+                article.querySelectorAll("Author").forEach(authorNode => {
+                    const lastName = authorNode.querySelector("LastName")?.textContent || "";
+                    const foreName = authorNode.querySelector("ForeName")?.textContent || "";
+                    const name = `${foreName} ${lastName}`.trim();
+
+                    let affiliations = [];
+                    authorNode.querySelectorAll("Affiliation").forEach(aff => {
+                        affiliations.push(aff.textContent);
+                    });
+
+                    let displayName = name;
+                    if (affiliations.some(a => /Rochester, MN/i.test(a))) {
+                        displayName = `<u>${displayName}</u>`;
+                    }
+                    if (name) authors.push(displayName);
+                });
+
+                const authorsHtml = authors.join(", ");
+                const citation = `${journal}. ${pubdate}. PMID: ${pmid}`;
+                const url = `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`;
+
+                const item = document.createElement("div");
+                item.className = "result-item";
+                item.innerHTML = `
+                    <a href="${url}" target="_blank" class="result-title">${title}</a>
+                    <div class="result-authors">${authorsHtml}</div>
+                    <div class="result-citation"><em>${citation}</em></div>
+                    <div class="share-buttons">
+                        <a class="twitter" href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}" target="_blank">Twitter</a>
+                        <a class="linkedin" href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}" target="_blank">LinkedIn</a>
+                        <a class="facebook" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" target="_blank">Facebook</a>
+                    </div>
+                `;
+                resultsDiv.appendChild(item);
+            });
+
+            renderPagination();
+
+        } catch (err) {
+            console.error("Error fetching PubMed results:", err);
+            document.getElementById("results").innerHTML = "<p>Error retrieving results.</p>";
+        }
     }
 
     function renderPagination() {
-      const paginationDiv = document.querySelector(".pagination");
-      const totalPages = Math.ceil(totalResults / resultsPerPage);
-
-      paginationDiv.innerHTML = `
-        <button onclick="firstPage()" ${currentPage === 1 ? "disabled" : ""}>«</button>
-        <button onclick="prevPage()" ${currentPage === 1 ? "disabled" : ""}>‹</button>
-        <span class="page-info">Page ${currentPage} of ${totalPages}</span>
-        <button onclick="nextPage()" ${currentPage === totalPages ? "disabled" : ""}>›</button>
-        <button onclick="lastPage()" ${currentPage === totalPages ? "disabled" : ""}>»</button>
-      `;
-    }
-
-    function nextPage() {
-      throttle(() => {
+        const paginationDiv = document.querySelector(".pagination");
         const totalPages = Math.ceil(totalResults / resultsPerPage);
-        if (currentPage < totalPages) searchPubMed(currentPage + 1);
-      });
+        paginationDiv.querySelector("#pageNumber").textContent = `Page ${currentPage} of ${totalPages}`;
     }
 
-    function prevPage() {
-      throttle(() => {
-        if (currentPage > 1) searchPubMed(currentPage - 1);
-      });
-    }
-
-    function firstPage() {
-      throttle(() => {
-        if (currentPage !== 1) searchPubMed(1);
-      });
-    }
-
-    function lastPage() {
-      throttle(() => {
-        const totalPages = Math.ceil(totalResults / resultsPerPage);
-        if (currentPage !== totalPages) searchPubMed(totalPages);
-      });
-    }
-  </script>
+    function nextPage() { throttle(() => { if (currentPage * resultsPerPage < totalResults) searchPubMed(currentPage + 1); }); }
+    function prevPage() { throttle(() => { if (currentPage > 1) searchPubMed(currentPage - 1); }); }
+    function firstPage() { throttle(() => { if (currentPage !== 1) searchPubMed(1); }); }
+    function lastPage() { throttle(() => { const totalPages = Math.ceil(totalResults / resultsPerPage); if (currentPage !== totalPages) searchPubMed(totalPages); }); }
+</script>
 </body>
 </html>
