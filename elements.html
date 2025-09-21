@@ -8,9 +8,6 @@
   <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 
   <style>
-    /* =========================
-       PubMed-like Search Styling
-    ========================== */
     body {
       font-family: Arial, sans-serif;
       background: #f5f5f5; /* light gray full background */
@@ -25,7 +22,6 @@
       margin: 30px auto;
       background-color: rgba(255, 255, 255, 0.70);
       max-width: 720px;
-      color: #000000;
       border-radius: 10px;
       box-shadow: 0 3px 6px rgba(0,0,0,0.05);
       padding: 5px;
@@ -222,7 +218,6 @@
     let totalResults = 0;
     const apiKey = "f268c3234d234e2dc69edd7e7dac66d20108";
 
-    // Prevent rapid-fire clicks (throttle to 300ms)
     let isThrottled = false;
     function throttle(fn) {
       if (isThrottled) return;
@@ -240,7 +235,6 @@
       const start = (page - 1) * resultsPerPage + 1;
 
       try {
-        // Step 1: Search PubMed
         const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retstart=${start-1}&retmax=${resultsPerPage}&usehistory=y&retmode=json&api_key=${apiKey}`;
         const searchResp = await fetch(esearchUrl);
         const searchData = await searchResp.json();
@@ -258,19 +252,25 @@
           paginationDiv.style.display = "flex";
         }
 
-        // Step 2: Fetch article details
         const esummaryUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=${pmids.join(",")}&retmode=json&api_key=${apiKey}`;
         const summaryResp = await fetch(esummaryUrl);
         const summaryData = await summaryResp.json();
 
-        // Step 3: Render results
         resultsDiv.innerHTML = "";
         pmids.forEach(pmid => {
           const article = summaryData.result[pmid];
           if (!article) return;
 
           const title = article.title || "No title";
-          const authors = (article.authors || []).map(a => a.name).join(", ");
+          const authorsList = (article.authors || []).map(a => {
+            let name = a.name || "";
+            // underline Rochester MN affiliated authors
+            if ((a.affiliation || "").toLowerCase().includes("rochester") || (a.affiliation || "").toLowerCase().includes("minnesota")) {
+              return `<u>${name}</u>`;
+            }
+            return name;
+          }).join(", ");
+
           const source = article.source || "";
           const pubdate = article.pubdate || "";
           const citation = `${source}. ${pubdate}. PMID: ${pmid}`;
@@ -280,7 +280,7 @@
           item.className = "result-item";
           item.innerHTML = `
             <a href="${url}" target="_blank" class="result-title">${title}</a>
-            <div class="result-authors">${authors}</div>
+            <div class="result-authors">${authorsList}</div>
             <div class="result-citation"><em>${citation}</em></div>
             <div class="share-buttons">
               <a class="twitter" href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}" target="_blank">Twitter</a>
@@ -291,7 +291,6 @@
           resultsDiv.appendChild(item);
         });
 
-        // Update pagination
         renderPagination();
       } catch (err) {
         console.error("Error fetching PubMed results:", err);
