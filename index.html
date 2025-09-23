@@ -4,200 +4,172 @@
     <title>Med City AI - PubMed Search</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <link rel="stylesheet" href="assets/css/main.css" />
-    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-
     <style>
-    /* Masonry Results Grid */
-    .results {
-        max-width: 1100px;
-        margin: 40px auto;
-        column-count: 3;
-        column-gap: 20px;
-    }
-    .result-item {
-        background: #fff;
-        border-radius: 10px;
-        padding: 20px;
-        margin: 0 0 20px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-        display: inline-block;
-        width: 100%;
-        box-sizing: border-box;
-    }
-    .result-title {
-        display: block;
-        font-size: 18px;
-        font-weight: 600;
-        color: #0056a3;
-        text-decoration: none;
-        margin-bottom: 8px;
-    }
-    .result-title:hover { text-decoration: underline; }
-    .result-authors { color: #333; font-size: 14px; margin-bottom: 6px; }
-    .result-citation { color: #666; font-size: 13px; margin-bottom: 10px; }
-    @media (max-width: 900px) { .results { column-count: 2; } }
-    @media (max-width: 600px) { .results { column-count: 1; } }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f0f0f0;
+            color: #333;
+        }
+        header {
+            background: #444;
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+        }
+        #search-container {
+            padding: 1rem;
+            text-align: center;
+        }
+        input[type="text"] {
+            width: 60%;
+            padding: 0.5rem;
+            font-size: 1rem;
+        }
+        button {
+            padding: 0.6rem 1rem;
+            font-size: 1rem;
+            margin-left: 0.5rem;
+            cursor: pointer;
+        }
+        #counts {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 1rem 0;
+            font-weight: bold;
+        }
+        #results {
+            column-count: 3;
+            column-gap: 1rem;
+            padding: 1rem;
+        }
+        .card {
+            background: #fff;
+            display: inline-block;
+            margin: 0 0 1rem;
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            width: 100%;
+        }
+        .title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .authors {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        .abstract {
+            font-size: 0.9rem;
+            color: #555;
+        }
+        .underline {
+            text-decoration: underline;
+        }
     </style>
 </head>
-<body class="landing is-preload">
+<body>
+    <header>
+        <h1>Med City AI - PubMed Search</h1>
+    </header>
 
-    <div id="page-wrapper">
-        <!-- Header -->
-        <header id="header" class="alt">
-            <h1><a href="index.html">Med City AI</a></h1>
-            <nav id="nav">
-                <ul>
-                    <li class="special">
-                        <a href="#menu" class="menuToggle"><span>Menu</span></a>
-                        <div id="menu">
-                            <ul>
-                                <li><a href="index.html">Home</a></li>
-                                <li><a href="generic.html">Generic</a></li>
-                                <li><a href="elements.html">Elements</a></li>
-                                <li><a href="#">Sign Up</a></li>
-                                <li><a href="#">Log In</a></li>
-                            </ul>
-                        </div>
-                    </li>
-                </ul>
-            </nav>
-        </header>
-
-        <!-- Banner -->
-        <section id="banner">
-            <div class="inner">
-                <h2>Med City AI</h2>
-                <p>Real-time research analytics<br />from beneath the corntower</p>
-            </div>
-            <a href="#one" class="more scrolly"> Papers Indexed: <span id="VarTot"></span> </a>
-        </section>
-
-        <!-- One -->
-        <section id="one" class="wrapper style1 special">
-            <div class="inner">
-                <header class="major">
-                    <h2>Recently Published in Rochester, MN:</h2>
-                </header>
-
-                <!-- Masonry Grid Results -->
-                <div id="recent-grid" class="results"></div>
-
-                <div class="mt-4">
-                    <a href="#" class="text-sm text-indigo-600 hover:underline">View all publications →</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- Two -->
-        <section id="two" class="wrapper alt style2">
-            <section class="spotlight">
-                <div class="image"><img src="images/pub_plot2.jpg" alt="" /></div>
-                <div class="content">
-                    <h2>Rochester Publications by Year</h2>
-                    <p>The publication rate fits an exponential growth model with a doubling rate of 10.2 years. The peak publication year was 2021 with 10,510.</p>
-                </div>
-            </section>
-        </section>
-
-        <!-- Three -->
-        <section id="three" class="wrapper style3 special">
-            <div class="inner">
-                <header class="major">
-                    <h2>Explore</h2>
-                </header>
-                <ul class="features">
-                    <li class="icon solid fa-laptop">
-                        <h3>Analytics</h3>
-                        <p>View trends, collaborations, and more.</p>
-                    </li>
-                    <li class="icon solid fa-code">
-                        <h3>Data</h3>
-                        <p>Augue consectetur sed interdum imperdiet et ipsum.</p>
-                    </li>
-                    <li class="icon solid fa-headphones-alt">
-                        <h3>Community</h3>
-                        <p>Engage with real-time research discussions.</p>
-                    </li>
-                </ul>
-            </div>
-        </section>
-
-        <!-- Footer -->
-        <footer id="footer">
-            <ul class="icons">
-                <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-                <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-            </ul>
-            <ul class="copyright">
-                <li>&copy; Untitled</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-            </ul>
-        </footer>
+    <div id="search-container">
+        <input type="text" id="query" placeholder="Enter search term..." />
+        <button onclick="searchPubMed()">Search</button>
     </div>
 
-    <!-- Scripts -->
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/jquery.scrollex.min.js"></script>
-    <script src="assets/js/jquery.scrolly.min.js"></script>
-    <script src="assets/js/browser.min.js"></script>
-    <script src="assets/js/breakpoints.min.js"></script>
-    <script src="assets/js/util.js"></script>
-    <script src="assets/js/main.js"></script>
+    <div id="counts">
+        <div id="count-day">Today: 0</div>
+        <div id="count-week">This Week: 0</div>
+        <div id="count-month">This Month: 0</div>
+    </div>
 
-    <!-- PubMed Fetch Script -->
+    <div id="results"></div>
+
     <script>
-    async function fetchPubMed() {
-        const query = "Rochester Minnesota[AD]";
-        const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmax=9&sort=date&retmode=json`;
-        const esearchResp = await fetch(esearchUrl);
-        const esearchData = await esearchResp.json();
+        async function searchPubMed() {
+            const query = document.getElementById("query").value;
+            if (!query) return;
 
-        const ids = esearchData.esearchresult.idlist;
-        if (ids.length === 0) return;
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, "0");
+            const dd = String(today.getDate()).padStart(2, "0");
 
-        const efetchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${ids.join(",")}&retmode=xml`;
-        const efetchResp = await fetch(efetchUrl);
-        const efetchText = await efetchResp.text();
+            const todayStr = `${yyyy}/${mm}/${dd}`;
+            const weekAgo = new Date(today);
+            weekAgo.setDate(today.getDate() - 7);
+            const weekStr = `${weekAgo.getFullYear()}/${String(weekAgo.getMonth() + 1).padStart(2, "0")}/${String(weekAgo.getDate()).padStart(2, "0")}`;
+            const monthAgo = new Date(today);
+            monthAgo.setDate(today.getDate() - 30);
+            const monthStr = `${monthAgo.getFullYear()}/${String(monthAgo.getMonth() + 1).padStart(2, "0")}/${String(monthAgo.getDate()).padStart(2, "0")}`;
 
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(efetchText, "text/xml");
-        const articles = xmlDoc.getElementsByTagName("PubmedArticle");
+            // counts
+            updateCounts(query, todayStr, todayStr, "count-day");
+            updateCounts(query, weekStr, todayStr, "count-week");
+            updateCounts(query, monthStr, todayStr, "count-month");
 
-        const container = document.getElementById("recent-grid");
-        container.innerHTML = "";
+            // main search (last 100)
+            const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmode=json&retmax=30&sort=date`;
+            const esearchResp = await fetch(esearchUrl);
+            const esearchData = await esearchResp.json();
+            const ids = esearchData.esearchresult.idlist;
 
-        Array.from(articles).forEach(article => {
-            const title = article.getElementsByTagName("ArticleTitle")[0]?.textContent || "No title";
-            const journal = article.getElementsByTagName("Title")[0]?.textContent || "";
-            const pubDate = article.getElementsByTagName("PubDate")[0];
-            const year = pubDate?.getElementsByTagName("Year")[0]?.textContent || "";
-            const month = pubDate?.getElementsByTagName("Month")[0]?.textContent || "";
-            const day = pubDate?.getElementsByTagName("Day")[0]?.textContent || "";
-            const citation = `${journal}. ${month} ${day}, ${year}`;
+            if (ids.length === 0) {
+                document.getElementById("results").innerHTML = "<p>No results found.</p>";
+                return;
+            }
 
-            const authors = Array.from(article.getElementsByTagName("Author"))
-                .map(a => {
-                    const last = a.getElementsByTagName("LastName")[0]?.textContent || "";
-                    const fore = a.getElementsByTagName("ForeName")[0]?.textContent || "";
-                    return last && fore ? `${fore} ${last}` : "";
-                })
-                .filter(x => x)
-                .join(", ");
+            const efetchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${ids.join(",")}&retmode=xml`;
+            const efetchResp = await fetch(efetchUrl);
+            const xmlText = await efetchResp.text();
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlText, "text/xml");
 
-            const pmid = article.getElementsByTagName("PMID")[0]?.textContent || "";
+            renderResults(xmlDoc);
+        }
 
-            const div = document.createElement("div");
-            div.className = "result-item";
-            div.innerHTML = `
-                <a href="https://pubmed.ncbi.nlm.nih.gov/${pmid}/" class="result-title" target="_blank">${title}</a>
-                <div class="result-authors">${authors}</div>
-                <div class="result-citation"><em>${citation}</em></div>
-            `;
-            container.appendChild(div);
-        });
-    }
+        async function updateCounts(query, fromDate, toDate, elementId) {
+            const url = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&mindate=${fromDate}&maxdate=${toDate}&datetype=pdat&retmode=json`;
+            const resp = await fetch(url);
+            const data = await resp.json();
+            document.getElementById(elementId).innerText = `${document.getElementById(elementId).innerText.split(":")[0]}: ${data.esearchresult.count}`;
+        }
 
-    fetchPubMed();
+        function renderResults(xmlDoc) {
+            const articles = xmlDoc.getElementsByTagName("PubmedArticle");
+            let html = "";
+            for (let i = 0; i < articles.length; i++) {
+                const article = articles[i];
+                const title = article.getElementsByTagName("ArticleTitle")[0]?.textContent || "No title";
+                const abstract = article.getElementsByTagName("AbstractText")[0]?.textContent || "No abstract available.";
+
+                const authorNodes = article.getElementsByTagName("Author");
+                let authors = [];
+                for (let j = 0; j < authorNodes.length; j++) {
+                    const lastName = authorNodes[j].getElementsByTagName("LastName")[0]?.textContent || "";
+                    const foreName = authorNodes[j].getElementsByTagName("ForeName")[0]?.textContent || "";
+                    const affiliation = authorNodes[j].getElementsByTagName("Affiliation")[0]?.textContent || "";
+                    let name = `${foreName} ${lastName}`;
+                    if (affiliation.includes("Rochester") && affiliation.includes("Minnesota")) {
+                        name = `<span class="underline">${name}</span>`;
+                    }
+                    authors.push(name);
+                }
+
+                html += `
+                    <div class="card">
+                        <div class="title">${title}</div>
+                        <div class="authors">${authors.join(", ")}</div>
+                        <div class="abstract">${abstract}</div>
+                    </div>
+                `;
+            }
+            document.getElementById("results").innerHTML = html;
+        }
     </script>
 </body>
 </html>
