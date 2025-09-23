@@ -1,455 +1,203 @@
 <!DOCTYPE HTML>
-<!--
-	MedCityAI - Real-time research analytics
--->
 <html>
-	<head>
-		<title>Med City AI</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-	</head>
-	<body class="landing is-preload">
+<head>
+    <title>Med City AI - PubMed Search</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 
-			<script>
-			// Global variables
-			var VarTot = 0, VarDay = 0, VarWeek = 0, VarMonth = 0;
+    <style>
+    /* Masonry Results Grid */
+    .results {
+        max-width: 1100px;
+        margin: 40px auto;
+        column-count: 3;
+        column-gap: 20px;
+    }
+    .result-item {
+        background: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 0 0 20px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        display: inline-block;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .result-title {
+        display: block;
+        font-size: 18px;
+        font-weight: 600;
+        color: #0056a3;
+        text-decoration: none;
+        margin-bottom: 8px;
+    }
+    .result-title:hover { text-decoration: underline; }
+    .result-authors { color: #333; font-size: 14px; margin-bottom: 6px; }
+    .result-citation { color: #666; font-size: 13px; margin-bottom: 10px; }
+    @media (max-width: 900px) { .results { column-count: 2; } }
+    @media (max-width: 600px) { .results { column-count: 1; } }
+    </style>
+</head>
+<body class="landing is-preload">
 
-			// Fetch and process summary_stats.txt from ./database/summary_stats.txt
-			async function fetchAndRecordVars() {
-				const statsPath = './database/summary_stats.txt';
-				try {
-					const response = await fetch(statsPath);
-					if (!response.ok) throw new Error('summary_stats.txt not found');
-					const statsText = await response.text();
-					// Parse lines like VarTot=1500
-					statsText.split('\n').forEach(line => {
-						const [key, value] = line.split('=');
-						if (key && value) {
-							if (key.trim() === 'VarTot') VarTot = parseInt(value.trim());
-							if (key.trim() === 'VarDay') VarDay = parseInt(value.trim());
-							if (key.trim() === 'VarWeek') VarWeek = parseInt(value.trim());
-							if (key.trim() === 'VarMonth') VarMonth = parseInt(value.trim());
-						}
-					});
-				} catch (err) {
-					console.error('Error loading summary_stats.txt:', err);
-				}
-			}
+    <div id="page-wrapper">
+        <!-- Header -->
+        <header id="header" class="alt">
+            <h1><a href="index.html">Med City AI</a></h1>
+            <nav id="nav">
+                <ul>
+                    <li class="special">
+                        <a href="#menu" class="menuToggle"><span>Menu</span></a>
+                        <div id="menu">
+                            <ul>
+                                <li><a href="index.html">Home</a></li>
+                                <li><a href="generic.html">Generic</a></li>
+                                <li><a href="elements.html">Elements</a></li>
+                                <li><a href="#">Sign Up</a></li>
+                                <li><a href="#">Log In</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+        </header>
 
-			// Call at start
-			fetchAndRecordVars().then(() => {
-				const bannerSpan = document.getElementById("VarTot");
-				const bannerDay = document.getElementById("VarDay");
-				const bannerWeek = document.getElementById("VarWeek");
-				const bannerMonth = document.getElementById("VarMonth");
-				if (bannerSpan) bannerSpan.textContent = VarTot;
-				if (bannerDay) bannerDay.textContent = VarDay;
-				if (bannerWeek) bannerWeek.textContent = VarWeek;
-				if (bannerMonth) bannerMonth.textContent = VarMonth;
-			});
-			</script>
-			<!-- Page Wrapper -->
-			<div id="page-wrapper">
+        <!-- Banner -->
+        <section id="banner">
+            <div class="inner">
+                <h2>Med City AI</h2>
+                <p>Real-time research analytics<br />from beneath the corntower</p>
+            </div>
+            <a href="#one" class="more scrolly"> Papers Indexed: <span id="VarTot"></span> </a>
+        </section>
 
-				<!-- Header -->
-					<header id="header" class="alt">
-						<h1><a href="index.html">Med City AI</a></h1>
-						<nav id="nav">
-							<ul>
-								<li class="special">
-									<a href="#menu" class="menuToggle"><span>Menu</span></a>
-									<div id="menu">
-										<ul>
-											<li><a href="index.html">Home</a></li>
-											<li><a href="generic.html">Generic</a></li>
-											<li><a href="elements.html">Elements</a></li>
-											<li><a href="#">Sign Up</a></li>
-											<li><a href="#">Log In</a></li>
-										</ul>
-									</div>
-								</li>
-							</ul>
-						</nav>
-					</header>
-				<!-- here is where I'd like to open one folder up database/pubmed_results.csv and then export three variables VarTot (number of total entries) VarDay (number of entries in past 24 hours) VarWeek (number of entries in past 7 days) VarMonth (number of entries in past 30 days) and then have those variables populate the following sections below% -->
-				<!-- Banner -->
-					<section id="banner">
-						<div class="inner">
-							<h2>Med City AI</h2>
-							<p>Real-time research analytics<br />
-							from beneath the corntower</p>
-						    <div style="display: flex; justify-content: space-around; text-align: center; margin-top: 2em;">
-						</div>
-						<a href="#one" class="more scrolly"> Papers Indexed:  <span id="VarTot"></span> </a> <!-- replace 16000 with VarTot -->
+        <!-- One -->
+        <section id="one" class="wrapper style1 special">
+            <div class="inner">
+                <header class="major">
+                    <h2>Recently Published in Rochester, MN:</h2>
+                </header>
 
-					</section>
-				
-				<!-- One -->
-					<section id="one" class="wrapper style1 special">
-						<div class="inner">
-							<header class="major">
-								<h2>Recently Published in Rochester, MN:</h2>
-							</header>
+                <!-- Masonry Grid Results -->
+                <div id="recent-grid" class="results"></div>
 
-						
-						    <!-- Numbers Section -->
-						    <div style="display: flex; justify-content: space-around; text-align: center; margin-top: 2em;">
-						      <div class="stat-item">
-						        <!-- <h2 class="count" id="VarDay" data-target="0">0</h2> -->
-						        <h2 id="VarDay">0</h2> <!-- dynamically replaced by JS -->								<p>new today</p>
-						      </div>
-						      <div class="stat-item">
-						        <!-- <h2 class="count" id="VarWeek" data-target="0">0</h2> replace 100 with VarWeek -->
-						        <h2 id="VarWeek">0</h2> <!-- dynamically replaced by JS -->						        
-								<p>new this week</p>
-						      </div>
-						      <div class="stat-item">
-						        <h2 id="VarMonth">0</h2> <!-- replace 10000 with VarMonth -->
-						        <p>new this month</p>
-						      </div>
-						    </div>
-						  </div>
+                <div class="mt-4">
+                    <a href="#" class="text-sm text-indigo-600 hover:underline">View all publications →</a>
+                </div>
+            </div>
+        </section>
 
-						<!-- Dropdown + Results Container -->
-						<div class="pubmed-container">
-						<select id="pubmed-query" onchange="fetchPubMedResults()">
-							<option value="everything" selected>Everything</option>
-							<option value="genai">Generative AI</option>
-							<option value="deeplearning">Deep Learning</option>
-							<option value="informatics">Informatics</option>
-							<option value="radiology">Radiology</option>
-						</select>
+        <!-- Two -->
+        <section id="two" class="wrapper alt style2">
+            <section class="spotlight">
+                <div class="image"><img src="images/pub_plot2.jpg" alt="" /></div>
+                <div class="content">
+                    <h2>Rochester Publications by Year</h2>
+                    <p>The publication rate fits an exponential growth model with a doubling rate of 10.2 years. The peak publication year was 2021 with 10,510.</p>
+                </div>
+            </section>
+        </section>
 
-						<!-- Results will render here -->
-						<div id="pubmed-results" style="margin-top:20px; text-align:left;"></div>
-						</div>
+        <!-- Three -->
+        <section id="three" class="wrapper style3 special">
+            <div class="inner">
+                <header class="major">
+                    <h2>Explore</h2>
+                </header>
+                <ul class="features">
+                    <li class="icon solid fa-laptop">
+                        <h3>Analytics</h3>
+                        <p>View trends, collaborations, and more.</p>
+                    </li>
+                    <li class="icon solid fa-code">
+                        <h3>Data</h3>
+                        <p>Augue consectetur sed interdum imperdiet et ipsum.</p>
+                    </li>
+                    <li class="icon solid fa-headphones-alt">
+                        <h3>Community</h3>
+                        <p>Engage with real-time research discussions.</p>
+                    </li>
+                </ul>
+            </div>
+        </section>
 
-						<div class="carousel-container">
-						<button class="carousel-btn prev">&#10094;</button>
-						<div class="carousel-track-container">
-							<ul class="carousel-track">
-							<li class="carousel-slide"><img src="./database/featured/img1.jpg" alt="1"></li>
-							<li class="carousel-slide"><img src="./database/featured/img2.jpg" alt="2"></li>
-							<li class="carousel-slide"><img src="./database/featured/img3.jpg" alt="3"></li>
-							<li class="carousel-slide"><img src="./database/featured/img4.jpg" alt="4"></li>
-							<li class="carousel-slide"><img src="./database/featured/img5.jpg" alt="5"></li>
-							<li class="carousel-slide"><img src="./database/featured/img6.jpg" alt="6"></li>
-							<li class="carousel-slide"><img src="./database/featured/img7.jpg" alt="7"></li>
-							<li class="carousel-slide"><img src="./database/featured/img8.jpg" alt="8"></li>
-							</ul>
-						</div>
-						<button class="carousel-btn next">&#10095;</button>
-						</div>
-						
-						<style>
-						/* Add margin on left/right */
-						.pubmed-container {
-						margin: 0 auto;           /* center horizontally */
-						padding: 0 20px;          /* left & right padding */
-						max-width: 1000px;         /* optional: prevent overly wide text */
-						}
+        <!-- Footer -->
+        <footer id="footer">
+            <ul class="icons">
+                <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+                <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+            </ul>
+            <ul class="copyright">
+                <li>&copy; Untitled</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+            </ul>
+        </footer>
+    </div>
 
-						/* Style dropdown a little */
-						.pubmed-container select {
-						padding: 6px 10px;
-						border-radius: 6px;
-						border: 1px solid #ccc;
-						margin-bottom: 15px;
-						}
-						</style>
+    <!-- Scripts -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/jquery.scrollex.min.js"></script>
+    <script src="assets/js/jquery.scrolly.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
 
+    <!-- PubMed Fetch Script -->
+    <script>
+    async function fetchPubMed() {
+        const query = "Rochester Minnesota[AD]";
+        const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmax=9&sort=date&retmode=json`;
+        const esearchResp = await fetch(esearchUrl);
+        const esearchData = await esearchResp.json();
 
-						<style>
-						.carousel-container {
-						position: relative;
-						max-width: 1000px;
-						margin: 40px auto;
-						overflow: hidden;
-						}
+        const ids = esearchData.esearchresult.idlist;
+        if (ids.length === 0) return;
 
-						.carousel-track-container {
-						overflow: hidden;
-						}
+        const efetchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${ids.join(",")}&retmode=xml`;
+        const efetchResp = await fetch(efetchUrl);
+        const efetchText = await efetchResp.text();
 
-						.carousel-track {
-						display: flex;
-						transition: transform 0.5s ease-in-out;
-						}
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(efetchText, "text/xml");
+        const articles = xmlDoc.getElementsByTagName("PubmedArticle");
 
-						.carousel-slide {
-						min-width: calc(100% / 3); /* Show 3 images */
-						box-sizing: border-box;
-						padding: 0 10px;
-						}
+        const container = document.getElementById("recent-grid");
+        container.innerHTML = "";
 
-						.carousel-slide img {
-						width: 100%;
-						height: 275px;
-						border-radius: 12px;
-						object-fit: cover;
-						}
+        Array.from(articles).forEach(article => {
+            const title = article.getElementsByTagName("ArticleTitle")[0]?.textContent || "No title";
+            const journal = article.getElementsByTagName("Title")[0]?.textContent || "";
+            const pubDate = article.getElementsByTagName("PubDate")[0];
+            const year = pubDate?.getElementsByTagName("Year")[0]?.textContent || "";
+            const month = pubDate?.getElementsByTagName("Month")[0]?.textContent || "";
+            const day = pubDate?.getElementsByTagName("Day")[0]?.textContent || "";
+            const citation = `${journal}. ${month} ${day}, ${year}`;
 
-						.carousel-btn {
-						position: absolute;
-						top: 40%;
-						transform: translateY(-50%);
-						background: rgba(0,0,0,0.5);
-						color: white;
-						border: none;
-						font-size: 2em;
-						padding: 5px 10px;
-						cursor: pointer;
-						border-radius: 50%;
-						z-index: 10;
-						}
+            const authors = Array.from(article.getElementsByTagName("Author"))
+                .map(a => {
+                    const last = a.getElementsByTagName("LastName")[0]?.textContent || "";
+                    const fore = a.getElementsByTagName("ForeName")[0]?.textContent || "";
+                    return last && fore ? `${fore} ${last}` : "";
+                })
+                .filter(x => x)
+                .join(", ");
 
-						.carousel-btn.prev { left: 10px; }
-						.carousel-btn.next { right: 10px; }
-						</style>
-						
-						<script>
-						async function fetchPubMedResults() {
-						const queryType = document.getElementById("pubmed-query").value;
-						
-						// Define queries
-						const queries = {
-							everything: `("Mayo"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))`,
-							genai: `(("Generative AI" OR "Large language model" OR "chatgpt") AND "Mayo"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))`,
-							deeplearning: `(("Deep learning" OR "Neural network") AND "Mayo"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))`,
-							informatics: `("informatics" AND "Mayo"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))`,
-							radiology: `(("CT" OR "MRI" OR "ultrasound" OR "radiology") AND "Mayo"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))`
-						};
+            const pmid = article.getElementsByTagName("PMID")[0]?.textContent || "";
 
-						const term = queries[queryType];
-						const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(term)}&retmax=10&sort=pub+date&retmode=json`;
+            const div = document.createElement("div");
+            div.className = "result-item";
+            div.innerHTML = `
+                <a href="https://pubmed.ncbi.nlm.nih.gov/${pmid}/" class="result-title" target="_blank">${title}</a>
+                <div class="result-authors">${authors}</div>
+                <div class="result-citation"><em>${citation}</em></div>
+            `;
+            container.appendChild(div);
+        });
+    }
 
-						try {
-							const esearchRes = await fetch(esearchUrl);
-							const esearchData = await esearchRes.json();
-							const ids = esearchData.esearchresult.idlist;
-
-							if (ids.length === 0) {
-							document.getElementById("pubmed-results").innerHTML = "<p>No results found.</p>";
-							return;
-							}
-
-							// Fetch summaries
-							const esummaryUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=${ids.join(",")}&retmode=json`;
-							const esummaryRes = await fetch(esummaryUrl);
-							const esummaryData = await esummaryRes.json();
-
-							// Build results HTML
-							let resultsHTML = "<ul>";
-							ids.forEach(id => {
-							const article = esummaryData.result[id];
-							if (article) {
-								const title = article.title || "No title";
-								const authors = article.authors?.length ? `${article.authors[0].name} et al.` : "Unknown";
-								const journal = article.fulljournalname || "Unknown Journal";
-								const pubdate = article.epubdate || article.pubdate || "No date";
-
-								resultsHTML += `<li>
-								<strong>${title}</strong><br>
-								${authors} <em>${journal}</em>. ${pubdate}
-								</li>`;
-							}
-							});
-							resultsHTML += "</ul>";
-
-							document.getElementById("pubmed-results").innerHTML = resultsHTML;
-						} catch (error) {
-							console.error(error);
-							document.getElementById("pubmed-results").innerHTML = "<p>Error fetching results.</p>";
-						}
-						}
-
-						// Fetch default ("everything") on page load
-						document.addEventListener("DOMContentLoaded", fetchPubMedResults);
-						</script>
-						<script>
-						document.addEventListener("DOMContentLoaded", () => {
-						const track = document.querySelector('.carousel-track');
-						const slides = Array.from(track.children);
-						const nextButton = document.querySelector('.carousel-btn.next');
-						const prevButton = document.querySelector('.carousel-btn.prev');
-
-						let index = 0;
-						const slidesToShow = 3;
-						const slideWidth = slides[0].getBoundingClientRect().width;
-
-						// Clone first few slides to the end for looping
-						for (let i = 0; i < slidesToShow; i++) {
-							const clone = slides[i].cloneNode(true);
-							track.appendChild(clone);
-						}
-
-						function updateCarousel() {
-							track.style.transform = `translateX(-${index * slideWidth}px)`;
-						}
-
-						function moveNext() {
-							index = (index + 1) % slides.length;
-							updateCarousel();
-						}
-
-						function movePrev() {
-							index = (index - 1 + slides.length) % slides.length;
-							updateCarousel();
-						}
-
-						nextButton.addEventListener('click', moveNext);
-						prevButton.addEventListener('click', movePrev);
-
-						// 🔹 Auto-play every 3 seconds
-						setInterval(moveNext, 6000);
-
-						updateCarousel();
-						});
-						</script>
-						
-				
-				<!-- Two -->
-					<section id="two" class="wrapper alt style2">
-						<section class="spotlight">
-							<div class="image"><img src="images/pub_plot2.jpg" alt="" /></div><div class="content">
-								<h2>Rochester Publications by Year</h2>
-								<p>The publication rate fits an exponential growth model with a doubling rate of 10.2 years. The peak publication year was 2021 with 10,510.</p>
-							</div>
-						</section>
-						<section class="spotlight">
-						<div class="image">
-							<iframe src="state_map.html" width="100%" height=400px style="border:none;"></iframe>
-						</div>
-						<div class="content">
-							<h2>Co-author Affiliations By State (2025)</h2>
-							<p>This interactive choropleth map shows the geographic distribution of co-author affiliations across the United States.</p>
-						</div>
-						</section>
-						<section class="spotlight">
-							<div class="image">
-							<iframe src="world_map.html" width="100%" height=400px style="border:none;"></iframe>
-						</div>
-						<div class="content">
-							<h2>Co-author Affiliations By Country (2025)</h2>
-							<p>This interactive choropleth map shows the geographic distribution of co-author affiliations across the world.</p>
-						</div>
-						</section>
-					</section>
-
-				<!-- Three -->
-					<section id="three" class="wrapper style3 special">
-						<div class="inner">
-							<header class="major">
-								<h2>Explore</h2>
-							</header>
-							<ul class="features">
-								<li class="icon fa-paper-plane">
-									<h3>Recently Published</h3>
-									
-									<ul id="recent-list" class="mt-4 space-y-3 text-gray-700">
-									<!-- example entries -->
-										<a href="#" class="font-medium text-indigo-600 hover:underline">Artificial Intelligence in Healthcare</a>
-										<div class="text-sm text-gray-600">Jane Doe, et al. — Sep 10, 2025</div>git
-										<a href="#" class="font-medium text-indigo-600 hover:underline">Deep Learning for Cancer Diagnosis</a>
-										<div class="text-sm text-gray-600">John Smith, et al. — Sep 8, 2025</div>
-										<a href="#" class="font-medium text-indigo-600 hover:underline">AI in Medical Imaging</a>
-										<div class="text-sm text-gray-600">A. Researcher, et al. — Sep 6, 2025</div>
-									</ul>
-									<div class="mt-4">
-									<a href="#" class="text-sm text-indigo-600 hover:underline">View all publications →</a>
-									</div>
-								</li>
-								<li class="icon solid fa-laptop">
-									<h3>Ac Augue Eget</h3>
-									<p>Augue consectetur sed interdum imperdiet et ipsum. Mauris lorem tincidunt nullam amet leo Aenean ligula consequat consequat.</p>
-								</li>
-								<li class="icon solid fa-code">
-									<h3>Mus Scelerisque</h3>
-									<p>Augue consectetur sed interdum imperdiet et ipsum. Mauris lorem tincidunt nullam amet leo Aenean ligula consequat consequat.</p>
-								</li>
-								<li class="icon solid fa-headphones-alt">
-									<h3>Mauris Imperdiet</h3>
-									<p>Augue consectetur sed interdum imperdiet et ipsum. Mauris lorem tincidunt nullam amet leo Aenean ligula consequat consequat.</p>
-								</li>
-								<li class="icon fa-heart">
-									<h3>Aenean Primis</h3>
-									<p>Augue consectetur sed interdum imperdiet et ipsum. Mauris lorem tincidunt nullam amet leo Aenean ligula consequat consequat.</p>
-								</li>
-								<li class="icon fa-flag">
-									<h3>Tortor Ut</h3>
-									<p>Augue consectetur sed interdum imperdiet et ipsum. Mauris lorem tincidunt nullam amet leo Aenean ligula consequat consequat.</p>
-								</li>
-							</ul>
-						</div>
-					</section>
-
-				<!-- CTA -->
-					<section id="cta" class="wrapper style4">
-						<div class="inner">
-							<header>
-								<h2>Arcue ut vel commodo</h2>
-								<p>Aliquam ut ex ut augue consectetur interdum endrerit imperdiet amet eleifend fringilla.</p>
-							</header>
-							<ul class="actions stacked">
-								<li><a href="#" class="button fit primary">Activate</a></li>
-								<li><a href="#" class="button fit">Learn More</a></li>
-							</ul>
-						</div>
-					</section>
-
-				<!-- Footer -->
-					<footer id="footer">
-						<ul class="icons">
-							<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-							<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-							<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-							<li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
-							<li><a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
-						</ul>
-						<ul class="copyright">
-							<li>&copy; Untitled</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-						</ul>
-					</footer>
-
-			</div>
-
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.scrollex.min.js"></script>
-			<script src="assets/js/jquery.scrolly.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
-
-	</body>
-
+    fetchPubMed();
+    </script>
+</body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
