@@ -9,6 +9,59 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<style>
+		/* Results Masonry Grid */
+		.results {
+			max-width: 1100px;
+			margin: 40px auto;
+			column-count: 3;
+			column-gap: 20px;
+		}
+
+		.result-item {
+			background: #fff;
+			border-radius: 10px;
+			padding: 20px;
+			margin: 0 0 20px;
+			box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+			display: inline-block;
+			width: 100%;
+			box-sizing: border-box;
+		}
+
+		.result-title {
+			display: block;
+			font-size: 18px;
+			font-weight: 600;
+			color: #0056a3;
+			text-decoration: none;
+			margin-bottom: 8px;
+		}
+
+		.result-title:hover { text-decoration: underline; }
+
+		.result-authors { color: #333; font-size: 14px; margin-bottom: 6px; }
+
+		.result-citation { color: #666; font-size: 13px; margin-bottom: 10px; }
+
+		/* Share Buttons */
+		.share-buttons { margin-top: 10px; }
+		.share-buttons a {
+			display: inline-block;
+			margin-right: 10px;
+			font-size: 13px;
+			color: #fff;
+			padding: 6px 10px;
+			border-radius: 6px;
+			text-decoration: none;
+			transition: opacity 0.3s ease;
+		}
+
+		.share-buttons a:hover { opacity: 0.85; }
+		.twitter { background: #1DA1F2; }
+		.linkedin { background: #0A66C2; }
+		.facebook { background: #3b5998; }
+		</style>
 	</head>
 	<body class="landing is-preload">
 
@@ -51,6 +104,23 @@
 			});
 			</script>
 			<!-- Page Wrapper -->
+			<!-- Masonry Results Grid -->
+			<section id="results-grid">
+				<div class="results">
+					<!-- Example result item -->
+					<div class="result-item">
+						<a href="#" class="result-title">Example Article Title</a>
+						<div class="result-authors">Jane Doe, John Smith</div>
+						<div class="result-citation">Journal of Example, 2025</div>
+						<div class="share-buttons">
+							<a href="#" class="twitter">Twitter</a>
+							<a href="#" class="linkedin">LinkedIn</a>
+							<a href="#" class="facebook">Facebook</a>
+						</div>
+					</div>
+					<!-- Add more .result-item blocks here -->
+				</div>
+			</section>
 			<div id="page-wrapper">
 
 				<!-- Header -->
