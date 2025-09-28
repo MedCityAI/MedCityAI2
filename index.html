@@ -306,22 +306,16 @@
 									const pubdate = article.epubdate || article.pubdate || "No date";
 									const url = article.elocationid && article.elocationid.startsWith('http') ? article.elocationid : `https://pubmed.ncbi.nlm.nih.gov/${id}/`;
 
-									// Get first 12 authors
-									const authorObjs = article.authors.slice(0, 12);
-									let hasRochester = false;
-									const authorSpans = authorObjs.map(a => {
-										// Check for Rochester affiliation (case-insensitive)
+									// Get first 12 authors for underlining Rochester, but show all authors
+									const authorObjs = article.authors;
+									const authorSpans = authorObjs.map((a, idx) => {
+										// Only underline Rochester authors in first 12
 										const affil = (a.affiliation || '').toLowerCase();
-										const isRochester = affil.includes('rochester');
-										if (isRochester) hasRochester = true;
-										// Underline Rochester authors
+										const isRochester = idx < 12 && affil.includes('rochester');
 										return `<span${isRochester ? ' style="text-decoration:underline"' : ''}>${a.name}</span>`;
 									});
 
-									if (!hasRochester) return; // skip if no Rochester author in first 12
-
 									let authorsHTML = authorSpans.join(', ');
-									if (article.authors.length > 12) authorsHTML += ', <em>et al.</em>';
 
 									resultsHTML += `
 									<div class="result-item">
