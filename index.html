@@ -310,24 +310,31 @@
 							const esummaryRes = await fetch(esummaryUrl);
 							const esummaryData = await esummaryRes.json();
 
-							// Build results HTML
-							let resultsHTML = "<ul>";
+							// Build results HTML as masonry grid
+							let resultsHTML = '<div class="results">';
 							ids.forEach(id => {
-							const article = esummaryData.result[id];
-							if (article) {
-								const title = article.title || "No title";
-								const authors = article.authors?.length ? `${article.authors[0].name} et al.` : "Unknown";
-								const journal = article.fulljournalname || "Unknown Journal";
-								const pubdate = article.epubdate || article.pubdate || "No date";
-
-								resultsHTML += `<li>
-								<strong>${title}</strong><br>
-								${authors} <em>${journal}</em>. ${pubdate}
-								</li>`;
-							}
+								const article = esummaryData.result[id];
+								if (article) {
+									const title = article.title || "No title";
+									const authors = article.authors?.length ? `${article.authors[0].name} et al.` : "Unknown";
+									const journal = article.fulljournalname || "Unknown Journal";
+									const pubdate = article.epubdate || article.pubdate || "No date";
+									const url = article.elocationid && article.elocationid.startsWith('http') ? article.elocationid : `https://pubmed.ncbi.nlm.nih.gov/${id}/`;
+									resultsHTML += `
+									<div class="result-item">
+										<a href="${url}" class="result-title" target="_blank">${title}</a>
+										<div class="result-authors">${authors}</div>
+										<div class="result-citation">${journal}, ${pubdate}</div>
+										<div class="share-buttons">
+											<a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}" class="twitter" target="_blank">Twitter</a>
+											<a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}" class="linkedin" target="_blank">LinkedIn</a>
+											<a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" class="facebook" target="_blank">Facebook</a>
+										</div>
+									</div>
+									`;
+								}
 							});
-							resultsHTML += "</ul>";
-
+							resultsHTML += '</div>';
 							document.getElementById("pubmed-results").innerHTML = resultsHTML;
 						} catch (error) {
 							console.error(error);
