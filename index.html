@@ -314,16 +314,33 @@
 							let resultsHTML = '<div class="results">';
 							ids.forEach(id => {
 								const article = esummaryData.result[id];
-								if (article) {
+								if (article && Array.isArray(article.authors)) {
 									const title = article.title || "No title";
-									const authors = article.authors?.length ? `${article.authors[0].name} et al.` : "Unknown";
 									const journal = article.fulljournalname || "Unknown Journal";
 									const pubdate = article.epubdate || article.pubdate || "No date";
 									const url = article.elocationid && article.elocationid.startsWith('http') ? article.elocationid : `https://pubmed.ncbi.nlm.nih.gov/${id}/`;
+
+									// Get first 12 authors
+									const authorObjs = article.authors.slice(0, 12);
+									let hasRochester = false;
+									const authorSpans = authorObjs.map(a => {
+										// Check for Rochester affiliation (case-insensitive)
+										const affil = (a.affiliation || '').toLowerCase();
+										const isRochester = affil.includes('rochester');
+										if (isRochester) hasRochester = true;
+										// Underline Rochester authors
+										return `<span${isRochester ? ' style="text-decoration:underline"' : ''}>${a.name}</span>`;
+									});
+
+									if (!hasRochester) return; // skip if no Rochester author in first 12
+
+									let authorsHTML = authorSpans.join(', ');
+									if (article.authors.length > 12) authorsHTML += ', <em>et al.</em>';
+
 									resultsHTML += `
 									<div class="result-item">
 										<a href="${url}" class="result-title" target="_blank">${title}</a>
-										<div class="result-authors">${authors}</div>
+										<div class="result-authors">${authorsHTML}</div>
 										<div class="result-citation">${journal}, ${pubdate}</div>
 										<div class="share-buttons">
 											<a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}" class="twitter" target="_blank">Twitter</a>
