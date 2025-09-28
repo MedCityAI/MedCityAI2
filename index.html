@@ -167,6 +167,7 @@
 
 						<!-- Dropdown + Results Container -->
 						<div class="pubmed-container">
+
 						<select id="pubmed-query" onchange="fetchPubMedResults()">
 							<option value="everything" selected>Everything</option>
 							<option value="genai">Generative AI</option>
@@ -175,10 +176,12 @@
 							<option value="radiology">Radiology</option>
 						</select>
 
-						<!-- Results will render here -->
+						<!-- Results Masonry Grid will render here -->
 						<div id="pubmed-results" style="margin-top:20px;"></div>
+
 						</div>
 
+						<!-- Carousel directly below results grid -->
 						<div class="carousel-container">
 						<button class="carousel-btn prev">&#10094;</button>
 						<div class="carousel-track-container">
