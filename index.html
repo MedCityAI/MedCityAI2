@@ -13,6 +13,11 @@
 		/* Results Masonry Grid */
 		.results {
 			max-width: 1100px;
+							<!-- Toggle button and Results Masonry Grid -->
+							<div style="text-align:center; margin-bottom:20px;">
+							  <button id="toggle-query" style="background:#fff; color:#0056a3; border:1px solid #ccc; border-radius:8px; padding:10px 24px; font-size:16px; cursor:pointer; font-weight:600;">Showing: Everything</button>
+							</div>
+
 			margin: 40px auto;
 			column-count: 3;
 			column-gap: 20px;
@@ -63,7 +68,7 @@
 		.facebook { background: #ffffff; }
 		</style>
 	</head>
-	<body class="landing is-preload" style="background:#f4f4f4;">
+	<body class="landing is-preload">
 
 			<script>
 			// Global variables
@@ -165,18 +170,12 @@
 						    </div>
 						  </div>
 
+
 						<!-- Results Masonry Grid will render here -->
 						<div id="pubmed-results" style="margin-top:20px;"></div>
-						
-						padding: 0 10px;
-						border-radius: 12px;
-						top: 40%;
-						border: none;
-						padding: 5px 10px;
-						cursor: pointer;
-						border-radius: 50%;
-						z-index: 10;
-						
+						</div>
+					
+						<!-- Fetch and display PubMed results -->
 						<script>
 						async function fetchPubMedResults() {
 						const queryType = document.getElementById("pubmed-query").value;
@@ -184,11 +183,12 @@
 						// Define queries
 						const queries = {
 							everything: `("Mayo"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))`,
-							genai: `(("Generative AI" OR "Large language model" OR "chatgpt") AND "Mayo"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))`,
-							deeplearning: `(("Deep learning" OR "Neural network") AND "Mayo"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))`,
-							informatics: `("informatics" AND "Mayo"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))`,
-							radiology: `(("CT" OR "MRI" OR "ultrasound" OR "radiology") AND "Mayo"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))`
+							genai: `(("Generative AI" OR "Large language model" OR "chatgpt") AND "Mayo"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))`
 						};
+
+						// Toggle logic
+						const toggleBtn = document.getElementById("toggle-query");
+						let queryType = toggleBtn && toggleBtn.dataset.queryType ? toggleBtn.dataset.queryType : "everything";
 
 						const term = queries[queryType];
 						const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(term)}&retmax=10&sort=pub+date&retmode=json`;
@@ -258,7 +258,24 @@
 						}
 
 						// Fetch default ("everything") on page load
-						document.addEventListener("DOMContentLoaded", fetchPubMedResults);
+						document.addEventListener("DOMContentLoaded", () => {
+						  fetchPubMedResults();
+						  const toggleBtn = document.getElementById("toggle-query");
+						  if (toggleBtn) {
+						    toggleBtn.dataset.queryType = "everything";
+						    toggleBtn.addEventListener("click", () => {
+						      // Toggle between everything and genai
+						      if (toggleBtn.dataset.queryType === "everything") {
+						        toggleBtn.dataset.queryType = "genai";
+						        toggleBtn.textContent = "Showing: Generative AI";
+						      } else {
+						        toggleBtn.dataset.queryType = "everything";
+						        toggleBtn.textContent = "Showing: Everything";
+						      }
+						      fetchPubMedResults();
+						    });
+						  }
+						});
 						</script>
 						<script>
 						document.addEventListener("DOMContentLoaded", () => {
