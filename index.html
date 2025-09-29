@@ -12,15 +12,10 @@
 		<style>
 		/* Results Masonry Grid */
 		.results {
-			max-width: 1100px;
-							<!-- Toggle button and Results Masonry Grid -->
-							<div style="text-align:center; margin-bottom:20px;">
-							  <button id="toggle-query" style="background:#fff; color:#0056a3; border:1px solid #ccc; border-radius:8px; padding:10px 24px; font-size:16px; cursor:pointer; font-weight:600;">Showing: Everything</button>
-							</div>
-
-			margin: 40px auto;
-			column-count: 3;
-			column-gap: 20px;
+				max-width: 1100px;
+				margin: 40px auto;
+				column-count: 3;
+				column-gap: 20px;
 		}
 
 		.result-item {
@@ -171,27 +166,30 @@
 						  </div>
 
 
-						<!-- Results Masonry Grid will render here -->
-						<div id="pubmed-results" style="margin-top:20px;"></div>
+												<!-- Toggle button right aligned above grid -->
+												<div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px;">
+													<button id="toggle-query" style="background:#fff; color:#0056a3; border:1px solid #ccc; border-radius:8px; padding:10px 24px; font-size:16px; cursor:pointer; font-weight:600;">Showing: Everything</button>
+												</div>
+												<!-- Results Masonry Grid will render here -->
+												<div id="pubmed-results" style="margin-top:20px;"></div>
 						</div>
 					
 						<!-- Fetch and display PubMed results -->
 						<script>
 						async function fetchPubMedResults() {
-						const queryType = document.getElementById("pubmed-query").value;
-						
-						// Define queries
-						const queries = {
-							everything: `("Mayo"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))`,
-							genai: `(("Generative AI" OR "Large language model" OR "chatgpt") AND "Mayo"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))`
-						};
-
-						// Toggle logic
-						const toggleBtn = document.getElementById("toggle-query");
-						let queryType = toggleBtn && toggleBtn.dataset.queryType ? toggleBtn.dataset.queryType : "everything";
-
-						const term = queries[queryType];
-						const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(term)}&retmax=10&sort=pub+date&retmode=json`;
+												// Toggle logic
+												const toggleBtn = document.getElementById("toggle-query");
+												let queryType = "everything";
+												if (toggleBtn && toggleBtn.dataset.queryType) {
+													queryType = toggleBtn.dataset.queryType;
+												}
+												// Only two queries
+												const queries = {
+														everything: `("Mayo"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))`,
+														genai: `(("Generative AI" OR "Large language model" OR "chatgpt") AND "Mayo"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))`
+												};
+												const term = queries[queryType];
+												const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(term)}&retmax=10&sort=pub+date&retmode=json`;
 
 						try {
 							const esearchRes = await fetch(esearchUrl);
