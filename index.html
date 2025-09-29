@@ -63,7 +63,7 @@
 		.facebook { background: #ffffff; }
 		</style>
 	</head>
-	<body class="landing is-preload">
+	<body class="landing is-preload" style="background:#f4f4f4;">
 
 			<script>
 			// Global variables
@@ -165,105 +165,17 @@
 						    </div>
 						  </div>
 
-						<!-- Dropdown + Results Container -->
-						<div class="pubmed-container">
-
-						<select id="pubmed-query" onchange="fetchPubMedResults()">
-							<option value="everything" selected>Everything</option>
-							<option value="genai">Generative AI</option>
-							<option value="deeplearning">Deep Learning</option>
-							<option value="informatics">Informatics</option>
-							<option value="radiology">Radiology</option>
-						</select>
-
 						<!-- Results Masonry Grid will render here -->
 						<div id="pubmed-results" style="margin-top:20px;"></div>
-
-						</div>
-
-						<!-- Carousel directly below results grid -->
-						<div class="carousel-container">
-						<button class="carousel-btn prev">&#10094;</button>
-						<div class="carousel-track-container">
-							<ul class="carousel-track">
-							<li class="carousel-slide"><img src="./database/featured/img1.jpg" alt="1"></li>
-							<li class="carousel-slide"><img src="./database/featured/img2.jpg" alt="2"></li>
-							<li class="carousel-slide"><img src="./database/featured/img3.jpg" alt="3"></li>
-							<li class="carousel-slide"><img src="./database/featured/img4.jpg" alt="4"></li>
-							<li class="carousel-slide"><img src="./database/featured/img5.jpg" alt="5"></li>
-							<li class="carousel-slide"><img src="./database/featured/img6.jpg" alt="6"></li>
-							<li class="carousel-slide"><img src="./database/featured/img7.jpg" alt="7"></li>
-							<li class="carousel-slide"><img src="./database/featured/img8.jpg" alt="8"></li>
-							</ul>
-						</div>
-						<button class="carousel-btn next">&#10095;</button>
-						</div>
 						
-						<style>
-						/* Add margin on left/right */
-						.pubmed-container {
-						margin: 0 auto;           /* center horizontally */
-						padding: 0 20px;          /* left & right padding */
-						max-width: 1000px;         /* optional: prevent overly wide text */
-						}
-
-						/* Style dropdown a little */
-						.pubmed-container select {
-						padding: 6px 10px;
-						border-radius: 6px;
-						border: 1px solid #ccc;
-						margin-bottom: 15px;
-						}
-						</style>
-
-
-						<style>
-						.carousel-container {
-						position: relative;
-						max-width: 1000px;
-						margin: 40px auto;
-						overflow: hidden;
-						}
-
-						.carousel-track-container {
-						overflow: hidden;
-						}
-
-						.carousel-track {
-						display: flex;
-						transition: transform 0.5s ease-in-out;
-						}
-
-						.carousel-slide {
-						min-width: calc(100% / 3); /* Show 3 images */
-						box-sizing: border-box;
 						padding: 0 10px;
-						}
-
-						.carousel-slide img {
-						width: 100%;
-						height: 275px;
 						border-radius: 12px;
-						object-fit: cover;
-						}
-
-						.carousel-btn {
-						position: absolute;
 						top: 40%;
-						transform: translateY(-50%);
-						background: rgba(0,0,0,0.5);
-						color: white;
 						border: none;
-						font-size: 2em;
 						padding: 5px 10px;
 						cursor: pointer;
 						border-radius: 50%;
 						z-index: 10;
-						}
-
-						.carousel-btn.prev { left: 30px; }
-						.carousel-btn.next { right: 30px; }
-						</style>
 						
 						<script>
 						async function fetchPubMedResults() {
