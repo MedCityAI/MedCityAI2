@@ -176,7 +176,7 @@
 						async function fetchPubMedResults() {
 																		// Only show Everything
 																		const term = '("Mayo"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))';
-																		const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(term)}&retmax=10&sort=pub+date&retmode=json&datetype=edat&reldate=1`;
+																		const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(term)}&sort=pub+date&retmode=json&datetype=pdat&reldate=1`;
 
 						try {
 							const esearchRes = await fetch(esearchUrl);
