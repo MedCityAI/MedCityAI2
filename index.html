@@ -166,10 +166,7 @@
 						  </div>
 
 
-												<!-- Toggle button right aligned above grid -->
-												<div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px;">
-													<button id="toggle-query" style="background:#fff; color:#0056a3; border:1px solid #ccc; border-radius:8px; padding:10px 24px; font-size:16px; cursor:pointer; font-weight:600;">Showing: Everything</button>
-												</div>
+																		<!-- Results Masonry Grid will render here -->
 												<!-- Results Masonry Grid will render here -->
 												<div id="pubmed-results" style="margin-top:20px;"></div>
 						</div>
@@ -177,19 +174,9 @@
 						<!-- Fetch and display PubMed results -->
 						<script>
 						async function fetchPubMedResults() {
-												// Toggle logic
-												const toggleBtn = document.getElementById("toggle-query");
-												let queryType = "everything";
-												if (toggleBtn && toggleBtn.dataset.queryType) {
-													queryType = toggleBtn.dataset.queryType;
-												}
-												// Only two queries
-												const queries = {
-														everything: `("Mayo"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))`,
-														genai: `(("Generative AI" OR "Large language model" OR "chatgpt") AND "Mayo"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))`
-												};
-												const term = queries[queryType];
-												const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(term)}&retmax=10&sort=pub+date&retmode=json`;
+																		// Only show Everything
+																		const term = '("Mayo"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))';
+																		const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(term)}&retmax=10&sort=pub+date&retmode=json&datetype=pdat&reldate=1`;
 
 						try {
 							const esearchRes = await fetch(esearchUrl);
@@ -256,24 +243,7 @@
 						}
 
 						// Fetch default ("everything") on page load
-						document.addEventListener("DOMContentLoaded", () => {
-						  fetchPubMedResults();
-						  const toggleBtn = document.getElementById("toggle-query");
-						  if (toggleBtn) {
-						    toggleBtn.dataset.queryType = "everything";
-						    toggleBtn.addEventListener("click", () => {
-						      // Toggle between everything and genai
-						      if (toggleBtn.dataset.queryType === "everything") {
-						        toggleBtn.dataset.queryType = "genai";
-						        toggleBtn.textContent = "Showing: Generative AI";
-						      } else {
-						        toggleBtn.dataset.queryType = "everything";
-						        toggleBtn.textContent = "Showing: Everything";
-						      }
-						      fetchPubMedResults();
-						    });
-						  }
-						});
+						document.addEventListener("DOMContentLoaded", fetchPubMedResults);
 						</script>
 						<script>
 						document.addEventListener("DOMContentLoaded", () => {
