@@ -205,11 +205,15 @@
 									// Get first 12 authors for underlining Rochester, but show all authors
 									const authorObjs = article.authors;
 									const authorSpans = authorObjs.map(a => {
-										const affil = (a.affiliation || '').toLowerCase();
-										const isRochester = affil.includes('rochester');
+										// Check if this author has Rochester in any affiliation
+										let isRochester = false;
+										if (Array.isArray(a.affiliation)) {
+											isRochester = a.affiliation.some(aff => aff && aff.toLowerCase().includes('rochester'));
+										} else if (typeof a.affiliation === 'string') {
+											isRochester = a.affiliation.toLowerCase().includes('rochester');
+										}
 										return `<span${isRochester ? ' style="text-decoration:underline"' : ''}>${a.name}</span>`;
 									});
-
 									let authorsHTML = authorSpans.join(', ');
 
 									resultsHTML += `
