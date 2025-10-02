@@ -107,7 +107,7 @@
 			<div id="page-wrapper">
 
 				<!-- Header -->
-					<header id="header" class="alt">
+					<header id="header" class="alt" style="position:fixed;top:0;left:0;width:100%;z-index:1000;background:rgba(255,255,255,0.95);box-shadow:0 2px 8px rgba(0,0,0,0.07);">
 						<h1><a href="index.html">Med City AI</a></h1>
 						<nav id="nav">
 							<ul>
@@ -140,7 +140,7 @@
 				Remove Banner --> 
 
 				<!-- One -->
-					<section id="one" class="wrapper style1 special" style="background: url('images/banner.jpg') center center/cover no-repeat;">
+					<section id="one" class="wrapper style1 special" style="background: url('images/banner.jpg') center center/cover no-repeat; background-attachment: fixed;">
 						<div class="inner">
 							<header class="major">
 								<h2>Recently Published in Rochester, MN:</h2>
@@ -204,10 +204,9 @@
 
 									// Get first 12 authors for underlining Rochester, but show all authors
 									const authorObjs = article.authors;
-									const authorSpans = authorObjs.map((a, idx) => {
-										// Only underline Rochester authors in first 12
+									const authorSpans = authorObjs.map(a => {
 										const affil = (a.affiliation || '').toLowerCase();
-										const isRochester = idx < 12 && affil.includes('rochester');
+										const isRochester = affil.includes('rochester');
 										return `<span${isRochester ? ' style="text-decoration:underline"' : ''}>${a.name}</span>`;
 									});
 
