@@ -127,7 +127,7 @@
 						</nav>
 					</header>
 				<!-- here is where I'd like to open one folder up database/pubmed_results.csv and then export three variables VarTot (number of total entries) VarDay (number of entries in past 24 hours) VarWeek (number of entries in past 7 days) VarMonth (number of entries in past 30 days) and then have those variables populate the following sections below% -->
-				<!-- Banner -->
+				<!-- Banner Removed
 					<section id="banner">
 						<div class="inner">
 							<h2>Med City AI</h2>
@@ -135,10 +135,10 @@
 							from beneath the corntower</p>
 						    <div style="display: flex; justify-content: space-around; text-align: center; margin-top: 2em;">
 						</div>
-						<a href="#one" class="more scrolly"> Papers Indexed:  <span id="VarTot"></span> </a> <!-- replace 16000 with VarTot -->
-
+						<a href="#one" class="more scrolly"> Papers Indexed:  <span id="VarTot"></span> </a>
 					</section>
-				
+				Remove Banner --> 
+
 				<!-- One -->
 					<section id="one" class="wrapper style1 special">
 						<div class="inner">
@@ -166,17 +166,16 @@
 						  </div>
 
 
-																		<!-- Results Masonry Grid will render here -->
-												<!-- Results Masonry Grid will render here -->
-												<div id="pubmed-results" style="margin-top:20px;"></div>
+							<!-- Results Masonry Grid will render here -->
+							<div id="pubmed-results" style="margin-top:20px;"></div>
 						</div>
 					
 						<!-- Fetch and display PubMed results -->
 						<script>
 						async function fetchPubMedResults() {
-																		// Only show Everything
-																		const term = '("Mayo"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))';
-																		const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(term)}&sort=pub+date&retmode=json&datetype=pdat&reldate=1`;
+							// Only show Everything
+							const term = '("Mayo"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))';
+							const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(term)}&sort=pub+date&retmode=json&datetype=pdat&reldate=1`;
 
 						try {
 							const esearchRes = await fetch(esearchUrl);
