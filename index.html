@@ -129,7 +129,7 @@
 
 				<!-- One -->
 				<section id="one" class="wrapper style1 special" style="position:relative;background: url('images/banner.jpg') center center/cover no-repeat; background-attachment: fixed;">
-					<div style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.45);z-index:0;"></div>
+					<div style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.70);z-index:0;"></div>
 					<div class="inner" style="position:relative;z-index:1;">
 						<div class="inner">
 							<header class="major">
@@ -208,14 +208,15 @@ let authorsHTML = authorSpans.join(', ');
 									// Get first 12 authors for underlining Rochester, but show all authors
 									const authorObjs = article.authors;
 									const authorSpans = authorObjs.map(a => {
-										// Check if this author has Rochester in any affiliation
 										let isRochester = false;
-										if (Array.isArray(a.affiliation)) {
-											isRochester = a.affiliation.some(aff => aff && aff.toLowerCase().includes('rochester'));
-										} else if (typeof a.affiliation === 'string') {
-											isRochester = a.affiliation.toLowerCase().includes('rochester');
+										if (a.affiliation) {
+											if (Array.isArray(a.affiliation)) {
+												isRochester = a.affiliation.some(aff => typeof aff === 'string' && aff.toLowerCase().includes('rochester'));
+											} else if (typeof a.affiliation === 'string') {
+												isRochester = a.affiliation.toLowerCase().includes('rochester');
+											}
 										}
-										return `<span${isRochester ? ' style="text-decoration:underline"' : ''}>${a.name}</span>`;
+										return `<span${isRochester ? ' style=\"text-decoration:underline\"' : ''}>${a.name}</span>`;
 									});
 									let authorsHTML = authorSpans.join(', ');
 
