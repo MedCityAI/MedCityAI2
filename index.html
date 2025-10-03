@@ -54,6 +54,13 @@
 		.twitter { background: #ffffff; }
 		.linkedin { background: #ffffff; }
 		.facebook { background: #ffffff; }
+
+		@media (max-width: 900px) {
+			.results { column-count: 2; }
+		}
+		@media (max-width: 600px) {
+			.results { column-count: 1; }
+		}
 		</style>
 	</head>
 	<body class="landing is-preload">
@@ -184,19 +191,24 @@
 									const journal = article.fulljournalname || "Unknown Journal";
 									const pubdate = article.epubdate || article.pubdate || "No date";
 									const url = article.elocationid && article.elocationid.startsWith('http') ? article.elocationid : `https://pubmed.ncbi.nlm.nih.gov/${id}/`;
-
-									// Underline Rochester authors
+				
+									// Robust Rochester author underlining
 									const authorObjs = article.authors;
+									const rochesterRegex = /(Rochester)/i;
 									const authorSpans = authorObjs.map(a => {
-										let isRochester = false;
+										let affiliations = [];
 										if (Array.isArray(a.affiliation)) {
-											isRochester = a.affiliation.some(aff => aff && /Rochester/i.test(aff));
+											affiliations = a.affiliation.filter(Boolean);
 										} else if (typeof a.affiliation === 'string') {
-											isRochester = /Rochester/i.test(a.affiliation);
+											affiliations = [a.affiliation];
+										} else if (a.affiliation && typeof a.affiliation === 'object') {
+											affiliations = Object.values(a.affiliation).map(String);
 										}
-										return isRochester ? `<u>${a.name}</u>` : a.name;
+										const isRochester = affiliations.some(aff => rochesterRegex.test(aff));
+										const name = a.name ? String(a.name) : '';
+										return isRochester && name ? `<u>${name}</u>` : name;
 									});
-									let authorsHTML = authorSpans.join(', ');
+									let authorsHTML = authorSpans.filter(Boolean).join(', ');
 
 									const citation = `${journal}. ${pubdate}. PMID: ${id}`;
 									resultsHTML += `
