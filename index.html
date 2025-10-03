@@ -134,7 +134,7 @@
 					<section id="one" class="wrapper style1 special" style="background: url('images/banner.jpg') center center/cover no-repeat; background-attachment: fixed;">
 						<div class="inner">
 							<header class="major">
-								<h2>Recently Published in Rochester, MN:</h2>
+								<h2>Recently Published in Rochester, MN (v2):</h2>
 							</header>
 						
 						    <!-- Numbers Section -->
@@ -191,24 +191,26 @@
 									const journal = article.fulljournalname || "Unknown Journal";
 									const pubdate = article.epubdate || article.pubdate || "No date";
 									const url = article.elocationid && article.elocationid.startsWith('http') ? article.elocationid : `https://pubmed.ncbi.nlm.nih.gov/${id}/`;
-				
-									// Robust Rochester author underlining
-									const authorObjs = article.authors;
-									const rochesterRegex = /(Rochester)/i;
-									const authorSpans = authorObjs.map(a => {
+
+									// Author underlining using querySelectorAll approach
+									let authors = [];
+									article.authors.forEach(authorNode => {
+										const name = authorNode.name ? String(authorNode.name) : '';
 										let affiliations = [];
-										if (Array.isArray(a.affiliation)) {
-											affiliations = a.affiliation.filter(Boolean);
-										} else if (typeof a.affiliation === 'string') {
-											affiliations = [a.affiliation];
-										} else if (a.affiliation && typeof a.affiliation === 'object') {
-											affiliations = Object.values(a.affiliation).map(String);
+										if (authorNode.affiliation) {
+											if (Array.isArray(authorNode.affiliation)) {
+												authorNode.affiliation.forEach(aff => affiliations.push(aff));
+											} else if (typeof authorNode.affiliation === 'string') {
+												affiliations.push(authorNode.affiliation);
+											}
 										}
-										const isRochester = affiliations.some(aff => rochesterRegex.test(aff));
-										const name = a.name ? String(a.name) : '';
-										return isRochester && name ? `<u>${name}</u>` : name;
+										let displayName = name;
+										if (affiliations.some(a => /Rochester/i.test(a))) {
+											displayName = `<u>${displayName}</u>`;
+										}
+										if (name) authors.push(displayName);
 									});
-									let authorsHTML = authorSpans.filter(Boolean).join(', ');
+									let authorsHTML = authors.join(', ');
 
 									const citation = `${journal}. ${pubdate}. PMID: ${id}`;
 									resultsHTML += `
