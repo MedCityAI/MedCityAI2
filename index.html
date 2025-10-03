@@ -134,7 +134,7 @@
 					<section id="one" class="wrapper style1 special" style="background: url('images/banner.jpg') center center/cover no-repeat; background-attachment: fixed;">
 						<div class="inner">
 							<header class="major">
-								<h2>Recently Published in Rochester, MN (v4):</h2>
+								<h2>Recently Published in Rochester, MN (v5):</h2>
 							</header>
 						
 						    <!-- Numbers Section -->
@@ -164,7 +164,7 @@
 						<script>
 						async function fetchPubMedResults() {
 							// Only show Everything
-							const term = '("Mayo"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))';
+							const term = '("Rochester"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))';
 							const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(term)}&sort=pub+date&retmode=json&datetype=pdat&reldate=1`;
 
 						try {
