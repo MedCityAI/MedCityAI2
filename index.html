@@ -192,16 +192,16 @@
 									const pubdate = article.epubdate || article.pubdate || "No date";
 									const url = article.elocationid && article.elocationid.startsWith('http') ? article.elocationid : `https://pubmed.ncbi.nlm.nih.gov/${id}/`;
 
-									// Author underlining using querySelectorAll approach
+									// Author underlining and display
 									let authors = [];
 									article.authors.forEach(authorNode => {
 										const name = authorNode.name ? String(authorNode.name) : '';
 										let affiliations = [];
 										if (authorNode.affiliation) {
 											if (Array.isArray(authorNode.affiliation)) {
-												authorNode.affiliation.forEach(aff => affiliations.push(aff));
+												affiliations = authorNode.affiliation;
 											} else if (typeof authorNode.affiliation === 'string') {
-												affiliations.push(authorNode.affiliation);
+												affiliations = [authorNode.affiliation];
 											}
 										}
 										let displayName = name;
@@ -212,12 +212,13 @@
 									});
 									let authorsHTML = authors.join(', ');
 
-									const citation = `${journal}. ${pubdate}. PMID: ${id}`;
-									resultsHTML += `
-									<div class="result-item">
+									// Create result-item element and set authors with innerHTML
+									const item = document.createElement('div');
+									item.className = 'result-item';
+									item.innerHTML = `
 										<a href="${url}" class="result-title" target="_blank">${title}</a>
 										<div class="result-authors"></div>
-										<div class="result-citation"><em>${citation}</em></div>
+										<div class="result-citation"><em>${journal}. ${pubdate}. PMID: ${id}</em></div>
 										<div class="share-buttons">
 											<a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" class="facebook" target="_blank">
 												<i class="icon brands fa-facebook-f"></i> 
@@ -229,8 +230,9 @@
 												<i class="icon brands fa-linkedin"></i> 
 											</a>
 										</div>
-									</div>
 									`;
+									item.querySelector('.result-authors').innerHTML = authorsHTML;
+									document.getElementById('pubmed-results').appendChild(item);
 									// Set authors HTML after element creation to ensure <u> is rendered
 									const lastItem = document.createElement('div');
 									lastItem.innerHTML = resultsHTML.split('<div class="result-item">').pop();
