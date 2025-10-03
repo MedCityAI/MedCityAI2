@@ -134,7 +134,7 @@
 					<section id="one" class="wrapper style1 special" style="background: url('images/banner.jpg') center center/cover no-repeat; background-attachment: fixed;">
 						<div class="inner">
 							<header class="major">
-								<h2>Recently Published in Rochester, MN (v3):</h2>
+								<h2>Recently Published in Rochester, MN (v4):</h2>
 							</header>
 						
 						    <!-- Numbers Section -->
@@ -192,33 +192,25 @@
 									const pubdate = article.epubdate || article.pubdate || "No date";
 									const url = article.elocationid && article.elocationid.startsWith('http') ? article.elocationid : `https://pubmed.ncbi.nlm.nih.gov/${id}/`;
 
-									// Author underlining and display
-									let authors = [];
-									article.authors.forEach(authorNode => {
-										const name = authorNode.name ? String(authorNode.name) : '';
-										let affiliations = [];
-										if (authorNode.affiliation) {
-											if (Array.isArray(authorNode.affiliation)) {
-												affiliations = authorNode.affiliation;
-											} else if (typeof authorNode.affiliation === 'string') {
-												affiliations = [authorNode.affiliation];
-											}
+									// Underline Rochester authors
+									const authorObjs = article.authors;
+									const authorSpans = authorObjs.map(a => {
+										let isRochester = false;
+										if (Array.isArray(a.affiliation)) {
+											isRochester = a.affiliation.some(aff => aff && /Rochester/i.test(aff));
+										} else if (typeof a.affiliation === 'string') {
+											isRochester = /Rochester/i.test(a.affiliation);
 										}
-										let displayName = name;
-										if (affiliations.some(a => /Rochester/i.test(a))) {
-											displayName = `<u>${displayName}</u>`;
-										}
-										if (name) authors.push(displayName);
+										return isRochester ? `<u>${a.name}</u>` : a.name;
 									});
-									let authorsHTML = authors.join(', ');
+									let authorsHTML = authorSpans.join(', ');
 
-									// Create result-item element and set authors with innerHTML
-									const item = document.createElement('div');
-									item.className = 'result-item';
-									item.innerHTML = `
+									const citation = `${journal}. ${pubdate}. PMID: ${id}`;
+									resultsHTML += `
+									<div class="result-item">
 										<a href="${url}" class="result-title" target="_blank">${title}</a>
-										<div class="result-authors"></div>
-										<div class="result-citation"><em>${journal}. ${pubdate}. PMID: ${id}</em></div>
+										<div class="result-authors">${authorsHTML}</div>
+										<div class="result-citation"><em>${citation}</em></div>
 										<div class="share-buttons">
 											<a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" class="facebook" target="_blank">
 												<i class="icon brands fa-facebook-f"></i> 
@@ -230,16 +222,8 @@
 												<i class="icon brands fa-linkedin"></i> 
 											</a>
 										</div>
+									</div>
 									`;
-									item.querySelector('.result-authors').innerHTML = authorsHTML;
-									document.getElementById('pubmed-results').appendChild(item);
-									// Set authors HTML after element creation to ensure <u> is rendered
-									const lastItem = document.createElement('div');
-									lastItem.innerHTML = resultsHTML.split('<div class="result-item">').pop();
-									if (lastItem.querySelector('.result-authors')) {
-										lastItem.querySelector('.result-authors').innerHTML = authorsHTML;
-									}
-									resultsHTML = resultsHTML.replace(/(<div class=\"result-authors\">)(.*?)(<\/div>)/, `$1${authorsHTML}$3`);
 								}
 							});
 							document.getElementById("pubmed-results").innerHTML = `<div class="results">${resultsHTML}</div>`;
