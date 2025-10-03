@@ -10,14 +10,13 @@
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 		<style>
-		/* Results Masonry Grid */
+		/* Results Masonry Grid (from generic.html) */
 		.results {
-				max-width: 1100px;
-				margin: 40px auto;
-				column-count: 3;
-				column-gap: 20px;
+			max-width: 1100px;
+			margin: 40px auto;
+			column-count: 3;
+			column-gap: 20px;
 		}
-
 		.result-item {
 			background: #fff;
 			border-radius: 10px;
@@ -28,7 +27,6 @@
 			width: 100%;
 			box-sizing: border-box;
 		}
-
 		.result-title {
 			display: block;
 			font-size: 18px;
@@ -37,13 +35,9 @@
 			text-decoration: none;
 			margin-bottom: 8px;
 		}
-
 		.result-title:hover { text-decoration: underline; }
-
 		.result-authors { color: #333; font-size: 14px; margin-bottom: 6px; }
-
 		.result-citation { color: #666; font-size: 13px; margin-bottom: 10px; }
-
 		/* Share Buttons */
 		.share-buttons { margin-top: 10px; }
 		.share-buttons a {
@@ -56,7 +50,6 @@
 			text-decoration: none;
 			transition: opacity 0.3s ease;
 		}
-
 		.share-buttons a:hover { opacity: 0.85; }
 		.twitter { background: #ffffff; }
 		.linkedin { background: #ffffff; }
@@ -182,8 +175,8 @@
 							const esummaryRes = await fetch(esummaryUrl);
 							const esummaryData = await esummaryRes.json();
 
-							// Build results HTML as masonry grid
-							let resultsHTML = '<div class="results">';
+							// Build results HTML as masonry grid (generic.html logic)
+							let resultsHTML = '';
 							ids.forEach(id => {
 								const article = esummaryData.result[id];
 								if (article && Array.isArray(article.authors)) {
@@ -192,25 +185,25 @@
 									const pubdate = article.epubdate || article.pubdate || "No date";
 									const url = article.elocationid && article.elocationid.startsWith('http') ? article.elocationid : `https://pubmed.ncbi.nlm.nih.gov/${id}/`;
 
-									// Get first 12 authors for underlining Rochester, but show all authors
+									// Underline Rochester authors
 									const authorObjs = article.authors;
 									const authorSpans = authorObjs.map(a => {
-										// Check if this author has Rochester in any affiliation
 										let isRochester = false;
 										if (Array.isArray(a.affiliation)) {
-											isRochester = a.affiliation.some(aff => aff && aff.toLowerCase().includes('rochester'));
+											isRochester = a.affiliation.some(aff => aff && /Rochester/i.test(aff));
 										} else if (typeof a.affiliation === 'string') {
-											isRochester = a.affiliation.toLowerCase().includes('rochester');
+											isRochester = /Rochester/i.test(a.affiliation);
 										}
-										return `<span${isRochester ? ' style="text-decoration:underline"' : ''}>${a.name}</span>`;
+										return isRochester ? `<u>${a.name}</u>` : a.name;
 									});
 									let authorsHTML = authorSpans.join(', ');
 
+									const citation = `${journal}. ${pubdate}. PMID: ${id}`;
 									resultsHTML += `
 									<div class="result-item">
 										<a href="${url}" class="result-title" target="_blank">${title}</a>
 										<div class="result-authors">${authorsHTML}</div>
-										<div class="result-citation">${journal}, ${pubdate}</div>
+										<div class="result-citation"><em>${citation}</em></div>
 										<div class="share-buttons">
 											<a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" class="facebook" target="_blank">
 												<i class="icon brands fa-facebook-f"></i> 
@@ -226,8 +219,7 @@
 									`;
 								}
 							});
-							resultsHTML += '</div>';
-							document.getElementById("pubmed-results").innerHTML = resultsHTML;
+							document.getElementById("pubmed-results").innerHTML = `<div class="results">${resultsHTML}</div>`;
 						} catch (error) {
 							console.error(error);
 							document.getElementById("pubmed-results").innerHTML = "<p>Error fetching results.</p>";
