@@ -201,7 +201,13 @@
 										} else if (typeof a.affiliation === 'string') {
 											isRochester = /Rochester/i.test(a.affiliation);
 										}
-										return isRochester ? `<u>${a.name}</u>` : a.name;
+										if (isRochester) {
+											// Link to PubMed author search for this name
+											const authorSearchUrl = `https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(a.name)}[Author]`;
+											return `<a href="${authorSearchUrl}" target="_blank">${a.name}</a>`;
+										} else {
+											return a.name;
+										}
 									});
 									let authorsHTML = authorSpans.join(', ');
 
