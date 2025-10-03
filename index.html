@@ -134,7 +134,7 @@
 					<section id="one" class="wrapper style1 special" style="background: url('images/banner.jpg') center center/cover no-repeat; background-attachment: fixed;">
 						<div class="inner">
 							<header class="major">
-								<h2>Recently Published in Rochester, MN (v2):</h2>
+								<h2>Recently Published in Rochester, MN (v3):</h2>
 							</header>
 						
 						    <!-- Numbers Section -->
@@ -216,7 +216,7 @@
 									resultsHTML += `
 									<div class="result-item">
 										<a href="${url}" class="result-title" target="_blank">${title}</a>
-										<div class="result-authors">${authorsHTML}</div>
+										<div class="result-authors"></div>
 										<div class="result-citation"><em>${citation}</em></div>
 										<div class="share-buttons">
 											<a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" class="facebook" target="_blank">
@@ -231,6 +231,13 @@
 										</div>
 									</div>
 									`;
+									// Set authors HTML after element creation to ensure <u> is rendered
+									const lastItem = document.createElement('div');
+									lastItem.innerHTML = resultsHTML.split('<div class="result-item">').pop();
+									if (lastItem.querySelector('.result-authors')) {
+										lastItem.querySelector('.result-authors').innerHTML = authorsHTML;
+									}
+									resultsHTML = resultsHTML.replace(/(<div class=\"result-authors\">)(.*?)(<\/div>)/, `$1${authorsHTML}$3`);
 								}
 							});
 							document.getElementById("pubmed-results").innerHTML = `<div class="results">${resultsHTML}</div>`;
