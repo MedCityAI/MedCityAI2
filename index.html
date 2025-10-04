@@ -20,7 +20,7 @@
 			font-size: 12px;
 			font-weight: bold;
 			padding: 4px 12px;
-			border-radius: 0 0 8px 0;
+			border-radius: 8px 0 8px 0;
 			z-index: 10;
 		}
 		.result-item { position: relative; }
@@ -231,7 +231,7 @@
 								const citation = `${journal}. ${pubdate}. PMID: ${pmid}`;
 								resultsHTML += `
 									<div class="result-item">
-										<div class="new-tab">NEW</div>
+										<div class="today-tab">NEW</div>
 										<br><a href="${url}" class="result-title" target="_blank">${title}</a>
 										<div class="result-authors">${authorsHtml}</div>
 										<div class="result-citation"><em>${citation}</em></div>
