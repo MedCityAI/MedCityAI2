@@ -114,6 +114,25 @@
 	<body class="landing is-preload">
 
 			<script>
+		// Show abstract modal (global)
+		function showAbstractModal(link) {
+			var modalBg = document.getElementById('modalBg');
+			var modalTitle = document.getElementById('modalTitle');
+			var modalAbstract = document.getElementById('modalAbstract');
+			modalTitle.textContent = link.getAttribute('data-title');
+			modalAbstract.textContent = link.getAttribute('data-abstract');
+			modalBg.style.display = 'flex';
+		}
+		document.addEventListener('DOMContentLoaded', function() {
+			var modalBg = document.getElementById('modalBg');
+			var modalClose = document.getElementById('modalClose');
+			modalClose.addEventListener('click', function() {
+				modalBg.style.display = 'none';
+			});
+			modalBg.addEventListener('click', function(e) {
+				if (e.target === modalBg) modalBg.style.display = 'none';
+			});
+		});
 			// Global variables
 			var VarTot = 0, VarDay = 0, VarWeek = 0, VarMonth = 0;
 
