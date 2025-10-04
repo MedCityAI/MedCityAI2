@@ -275,7 +275,7 @@
 								const journal = article.querySelector("Journal > Title")?.textContent || "";
 								const pubdate = article.querySelector("PubDate Year")?.textContent || "";
 								const url = `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`;
-								const abstract = article.querySelector("Abstract AbstractText")?.textContent || "No abstract available.";
+								const abstract = article.querySelector("Abstract")?.textContent || "No abstract available.";
 
 								let authors = [];
 								article.querySelectorAll("Author").forEach(authorNode => {
