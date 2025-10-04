@@ -120,22 +120,60 @@
 											<li><a href="elements.html">Elements</a></li>
 											<li><a href="#">Sign Up</a></li>
 											<li><a href="#">Log In</a></li>
-										</ul>
-									</div>
-								</li>
-							</ul>
-						</nav>
-					</header>
-				<!-- here is where I'd like to open one folder up database/pubmed_results.csv and then export three variables VarTot (number of total entries) VarDay (number of entries in past 24 hours) VarWeek (number of entries in past 7 days) VarMonth (number of entries in past 30 days) and then have those variables populate the following sections below% -->
-
-				<!-- One -->
-
-
-					<section id="one" class="wrapper style1 special" style="background: url('images/banner.jpg') center center/cover no-repeat; background-attachment: fixed;">
-						<div class="inner">
-							<header class="major">
-								<h2>Med City AI</h2>
-								<p>Explore the latest biomedical research from Rochester, Minnesota. Powered by PubMed.</p>
+											<nav id="nav" style="display:flex;align-items:center;justify-content:space-between;">
+												<div>
+													<div class="dropdown" style="display:inline-block;position:relative;">
+														<button class="dropbtn" style="background:none;border:none;color:#fff;font-size:18px;padding:10px 20px;cursor:pointer;">Menu &#9776;</button>
+														<div class="dropdown-content" style="display:none;position:fixed;left:0;top:0;height:100vh;width:220px;background:#222;box-shadow:2px 0 8px rgba(0,0,0,0.13);z-index:2000;padding-top:60px;">
+															<a href="index.html" style="color:#fff;padding:12px 24px;display:block;text-decoration:none;">Home</a>
+															<a href="generic.html" style="color:#fff;padding:12px 24px;display:block;text-decoration:none;">Generic</a>
+															<a href="elements.html" style="color:#fff;padding:12px 24px;display:block;text-decoration:none;">Elements</a>
+															<a href="#" style="color:#fff;padding:12px 24px;display:block;text-decoration:none;">Sign Up</a>
+															<a href="#" style="color:#fff;padding:12px 24px;display:block;text-decoration:none;">Log In</a>
+														</div>
+													</div>
+													<script>
+														document.addEventListener('DOMContentLoaded', function() {
+															var btn = document.querySelector('.dropbtn');
+															var menu = document.querySelector('.dropdown-content');
+															btn.addEventListener('click', function(e) {
+																e.stopPropagation();
+																menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+															});
+															document.addEventListener('click', function(e) {
+																if (menu.style.display === 'block') menu.style.display = 'none';
+															});
+														});
+													</script>
+												</div>
+												<div>
+													<div class="dropdown" style="display:inline-block;position:relative;">
+														<button class="dropbtn" style="background:none;border:none;color:#fff;font-size:18px;padding:10px 20px;cursor:pointer;">Navigate ▼</button>
+														<div class="dropdown-content" style="display:none;position:absolute;top:100%;left:0;background:#222;min-width:160px;box-shadow:0 8px 16px rgba(0,0,0,0.13);z-index:2000;">
+															<a href="search.html" style="color:#fff;padding:12px 24px;display:block;text-decoration:none;">Search</a>
+															<a href="profiles.html" style="color:#fff;padding:12px 24px;display:block;text-decoration:none;">Profiles</a>
+															<a href="trends.html" style="color:#fff;padding:12px 24px;display:block;text-decoration:none;">Trends</a>
+														</div>
+													</div>
+													<script>
+														document.addEventListener('DOMContentLoaded', function() {
+															var navBtns = document.querySelectorAll('.dropdown .dropbtn');
+															var navMenus = document.querySelectorAll('.dropdown .dropdown-content');
+															navBtns.forEach(function(btn, i) {
+																btn.addEventListener('click', function(e) {
+																	e.stopPropagation();
+																	navMenus[i].style.display = navMenus[i].style.display === 'block' ? 'none' : 'block';
+																});
+															});
+															document.addEventListener('click', function(e) {
+																navMenus.forEach(function(menu) {
+																	if (menu.style.display === 'block') menu.style.display = 'none';
+																});
+															});
+														});
+													</script>
+												</div>
+											</nav>
 							</header>
 						
 						    <!-- Numbers Section -->
