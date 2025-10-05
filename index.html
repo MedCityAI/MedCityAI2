@@ -317,8 +317,8 @@
 									if (name) authors.push(displayName);
 								});
 								let authorsHtml = "";
-								if (authors.length > 20) {
-									authorsHtml = authors.slice(0, 20).join(", ") + ", ... , " + authors[authors.length - 1];
+								if (authors.length > 16) {
+									authorsHtml = authors.slice(0, 15).join(", ") + authors[authors.length - 1] + ", et al.";
 								} else {
 									authorsHtml = authors.join(", ");
 								}
