@@ -273,7 +273,23 @@
 								const pmid = article.querySelector("PMID")?.textContent || "";
 								const title = article.querySelector("ArticleTitle")?.textContent || "No title";
 								const journal = article.querySelector("Journal > Title")?.textContent || "";
-								const pubdate = article.querySelector("PubDate Year")?.textContent || "";
+								// Extract year, month, day for publication date
+								const year = article.querySelector("PubDate Year")?.textContent || "";
+								let month = article.querySelector("PubDate Month")?.textContent || "";
+								const day = article.querySelector("PubDate Day")?.textContent || "";
+								// Convert month to short name if it's a number
+								const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+								if (/^\d+$/.test(month)) {
+									month = monthNames[parseInt(month, 10)];
+								}
+								let pubdate = "";
+								if (month && day && year) {
+									pubdate = `${month} ${day}, ${year}`;
+								} else if (month && year) {
+									pubdate = `${month}, ${year}`;
+								} else if (year) {
+									pubdate = year;
+								}
 								const url = `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`;
 								const abstract = article.querySelector("Abstract")?.textContent || "No abstract available.";
 
