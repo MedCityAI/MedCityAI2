@@ -272,7 +272,11 @@
 							articles.forEach(article => {
 								const pmid = article.querySelector("PMID")?.textContent || "";
 								const title = article.querySelector("ArticleTitle")?.textContent || "No title";
-								const journal = article.querySelector("Journal > Title")?.textContent || "";
+								let journal = article.querySelector("Journal > Title")?.textContent || "";
+								const journalAbbr = article.querySelector("Journal > ISOAbbreviation")?.textContent || "";
+								if (journal.split(/\s+/).length > 10 && journalAbbr) {
+									journal = journalAbbr;
+								}
 								// Extract year, month, day for publication date
 								const year = article.querySelector("PubDate Year")?.textContent || "";
 								let month = article.querySelector("PubDate Month")?.textContent || "";
