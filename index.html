@@ -318,7 +318,7 @@
 								});
 								let authorsHtml = "";
 								if (authors.length > 16) {
-									authorsHtml = authors.slice(0, 15).join(", ") + authors[authors.length - 1] + ", et al.";
+									authorsHtml = authors.slice(0, 15).join(", ") + ", " + authors[authors.length - 1] + ", <i>et al.</i>";
 								} else {
 									authorsHtml = authors.join(", ");
 								}
