@@ -298,7 +298,8 @@
 								const abstract = article.querySelector("Abstract")?.textContent || "No abstract available.";
 
 								let authors = [];
-								article.querySelectorAll("Author").forEach(authorNode => {
+								let authorNodes = Array.from(article.querySelectorAll("Author"));
+								authorNodes.forEach(authorNode => {
 									const lastName = authorNode.querySelector("LastName")?.textContent || "";
 									const foreName = authorNode.querySelector("ForeName")?.textContent || "";
 									const initials = foreName.split(" ").map(n => n[0]).join(""); // Get initials from ForeName
@@ -315,7 +316,12 @@
 									}
 									if (name) authors.push(displayName);
 								});
-								const authorsHtml = authors.join(", ");
+								let authorsHtml = "";
+								if (authors.length > 20) {
+									authorsHtml = authors.slice(0, 20).join(", ") + ", ... , " + authors[authors.length - 1];
+								} else {
+									authorsHtml = authors.join(", ");
+								}
 								const citation = `${journal}. ${pubdate}. PMID: ${pmid}`;
 								resultsHTML += `
 									<div class="result-item">
