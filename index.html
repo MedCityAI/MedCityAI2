@@ -161,32 +161,6 @@
 					});
 				} catch (err) {
 					console.error('Error loading summary_stats.txt:', err);
-					    <script>
-					    // Load pubmed_results2.csv and map PMID to llm_summary
-					    var llmSummaryMap = new Map();
-					    async function loadLLMSummaries() {
-					        try {
-					            const response = await fetch('database/pubmed_results2.csv');
-					            if (!response.ok) throw new Error('pubmed_results2.csv not found');
-					            const text = await response.text();
-					            const lines = text.split('\n');
-					            const header = lines[0].split(',');
-					            const pmidIdx = header.findIndex(h => h.trim().toLowerCase() === 'pmid');
-					            const llmIdx = header.findIndex(h => h.trim().toLowerCase() === 'llm_summary');
-					            for (let i = 1; i < lines.length; i++) {
-					                if (!lines[i].trim()) continue;
-					                const row = lines[i].split(/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/); // handle quoted commas
-					                const pmid = row[pmidIdx]?.replace(/"/g, '').trim();
-					                const llm = row[llmIdx]?.replace(/"/g, '').trim();
-					                if (pmid && llm && llm !== 'LLM summary not generated') {
-					                    llmSummaryMap.set(pmid, llm);
-					                }
-					            }
-					        } catch (err) {
-					            console.error('Error loading pubmed_results2.csv:', err);
-					        }
-					    }
-					    </script>
 				}
 			}
 
@@ -479,58 +453,9 @@
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
 
-			<script>
-			// Load pubmed_results2.csv and map PMID to llm_summary
-			var llmSummaryMap = new Map();
-			function loadLLMSummaries() {
-				return fetch('database/pubmed_results2.csv')
-					.then(function(response) {
-						if (!response.ok) throw new Error('pubmed_results2.csv not found');
-						return response.text();
-					})
-					.then(function(text) {
-						var lines = text.split('\n');
-						var header = lines[0].split(',');
-						var pmidIdx = -1, llmIdx = -1;
-						for (var h = 0; h < header.length; h++) {
-							var col = header[h].trim().toLowerCase();
-							if (col === 'pmid') pmidIdx = h;
-							if (col === 'llm_summary') llmIdx = h;
-						}
-						for (var i = 1; i < lines.length; i++) {
-							if (!lines[i].trim()) continue;
-							var row = lines[i].split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/); // handle quoted commas
-							var pmid = row[pmidIdx] ? row[pmidIdx].replace(/"/g, '').trim() : '';
-							var llm = row[llmIdx] ? row[llmIdx].replace(/"/g, '').trim() : '';
-							if (pmid && llm && llm !== 'LLM summary not generated') {
-								llmSummaryMap.set(pmid, llm);
-							}
-						}
-					})
-					.catch(function(err) {
-						console.error('Error loading pubmed_results2.csv:', err);
-					});
-			}
-			document.addEventListener("DOMContentLoaded", function() {
-				loadLLMSummaries().then(function() {
-					if (typeof fetchPubMedResults === 'function') {
-						fetchPubMedResults();
-					}
-				});
-			});
-			</script>
 	</body>
 
 </html>
-
-
-
-
-
-					                        document.addEventListener("DOMContentLoaded", async () => {
-					                            await loadLLMSummaries();
-					                            fetchPubMedResults();
-					                        });
 
 
 
