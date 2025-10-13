@@ -46,6 +46,15 @@
 			color: #222;
 			line-height: 1.6;
 		}
+		.modal-abstract h4 {
+			color: #0056a3;
+			margin-top: 15px;
+			margin-bottom: 10px;
+			font-size: 16px;
+		}
+		.modal-abstract strong {
+			color: #333;
+		}
 
 		/* Research results grid */
 		.results {
@@ -234,6 +243,55 @@
 		<script>
 		// Application state
 		let VarTot = 0, VarDay = 0, VarWeek = 0, VarMonth = 0;
+		let pubmedSummaryData = new Map(); // Store PMID -> LLM summary data
+
+		// Load LLM summaries from CSV
+		async function loadLLMSummaries() {
+			try {
+				const response = await fetch('./database/pubmed_results2.csv');
+				if (!response.ok) throw new Error('pubmed_results2.csv not found');
+				
+				const csvText = await response.text();
+				const lines = csvText.split('\n');
+				
+				// Skip header line and process data
+				for (let i = 1; i < lines.length; i++) {
+					if (lines[i].trim() === '') continue;
+					
+					// Parse CSV line - handle commas in quoted fields
+					const line = lines[i];
+					const columns = [];
+					let current = '';
+					let inQuotes = false;
+					
+					for (let j = 0; j < line.length; j++) {
+						const char = line[j];
+						if (char === '"') {
+							inQuotes = !inQuotes;
+						} else if (char === ',' && !inQuotes) {
+							columns.push(current.trim());
+							current = '';
+						} else {
+							current += char;
+						}
+					}
+					columns.push(current.trim()); // Add last column
+					
+					if (columns.length >= 8) { // Ensure we have all expected columns
+						const pmid = columns[0];
+						const llmSummary = columns[7]; // llm_summary is the 8th column (index 7)
+						
+						if (pmid && llmSummary && llmSummary !== 'LLM summary not generated') {
+							pubmedSummaryData.set(pmid, llmSummary);
+						}
+					}
+				}
+				
+				console.log(`Loaded ${pubmedSummaryData.size} LLM summaries`);
+			} catch (err) {
+				console.error('Error loading LLM summaries:', err);
+			}
+		}
 
 		// Modal functions
 		function showAbstractModal(link) {
@@ -241,8 +299,44 @@
 			const modalTitle = document.getElementById('modalTitle');
 			const modalAbstract = document.getElementById('modalAbstract');
 			
-			modalTitle.textContent = link.getAttribute('data-title');
-			modalAbstract.textContent = link.getAttribute('data-abstract');
+			const title = link.getAttribute('data-title');
+			const abstract = link.getAttribute('data-abstract');
+			const pmid = link.getAttribute('data-pmid');
+			
+			modalTitle.textContent = title;
+			
+			// Start with the abstract
+			let content = `<h4>Abstract</h4><p>${abstract}</p>`;
+			
+			// Check if we have an LLM summary for this PMID
+			if (pubmedSummaryData.has(pmid)) {
+				const llmSummary = pubmedSummaryData.get(pmid);
+				try {
+					// Parse the LLM summary JSON
+					const summaryObj = JSON.parse(llmSummary);
+					content += `<hr style="margin: 20px 0; border: 1px solid #eee;">`;
+					content += `<h4>AI Summary</h4>`;
+					
+					if (summaryObj.main_findings) {
+						content += `<p><strong>Main Findings:</strong> ${summaryObj.main_findings}</p>`;
+					}
+					if (summaryObj.clinical_significance) {
+						content += `<p><strong>Clinical Significance:</strong> ${summaryObj.clinical_significance}</p>`;
+					}
+					if (summaryObj.methodology) {
+						content += `<p><strong>Methodology:</strong> ${summaryObj.methodology}</p>`;
+					}
+					if (summaryObj.limitations) {
+						content += `<p><strong>Limitations:</strong> ${summaryObj.limitations}</p>`;
+					}
+				} catch (e) {
+					// If parsing fails, show the raw summary
+					content += `<hr style="margin: 20px 0; border: 1px solid #eee;">`;
+					content += `<h4>AI Summary</h4><p>${llmSummary}</p>`;
+				}
+			}
+			
+			modalAbstract.innerHTML = content;
 			modalBg.style.display = 'flex';
 			
 			// Prevent scroll to top
@@ -382,6 +476,7 @@
 							<br><a href="#" class="result-title" 
 								data-title="${title.replace(/"/g,'&quot;')}" 
 								data-abstract="${abstract.replace(/"/g,'&quot;')}" 
+								data-pmid="${pmid}"
 								onclick="showAbstractModal(this)">${title}</a>
 							<div class="result-authors">${authorsHtml}</div>
 							<div class="result-citation"><em>${citation}</em></div>
@@ -420,6 +515,7 @@
 
 			// Load data
 			loadStatistics();
+			loadLLMSummaries();
 			fetchPubMedResults();
 		});
 		</script>
