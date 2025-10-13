@@ -121,8 +121,26 @@
 			var modalBg = document.getElementById('modalBg');
 			var modalTitle = document.getElementById('modalTitle');
 			var modalAbstract = document.getElementById('modalAbstract');
-			modalTitle.textContent = link.getAttribute('data-title');
-			modalAbstract.textContent = link.getAttribute('data-abstract');
+			const title = link.getAttribute('data-title');
+			const pmid = link.getAttribute('data-pmid');
+			const originalAbstract = link.getAttribute('data-abstract');
+			modalTitle.textContent = title;
+			if (pubmedSummaryData && pubmedSummaryData.has(pmid)) {
+				const summaryData = pubmedSummaryData.get(pmid);
+				let content = '';
+				if (summaryData.llm_summary) {
+					content += '<h4>AI Summary</h4><p>' + summaryData.llm_summary + '</p>';
+				}
+				if (summaryData.main_findings) {
+					content += '<h4>Main Findings</h4><p>' + summaryData.main_findings + '</p>';
+				}
+				if (!content) {
+					content = '<h4>Abstract</h4><p>' + originalAbstract + '</p>';
+				}
+				modalAbstract.innerHTML = content;
+			} else {
+				modalAbstract.innerHTML = '<h4>Abstract</h4><p>' + originalAbstract + '</p>';
+			}
 			modalBg.style.display = 'flex';
 			// Prevent scroll to top
 			if (window.scrollY) {
@@ -326,7 +344,7 @@
 								resultsHTML += `
 									<div class="result-item">
 										<div class="new-tab">NEW</div>
-										<br><a href="#" class="result-title" data-title="${title.replace(/"/g,'&quot;')}" data-abstract="${abstract.replace(/"/g,'&quot;')}" onclick="showAbstractModal(this)">${title}</a>
+										<br><a href="#" class="result-title" data-title="${title.replace(/"/g,'&quot;')}" data-pmid="${pmid}" data-abstract="${abstract.replace(/"/g,'&quot;')}" onclick="showAbstractModal(this)">${title}</a>
 										<div class="result-authors">${authorsHtml}</div>
 										<div class="result-citation"><em>${citation}</em></div>
 										<div class="share-buttons">
@@ -342,26 +360,6 @@
 										</div>
 									</div>
 								`;
-		// ...existing code...
-		// Show abstract modal (global)
-		function showAbstractModal(link) {
-			var modalBg = document.getElementById('modalBg');
-			var modalTitle = document.getElementById('modalTitle');
-			var modalAbstract = document.getElementById('modalAbstract');
-			modalTitle.textContent = link.getAttribute('data-title');
-			modalAbstract.textContent = link.getAttribute('data-abstract');
-			modalBg.style.display = 'flex';
-		}
-		document.addEventListener('DOMContentLoaded', function() {
-			var modalBg = document.getElementById('modalBg');
-			var modalClose = document.getElementById('modalClose');
-			modalClose.addEventListener('click', function() {
-				modalBg.style.display = 'none';
-			});
-			modalBg.addEventListener('click', function(e) {
-				if (e.target === modalBg) modalBg.style.display = 'none';
-			});
-		});
 							});
 							document.getElementById("pubmed-results").innerHTML = `<div class="results">${resultsHTML}</div>`;
 						} catch (error) {
@@ -452,6 +450,40 @@
 			<script src="assets/js/breakpoints.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
+			<script>
+// Store PMID -> {llm_summary, main_findings}
+var pubmedSummaryData = new Map();
+async function fetchPubMedSummaries() {
+    try {
+        const response = await fetch('../query_pubmed/pubmed_results2.csv');
+        if (!response.ok) throw new Error('pubmed_results2.csv not found');
+        const csvText = await response.text();
+        const lines = csvText.split('\n');
+        const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
+        const pmidIndex = headers.indexOf('PMID');
+        const summaryIndex = headers.indexOf('llm_summary');
+        const findingsIndex = headers.indexOf('main_findings');
+        if (pmidIndex === -1 || summaryIndex === -1 || findingsIndex === -1) return;
+        for (let i = 1; i < lines.length; i++) {
+            if (lines[i].trim() === '') continue;
+            const row = lines[i].split(',');
+            if (row.length > Math.max(pmidIndex, summaryIndex, findingsIndex)) {
+                const pmid = row[pmidIndex].replace(/"/g, '').trim();
+                const summary = row[summaryIndex].replace(/"/g, '').trim();
+                const findings = row[findingsIndex].replace(/"/g, '').trim();
+                if (pmid && (summary || findings)) {
+                    pubmedSummaryData.set(pmid, {
+                        llm_summary: summary,
+                        main_findings: findings
+                    });
+                }
+            }
+        }
+    } catch (err) {
+        console.error('Error loading pubmed_results2.csv:', err);
+    }
+}
+</script>
 
 	</body>
 
