@@ -121,26 +121,8 @@
 			var modalBg = document.getElementById('modalBg');
 			var modalTitle = document.getElementById('modalTitle');
 			var modalAbstract = document.getElementById('modalAbstract');
-			const title = link.getAttribute('data-title');
-			const pmid = link.getAttribute('data-pmid');
-			const originalAbstract = link.getAttribute('data-abstract');
-			modalTitle.textContent = title;
-			if (pubmedSummaryData && pubmedSummaryData.has(pmid)) {
-				const summaryData = pubmedSummaryData.get(pmid);
-				let content = '';
-				if (summaryData.llm_summary) {
-					content += '<h4>AI Summary</h4><p>' + summaryData.llm_summary + '</p>';
-				}
-				if (summaryData.main_findings) {
-					content += '<h4>Main Findings</h4><p>' + summaryData.main_findings + '</p>';
-				}
-				if (!content) {
-					content = '<h4>Abstract</h4><p>' + originalAbstract + '</p>';
-				}
-				modalAbstract.innerHTML = content;
-			} else {
-				modalAbstract.innerHTML = '<h4>Abstract</h4><p>' + originalAbstract + '</p>';
-			}
+			modalTitle.textContent = link.getAttribute('data-title');
+			modalAbstract.textContent = link.getAttribute('data-abstract');
 			modalBg.style.display = 'flex';
 			// Prevent scroll to top
 			if (window.scrollY) {
@@ -263,63 +245,130 @@
 						<!-- Fetch and display PubMed results -->
 						<script>
 						async function fetchPubMedResults() {
-    // Only show Everything
-    const term = '("Rochester"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))';
-    const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(term)}&sort=pub+date&retmode=json&datetype=pdat&reldate=1`;
-    try {
-        const esearchRes = await fetch(esearchUrl);
-        const esearchData = await esearchRes.json();
-        const ids = esearchData.esearchresult.idlist;
-        if (ids.length === 0) {
-            document.getElementById("pubmed-results").innerHTML = "<p>No results found.</p>";
-            return;
-        }
-        // Fetch full article details via efetch
-        const efetchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${ids.join(",")}&retmode=xml`;
-        const efetchRes = await fetch(efetchUrl);
-        const efetchXml = await efetchRes.text();
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(efetchXml, "text/xml");
-        let resultsHTML = '';
-        const articles = xmlDoc.querySelectorAll("PubmedArticle");
-        articles.forEach(article => {
-            const pmid = article.querySelector("PMID")?.textContent || "";
-            const title = article.querySelector("ArticleTitle")?.textContent || "No title";
-            let llmSummary = '';
-            if (pubmedSummaryData.has(pmid)) {
-                llmSummary = pubmedSummaryData.get(pmid).llm_summary || '';
-            }
-            resultsHTML += `
-                <div class="result-item">
-                    <div class="new-tab">NEW</div>
-                    <br><a href="#" class="result-title" data-title="${title.replace(/"/g,'&quot;')}" data-pmid="${pmid}" data-llm-summary="${llmSummary.replace(/"/g,'&quot;')}" onclick="showLLMSummaryModal(this)">${title}</a>
-                </div>
-            `;
-        });
-        document.getElementById("pubmed-results").innerHTML = `<div class="results">${resultsHTML}</div>`;
-    } catch (error) {
-        console.error(error);
-        document.getElementById("pubmed-results").innerHTML = "<p>Error fetching results.</p>";
-    }
-}
+							// Only show Everything
+							const term = '("Rochester"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))';
+							const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(term)}&sort=pub+date&retmode=json&datetype=pdat&reldate=1`;
 
-function showLLMSummaryModal(link) {
-    var modalBg = document.getElementById('modalBg');
-    var modalTitle = document.getElementById('modalTitle');
-    var modalAbstract = document.getElementById('modalAbstract');
-    const title = link.getAttribute('data-title');
-    const llmSummary = link.getAttribute('data-llm-summary');
-    modalTitle.textContent = title;
-    if (llmSummary) {
-        modalAbstract.innerHTML = '<h4>LLM Summary</h4><p>' + llmSummary + '</p>';
-    } else {
-        modalAbstract.innerHTML = '<p>No summary available.</p>';
-    }
-    modalBg.style.display = 'flex';
-    if (window.scrollY) {
-        setTimeout(function() { window.scrollTo({top: window.scrollY}); }, 0);
-    }
-}
+						try {
+							const esearchRes = await fetch(esearchUrl);
+							const esearchData = await esearchRes.json();
+							const ids = esearchData.esearchresult.idlist;
+
+							if (ids.length === 0) {
+							document.getElementById("pubmed-results").innerHTML = "<p>No results found.</p>";
+							return;
+							}
+
+							// Fetch full article details via efetch
+							const efetchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${ids.join(",")}&retmode=xml`;
+							const efetchRes = await fetch(efetchUrl);
+							const efetchXml = await efetchRes.text();
+							const parser = new DOMParser();
+							const xmlDoc = parser.parseFromString(efetchXml, "text/xml");
+
+							// Build results HTML from efetch XML
+							let resultsHTML = '';
+							const articles = xmlDoc.querySelectorAll("PubmedArticle");
+							articles.forEach(article => {
+								const pmid = article.querySelector("PMID")?.textContent || "";
+								const title = article.querySelector("ArticleTitle")?.textContent || "No title";
+								let journal = article.querySelector("Journal > Title")?.textContent || "";
+								const journalAbbr = article.querySelector("Journal > ISOAbbreviation")?.textContent || "";
+								if (journal.split(/\s+/).length > 10 && journalAbbr) {
+									journal = journalAbbr;
+								}
+								// Extract year, month, day for publication date
+								const year = article.querySelector("PubDate Year")?.textContent || "";
+								let month = article.querySelector("PubDate Month")?.textContent || "";
+								const day = article.querySelector("PubDate Day")?.textContent || "";
+								// Convert month to short name if it's a number
+								const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+								if (/^\d+$/.test(month)) {
+									month = monthNames[parseInt(month, 10)];
+								}
+								let pubdate = "";
+								if (month && day && year) {
+									pubdate = `${month} ${day}, ${year}`;
+								} else if (month && year) {
+									pubdate = `${month}, ${year}`;
+								} else if (year) {
+									pubdate = year;
+								}
+								const url = `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`;
+								const abstract = article.querySelector("Abstract")?.textContent || "No abstract available.";
+
+								let authors = [];
+								let authorNodes = Array.from(article.querySelectorAll("Author"));
+								authorNodes.forEach(authorNode => {
+									const lastName = authorNode.querySelector("LastName")?.textContent || "";
+									const foreName = authorNode.querySelector("ForeName")?.textContent || "";
+									const initials = foreName.split(" ").map(n => n[0]).join(""); // Get initials from ForeName
+									const name = `${lastName}${initials ? " " + initials : ""}`;
+
+									let affiliations = [];
+									authorNode.querySelectorAll("Affiliation").forEach(aff => {
+										affiliations.push(aff.textContent);
+									});
+
+									let displayName = name;
+									if (affiliations.some(a => /Rochester|Mayo/i.test(a))) {
+										displayName = `<u>${displayName}</u>`;
+									}
+									if (name) authors.push(displayName);
+								});
+								let authorsHtml = "";
+								if (authors.length > 16) {
+									authorsHtml = authors.slice(0, 15).join(", ") + ", " + authors[authors.length - 1] + ", <i>et al.</i>";
+								} else {
+									authorsHtml = authors.join(", ");
+								}
+								const citation = `${journal}. ${pubdate}. PMID: ${pmid}`;
+								resultsHTML += `
+									<div class="result-item">
+										<div class="new-tab">NEW</div>
+										<br><a href="#" class="result-title" data-title="${title.replace(/"/g,'&quot;')}" data-abstract="${abstract.replace(/"/g,'&quot;')}" onclick="showAbstractModal(this)">${title}</a>
+										<div class="result-authors">${authorsHtml}</div>
+										<div class="result-citation"><em>${citation}</em></div>
+										<div class="share-buttons">
+											<a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" class="facebook" target="_blank">
+												<i class="icon brands fa-facebook-f"></i> 
+											</a>
+											<a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}" class="twitter" target="_blank">
+												<i class="icon brands fa-twitter"></i> 
+											</a>
+											<a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}" class="linkedin" target="_blank">
+												<i class="icon brands fa-linkedin"></i> 
+											</a>
+										</div>
+									</div>
+								`;
+		// ...existing code...
+		// Show abstract modal (global)
+		function showAbstractModal(link) {
+			var modalBg = document.getElementById('modalBg');
+			var modalTitle = document.getElementById('modalTitle');
+			var modalAbstract = document.getElementById('modalAbstract');
+			modalTitle.textContent = link.getAttribute('data-title');
+			modalAbstract.textContent = link.getAttribute('data-abstract');
+			modalBg.style.display = 'flex';
+		}
+		document.addEventListener('DOMContentLoaded', function() {
+			var modalBg = document.getElementById('modalBg');
+			var modalClose = document.getElementById('modalClose');
+			modalClose.addEventListener('click', function() {
+				modalBg.style.display = 'none';
+			});
+			modalBg.addEventListener('click', function(e) {
+				if (e.target === modalBg) modalBg.style.display = 'none';
+			});
+		});
+							});
+							document.getElementById("pubmed-results").innerHTML = `<div class="results">${resultsHTML}</div>`;
+						} catch (error) {
+							console.error(error);
+							document.getElementById("pubmed-results").innerHTML = "<p>Error fetching results.</p>";
+						}
+						}
 
 						// Fetch default ("everything") on page load
 						document.addEventListener("DOMContentLoaded", fetchPubMedResults);
@@ -403,40 +452,6 @@ function showLLMSummaryModal(link) {
 			<script src="assets/js/breakpoints.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
-			<script>
-// Store PMID -> {llm_summary, main_findings}
-var pubmedSummaryData = new Map();
-async function fetchPubMedSummaries() {
-    try {
-        const response = await fetch('../query_pubmed/pubmed_results2.csv');
-        if (!response.ok) throw new Error('pubmed_results2.csv not found');
-        const csvText = await response.text();
-        const lines = csvText.split('\n');
-        const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
-        const pmidIndex = headers.indexOf('PMID');
-        const summaryIndex = headers.indexOf('llm_summary');
-        const findingsIndex = headers.indexOf('main_findings');
-        if (pmidIndex === -1 || summaryIndex === -1 || findingsIndex === -1) return;
-        for (let i = 1; i < lines.length; i++) {
-            if (lines[i].trim() === '') continue;
-            const row = lines[i].split(',');
-            if (row.length > Math.max(pmidIndex, summaryIndex, findingsIndex)) {
-                const pmid = row[pmidIndex].replace(/"/g, '').trim();
-                const summary = row[summaryIndex].replace(/"/g, '').trim();
-                const findings = row[findingsIndex].replace(/"/g, '').trim();
-                if (pmid && (summary || findings)) {
-                    pubmedSummaryData.set(pmid, {
-                        llm_summary: summary,
-                        main_findings: findings
-                    });
-                }
-            }
-        }
-    } catch (err) {
-        console.error('Error loading pubmed_results2.csv:', err);
-    }
-}
-</script>
 
 	</body>
 
