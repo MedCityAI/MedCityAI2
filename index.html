@@ -10,6 +10,40 @@
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 		<style>
+
+		/* Header feed notice */
+		.feed-notice {
+			max-width: 1100px;
+			margin: 0 auto 18px;
+			background: linear-gradient(90deg, rgba(0,86,163,0.06), rgba(0,86,163,0.03));
+			border-left: 4px solid #0056a3;
+			padding: 14px 18px;
+			border-radius: 8px;
+			color: #07263a;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 12px;
+		}
+		.feed-notice .notice-text {
+			flex: 1 1 auto;
+		}
+		.feed-notice h3 { margin: 0; font-size: 18px; color: #003e73; }
+		.feed-notice p { margin: 4px 0 0; color: #134159; font-size: 14px; }
+		.feed-notice .cta {
+			flex: 0 0 auto;
+		}
+		.btn-cta {
+			background: #ff6b35;
+			color: #fff;
+			padding: 8px 14px;
+			border-radius: 8px;
+			text-decoration: none;
+			font-weight: 600;
+			box-shadow: 0 4px 12px rgba(255,107,53,0.18);
+		}
+		.btn-cta:hover { opacity: 0.95; }
+
 		/* Modal for abstracts */
 		.modal-bg {
 			display: none;
@@ -177,6 +211,14 @@
 			<!-- Main Section -->
 			<section id="one" class="wrapper style1 special" style="background: url('images/banner.jpg') center center/cover no-repeat; background-attachment: fixed;">
 				<div class="inner">
+					<!-- Feed notice: Rochester 24-hour research updates -->
+					<div class="feed-notice" role="region" aria-label="Rochester research feed">
+						<div class="notice-text">
+							<h3>New research from Rochester, MN — last 24 hours</h3>
+							<p>Be the first to know about new biomedical research coming out of Rochester and surrounding institutions. This feed shows PubMed-indexed articles with Rochester/MN affiliation posted within the past day.</p>
+						</div>
+						<div class="cta"><a href="#pubmed-results" class="btn-cta">Be the first to know</a></div>
+					</div>
 					<header class="major">
 						<br><h2>Med City AI</h2>
 						<p>Explore the latest biomedical research from Rochester, Minnesota. Powered by PubMed.</p>
