@@ -217,7 +217,11 @@
 							<h3>New research from Rochester, MN — last 24 hours</h3>
 							<p>Be the first to know about new biomedical research coming out of Rochester and surrounding institutions. This feed shows PubMed-indexed articles with Rochester/MN affiliation posted within the past day.</p>
 						</div>
-						<div class="cta"><a href="#pubmed-results" class="btn-cta">Be the first to know</a></div>
+						<div class="cta">
+							<span style="display:block;text-align:center;font-weight:700;color:#003e73;margin-bottom:6px;">New today</span>
+							<div id="feed-day-count" style="font-size:20px;color:#ff6b35;font-weight:700;text-align:center;">0</div>
+							<a href="#pubmed-results" class="btn-cta" style="display:block;margin-top:8px;">Be the first to know</a>
+						</div>
 					</div>
 					<header class="major">
 						<br><h2>Med City AI</h2>
@@ -418,6 +422,12 @@
 				document.getElementById("VarDay").textContent = VarDay;
 				document.getElementById("VarWeek").textContent = VarWeek;
 				document.getElementById("VarMonth").textContent = VarMonth;
+
+				// Update feed notice count if present
+				const feedCountEl = document.getElementById('feed-day-count');
+				if (feedCountEl) {
+					feedCountEl.textContent = VarDay;
+				}
 			} catch (err) {
 				console.error('Error loading statistics:', err);
 			}
