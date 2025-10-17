@@ -344,9 +344,11 @@
 			<!-- Merged Top Bar and Header -->
 			<div class="top-bar merged-banner" style="position: fixed; top: 0; left: 0; width: 100%; z-index: 1001; background: linear-gradient(135deg, #2c3e50, #34495e); box-shadow: 0 2px 8px rgba(0,0,0,0.07);">
 				<div class="top-bar-content" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 20px;">
-					<div class="logo" style="font-size: 18px; font-weight: bold; color: white;">MedCityAI</div>
+					<div class="logo" style="font-size: 18px; font-weight: bold; color: white; margin-left: 0;">MedCityAI</div>
 					<div class="feed-location" style="color: #ecf0f1; font-size: 14px; text-align: center;">Rochester, Minnesota Research Feed</div>
-					<div></div> <!-- Empty div to balance the layout -->
+					<div class="weather-widget" style="color: #ecf0f1; font-size: 14px;">
+						<iframe src="https://weatherwidget.io/w/" style="border: none; width: 150px; height: 50px;"></iframe>
+					</div>
 				</div>
 			</div>
 
