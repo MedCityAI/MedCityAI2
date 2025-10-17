@@ -126,141 +126,232 @@
 			opacity: 0.85; 
 		}
 
-		/* Statistics display */
-		.stats-container {
-			display: flex;
-			justify-content: space-around;
-			text-align: center;
-			margin: 3em 0 2em 0;
-			background: rgba(255, 255, 255, 0.95);
-			border-radius: 15px;
-			padding: 40px 20px;
-			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-			backdrop-filter: blur(10px);
-			border: 1px solid rgba(255, 255, 255, 0.2);
+		/* Top bar */
+		.top-bar {
+			background: linear-gradient(135deg, #2c3e50, #34495e);
+			color: white;
+			padding: 12px 0;
+			font-size: 14px;
+			position: relative;
+			z-index: 1001;
 		}
-		.stat-item {
-			flex: 1;
+		.top-bar-content {
+			max-width: 1200px;
+			margin: 0 auto;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
 			padding: 0 20px;
 		}
-		.stat-item h2 {
-			margin-bottom: 0.3em;
-			font-size: 3.5em;
-			font-weight: 800;
-			background: linear-gradient(135deg, #0056a3, #007acc);
-			-webkit-background-clip: text;
-			-webkit-text-fill-color: transparent;
-			background-clip: text;
-			text-shadow: 0 2px 4px rgba(0, 86, 163, 0.2);
+		.logo {
+			display: flex;
+			align-items: center;
+			font-weight: 700;
+			font-size: 16px;
 		}
-		.stat-item p {
-			font-size: 1.1em;
-			color: #444;
-			font-weight: 600;
-			text-transform: uppercase;
-			letter-spacing: 1px;
-			margin: 0;
+		.logo::before {
+			content: '🧬';
+			margin-right: 8px;
+			font-size: 18px;
 		}
-		.hero-banner {
-			background: linear-gradient(135deg, rgba(0, 86, 163, 0.9), rgba(0, 122, 204, 0.8));
-			border-radius: 20px;
-			padding: 50px 40px;
-			margin-bottom: 30px;
-			text-align: center;
+		.feed-location {
+			color: #ecf0f1;
+			font-weight: 500;
+		}
+		.last-updated {
+			color: #bdc3c7;
+			font-size: 13px;
+		}
+
+		/* Hero section */
+		.hero-section {
+			background: 
+				linear-gradient(135deg, rgba(44, 62, 80, 0.85), rgba(52, 73, 94, 0.8)),
+				url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" fill="rgba(255,255,255,0.03)"><circle cx="200" cy="150" r="80"/><circle cx="800" cy="400" r="120"/><circle cx="600" cy="200" r="60"/><path d="M100,300 Q300,100 500,300 T900,300" stroke="rgba(255,255,255,0.1)" stroke-width="2" fill="none"/></svg>') center/cover;
+			min-height: 500px;
+			display: flex;
+			align-items: center;
 			position: relative;
 			overflow: hidden;
 		}
-		.hero-banner::before {
+		.hero-content {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 60px 20px;
+			display: grid;
+			grid-template-columns: 1fr 400px;
+			gap: 40px;
+			align-items: center;
+		}
+		.hero-left h1 {
+			font-size: 3.2em;
+			font-weight: 800;
+			color: white;
+			margin-bottom: 24px;
+			line-height: 1.2;
+			text-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+		}
+		.hero-left p {
+			font-size: 1.3em;
+			color: rgba(255, 255, 255, 0.9);
+			margin-bottom: 36px;
+			line-height: 1.6;
+		}
+		.button-row {
+			display: flex;
+			gap: 16px;
+			flex-wrap: wrap;
+		}
+		.btn {
+			padding: 14px 28px;
+			border-radius: 50px;
+			font-weight: 600;
+			text-decoration: none;
+			transition: all 0.3s ease;
+			border: none;
+			cursor: pointer;
+			font-size: 15px;
+		}
+		.btn-primary {
+			background: linear-gradient(135deg, #3498db, #2980b9);
+			color: white;
+			box-shadow: 0 4px 16px rgba(52, 152, 219, 0.3);
+		}
+		.btn-primary:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+		}
+		.btn-secondary {
+			background: rgba(255, 255, 255, 0.1);
+			color: white;
+			border: 2px solid rgba(255, 255, 255, 0.3);
+		}
+		.btn-secondary:hover {
+			background: rgba(255, 255, 255, 0.2);
+			border-color: rgba(255, 255, 255, 0.5);
+		}
+
+		/* Stats card */
+		.stats-card {
+			background: rgba(255, 255, 255, 0.95);
+			border-radius: 20px;
+			padding: 32px 24px;
+			box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+			backdrop-filter: blur(20px);
+			border: 1px solid rgba(255, 255, 255, 0.2);
+			position: relative;
+		}
+		.stats-card::before {
 			content: '';
 			position: absolute;
 			top: 0;
 			left: 0;
 			right: 0;
-			bottom: 0;
-			background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="rgba(255,255,255,0.1)"><polygon points="0,100 1000,0 1000,100"/></svg>') no-repeat bottom;
-			background-size: 100% 100px;
-			pointer-events: none;
+			height: 4px;
+			background: linear-gradient(90deg, #3498db, #2980b9, #3498db);
+			border-radius: 20px 20px 0 0;
+			animation: shimmer 3s ease-in-out infinite;
 		}
-		.hero-title {
-			font-size: 3.5em;
-			font-weight: 900;
-			color: white;
-			margin-bottom: 20px;
-			text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-			letter-spacing: -1px;
+		@keyframes shimmer {
+			0%, 100% { opacity: 0.6; }
+			50% { opacity: 1; }
 		}
-		.hero-subtitle {
-			font-size: 1.4em;
-			color: rgba(255, 255, 255, 0.95);
-			margin-bottom: 30px;
-			line-height: 1.6;
-			font-weight: 400;
-		}
-		.live-indicator {
-			display: inline-flex;
+		.daily-count {
+			display: flex;
 			align-items: center;
-			background: rgba(231, 76, 60, 0.9);
-			color: white;
-			padding: 12px 24px;
-			border-radius: 50px;
-			font-weight: 700;
-			font-size: 1.1em;
 			margin-bottom: 20px;
-			box-shadow: 0 4px 16px rgba(231, 76, 60, 0.3);
+			padding-bottom: 16px;
+			border-bottom: 1px solid #eee;
 		}
-		.live-indicator::before {
-			content: '';
-			width: 12px;
-			height: 12px;
-			background: #fff;
-			border-radius: 50%;
-			margin-right: 10px;
-			animation: pulse 2s infinite;
-		}
-		@keyframes pulse {
-			0%, 100% { opacity: 1; transform: scale(1); }
-			50% { opacity: 0.5; transform: scale(0.8); }
-		}
-		.cta-text {
-			font-size: 1.2em;
-			color: rgba(255, 255, 255, 0.9);
+		.daily-count h3 {
+			margin: 0;
+			font-size: 1.1em;
+			color: #2c3e50;
 			font-weight: 600;
-			margin-top: 10px;
+		}
+		.count-number {
+			font-size: 2.4em;
+			font-weight: 800;
+			color: #3498db;
+			margin-left: 12px;
+		}
+		.ai-summary h4 {
+			margin: 0 0 12px 0;
+			color: #2c3e50;
+			font-size: 1.1em;
+			font-weight: 600;
+			display: flex;
+			align-items: center;
+		}
+		.ai-summary h4::before {
+			content: '🤖';
+			margin-right: 8px;
+		}
+		.summary-text {
+			color: #34495e;
+			line-height: 1.6;
+			font-size: 14px;
+		}
+		.update-time {
+			margin-top: 16px;
+			padding-top: 12px;
+			border-top: 1px solid #eee;
+			font-size: 12px;
+			color: #7f8c8d;
+			text-align: center;
 		}
 
 		/* Responsive design */
 		@media (max-width: 900px) {
 			.results { column-count: 2; }
-			.hero-title { font-size: 2.5em; }
-			.hero-subtitle { font-size: 1.2em; }
-			.stat-item h2 { font-size: 2.8em; }
-			.stats-container { padding: 30px 15px; }
+			.hero-content {
+				grid-template-columns: 1fr;
+				gap: 30px;
+				text-align: center;
+			}
+			.hero-left h1 { font-size: 2.4em; }
+			.hero-left p { font-size: 1.1em; }
+			.top-bar-content {
+				flex-direction: column;
+				gap: 8px;
+				text-align: center;
+			}
 		}
 		@media (max-width: 600px) {
 			.results { column-count: 1; }
-			.stats-container {
-				flex-direction: column;
-				gap: 1.5em;
-				padding: 25px 15px;
+			.hero-content {
+				padding: 40px 15px;
 			}
-			.stat-item {
-				padding: 0 10px;
+			.hero-left h1 { font-size: 2em; }
+			.hero-left p { font-size: 1em; }
+			.button-row {
+				justify-content: center;
 			}
-			.hero-banner {
-				padding: 40px 25px;
-				margin-bottom: 25px;
+			.btn {
+				padding: 12px 24px;
+				font-size: 14px;
 			}
-			.hero-title { font-size: 2em; }
-			.hero-subtitle { font-size: 1.1em; }
-			.stat-item h2 { font-size: 2.5em; }
+			.stats-card {
+				padding: 24px 18px;
+			}
+			.count-number { font-size: 2em; }
 		}
 		</style>
 	</head>
 	<body class="landing is-preload">
 		<!-- Page Wrapper -->
 		<div id="page-wrapper">
+			<!-- Top Bar -->
+			<div class="top-bar">
+				<div class="top-bar-content">
+					<div class="logo">MedCityAI</div>
+					<div class="feed-location">Rochester, Minnesota Research Feed</div>
+					<div class="last-updated">🔄 Updated: <span id="last-update-time">Loading...</span></div>
+				</div>
+			</div>
+
 			<!-- Header -->
-			<header id="header" class="alt" style="position:fixed;top:0;left:0;width:100%;z-index:1000;background:rgba(34, 34, 34, 0.95);box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+			<header id="header" class="alt" style="position:fixed;top:38px;left:0;width:100%;z-index:1000;background:rgba(34, 34, 34, 0.95);box-shadow:0 2px 8px rgba(0,0,0,0.07);">
 				<h1><a href="index.html">Med City AI</a></h1>
 				<nav id="nav">
 					<ul>
@@ -280,41 +371,38 @@
 				</nav>
 			</header>
 
-			<!-- Main Section -->
-			<section id="one" class="wrapper style1 special" style="background: url('images/banner.jpg') center center/cover no-repeat; background-attachment: fixed;">
+			<!-- Hero Section -->
+			<section class="hero-section">
+				<div class="hero-content">
+					<div class="hero-left">
+						<h1>Where Rochester's Medical Innovation Meets AI Insight</h1>
+						<p>MedCityAI curates and summarizes the newest research published by Rochester, MN institutions — refreshed daily.</p>
+						<div class="button-row">
+							<a href="#pubmed-results" class="btn btn-primary">🔍 Explore Today's Research</a>
+							<a href="#" class="btn btn-secondary">🧾 Subscribe to Daily Digest</a>
+						</div>
+					</div>
+					<div class="stats-card">
+						<div class="daily-count">
+							<h3>📊 Daily Research Count:</h3>
+							<span class="count-number" id="VarDay">0</span>
+						</div>
+						<div class="ai-summary">
+							<h4>AI Summary</h4>
+							<div class="summary-text" id="daily-ai-summary">
+								Today's highlights include new advances in medical imaging, innovative treatment protocols, and groundbreaking research from Rochester's leading medical institutions.
+							</div>
+						</div>
+						<div class="update-time">
+							Updated automatically each day at 6:00 AM CST
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- Main Content Section -->
+			<section id="one" class="wrapper style1 special" style="padding: 40px 0;">
 				<div class="inner">
-					<!-- Hero Banner -->
-					<div class="hero-banner">
-						<div class="live-indicator">
-							🔴 LIVE FEED • <span id="live-count">0</span> NEW TODAY
-						</div>
-						<h1 class="hero-title">Med City AI</h1>
-						<p class="hero-subtitle">
-							Real-time biomedical research from Rochester, Minnesota<br>
-							Fresh discoveries. Cutting-edge science. Updated every hour.
-						</p>
-						<div class="cta-text">Be the first to know what's happening in medical research</div>
-					</div>
-				
-					<!-- Statistics Section -->
-					<div class="stats-container">
-						<div class="stat-item">
-							<h2 id="VarDay">0</h2>
-							<p>New Today</p>
-						</div>
-						<div class="stat-item">
-							<h2 id="VarWeek">0</h2>
-							<p>This Week</p>
-						</div>
-						<div class="stat-item">
-							<h2 id="VarMonth">0</h2>
-							<p>This Month</p>
-						</div>
-						<div class="stat-item">
-							<h2 id="VarTot">0</h2>
-							<p>Total Articles</p>
-						</div>
-					</div>
 
 					<!-- Results Grid -->
 					<div id="pubmed-results" style="margin-top:40px;"></div>
