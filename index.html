@@ -126,14 +126,19 @@
 			opacity: 0.85; 
 		}
 
-		/* Top bar */
+		/* Top Navigation Bar */
 		.top-bar {
-			background: linear-gradient(135deg, #2c3e50, #34495e);
-			color: white;
-			padding: 12px 0;
+			background: #ffffff;
+			color: #2c3e50;
+			padding: 15px 0;
 			font-size: 14px;
-			position: relative;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
 			z-index: 1001;
+			box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+			border-bottom: 1px solid #eee;
 		}
 		.top-bar-content {
 			max-width: 1200px;
@@ -147,55 +152,105 @@
 			display: flex;
 			align-items: center;
 			font-weight: 700;
-			font-size: 16px;
+			font-size: 24px;
+			color: #2c3e50;
 		}
 		.logo::before {
-			content: '🧬';
+			content: '⚕️';
 			margin-right: 8px;
-			font-size: 18px;
+			font-size: 28px;
 		}
-		.feed-location {
-			color: #ecf0f1;
+		.nav-links {
+			display: flex;
+			gap: 30px;
+			align-items: center;
+		}
+		.nav-links a {
+			color: #2c3e50;
+			text-decoration: none;
 			font-weight: 500;
+			font-size: 15px;
+			transition: color 0.3s ease;
 		}
-		.last-updated {
-			color: #bdc3c7;
-			font-size: 13px;
+		.nav-links a:hover {
+			color: #3498db;
+		}
+		.cta-button {
+			background: linear-gradient(135deg, #3498db, #2980b9);
+			color: white;
+			padding: 10px 20px;
+			border-radius: 25px;
+			text-decoration: none;
+			font-weight: 600;
+			font-size: 14px;
+			transition: all 0.3s ease;
+		}
+		.cta-button:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+		}
+		.menu-icon {
+			display: none;
+			flex-direction: column;
+			cursor: pointer;
+		}
+		.menu-icon div {
+			width: 25px;
+			height: 3px;
+			background: #2c3e50;
+			margin: 3px 0;
+			transition: 0.3s;
 		}
 
 		/* Hero section */
 		.hero-section {
-			background: 
-				linear-gradient(135deg, rgba(44, 62, 80, 0.85), rgba(52, 73, 94, 0.8)),
-				url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" fill="rgba(255,255,255,0.03)"><circle cx="200" cy="150" r="80"/><circle cx="800" cy="400" r="120"/><circle cx="600" cy="200" r="60"/><path d="M100,300 Q300,100 500,300 T900,300" stroke="rgba(255,255,255,0.1)" stroke-width="2" fill="none"/></svg>') center/cover;
-			min-height: 500px;
+			background: linear-gradient(135deg, #f8fafc 0%, #e8f4f8 100%);
+			min-height: 600px;
 			display: flex;
 			align-items: center;
 			position: relative;
 			overflow: hidden;
+			margin-top: 70px;
+		}
+		.hero-section::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			right: 0;
+			width: 50%;
+			height: 100%;
+			background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" fill="rgba(52,152,219,0.05)"><circle cx="300" cy="150" r="100"/><circle cx="350" cy="400" r="80"/><path d="M200,100 Q300,200 400,300" stroke="rgba(52,152,219,0.1)" stroke-width="3" fill="none"/></svg>') center/cover;
+			z-index: 1;
 		}
 		.hero-content {
 			max-width: 1200px;
 			margin: 0 auto;
-			padding: 60px 20px;
+			padding: 80px 20px;
 			display: grid;
 			grid-template-columns: 1fr 400px;
-			gap: 40px;
+			gap: 60px;
 			align-items: center;
+			position: relative;
+			z-index: 2;
 		}
 		.hero-left h1 {
-			font-size: 3.2em;
+			font-size: 3.5em;
 			font-weight: 800;
-			color: white;
+			color: #2c3e50;
 			margin-bottom: 24px;
-			line-height: 1.2;
-			text-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+			line-height: 1.1;
+		}
+		.hero-left .subtitle {
+			font-size: 1.2em;
+			color: #7f8c8d;
+			margin-bottom: 16px;
+			font-weight: 500;
 		}
 		.hero-left p {
-			font-size: 1.3em;
-			color: rgba(255, 255, 255, 0.9);
+			font-size: 1.1em;
+			color: #34495e;
 			margin-bottom: 36px;
-			line-height: 1.6;
+			line-height: 1.7;
 		}
 		.button-row {
 			display: flex;
@@ -233,12 +288,11 @@
 
 		/* Stats card */
 		.stats-card {
-			background: rgba(255, 255, 255, 0.95);
-			border-radius: 20px;
-			padding: 32px 24px;
-			box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-			backdrop-filter: blur(20px);
-			border: 1px solid rgba(255, 255, 255, 0.2);
+			background: #ffffff;
+			border-radius: 15px;
+			padding: 30px 24px;
+			box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+			border: 1px solid #e8f4f8;
 			position: relative;
 		}
 		.stats-card::before {
@@ -311,10 +365,11 @@
 			}
 			.hero-left h1 { font-size: 2.4em; }
 			.hero-left p { font-size: 1.1em; }
-			.top-bar-content {
-				flex-direction: column;
-				gap: 8px;
-				text-align: center;
+			.nav-links {
+				display: none;
+			}
+			.menu-icon {
+				display: flex;
 			}
 		}
 		@media (max-width: 600px) {
@@ -341,15 +396,24 @@
 	<body class="landing is-preload">
 		<!-- Page Wrapper -->
 		<div id="page-wrapper">
-			<!-- Merged Top Bar and Header -->
-			<div class="top-bar merged-banner" style="position: fixed; top: 0; left: 0; width: 100%; z-index: 1001; background: linear-gradient(135deg, #2c3e50, #34495e); box-shadow: 0 2px 8px rgba(0,0,0,0.07); height: 50px;">
-				<div class="top-bar-content" style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px; height: 100%;">
-					<div class="logo" style="font-size: 18px; font-weight: bold; color: white; margin-left: 0;">MedCityAI</div>
-					<div class="feed-location" style="color: #ecf0f1; font-size: 14px; text-align: center;">Rochester, Minnesota Research Feed</div>
-					<div class="menu-icon" style="cursor: pointer;">
-						<div style="width: 25px; height: 3px; background: white; margin: 4px 0;"></div>
-						<div style="width: 25px; height: 3px; background: white; margin: 4px 0;"></div>
-						<div style="width: 25px; height: 3px; background: white; margin: 4px 0;"></div>
+			<!-- Modern Medical Navigation Header -->
+			<div class="top-bar">
+				<div class="top-bar-content">
+					<div class="logo">MedCityAI</div>
+					<div class="nav-links">
+						<a href="#research">Research</a>
+						<a href="#analytics">Analytics</a>
+						<a href="#insights">Insights</a>
+						<a href="#about">About</a>
+						<a href="#contact">Contact</a>
+					</div>
+					<div style="display: flex; align-items: center; gap: 15px;">
+						<a href="#subscribe" class="cta-button">Subscribe</a>
+						<div class="menu-icon">
+							<div></div>
+							<div></div>
+							<div></div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -358,11 +422,12 @@
 			<section class="hero-section">
 				<div class="hero-content">
 					<div class="hero-left">
-						<h1>Where Rochester's Medical Innovation Meets AI Insight</h1>
-						<p>MedCityAI curates and summarizes the newest research published by Rochester, MN institutions — refreshed daily.</p>
+						<div class="subtitle">ROCHESTER RESEARCH INTELLIGENCE</div>
+						<h1>Advancing Medical Knowledge Through AI</h1>
+						<p>Real-time curation and intelligent analysis of the latest research from Rochester's leading medical institutions. Stay ahead with daily insights powered by artificial intelligence.</p>
 						<div class="button-row">
 							<a href="#pubmed-results" class="btn btn-primary">🔍 Explore Today's Research</a>
-							<a href="#" class="btn btn-secondary">🧾 Subscribe to Daily Digest</a>
+							<a href="#" class="btn btn-secondary">📊 View Analytics Dashboard</a>
 						</div>
 					</div>
 					<div class="stats-card">
