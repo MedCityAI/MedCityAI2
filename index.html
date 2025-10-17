@@ -151,14 +151,10 @@
 		.logo {
 			display: flex;
 			align-items: center;
-			font-weight: 700;
-			font-size: 24px;
-			color: #2c3e50;
 		}
-		.logo::before {
-			content: '⚕️';
-			margin-right: 8px;
-			font-size: 28px;
+		.logo img {
+			height: 40px;
+			width: auto;
 		}
 		.nav-links {
 			display: flex;
@@ -399,7 +395,9 @@
 			<!-- Modern Medical Navigation Header -->
 			<div class="top-bar">
 				<div class="top-bar-content">
-					<div class="logo">MedCityAI</div>
+					<div class="logo">
+						<img src="images/medcityai_logo1.png" alt="MedCityAI" style="height:48px; width:auto;" />
+					</div>
 					<div class="nav-links">
 						<a href="#research">Research</a>
 						<a href="#analytics">Analytics</a>
