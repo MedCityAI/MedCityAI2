@@ -588,12 +588,24 @@
 			const title = link.getAttribute('data-title');
 			const abstract = link.getAttribute('data-abstract');
 			const pmid = link.getAttribute('data-pmid');
-			
-			modalTitle.textContent = title;
-			
-			// Start with the abstract
-			let content = `<h4>Abstract</h4><p>${abstract}</p>`;
-			
+			const authors = link.getAttribute('data-authors');
+			const affiliations = link.getAttribute('data-affiliations');
+
+			// Title in black at top
+			modalTitle.innerHTML = `<span style='color:#111;font-weight:800;font-size:1.3em;'>${title}</span>`;
+
+			// Authors and affiliations
+			let authorList = '';
+			if (authors) {
+				authorList += `<div style='margin:10px 0 18px 0;font-size:1em;color:#222;'><strong>Authors:</strong> ${authors.replace(/;/g, '; ')}</div>`;
+			}
+			if (affiliations) {
+				authorList += `<div style='margin-bottom:18px;font-size:0.95em;color:#444;'><strong>Affiliations:</strong> ${affiliations.replace(/;/g, '; ')}</div>`;
+			}
+
+			// Start with authors, affiliations, then abstract
+			let content = `${authorList}<h4>Abstract</h4><p>${abstract}</p>`;
+
 			// Check if we have an LLM summary for this PMID
 			if (pubmedSummaryData.has(pmid)) {
 				const llmSummary = pubmedSummaryData.get(pmid);
@@ -602,7 +614,7 @@
 					const summaryObj = JSON.parse(llmSummary);
 					content += `<hr style="margin: 20px 0; border: 1px solid #eee;">`;
 					content += `<h4>AI Summary</h4>`;
-					
+
 					if (summaryObj.main_findings) {
 						content += `<p><strong>Main Findings:</strong> ${summaryObj.main_findings}</p>`;
 					}
@@ -621,10 +633,10 @@
 					content += `<h4>AI Summary</h4><p>${llmSummary}</p>`;
 				}
 			}
-			
+
 			modalAbstract.innerHTML = content;
 			modalBg.style.display = 'flex';
-			
+
 			// Prevent scroll to top
 			if (window.scrollY) {
 				setTimeout(() => window.scrollTo({top: window.scrollY}), 0);
