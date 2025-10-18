@@ -431,10 +431,10 @@
 						<div class="subtitle">Rochester, Minnesota</div>
 						<h1>Research Happens Here</h1>
 						<p>Real-time biomedical research updates from under the corn tower. Information sourced from the National Library of Medicine.</p>
-						<div class="button-row">
-							<a href="#pubmed-results" class="btn btn-primary">🔍 Explore Today's Research</a>
-							<a href="#" class="btn btn-secondary">📊 View Analytics Dashboard</a>
-						</div>
+						<form class="search-bar" id="searchForm" style="display: flex; gap: 12px; margin-bottom: 24px;">
+							<input type="text" id="searchInput" placeholder="Search by topic, author, or department..." style="flex:1; padding: 14px 18px; border-radius: 30px; border: 1px solid #ccc; font-size: 16px;">
+							<button type="submit" class="btn btn-primary" style="border-radius: 30px; padding: 14px 28px; font-size: 16px;">🔍 Search</button>
+						</form>
 					</div>
 					<div class="stats-card">
 						<div class="daily-count">
