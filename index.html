@@ -65,15 +65,39 @@
 			column-gap: 20px;
 		}
 		.result-item {
-			background: #fff;
-			border-radius: 10px;
-			padding: 20px;
-			margin: 0 0 20px;
-			box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-			display: inline-block;
+			perspective: 1200px;
 			width: 100%;
+			margin: 0 0 20px;
+			display: inline-block;
 			box-sizing: border-box;
+		}
+		.flip-card-inner {
 			position: relative;
+			width: 100%;
+			transition: transform 0.7s cubic-bezier(.4,2,.3,1);
+			transform-style: preserve-3d;
+		}
+		.result-item.flipped .flip-card-inner {
+			transform: rotateY(180deg);
+		}
+		.flip-card-front, .flip-card-back {
+			position: absolute;
+			top: 0; left: 0;
+			width: 100%;
+			backface-visibility: hidden;
+			border-radius: 10px;
+			box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+			background: #fff;
+			padding: 20px;
+			min-height: 220px;
+		}
+		.flip-card-back {
+			transform: rotateY(180deg);
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			color: #222;
 		}
 		.new-tab {
 			position: absolute;
@@ -771,26 +795,52 @@
 					const citation = `${journal}. ${pubdate}. PMID: ${pmid}`;
 					const url = `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`;
 
+					// Get LLM summary if available
+					let llmSummary = "";
+					if (pubmedSummaryData.has(pmid)) {
+						const rawSummary = pubmedSummaryData.get(pmid);
+						try {
+							const summaryObj = JSON.parse(rawSummary);
+							llmSummary = `<h4 style='color:#0056a3;'>AI Summary</h4>`;
+							if (summaryObj.main_findings) llmSummary += `<p><strong>Main Findings:</strong> ${summaryObj.main_findings}</p>`;
+							if (summaryObj.clinical_significance) llmSummary += `<p><strong>Clinical Significance:</strong> ${summaryObj.clinical_significance}</p>`;
+							if (summaryObj.methodology) llmSummary += `<p><strong>Methodology:</strong> ${summaryObj.methodology}</p>`;
+							if (summaryObj.limitations) llmSummary += `<p><strong>Limitations:</strong> ${summaryObj.limitations}</p>`;
+						} catch (e) {
+							llmSummary = `<h4 style='color:#0056a3;'>AI Summary</h4><p>${rawSummary}</p>`;
+						}
+					} else {
+						llmSummary = `<p>No AI summary available.</p>`;
+					}
+
 					resultsHTML += `
-						<div class="result-item">
-							<div class="new-tab">NEW</div>
-							<br><a href="#" class="result-title" 
-								data-title="${title.replace(/"/g,'&quot;')}" 
-								data-abstract="${abstract.replace(/"/g,'&quot;')}" 
-								data-pmid="${pmid}"
-								onclick="showAbstractModal(this)">${title}</a>
-							<div class="result-authors">${authorsHtml}</div>
-							<div class="result-citation"><em>${citation}</em></div>
-							<div class="share-buttons">
-								<a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" class="facebook" target="_blank">
-									<i class="icon brands fa-facebook-f"></i> 
-								</a>
-								<a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}" class="twitter" target="_blank">
-									<i class="icon brands fa-twitter"></i> 
-								</a>
-								<a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}" class="linkedin" target="_blank">
-									<i class="icon brands fa-linkedin"></i> 
-								</a>
+						<div class="result-item" onclick="this.classList.toggle('flipped')">
+							<div class="flip-card-inner">
+								<div class="flip-card-front">
+									<div class="new-tab">NEW</div>
+									<br><a href="#" class="result-title" 
+										data-title="${title.replace(/"/g,'&quot;')}" 
+										data-abstract="${abstract.replace(/"/g,'&quot;')}" 
+										data-pmid="${pmid}"
+										onclick="showAbstractModal(this);event.stopPropagation();">${title}</a>
+									<div class="result-authors">${authorsHtml}</div>
+									<div class="result-citation"><em>${citation}</em></div>
+									<div class="share-buttons">
+										<a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" class="facebook" target="_blank">
+											<i class="icon brands fa-facebook-f"></i> 
+										</a>
+										<a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}" class="twitter" target="_blank">
+											<i class="icon brands fa-twitter"></i> 
+										</a>
+										<a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}" class="linkedin" target="_blank">
+											<i class="icon brands fa-linkedin"></i> 
+										</a>
+									</div>
+								</div>
+								<div class="flip-card-back">
+									${llmSummary}
+									<button onclick="event.stopPropagation();this.closest('.result-item').classList.remove('flipped')" style="margin-top:18px;padding:8px 18px;border-radius:20px;background:#3498db;color:#fff;border:none;font-weight:600;cursor:pointer;">Back</button>
+								</div>
 							</div>
 						</div>
 					`;
