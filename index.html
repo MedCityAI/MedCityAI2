@@ -409,11 +409,6 @@
 		</style>
 	</head>
 	<body class="landing is-preload">
-		<!-- Celebrate Emoji Button -->
-		<div id="celebrate-btn-container" style="position:fixed;top:18px;right:24px;z-index:2000;display:flex;align-items:center;gap:8px;">
-			<button id="celebrate-btn" style="background: #fff; border: 2px solid #f7c948; border-radius: 50%; font-size: 2em; width: 48px; height: 48px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: transform 0.1s;">🎉</button>
-			<span id="celebrate-count" style="font-size:1.2em;font-weight:700;color:#f7c948;">0</span>
-		</div>
 		<!-- Page Wrapper -->
 		<div id="page-wrapper">
 			<!-- Modern Medical Navigation Header -->
@@ -530,19 +525,6 @@
 		<script src="assets/js/breakpoints.min.js"></script>
 		<script src="assets/js/util.js"></script>
 		<script src="assets/js/main.js"></script>
-
-		<script>
-		// Celebrate emoji button logic
-		const celebrateBtn = document.getElementById('celebrate-btn');
-		const celebrateCount = document.getElementById('celebrate-count');
-		let count = 0;
-		celebrateBtn.addEventListener('click', function() {
-			count++;
-			celebrateCount.textContent = count;
-			celebrateBtn.style.transform = 'scale(1.2)';
-			setTimeout(()=>celebrateBtn.style.transform = '', 120);
-		});
-		</script>
 
 		<script>
 		// Application state
