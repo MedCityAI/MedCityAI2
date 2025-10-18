@@ -774,6 +774,10 @@
 					resultsHTML += `
 						<div class="result-item">
 							<div class="new-tab">NEW</div>
+							<button class="celebrate-btn" data-pmid="${pmid}" style="position:absolute;top:12px;right:16px;background:none;border:none;cursor:pointer;font-size:1.7em;line-height:1;padding:0;z-index:2;">
+								<span class="celebrate-count" id="celebrate-count-${pmid}" style="font-size:0.9em;font-weight:700;color:#b8860b;position:relative;right:1.2em;top:-0.1em;">0</span>
+								<span role="img" aria-label="Celebrate">🎉</span>
+							</button>
 							<br><a href="#" class="result-title" 
 								data-title="${title.replace(/"/g,'&quot;')}" 
 								data-abstract="${abstract.replace(/"/g,'&quot;')}" 
@@ -834,6 +838,17 @@
 			}
 			animateCounter();
 
+			// Celebrate button logic
+			document.getElementById('pubmed-results').addEventListener('click', function(e) {
+				if (e.target.closest('.celebrate-btn')) {
+					const btn = e.target.closest('.celebrate-btn');
+					const pmid = btn.getAttribute('data-pmid');
+					const countSpan = document.getElementById('celebrate-count-' + pmid);
+					let count = parseInt(countSpan.textContent, 10) || 0;
+					count++;
+					countSpan.textContent = count;
+				}
+			});
 			// Load data
 			loadStatistics();
 			loadLLMSummaries();
