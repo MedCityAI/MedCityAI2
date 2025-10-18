@@ -474,10 +474,38 @@
 							<button type="submit" class="btn btn-primary" style="border-radius: 30px; padding: 14px 28px; font-size: 16px;">🔍 Search</button>
 						</form>
 					</div>
-					<div class="published-counter" style="background:#fff;border-radius:50%;width:180px;height:180px;box-shadow:0 8px 30px rgba(0,0,0,0.08);border:1px solid #e8f4f8;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto;">
-						<h3 style="margin:0 0 12px 0;font-size:1.3em;color:#2c3e50;font-weight:700;">Published Today</h3>
-						<span id="published24h" style="font-size:3em;font-weight:800;color:#3498db;">0</span>
+					<div class="published-counter-circle">
+						<h3 class="published-label">Published in the last 24 hours</h3>
+						<span id="published24h" class="published-number">0</span>
 					</div>
+	   .published-counter-circle {
+		   width: 320px;
+		   height: 320px;
+		   background: #fff;
+		   border-radius: 50%;
+		   box-shadow: 0 8px 30px rgba(0,0,0,0.10);
+		   border: 2px solid #e8f4f8;
+		   display: flex;
+		   flex-direction: column;
+		   align-items: center;
+		   justify-content: center;
+		   margin: 0 auto;
+		   position: relative;
+	   }
+	   .published-label {
+		   margin: 0 0 18px 0;
+		   font-size: 1.35em;
+		   color: #2c3e50;
+		   font-weight: 700;
+		   text-align: center;
+	   }
+	   .published-number {
+		   font-size: 5em;
+		   font-weight: 800;
+		   color: #3498db;
+		   text-align: center;
+		   margin: 0;
+	   }
 				</div>
 			</section>
 
@@ -796,29 +824,25 @@
 				if (e.target === modalBg) closeModal();
 			});
 
-			// Animate published counter (ease-out)
+			// Animate published counter
 			const publishedEl = document.getElementById('published24h');
-			let start = null;
+			let current = 0;
 			const target = 16;
 			const duration = 1200; // ms
-			function easeOut(t) {
-				// Ease-out cubic
-				return 1 - Math.pow(1 - t, 3);
-			}
-			function animateCounter(ts) {
-				if (!start) start = ts;
-				const elapsed = ts - start;
-				const progress = Math.min(elapsed / duration, 1);
-				const eased = easeOut(progress);
-				const value = Math.floor(eased * target);
-				publishedEl.textContent = value;
-				if (progress < 1) {
-					requestAnimationFrame(animateCounter);
+			const steps = 32;
+			const increment = target / steps;
+			const interval = duration / steps;
+			function animateCounter() {
+				if (current < target) {
+					current += increment;
+					if (current > target) current = target;
+					publishedEl.textContent = Math.floor(current);
+					setTimeout(animateCounter, interval);
 				} else {
 					publishedEl.textContent = target;
 				}
 			}
-			requestAnimationFrame(animateCounter);
+			animateCounter();
 
 			// Load data
 			loadStatistics();
