@@ -201,13 +201,20 @@
 
 		/* Hero section */
 		.hero-section {
-			background: linear-gradient(135deg, #f8fafc 0%, #e8f4f8 100%);
+			background: linear-gradient(135deg, #e3eaf3 0%, #b6c7e0 100%);
 			min-height: 600px;
 			display: flex;
 			align-items: center;
 			position: relative;
 			overflow: hidden;
 			margin-top: 70px;
+			z-index: 1;
+		}
+
+		/* Extend the backdrop into the results grid section */
+		#one.wrapper.style1.special {
+			background: linear-gradient(135deg, #e3eaf3 0%, #b6c7e0 100%);
+			z-index: 0;
 		}
 		.hero-section::before {
 			content: '';
