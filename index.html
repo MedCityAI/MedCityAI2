@@ -67,22 +67,23 @@
 		.result-item {
 			perspective: 1200px;
 			width: 100%;
-			margin-bottom: 20px;
+			margin-bottom: 24px;
 			display: inline-block;
 			box-sizing: border-box;
+			position: relative;
 		}
 		.flip-card-inner {
 			position: relative;
 			width: 100%;
 			transition: transform 0.7s cubic-bezier(.4,2,.3,1);
 			transform-style: preserve-3d;
+			min-height: 0;
 		}
 		.result-item.flipped .flip-card-inner {
 			transform: rotateY(180deg);
 		}
 		.flip-card-front, .flip-card-back {
-			position: absolute;
-			top: 0; left: 0;
+			position: relative;
 			width: 100%;
 			backface-visibility: hidden;
 			border-radius: 10px;
@@ -97,6 +98,11 @@
 			justify-content: center;
 			align-items: center;
 			color: #222;
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			min-height: 100%;
 		}
 		.new-tab {
 			position: absolute;
