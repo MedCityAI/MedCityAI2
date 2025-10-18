@@ -474,20 +474,9 @@
 							<button type="submit" class="btn btn-primary" style="border-radius: 30px; padding: 14px 28px; font-size: 16px;">🔍 Search</button>
 						</form>
 					</div>
-					<div class="stats-card">
-						<div class="daily-count">
-							<h3>📊 Published today:</h3>
-							<span class="count-number" id="VarDay">0</span>
-						</div>
-						<div class="ai-summary">
-							<h4>AI Summary</h4>
-							<div class="summary-text" id="daily-ai-summary">
-								Today's highlights include new advances in medical imaging, innovative treatment protocols, and groundbreaking research from Rochester's leading medical institutions.
-							</div>
-						</div>
-						<div class="update-time">
-							Updated at 6:00 AM CST
-						</div>
+					<div class="published-counter" style="background:#fff;border-radius:15px;padding:30px 24px;box-shadow:0 8px 30px rgba(0,0,0,0.08);border:1px solid #e8f4f8;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+						<h3 style="margin:0 0 12px 0;font-size:1.3em;color:#2c3e50;font-weight:700;">Published in the last 24 hours</h3>
+						<span id="published24h" style="font-size:3em;font-weight:800;color:#3498db;">0</span>
 					</div>
 				</div>
 			</section>
@@ -801,11 +790,31 @@
 			// Set up modal event listeners
 			const modalBg = document.getElementById('modalBg');
 			const modalClose = document.getElementById('modalClose');
-			
+            
 			modalClose.addEventListener('click', closeModal);
 			modalBg.addEventListener('click', function(e) {
 				if (e.target === modalBg) closeModal();
 			});
+
+			// Animate published counter
+			const publishedEl = document.getElementById('published24h');
+			let current = 0;
+			const target = 16;
+			const duration = 1200; // ms
+			const steps = 32;
+			const increment = target / steps;
+			const interval = duration / steps;
+			function animateCounter() {
+				if (current < target) {
+					current += increment;
+					if (current > target) current = target;
+					publishedEl.textContent = Math.floor(current);
+					setTimeout(animateCounter, interval);
+				} else {
+					publishedEl.textContent = target;
+				}
+			}
+			animateCounter();
 
 			// Load data
 			loadStatistics();
