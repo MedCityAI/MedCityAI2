@@ -808,25 +808,6 @@
 				if (e.target === modalBg) closeModal();
 			});
 
-			// Animate published counter
-			const publishedEl = document.getElementById('published24h');
-			let current = 0;
-			const target = 16;
-			const duration = 1200; // ms
-			const steps = 32;
-			const increment = target / steps;
-			const interval = duration / steps;
-			function animateCounter() {
-				if (current < target) {
-					current += increment;
-					if (current > target) current = target;
-					publishedEl.textContent = Math.floor(current);
-					setTimeout(animateCounter, interval);
-				} else {
-					publishedEl.textContent = target;
-				}
-			}
-			animateCounter();
 
 			// Load data
 			loadStatistics();
