@@ -66,37 +66,54 @@
 		}
 		.result-item {
 			background: #fff;
-			border-radius: 10px;
-			padding: 20px;
+			border-radius: 12px;
+			padding: 24px;
 			margin: 0 0 20px;
-			box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+			box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 			display: inline-block;
 			width: 100%;
 			box-sizing: border-box;
 			position: relative;
+			transition: all 0.3s ease;
+			border: 1px solid rgba(52,152,219,0.1);
+		}
+		.result-item:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 8px 25px rgba(52,152,219,0.15);
+			border-color: rgba(52,152,219,0.2);
 		}
 		.new-tab {
 			position: absolute;
 			top: 0;
 			left: 0;
-			background: #e74c3c;
+			background: linear-gradient(135deg, #e74c3c, #c0392b);
 			color: #fff;
-			font-size: 12px;
+			font-size: 11px;
 			font-weight: bold;
-			padding: 4px 12px;
-			border-radius: 8px 0 8px 0;
+			padding: 6px 14px;
+			border-radius: 12px 0 12px 0;
 			z-index: 10;
+			box-shadow: 0 2px 8px rgba(231,76,60,0.3);
+			animation: newPulse 3s ease-in-out infinite;
+		}
+		@keyframes newPulse {
+			0%, 100% { transform: scale(1); }
+			50% { transform: scale(1.05); }
 		}
 		.result-title {
 			display: block;
 			font-size: 18px;
-			font-weight: 600;
-			color: #0056a3;
+			font-weight: 700;
+			color: #2c3e50;
 			text-decoration: none;
-			margin-bottom: 8px;
+			margin-bottom: 12px;
+			line-height: 1.4;
+			transition: all 0.3s ease;
 		}
 		.result-title:hover { 
-			text-decoration: underline; 
+			color: #3498db;
+			text-decoration: none;
+			transform: translateX(2px);
 		}
 		.result-authors { 
 			color: #333; 
@@ -111,20 +128,30 @@
 
 		/* Share buttons */
 		.share-buttons { 
-			margin-top: 10px; 
+			margin-top: 16px;
+			display: flex;
+			gap: 8px;
+			align-items: center;
 		}
 		.share-buttons a {
-			display: inline-block;
-			margin-right: 10px;
-			font-size: 20px;
-			color: #5e5e5e;
-			padding: 6px 10px;
-			border-radius: 6px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 36px;
+			height: 36px;
+			font-size: 16px;
+			color: #7f8c8d;
+			background: rgba(52,152,219,0.05);
+			border: 1px solid rgba(52,152,219,0.1);
+			border-radius: 8px;
 			text-decoration: none;
-			transition: opacity 0.3s ease;
+			transition: all 0.3s ease;
 		}
 		.share-buttons a:hover { 
-			opacity: 0.85; 
+			background: #3498db;
+			color: #fff;
+			transform: translateY(-2px);
+			box-shadow: 0 4px 12px rgba(52,152,219,0.3);
 		}
 
 		/* Top Navigation Bar */
@@ -140,6 +167,12 @@
 			z-index: 1001;
 			box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 			border-bottom: 1px solid #eee;
+			backdrop-filter: blur(10px);
+			-webkit-backdrop-filter: blur(10px);
+		}
+		@keyframes pulse {
+			0%, 100% { opacity: 1; transform: scale(1); }
+			50% { opacity: 0.7; transform: scale(1.2); }
 		}
 		.top-bar-content {
 			max-width: 1200px;
@@ -167,10 +200,29 @@
 			text-decoration: none;
 			font-weight: 500;
 			font-size: 15px;
-			transition: color 0.3s ease;
+			transition: all 0.3s ease;
+			position: relative;
+			padding: 8px 16px;
+			border-radius: 8px;
 		}
 		.nav-links a:hover {
 			color: #3498db;
+			background: rgba(52,152,219,0.05);
+			transform: translateY(-1px);
+		}
+		.nav-links a::after {
+			content: '';
+			position: absolute;
+			bottom: 4px;
+			left: 50%;
+			width: 0;
+			height: 2px;
+			background: #3498db;
+			transition: all 0.3s ease;
+			transform: translateX(-50%);
+		}
+		.nav-links a:hover::after {
+			width: 80%;
 		}
 		.cta-button {
 			background: linear-gradient(135deg, #3498db, #2980b9);
@@ -181,10 +233,26 @@
 			font-weight: 600;
 			font-size: 14px;
 			transition: all 0.3s ease;
+			box-shadow: 0 2px 8px rgba(52,152,219,0.3);
+			position: relative;
+			overflow: hidden;
+		}
+		.cta-button::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: -100%;
+			width: 100%;
+			height: 100%;
+			background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+			transition: left 0.5s;
 		}
 		.cta-button:hover {
-			transform: translateY(-1px);
-			box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+			transform: translateY(-2px);
+			box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+		}
+		.cta-button:hover::before {
+			left: 100%;
 		}
 		.menu-icon {
 			display: none;
@@ -416,6 +484,10 @@
 				<div class="top-bar-content">
 					<div class="logo">
 						<img src="images/medcityai_logo1.png" alt="MedCityAI" style="height:48px; width:auto;" />
+						<div style="margin-left:12px;border-left:2px solid #3498db;padding-left:12px;">
+							<div style="font-size:18px;font-weight:800;color:#2c3e50;line-height:1.2;">MedCityAI</div>
+							<div style="font-size:11px;color:#7f8c8d;font-weight:600;letter-spacing:0.5px;">OFFICIAL RESEARCH DASHBOARD</div>
+						</div>
 					</div>
 					<div class="nav-links">
 						<a href="#research">Research</a>
@@ -425,7 +497,11 @@
 						<a href="#contact">Contact</a>
 					</div>
 					<div style="display: flex; align-items: center; gap: 15px;">
-						<a href="#subscribe" class="cta-button">Subscribe</a>
+						<div style="display:flex;align-items:center;gap:8px;background:rgba(52,152,219,0.1);padding:6px 12px;border-radius:20px;border:1px solid rgba(52,152,219,0.2);">
+							<div style="width:8px;height:8px;background:#27ae60;border-radius:50%;animation:pulse 2s infinite;"></div>
+							<span style="font-size:12px;font-weight:600;color:#27ae60;">LIVE</span>
+						</div>
+						<a href="#subscribe" class="cta-button">Get Alerts</a>
 						<div class="menu-icon">
 							<div></div>
 							<div></div>
@@ -466,23 +542,66 @@
 				   </svg>
 				<div class="hero-content">
 					<div class="hero-left">
-						<div class="subtitle" style="color:#e0e0e0;">Rochester, Minnesota</div>
-						<h1 style="color:#fff; text-shadow: 0 4px 18px rgba(0,0,0,0.28);">Rochester’s Daily Research Feed</h1>
-						<p style="color:#e0e0e0;">Real-time biomedical research feed for Rochester, Minnesota. Consise summaries and analytics generated using AI. All information sourced from the National Library of Medicine (PubMed).</p>
+						<div class="subtitle" style="color:#e0e0e0;display:flex;align-items:center;gap:8px;">
+							<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L13.09 8.26L19 9L13.09 9.74L12 16L10.91 9.74L5 9L10.91 8.26L12 2Z"/></svg>
+							Rochester, Minnesota
+						</div>
+						<h1 style="color:#fff; text-shadow: 0 4px 18px rgba(0,0,0,0.28);background:linear-gradient(135deg,#fff 0%,#e3f2fd 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Rochester's Daily Research Feed</h1>
+						<p style="color:#e0e0e0;font-size:1.2em;line-height:1.8;">Real-time biomedical research feed for Rochester, Minnesota. <span style="color:#74b9ff;font-weight:600;">AI-powered summaries</span> and analytics from the National Library of Medicine (PubMed).</p>
+						<div style="display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;">
+							<div style="background:rgba(255,255,255,0.1);padding:8px 16px;border-radius:20px;border:1px solid rgba(255,255,255,0.2);backdrop-filter:blur(10px);">
+								<span style="color:#74b9ff;font-size:12px;font-weight:600;">✨ AI SUMMARIES</span>
+							</div>
+							<div style="background:rgba(255,255,255,0.1);padding:8px 16px;border-radius:20px;border:1px solid rgba(255,255,255,0.2);backdrop-filter:blur(10px);">
+								<span style="color:#81ecec;font-size:12px;font-weight:600;">📊 LIVE DATA</span>
+							</div>
+							<div style="background:rgba(255,255,255,0.1);padding:8px 16px;border-radius:20px;border:1px solid rgba(255,255,255,0.2);backdrop-filter:blur(10px);">
+								<span style="color:#fdcb6e;font-size:12px;font-weight:600;">🔬 RESEARCH</span>
+							</div>
+						</div>
 						<form class="search-bar" id="searchForm" style="display: flex; gap: 12px; margin-bottom: 24px;">
 							<div style="position:relative; flex:1; display:flex; align-items:center;">
-								<span style="position:absolute;left:18px;top:50%;transform:translateY(-50%);color:#aaa;font-size:1.3em;pointer-events:none;">
+								<span style="position:absolute;left:18px;top:50%;transform:translateY(-50%);color:#aaa;font-size:1.3em;pointer-events:none;z-index:2;">
 									<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
 								</span>
-								<input type="text" id="searchInput" placeholder="Search by topic, author, or department..." style="width:100%;padding:14px 18px 14px 48px;border-radius:30px;border:1px solid #ccc;font-size:16px;display:flex;align-items:center;">
+								<input type="text" id="searchInput" placeholder="Search by topic, author, or department..." style="width:100%;padding:16px 18px 16px 52px;border-radius:35px;border:2px solid rgba(255,255,255,0.2);font-size:16px;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);transition:all 0.3s ease;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
+								<div style="position:absolute;right:8px;top:50%;transform:translateY(-50%);display:flex;gap:8px;">
+									<kbd style="background:rgba(116,185,255,0.2);color:#74b9ff;padding:4px 8px;border-radius:6px;font-size:11px;font-weight:600;">⌘K</kbd>
+								</div>
 							</div>
 						</form>
+						<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;">
+							<button style="background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.3);color:#fff;padding:12px 24px;border-radius:25px;font-weight:600;cursor:pointer;transition:all 0.3s ease;backdrop-filter:blur(10px);">
+								🚀 Explore Research
+							</button>
+							<button style="background:transparent;border:2px solid rgba(255,255,255,0.3);color:#fff;padding:12px 24px;border-radius:25px;font-weight:600;cursor:pointer;transition:all 0.3s ease;">
+								📈 View Analytics
+							</button>
+						</div>
 					</div>
 				</div>
 			</section>
 
-						<!-- Main Content Section -->
-						<section id="one" class="wrapper style1 special" style="padding: 40px 0;">
+					<!-- Main Content Section -->
+					<section id="one" class="wrapper style1 special" style="padding: 60px 0;">
+						<div style="max-width:1200px;margin:0 auto 40px auto;padding:0 20px;text-align:center;">
+							<h2 style="font-size:2.5em;font-weight:800;color:#2c3e50;margin-bottom:16px;background:linear-gradient(135deg,#2c3e50 0%,#3498db 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Latest Research</h2>
+							<p style="font-size:1.2em;color:#7f8c8d;max-width:600px;margin:0 auto;line-height:1.6;">Discover the most recent biomedical publications from Rochester's research community, enhanced with AI-powered insights.</p>
+							<div style="display:flex;justify-content:center;gap:24px;margin-top:32px;flex-wrap:wrap;">
+								<div style="background:rgba(52,152,219,0.1);padding:16px 24px;border-radius:12px;border:1px solid rgba(52,152,219,0.2);">
+									<div style="font-size:2em;font-weight:800;color:#3498db;" id="live-total">---</div>
+									<div style="font-size:12px;color:#7f8c8d;font-weight:600;">TOTAL ARTICLES</div>
+								</div>
+								<div style="background:rgba(39,174,96,0.1);padding:16px 24px;border-radius:12px;border:1px solid rgba(39,174,96,0.2);">
+									<div style="font-size:2em;font-weight:800;color:#27ae60;" id="live-today">---</div>
+									<div style="font-size:12px;color:#7f8c8d;font-weight:600;">TODAY</div>
+								</div>
+								<div style="background:rgba(230,126,34,0.1);padding:16px 24px;border-radius:12px;border:1px solid rgba(230,126,34,0.2);">
+									<div style="font-size:2em;font-weight:800;color:#e67e22;" id="live-week">---</div>
+									<div style="font-size:12px;color:#7f8c8d;font-weight:600;">THIS WEEK</div>
+								</div>
+							</div>
+						</div>
 				<!-- Results Grid -->
 				<div id="pubmed-results" style="margin-top:40px;"></div>
 
@@ -664,13 +783,16 @@
 				});
 
 				// Update UI
-				document.getElementById("VarTot").textContent = VarTot;
-				document.getElementById("VarDay").textContent = VarDay;
-				document.getElementById("VarWeek").textContent = VarWeek;
-				document.getElementById("VarMonth").textContent = VarMonth;
+				if (document.getElementById("VarTot")) document.getElementById("VarTot").textContent = VarTot;
+				if (document.getElementById("VarDay")) document.getElementById("VarDay").textContent = VarDay;
+				if (document.getElementById("VarWeek")) document.getElementById("VarWeek").textContent = VarWeek;
+				if (document.getElementById("VarMonth")) document.getElementById("VarMonth").textContent = VarMonth;
 				
 				// Update live count in hero banner
-				document.getElementById("live-count").textContent = VarDay;
+				if (document.getElementById("live-count")) document.getElementById("live-count").textContent = VarDay;
+				if (document.getElementById("live-total")) document.getElementById("live-total").textContent = VarTot;
+				if (document.getElementById("live-today")) document.getElementById("live-today").textContent = VarDay;
+				if (document.getElementById("live-week")) document.getElementById("live-week").textContent = VarWeek;
 			} catch (err) {
 				console.error('Error loading statistics:', err);
 			}
@@ -776,6 +898,7 @@
 							<div class="result-authors">${authorsHtml}</div>
 							<div class="result-citation"><em>${citation}</em></div>
 							<div class="share-buttons">
+								<span style="font-size:12px;color:#7f8c8d;font-weight:600;margin-right:8px;">Share:</span>
 								<a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" class="facebook" target="_blank">
 									<i class="icon brands fa-facebook-f"></i> 
 								</a>
@@ -784,6 +907,9 @@
 								</a>
 								<a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}" class="linkedin" target="_blank">
 									<i class="icon brands fa-linkedin"></i> 
+								</a>
+								<a href="${url}" target="_blank" style="margin-left:auto;background:rgba(52,152,219,0.1);color:#3498db;padding:6px 12px;border-radius:6px;font-size:11px;font-weight:600;text-decoration:none;border:1px solid rgba(52,152,219,0.2);">
+									View on PubMed →
 								</a>
 							</div>
 						</div>
