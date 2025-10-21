@@ -248,6 +248,29 @@
 			position: relative;
 			z-index: 2;
 		}
+		.hero-right {
+			position: relative;
+		}
+		.chart-container {
+			position: relative;
+			background: rgba(255, 255, 255, 0.1);
+			border-radius: 16px;
+			padding: 20px;
+			backdrop-filter: blur(10px);
+			border: 1px solid rgba(255, 255, 255, 0.2);
+			transition: all 0.3s ease;
+		}
+		.chart-container:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+			background: rgba(255, 255, 255, 0.15);
+		}
+		.chart-overlay {
+			position: absolute;
+			top: 20px;
+			left: 20px;
+			z-index: 3;
+		}
 		.hero-left h1 {
 			font-size: 3em;
 			font-weight: 800;
@@ -375,8 +398,12 @@
 			.results { column-count: 2; }
 			.hero-content {
 				grid-template-columns: 1fr;
-				gap: 30px;
+				gap: 40px;
 				text-align: center;
+			}
+			.chart-container {
+				max-width: 100%;
+				margin: 0 auto;
 			}
 			.hero-left h1 { font-size: 2.4em; }
 			.hero-left p { font-size: 1.1em; }
@@ -400,6 +427,16 @@
 			.btn {
 				padding: 12px 24px;
 				font-size: 14px;
+			}
+			.chart-container {
+				padding: 12px;
+				margin-top: 20px;
+			}
+			.chart-overlay h3 {
+				font-size: 1em;
+			}
+			.chart-overlay p {
+				font-size: 0.8em;
 			}
 			.stats-card {
 				padding: 24px 18px;
@@ -476,6 +513,15 @@
 								<input type="text" id="searchInput" placeholder="Search by topic, author, or department..." style="width:100%;padding:14px 18px 14px 48px;border-radius:30px;border:1px solid #ccc;font-size:16px;display:flex;align-items:center;">
 							</div>
 						</form>
+					</div>
+					<div class="hero-right">
+						<div class="chart-container">
+							<img src="images/med_city_publications_web.png" alt="Med City Publications Growth Chart" style="width: 100%; height: auto; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.3);">
+							<div class="chart-overlay">
+								<h3 style="color: white; font-size: 1.2em; margin: 0 0 8px 0; text-shadow: 0 2px 8px rgba(0,0,0,0.5);">Research Growth</h3>
+								<p style="color: rgba(255,255,255,0.9); font-size: 0.9em; margin: 0; text-shadow: 0 1px 4px rgba(0,0,0,0.5);">Exponential publication trend</p>
+							</div>
+						</div>
 					</div>
 				</div>
 			</section>
