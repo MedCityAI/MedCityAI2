@@ -242,7 +242,7 @@
 			margin: 0 auto;
 			   padding: 36px 20px;
 			display: grid;
-			grid-template-columns: 1fr 400px;
+			grid-template-columns: 1fr 450px;
 			gap: 60px;
 			align-items: center;
 			position: relative;
@@ -254,16 +254,20 @@
 		.chart-container {
 			position: relative;
 			background: rgba(255, 255, 255, 0.1);
-			border-radius: 16px;
-			padding: 20px;
-			backdrop-filter: blur(10px);
-			border: 1px solid rgba(255, 255, 255, 0.2);
+			border-radius: 20px;
+			padding: 24px;
+			backdrop-filter: blur(12px);
+			border: 1px solid rgba(255, 255, 255, 0.25);
 			transition: all 0.3s ease;
+			aspect-ratio: 1;
+			display: flex;
+			align-items: center;
+			justify-content: center;
 		}
 		.chart-container:hover {
 			transform: translateY(-5px);
-			box-shadow: 0 12px 40px rgba(0,0,0,0.4);
-			background: rgba(255, 255, 255, 0.15);
+			box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+			background: rgba(255, 255, 255, 0.18);
 		}
 		.chart-overlay {
 			position: absolute;
@@ -402,8 +406,9 @@
 				text-align: center;
 			}
 			.chart-container {
-				max-width: 100%;
+				max-width: 400px;
 				margin: 0 auto;
+				aspect-ratio: 1;
 			}
 			.hero-left h1 { font-size: 2.4em; }
 			.hero-left p { font-size: 1.1em; }
@@ -429,14 +434,20 @@
 				font-size: 14px;
 			}
 			.chart-container {
-				padding: 12px;
+				padding: 18px;
 				margin-top: 20px;
+				max-width: 320px;
+				aspect-ratio: 1;
+			}
+			.chart-overlay {
+				top: 18px !important;
+				left: 18px !important;
 			}
 			.chart-overlay h3 {
-				font-size: 1em;
+				font-size: 1.1em;
 			}
 			.chart-overlay p {
-				font-size: 0.8em;
+				font-size: 0.9em;
 			}
 			.stats-card {
 				padding: 24px 18px;
@@ -516,10 +527,10 @@
 					</div>
 					<div class="hero-right">
 						<div class="chart-container">
-							<img src="images/med_city_publications_web.png" alt="Med City Publications Growth Chart" style="width: 100%; height: auto; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.3);">
-							<div class="chart-overlay">
-								<h3 style="color: white; font-size: 1.2em; margin: 0 0 8px 0; text-shadow: 0 2px 8px rgba(0,0,0,0.5);">Research Growth</h3>
-								<p style="color: rgba(255,255,255,0.9); font-size: 0.9em; margin: 0; text-shadow: 0 1px 4px rgba(0,0,0,0.5);">Exponential publication trend</p>
+							<img src="images/med_city_publications_web.png" alt="Mayo Rochester Publications Growth Chart" style="width: 100%; height: 100%; object-fit: contain; border-radius: 16px;">
+							<div class="chart-overlay" style="position: absolute; top: 24px; left: 24px; z-index: 3;">
+								<h3 style="color: white; font-size: 1.3em; margin: 0 0 6px 0; text-shadow: 0 3px 12px rgba(0,0,0,0.6); font-weight: 700;">Mayo Rochester</h3>
+								<p style="color: rgba(255,255,255,0.95); font-size: 1em; margin: 0; text-shadow: 0 2px 8px rgba(0,0,0,0.5); font-weight: 500;">Research Growth</p>
 							</div>
 						</div>
 					</div>
