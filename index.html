@@ -636,7 +636,7 @@
 				<h4 style="color:#2c3e50;margin:0 0 10px 0;font-size:1.1em;">
 					<span style="display:inline-block;margin-right:8px;">💡</span>Common Language Summary
 				</h4>
-				<div style="color:#666;font-style:italic;">Generating summary...</div>
+				<div id="llm-status" style="color:#666;font-style:italic;">⏳ Generating summary...</div>
 			</div>`;
 			content += `<h4>Abstract</h4><p>${abstract}</p>`;
 
@@ -650,6 +650,12 @@
 
 			// Generate LLM summary
 			try {
+				const summaryContainer = document.getElementById('llm-summary-container');
+				const statusDiv = document.getElementById('llm-status');
+				
+				console.log('Requesting LLM summary for PMID:', pmid);
+				statusDiv.innerHTML = '🔄 Contacting AI service...';
+				
 				const response = await fetch('/MedCityAI/query_pubmed', {
 					method: 'POST',
 					headers: {
@@ -662,9 +668,13 @@
 					})
 				});
 
+				console.log('Response status:', response.status);
+				
 				if (response.ok) {
+					statusDiv.innerHTML = '✨ Processing response...';
 					const data = await response.json();
-					const summaryContainer = document.getElementById('llm-summary-container');
+					console.log('Received data:', data);
+					
 					if (summaryContainer && data.summary) {
 						summaryContainer.innerHTML = `
 							<h4 style="color:#2c3e50;margin:0 0 10px 0;font-size:1.1em;">
@@ -672,20 +682,22 @@
 							</h4>
 							<div style="color:#34495e;line-height:1.6;font-size:15px;">${data.summary}</div>
 						`;
+					} else {
+						statusDiv.innerHTML = '⚠️ No summary received from AI service';
+						console.warn('No summary in response data');
 					}
 				} else {
-					// If error, remove the loading message
-					const summaryContainer = document.getElementById('llm-summary-container');
-					if (summaryContainer) {
-						summaryContainer.style.display = 'none';
-					}
+					const errorText = await response.text();
+					console.error('Error response:', response.status, errorText);
+					statusDiv.innerHTML = `❌ Error: ${response.status} - ${errorText || 'Could not generate summary'}`;
+					statusDiv.style.color = '#c0392b';
 				}
 			} catch (error) {
 				console.error('Error generating LLM summary:', error);
-				// If error, remove the loading message
-				const summaryContainer = document.getElementById('llm-summary-container');
-				if (summaryContainer) {
-					summaryContainer.style.display = 'none';
+				const statusDiv = document.getElementById('llm-status');
+				if (statusDiv) {
+					statusDiv.innerHTML = `❌ Connection error: ${error.message}`;
+					statusDiv.style.color = '#c0392b';
 				}
 			}
 		}
