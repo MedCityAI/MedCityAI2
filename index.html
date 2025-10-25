@@ -607,7 +607,7 @@
 		}
 
 		// Modal functions
-		async function showAbstractModal(link) {
+		function showAbstractModal(link) {
 			const modalBg = document.getElementById('modalBg');
 			const modalTitle = document.getElementById('modalTitle');
 			const modalAbstract = document.getElementById('modalAbstract');
@@ -630,15 +630,36 @@
 				authorList += `<div style='margin-bottom:18px;font-size:0.95em;color:#444;'><strong>Affiliations:</strong> ${affiliations.replace(/;/g, '; ')}</div>`;
 			}
 
-			// Start with authors, affiliations, loading message for LLM summary
-			let content = `${authorList}`;
-			content += `<div id="llm-summary-container" style="background:#f0f7ff;border-left:4px solid #3498db;padding:15px;margin:15px 0;border-radius:5px;">
-				<h4 style="color:#2c3e50;margin:0 0 10px 0;font-size:1.1em;">
-					<span style="display:inline-block;margin-right:8px;">💡</span>Common Language Summary
-				</h4>
-				<div id="llm-status" style="color:#666;font-style:italic;">⏳ Generating summary...</div>
-			</div>`;
-			content += `<h4>Abstract</h4><p>${abstract}</p>`;
+			// Start with authors, affiliations, then abstract
+			let content = `${authorList}<h4>Abstract</h4><p>${abstract}</p>`;
+
+			// Check if we have an LLM summary for this PMID
+			if (pubmedSummaryData.has(pmid)) {
+				const llmSummary = pubmedSummaryData.get(pmid);
+				try {
+					// Parse the LLM summary JSON
+					const summaryObj = JSON.parse(llmSummary);
+					content += `<hr style="margin: 20px 0; border: 1px solid #eee;">`;
+					content += `<h4>AI Summary</h4>`;
+
+					if (summaryObj.main_findings) {
+						content += `<p><strong>Main Findings:</strong> ${summaryObj.main_findings}</p>`;
+					}
+					if (summaryObj.clinical_significance) {
+						content += `<p><strong>Clinical Significance:</strong> ${summaryObj.clinical_significance}</p>`;
+					}
+					if (summaryObj.methodology) {
+						content += `<p><strong>Methodology:</strong> ${summaryObj.methodology}</p>`;
+					}
+					if (summaryObj.limitations) {
+						content += `<p><strong>Limitations:</strong> ${summaryObj.limitations}</p>`;
+					}
+				} catch (e) {
+					// If parsing fails, show the raw summary
+					content += `<hr style="margin: 20px 0; border: 1px solid #eee;">`;
+					content += `<h4>AI Summary</h4><p>${llmSummary}</p>`;
+				}
+			}
 
 			modalAbstract.innerHTML = content;
 			modalBg.style.display = 'flex';
@@ -646,59 +667,6 @@
 			// Prevent scroll to top
 			if (window.scrollY) {
 				setTimeout(() => window.scrollTo({top: window.scrollY}), 0);
-			}
-
-			// Generate LLM summary
-			try {
-				const summaryContainer = document.getElementById('llm-summary-container');
-				const statusDiv = document.getElementById('llm-status');
-				
-				console.log('Requesting LLM summary for PMID:', pmid);
-				statusDiv.innerHTML = '🔄 Contacting AI service...';
-				
-				const response = await fetch('/MedCityAI/query_pubmed', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({
-						pmid: pmid,
-						title: title,
-						abstract: abstract
-					})
-				});
-
-				console.log('Response status:', response.status);
-				
-				if (response.ok) {
-					statusDiv.innerHTML = '✨ Processing response...';
-					const data = await response.json();
-					console.log('Received data:', data);
-					
-					if (summaryContainer && data.summary) {
-						summaryContainer.innerHTML = `
-							<h4 style="color:#2c3e50;margin:0 0 10px 0;font-size:1.1em;">
-								<span style="display:inline-block;margin-right:8px;">💡</span>Common Language Summary
-							</h4>
-							<div style="color:#34495e;line-height:1.6;font-size:15px;">${data.summary}</div>
-						`;
-					} else {
-						statusDiv.innerHTML = '⚠️ No summary received from AI service';
-						console.warn('No summary in response data');
-					}
-				} else {
-					const errorText = await response.text();
-					console.error('Error response:', response.status, errorText);
-					statusDiv.innerHTML = `❌ Error: ${response.status} - ${errorText || 'Could not generate summary'}`;
-					statusDiv.style.color = '#c0392b';
-				}
-			} catch (error) {
-				console.error('Error generating LLM summary:', error);
-				const statusDiv = document.getElementById('llm-status');
-				if (statusDiv) {
-					statusDiv.innerHTML = `❌ Connection error: ${error.message}`;
-					statusDiv.style.color = '#c0392b';
-				}
 			}
 		}
 
