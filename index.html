@@ -61,10 +61,11 @@
 			max-width: 1200px;
 			margin: 40px auto;
 			padding: 0 20px;
-			display: grid;
-			grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+			display: flex;
+			flex-wrap: wrap;
 			gap: 20px;
-			grid-auto-rows: auto;
+			justify-content: flex-start;
+			align-items: flex-start;
 		}
 		.result-item {
 			background: #fff;
@@ -74,7 +75,9 @@
 			box-sizing: border-box;
 			position: relative;
 			height: auto;
-			width: 100%;
+			flex: 1 1 300px;
+			max-width: 400px;
+			min-width: 280px;
 		}
 		.new-tab {
 			position: absolute;
@@ -384,8 +387,10 @@
 
 		/* Responsive design */
 		@media (max-width: 900px) {
-			.results { 
-				grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+			.result-item {
+				flex: 1 1 250px;
+				max-width: 350px;
+				min-width: 220px;
 			}
 			.hero-content {
 				grid-template-columns: 1fr;
@@ -405,8 +410,10 @@
 			}
 		}
 		@media (max-width: 600px) {
-			.results { 
-				grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+			.result-item {
+				flex: 1 1 100%;
+				max-width: 100%;
+				min-width: 200px;
 			}
 			.hero-content {
 				padding: 40px 15px;
