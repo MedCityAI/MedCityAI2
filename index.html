@@ -722,11 +722,16 @@
 				searchTerm = `(${searchQuery.trim()}) AND ${baseLocation}`;
 			}
 			
-			// If no search query (empty), show last day. With search query, get more results
-			const reldate = !searchQuery || searchQuery.trim() === '' ? 1 : 730; // 2 years for searches
-			const retmax = !searchQuery || searchQuery.trim() === '' ? 100 : 1000; // Get more IDs for pagination
+			// If no search query (empty), show last day. With search query, get all time results
+			const hasSearchQuery = searchQuery && searchQuery.trim() !== '';
+			const reldate = hasSearchQuery ? undefined : 1; // 1 day for default, all time for searches
+			const retmax = hasSearchQuery ? 1000 : 100; // Get more IDs for pagination
 			
-			const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(searchTerm)}&sort=pub+date&retmode=json&datetype=pdat&reldate=${reldate}&retmax=${retmax}`;
+			// Build URL - only include reldate and datetype for default (no search) view
+			let esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(searchTerm)}&sort=pub+date&retmode=json&retmax=${retmax}`;
+			if (!hasSearchQuery) {
+				esearchUrl += `&datetype=pdat&reldate=${reldate}`;
+			}
 
 			try {
 				// Get article IDs
