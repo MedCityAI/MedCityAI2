@@ -55,6 +55,33 @@
 		.modal-abstract strong {
 			color: #333;
 		}
+		.llm-summary {
+			margin-top: 20px;
+			padding: 20px;
+			background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+			border-radius: 8px;
+			border-left: 4px solid #e74c3c;
+		}
+		.llm-summary h4 {
+			color: #e74c3c !important;
+			margin-top: 0 !important;
+			margin-bottom: 12px !important;
+		}
+		.llm-loading {
+			text-align: center;
+			padding: 20px;
+			color: #666;
+			font-style: italic;
+		}
+		.llm-loading::after {
+			content: '...';
+			animation: dots 1.5s steps(4, end) infinite;
+		}
+		@keyframes dots {
+			0%, 20% { content: '.'; }
+			40% { content: '..'; }
+			60%, 100% { content: '...'; }
+		}
 
 		/* Research results grid */
 		.results {
@@ -633,33 +660,11 @@
 			// Start with authors, affiliations, then abstract
 			let content = `${authorList}<h4>Abstract</h4><p>${abstract}</p>`;
 
-			// Check if we have an LLM summary for this PMID
-			if (pubmedSummaryData.has(pmid)) {
-				const llmSummary = pubmedSummaryData.get(pmid);
-				try {
-					// Parse the LLM summary JSON
-					const summaryObj = JSON.parse(llmSummary);
-					content += `<hr style="margin: 20px 0; border: 1px solid #eee;">`;
-					content += `<h4>AI Summary</h4>`;
-
-					if (summaryObj.main_findings) {
-						content += `<p><strong>Main Findings:</strong> ${summaryObj.main_findings}</p>`;
-					}
-					if (summaryObj.clinical_significance) {
-						content += `<p><strong>Clinical Significance:</strong> ${summaryObj.clinical_significance}</p>`;
-					}
-					if (summaryObj.methodology) {
-						content += `<p><strong>Methodology:</strong> ${summaryObj.methodology}</p>`;
-					}
-					if (summaryObj.limitations) {
-						content += `<p><strong>Limitations:</strong> ${summaryObj.limitations}</p>`;
-					}
-				} catch (e) {
-					// If parsing fails, show the raw summary
-					content += `<hr style="margin: 20px 0; border: 1px solid #eee;">`;
-					content += `<h4>AI Summary</h4><p>${llmSummary}</p>`;
-				}
-			}
+			// Add placeholder for LLM summary
+			content += `<div class="llm-summary" id="llmSummarySection">
+				<h4>🤖 AI Summary</h4>
+				<div class="llm-loading">Generating plain-language summary</div>
+			</div>`;
 
 			modalAbstract.innerHTML = content;
 			modalBg.style.display = 'flex';
@@ -667,6 +672,51 @@
 			// Prevent scroll to top
 			if (window.scrollY) {
 				setTimeout(() => window.scrollTo({top: window.scrollY}), 0);
+			}
+
+			// Call backend to generate LLM summary
+			generateLLMSummary(pmid, title, abstract);
+		}
+
+		// Function to call backend API for LLM summary
+		async function generateLLMSummary(pmid, title, abstract) {
+			try {
+				const response = await fetch('http://localhost:5000/MedCityAI/query_pubmed', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						pmid: pmid,
+						title: title,
+						abstract: abstract
+					})
+				});
+
+				if (!response.ok) {
+					throw new Error('Backend server error');
+				}
+
+				const data = await response.json();
+				
+				// Update the LLM summary section
+				const summarySection = document.getElementById('llmSummarySection');
+				if (summarySection && data.summary) {
+					summarySection.innerHTML = `
+						<h4>🤖 AI Summary</h4>
+						<p style="line-height:1.7; color:#222;">${data.summary}</p>
+					`;
+				}
+
+			} catch (error) {
+				console.error('Error generating LLM summary:', error);
+				const summarySection = document.getElementById('llmSummarySection');
+				if (summarySection) {
+					summarySection.innerHTML = `
+						<h4>🤖 AI Summary</h4>
+						<p style="color:#666; font-style:italic;">Unable to generate summary. Make sure the backend server is running at http://localhost:5000</p>
+					`;
+				}
 			}
 		}
 
