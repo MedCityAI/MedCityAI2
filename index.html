@@ -486,23 +486,14 @@
 						<div class="subtitle" style="color:#e0e0e0;">Rochester, Minnesota</div>
 						<h1 style="color:#fff; text-shadow: 0 4px 18px rgba(0,0,0,0.28);">What's New in Med City?</h1>
 						<p style="color:#e0e0e0;">MedCityAI is a real-time feed of biomedical research from Rochester, MN. Concise summaries and analytics generated using AI. All information freely sourced from the National Library of Medicine (PubMed).</p>
-						<form class="search-bar" id="searchForm" style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
-							<select id="topicFilter" style="padding:14px 18px;border-radius:30px;border:1px solid #ccc;font-size:16px;background:white;cursor:pointer;min-width:180px;">
-								<option value="Everything">Everything</option>
-								<option value="Generative AI">Generative AI</option>
-								<option value="Radiology">Radiology</option>
-								<option value="Oncology">Oncology</option>
-								<option value="Cardiology">Cardiology</option>
-								<option value="Neurology">Neurology</option>
-								<option value="Surgery">Surgery</option>
-								<option value="Informatics">Informatics</option>
-							</select>
-							<div style="position:relative; flex:1; display:flex; align-items:center; min-width: 250px;">
+						<form class="search-bar" id="searchForm" style="display: flex; gap: 12px; margin-bottom: 24px;">
+							<div style="position:relative; flex:1; display:flex; align-items:center;">
 								<span style="position:absolute;left:18px;top:50%;transform:translateY(-50%);color:#aaa;font-size:1.3em;pointer-events:none;">
 									<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
 								</span>
-								<input type="text" id="searchInput" placeholder="Search by topic, author, or department..." style="width:100%;padding:14px 18px 14px 48px;border-radius:30px;border:1px solid #ccc;font-size:16px;display:flex;align-items:center;">
+								<input type="text" id="searchInput" placeholder="Search topics, authors, or keywords (e.g., AI, radiology, oncology)..." style="width:100%;padding:14px 18px 14px 48px;border-radius:30px;border:1px solid #ccc;font-size:16px;display:flex;align-items:center;">
 							</div>
+							<button type="submit" style="padding:14px 32px;border-radius:30px;border:none;background:linear-gradient(135deg, #3498db, #2980b9);color:white;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.3s ease;">Search</button>
 						</form>
 					</div>
 					<div class="hero-right">
@@ -564,21 +555,9 @@
 		let VarTot = 0, VarDay = 0, VarWeek = 0, VarMonth = 0;
 		let pubmedSummaryData = new Map(); // Store PMID -> LLM summary data
 		let currentPage = 1;
-		let currentTopic = 'Everything';
+		let currentSearchQuery = '';
 		let allArticleIds = [];
 		const resultsPerPage = 50;
-
-		// Topic search terms mapping
-		const topicSearchTerms = {
-			'Everything': '',
-			'Generative AI': 'generative AI OR large language model OR LLM OR ChatGPT OR artificial intelligence generation',
-			'Radiology': 'radiology OR radiological OR imaging OR CT OR MRI OR ultrasound OR X-ray',
-			'Oncology': 'oncology OR cancer OR tumor OR neoplasm OR carcinoma OR chemotherapy',
-			'Cardiology': 'cardiology OR cardiac OR heart OR cardiovascular OR coronary',
-			'Neurology': 'neurology OR neurological OR brain OR nervous system OR neurodegenerative',
-			'Surgery': 'surgery OR surgical OR operation OR operative OR postoperative',
-			'Informatics': 'informatics OR bioinformatics OR health information OR medical informatics OR clinical informatics'
-		};
 
 		// Load LLM summaries from CSV
 		async function loadLLMSummaries() {
@@ -731,22 +710,22 @@
 			}
 		}
 
-		// PubMed data fetching with topic filtering
-		async function fetchPubMedResults(topic = 'Everything', page = 1) {
-			currentTopic = topic;
+		// PubMed data fetching with search query
+		async function fetchPubMedResults(searchQuery = '', page = 1) {
+			currentSearchQuery = searchQuery;
 			currentPage = page;
 			
 			const baseLocation = '("Rochester"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))';
 			let searchTerm = baseLocation;
 			
-			// Add topic-specific search if not "Everything"
-			if (topic !== 'Everything' && topicSearchTerms[topic]) {
-				searchTerm = `(${topicSearchTerms[topic]}) AND ${baseLocation}`;
+			// Add user search query if provided
+			if (searchQuery && searchQuery.trim() !== '') {
+				searchTerm = `(${searchQuery.trim()}) AND ${baseLocation}`;
 			}
 			
-			// For "Everything", use reldate=1 (last day). For topics, get more results
-			const reldate = topic === 'Everything' ? 1 : 730; // 2 years for topic searches
-			const retmax = topic === 'Everything' ? 100 : 1000; // Get more IDs for pagination
+			// If no search query (empty), show last day. With search query, get more results
+			const reldate = !searchQuery || searchQuery.trim() === '' ? 1 : 730; // 2 years for searches
+			const retmax = !searchQuery || searchQuery.trim() === '' ? 100 : 1000; // Get more IDs for pagination
 			
 			const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(searchTerm)}&sort=pub+date&retmode=json&datetype=pdat&reldate=${reldate}&retmax=${retmax}`;
 
@@ -757,7 +736,7 @@
 				allArticleIds = esearchData.esearchresult.idlist || [];
 
 				if (allArticleIds.length === 0) {
-					document.getElementById("pubmed-results").innerHTML = "<p style='text-align:center; padding:40px; color:#666;'>No results found for this topic.</p>";
+					document.getElementById("pubmed-results").innerHTML = "<p style='text-align:center; padding:40px; color:#666;'>No results found. Try a different search term.</p>";
 					document.getElementById("pagination-controls").style.display = 'none';
 					return;
 				}
@@ -769,7 +748,7 @@
 				const pageIds = allArticleIds.slice(startIdx, endIdx);
 
 				// Show/hide pagination controls
-				if (topic !== 'Everything' && allArticleIds.length > resultsPerPage) {
+				if (searchQuery && searchQuery.trim() !== '' && allArticleIds.length > resultsPerPage) {
 					document.getElementById("pagination-controls").style.display = 'block';
 					document.getElementById("pageInfo").textContent = `Page ${page} of ${totalPages} (${allArticleIds.length} results)`;
 					document.getElementById("prevPage").disabled = page === 1;
@@ -924,31 +903,34 @@
 				if (e.target === modalBg) closeModal();
 			});
 
-			// Set up topic filter event listener
-			const topicFilter = document.getElementById('topicFilter');
-			topicFilter.addEventListener('change', function() {
-				const selectedTopic = this.value;
-				fetchPubMedResults(selectedTopic, 1);
+			// Set up search form event listener
+			const searchForm = document.getElementById('searchForm');
+			const searchInput = document.getElementById('searchInput');
+			
+			searchForm.addEventListener('submit', function(e) {
+				e.preventDefault();
+				const query = searchInput.value.trim();
+				fetchPubMedResults(query, 1);
 			});
 
 			// Set up pagination event listeners
 			document.getElementById('prevPage').addEventListener('click', function() {
 				if (currentPage > 1) {
-					fetchPubMedResults(currentTopic, currentPage - 1);
+					fetchPubMedResults(currentSearchQuery, currentPage - 1);
 				}
 			});
 
 			document.getElementById('nextPage').addEventListener('click', function() {
 				const totalPages = Math.ceil(allArticleIds.length / resultsPerPage);
 				if (currentPage < totalPages) {
-					fetchPubMedResults(currentTopic, currentPage + 1);
+					fetchPubMedResults(currentSearchQuery, currentPage + 1);
 				}
 			});
 
 			// Load data
 			loadStatistics();
 			loadLLMSummaries();
-			fetchPubMedResults('Everything', 1);
+			fetchPubMedResults('', 1);
 		});
 		</script>
 	</body>
