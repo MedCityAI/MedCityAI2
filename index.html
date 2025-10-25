@@ -64,6 +64,7 @@
 			display: grid;
 			grid-template-columns: repeat(3, 1fr);
 			gap: 20px;
+			grid-auto-rows: auto;
 		}
 		.result-item {
 			background: #fff;
@@ -72,6 +73,7 @@
 			box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 			box-sizing: border-box;
 			position: relative;
+			height: auto;
 		}
 		.new-tab {
 			position: absolute;
@@ -487,7 +489,7 @@
 					<div class="hero-left">
 						<div class="subtitle" style="color:#e0e0e0;">Rochester, Minnesota</div>
 						<h1 style="color:#fff; text-shadow: 0 4px 18px rgba(0,0,0,0.28);">What's New in Med City?</h1>
-						<p style="color:#e0e0e0;">MedCityAI is a real-time feed of biomedical research from Rochester, MN. Concise summaries and analytics generated using AI. All information freely sourced from the National Library of Medicine (PubMed).</p>
+						<p style="color:#e0e0e0;">MedCityAI is a real-time feed of biomedical research from Rochester, MN. All information freely sourced from the National Library of Medicine (PubMed).</p>
 						<form class="search-bar" id="searchForm" style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
 							<select id="topicFilter" style="padding:14px 18px;border-radius:30px;border:1px solid #ccc;font-size:16px;background:white;cursor:pointer;min-width:180px;">
 								<option value="Everything">Everything</option>
