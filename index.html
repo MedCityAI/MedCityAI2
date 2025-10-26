@@ -555,7 +555,6 @@
 		let pubmedSummaryData = new Map(); // Store PMID -> LLM summary data
 		let currentPage = 1;
 		let currentSearchQuery = '';
-		let allArticleIds = [];
 		const resultsPerPage = 50;
 
 		// Load LLM summaries from CSV
@@ -709,190 +708,207 @@
 			}
 		}
 
-		// PubMed data fetching with search query
+		// Global variables for CSV data
+		let allArticlesData = [];
+		let filteredArticlesData = [];
+
+		// Load CSV data
+		async function loadCSVData() {
+			try {
+				const response = await fetch('pubmed_data.csv');
+				if (!response.ok) throw new Error('CSV file not found');
+				
+				const csvText = await response.text();
+				const lines = csvText.split('\n');
+				
+				// Parse header
+				const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+				
+				// Parse data rows
+				allArticlesData = [];
+				for (let i = 1; i < lines.length; i++) {
+					if (!lines[i].trim()) continue;
+					
+					const row = parseCSVLine(lines[i]);
+					if (row.length === headers.length) {
+						const article = {};
+						headers.forEach((header, index) => {
+							article[header] = row[index];
+						});
+						allArticlesData.push(article);
+					}
+				}
+				
+				console.log(`Loaded ${allArticlesData.length} articles from CSV`);
+				return allArticlesData;
+			} catch (error) {
+				console.error('Error loading CSV:', error);
+				return [];
+			}
+		}
+
+		// Parse CSV line handling quoted fields
+		function parseCSVLine(line) {
+			const result = [];
+			let current = '';
+			let inQuotes = false;
+			
+			for (let i = 0; i < line.length; i++) {
+				const char = line[i];
+				
+				if (char === '"') {
+					inQuotes = !inQuotes;
+				} else if (char === ',' && !inQuotes) {
+					result.push(current.trim());
+					current = '';
+				} else {
+					current += char;
+				}
+			}
+			result.push(current.trim());
+			
+			return result;
+		}
+
+		// PubMed data display with search and pagination (now using CSV data)
 		async function fetchPubMedResults(searchQuery = '', page = 1) {
 			currentSearchQuery = searchQuery;
 			currentPage = page;
 			
-			const baseLocation = '("Rochester"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))';
-			let searchTerm = baseLocation;
+			// Ensure data is loaded
+			if (allArticlesData.length === 0) {
+				await loadCSVData();
+			}
 			
-			// Add user search query if provided
+			// Filter articles based on search query
 			if (searchQuery && searchQuery.trim() !== '') {
-				searchTerm = `(${searchQuery.trim()}) AND ${baseLocation}`;
-			}
-			
-			// If no search query (empty), show last day. With search query, get all time results
-			const hasSearchQuery = searchQuery && searchQuery.trim() !== '';
-			const reldate = hasSearchQuery ? undefined : 1; // 1 day for default, all time for searches
-			const retmax = hasSearchQuery ? 1000 : 100; // Get more IDs for pagination
-			
-			// Build URL - only include reldate and datetype for default (no search) view
-			let esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(searchTerm)}&sort=pub+date&retmode=json&retmax=${retmax}`;
-			if (!hasSearchQuery) {
-				esearchUrl += `&datetype=pdat&reldate=${reldate}`;
-			}
-
-			try {
-				// Get article IDs
-				const esearchRes = await fetch(esearchUrl);
-				const esearchData = await esearchRes.json();
-				allArticleIds = esearchData.esearchresult.idlist || [];
-
-				if (allArticleIds.length === 0) {
-					document.getElementById("pubmed-results").innerHTML = "<p style='text-align:center; padding:40px; color:#666;'>No results found. Try a different search term.</p>";
-					document.getElementById("pagination-controls").style.display = 'none';
-					return;
-				}
-
-				// Calculate pagination
-				const totalPages = Math.ceil(allArticleIds.length / resultsPerPage);
-				const startIdx = (page - 1) * resultsPerPage;
-				const endIdx = Math.min(startIdx + resultsPerPage, allArticleIds.length);
-				const pageIds = allArticleIds.slice(startIdx, endIdx);
-
-				// Show/hide pagination controls
-				if (searchQuery && searchQuery.trim() !== '' && allArticleIds.length > resultsPerPage) {
-					document.getElementById("pagination-controls").style.display = 'block';
-					document.getElementById("pageInfo").textContent = `Page ${page} of ${totalPages} (${allArticleIds.length} results)`;
-					document.getElementById("prevPage").disabled = page === 1;
-					document.getElementById("nextPage").disabled = page === totalPages;
-					document.getElementById("prevPage").style.opacity = page === 1 ? '0.5' : '1';
-					document.getElementById("nextPage").style.opacity = page === totalPages ? '0.5' : '1';
-				} else {
-					document.getElementById("pagination-controls").style.display = 'none';
-				}
-
-				// Fetch article details
-				const efetchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${pageIds.join(",")}&retmode=xml`;
-				const efetchRes = await fetch(efetchUrl);
-				const efetchXml = await efetchRes.text();
-				const parser = new DOMParser();
-				const xmlDoc = parser.parseFromString(efetchXml, "text/xml");
-
-				// Get current date for NEW badge logic
-				const now = new Date();
-				const twoDaysAgo = new Date(now.getTime() - (2 * 24 * 60 * 60 * 1000));
-
-				// Build results
-				let resultsHTML = '';
-				const articles = xmlDoc.querySelectorAll("PubmedArticle");
-				
-				articles.forEach(article => {
-					const pmid = article.querySelector("PMID")?.textContent || "";
-					const title = article.querySelector("ArticleTitle")?.textContent || "No title";
-					const abstract = article.querySelector("Abstract")?.textContent || "No abstract available.";
-					
-					// Journal information
-					let journal = article.querySelector("Journal > Title")?.textContent || "";
-					const journalAbbr = article.querySelector("Journal > ISOAbbreviation")?.textContent || "";
-					if (journal.split(/\s+/).length > 10 && journalAbbr) {
-						journal = journalAbbr;
-					}
-					
-					// Publication date
-					const year = article.querySelector("PubDate Year")?.textContent || "";
-					let month = article.querySelector("PubDate Month")?.textContent || "";
-					const day = article.querySelector("PubDate Day")?.textContent || "";
-					
-					const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-					if (/^\d+$/.test(month)) {
-						month = monthNames[parseInt(month, 10)];
-					}
-					
-					let pubdate = "";
-					let articleDate = null;
-					if (year && month && day) {
-						pubdate = `${month} ${day}, ${year}`;
-						const monthNum = monthNames.indexOf(month);
-						if (monthNum > 0) {
-							articleDate = new Date(year, monthNum - 1, day);
-						}
-					} else if (year && month) {
-						pubdate = `${month}, ${year}`;
-						const monthNum = monthNames.indexOf(month);
-						if (monthNum > 0) {
-							articleDate = new Date(year, monthNum - 1, 1);
-						}
-					} else if (year) {
-						pubdate = year;
-					}
-
-					// Determine if article is NEW (within last 2 days)
-					const isNew = articleDate && articleDate >= twoDaysAgo;
-
-					// Authors
-					const authors = [];
-					const affiliationsList = [];
-					const authorNodes = Array.from(article.querySelectorAll("Author"));
-					authorNodes.forEach(authorNode => {
-						const lastName = authorNode.querySelector("LastName")?.textContent || "";
-						const foreName = authorNode.querySelector("ForeName")?.textContent || "";
-						const initials = foreName.split(" ").map(n => n[0]).join("");
-						const name = `${lastName}${initials ? " " + initials : ""}`;
-
-						const affiliations = [];
-						authorNode.querySelectorAll("Affiliation").forEach(aff => {
-							const affText = aff.textContent;
-							affiliations.push(affText);
-							if (!affiliationsList.includes(affText)) {
-								affiliationsList.push(affText);
-							}
-						});
-
-						let displayName = name;
-						if (affiliations.some(a => /Rochester|Mayo/i.test(a))) {
-							displayName = `<u>${displayName}</u>`;
-						}
-						if (name) authors.push(displayName);
-					});
-
-					let authorsHtml = "";
-					if (authors.length > 16) {
-						authorsHtml = authors.slice(0, 15).join(", ") + ", " + authors[authors.length - 1] + ", <i>et al.</i>";
-					} else {
-						authorsHtml = authors.join(", ");
-					}
-
-					const citation = `${journal}. ${pubdate}. PMID: ${pmid}`;
-					const url = `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`;
-
-					resultsHTML += `
-						<div class="result-item">
-							${isNew ? '<div class="new-tab">NEW</div>' : ''}
-							<br><a href="#" class="result-title" 
-								data-title="${title.replace(/"/g,'&quot;')}" 
-								data-abstract="${abstract.replace(/"/g,'&quot;')}" 
-								data-pmid="${pmid}"
-								data-authors="${authors.join(';').replace(/"/g,'&quot;')}"
-								data-affiliations="${affiliationsList.join(';').replace(/"/g,'&quot;')}"
-								onclick="showAbstractModal(this); return false;">${title}</a>
-							<div class="result-authors">${authorsHtml}</div>
-							<div class="result-citation"><em>${citation}</em></div>
-							<div class="share-buttons">
-								<a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" class="facebook" target="_blank">
-									<i class="icon brands fa-facebook-f"></i> 
-								</a>
-								<a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}" class="twitter" target="_blank">
-									<i class="icon brands fa-twitter"></i> 
-								</a>
-								<a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}" class="linkedin" target="_blank">
-									<i class="icon brands fa-linkedin"></i> 
-								</a>
-							</div>
-						</div>
-					`;
+				const query = searchQuery.trim().toLowerCase();
+				filteredArticlesData = allArticlesData.filter(article => {
+					return article.title.toLowerCase().includes(query) ||
+						   article.abstract.toLowerCase().includes(query) ||
+						   article.authors.toLowerCase().includes(query) ||
+						   article.journal.toLowerCase().includes(query);
 				});
-
-				document.getElementById("pubmed-results").innerHTML = `<div class="results">${resultsHTML}</div>`;
+			} else {
+				// No search query, show all articles
+				filteredArticlesData = [...allArticlesData];
+			}
+			
+			// Check if we have results
+			if (filteredArticlesData.length === 0) {
+				document.getElementById("pubmed-results").innerHTML = "<p style='text-align:center; padding:40px; color:#666;'>No results found. Try a different search term.</p>";
+				document.getElementById("pagination-controls").style.display = 'none';
+				return;
+			}
+			
+			// Calculate pagination
+			const totalPages = Math.ceil(filteredArticlesData.length / resultsPerPage);
+			const startIdx = (page - 1) * resultsPerPage;
+			const endIdx = Math.min(startIdx + resultsPerPage, filteredArticlesData.length);
+			const pageArticles = filteredArticlesData.slice(startIdx, endIdx);
+			
+			// Show/hide pagination controls
+			if (filteredArticlesData.length > resultsPerPage) {
+				document.getElementById("pagination-controls").style.display = 'block';
+				document.getElementById("pageInfo").textContent = `Page ${page} of ${totalPages} (${filteredArticlesData.length} results)`;
+				document.getElementById("prevPage").disabled = page === 1;
+				document.getElementById("nextPage").disabled = page === totalPages;
+				document.getElementById("prevPage").style.opacity = page === 1 ? '0.5' : '1';
+				document.getElementById("nextPage").style.opacity = page === totalPages ? '0.5' : '1';
+			} else {
+				document.getElementById("pagination-controls").style.display = 'none';
+			}
+			
+			// Get current date for NEW badge logic
+			const now = new Date();
+			const twoDaysAgo = new Date(now.getTime() - (2 * 24 * 60 * 60 * 1000));
+			
+			// Build results HTML from CSV data
+			let resultsHTML = '';
+			
+			pageArticles.forEach(article => {
+				const pmid = article.pmid;
+				const title = article.title;
+				const abstract = article.abstract;
+				const journal = article.journal;
+				const pubdate = article.pubdate;
+				const url = article.url;
 				
-				// Scroll to top of results after page change
-				if (page > 1) {
-					document.getElementById("pubmed-results").scrollIntoView({ behavior: 'smooth', block: 'start' });
+				// Parse publication date to check if NEW
+				const year = article.year;
+				const month = article.month;
+				const day = article.day;
+				
+				let articleDate = null;
+				const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+				if (year && month && day) {
+					const monthNum = monthNames.indexOf(month);
+					if (monthNum > 0) {
+						articleDate = new Date(year, monthNum - 1, day);
+					}
+				} else if (year && month) {
+					const monthNum = monthNames.indexOf(month);
+					if (monthNum > 0) {
+						articleDate = new Date(year, monthNum - 1, 1);
+					}
 				}
-			} catch (error) {
-				console.error('Error fetching PubMed results:', error);
-				document.getElementById("pubmed-results").innerHTML = "<p style='text-align:center; padding:40px; color:#e74c3c;'>Error fetching results. Please try again.</p>";
+				
+				// Determine if article is NEW (within last 2 days)
+				const isNew = articleDate && articleDate >= twoDaysAgo;
+				
+				// Parse authors (pipe-separated in CSV)
+				const authorsList = article.authors ? article.authors.split('|') : [];
+				const rochesterAuthorsList = article.rochester_authors ? article.rochester_authors.split('|') : [];
+				
+				// Format authors for display
+				let authorsHtml = "";
+				if (article.authors_display) {
+					authorsHtml = article.authors_display;
+					// Underline Rochester authors
+					rochesterAuthorsList.forEach(rochAuthor => {
+						if (rochAuthor) {
+							authorsHtml = authorsHtml.replace(rochAuthor, `<u>${rochAuthor}</u>`);
+						}
+					});
+				}
+				
+				// Parse affiliations (pipe-separated in CSV)
+				const affiliationsList = article.affiliations ? article.affiliations.split('|') : [];
+				
+				const citation = `${journal}. ${pubdate}. PMID: ${pmid}`;
+
+				resultsHTML += `
+					<div class="result-item">
+						${isNew ? '<div class="new-tab">NEW</div>' : ''}
+						<br><a href="#" class="result-title" 
+							data-title="${title.replace(/"/g,'&quot;')}" 
+							data-abstract="${abstract.replace(/"/g,'&quot;')}" 
+							data-pmid="${pmid}"
+							data-authors="${authorsList.join(';').replace(/"/g,'&quot;')}"
+							data-affiliations="${affiliationsList.join(';').replace(/"/g,'&quot;')}"
+							onclick="showAbstractModal(this); return false;">${title}</a>
+						<div class="result-authors">${authorsHtml}</div>
+						<div class="result-citation"><em>${citation}</em></div>
+						<div class="share-buttons">
+							<a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" class="facebook" target="_blank">
+								<i class="icon brands fa-facebook-f"></i> 
+							</a>
+							<a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}" class="twitter" target="_blank">
+								<i class="icon brands fa-twitter"></i> 
+							</a>
+							<a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}" class="linkedin" target="_blank">
+								<i class="icon brands fa-linkedin"></i> 
+							</a>
+						</div>
+					</div>
+				`;
+			});
+
+			document.getElementById("pubmed-results").innerHTML = `<div class="results">${resultsHTML}</div>`;
+			
+			// Scroll to top of results after page change
+			if (page > 1) {
+				document.getElementById("pubmed-results").scrollIntoView({ behavior: 'smooth', block: 'start' });
 			}
 		}
 
@@ -925,16 +941,18 @@
 			});
 
 			document.getElementById('nextPage').addEventListener('click', function() {
-				const totalPages = Math.ceil(allArticleIds.length / resultsPerPage);
+				const totalPages = Math.ceil(filteredArticlesData.length / resultsPerPage);
 				if (currentPage < totalPages) {
 					fetchPubMedResults(currentSearchQuery, currentPage + 1);
 				}
 			});
 
-			// Load data
+			// Load data and display results
 			loadStatistics();
 			loadLLMSummaries();
-			fetchPubMedResults('', 1);
+			loadCSVData().then(() => {
+				fetchPubMedResults('', 1);
+			});
 		});
 		</script>
 	</body>
