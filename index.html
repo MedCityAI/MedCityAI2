@@ -552,58 +552,9 @@
 		<script>
 		// Application state
 		let VarTot = 0, VarDay = 0, VarWeek = 0, VarMonth = 0;
-		let pubmedSummaryData = new Map(); // Store PMID -> LLM summary data
 		let currentPage = 1;
 		let currentSearchQuery = '';
 		const resultsPerPage = 50;
-
-		// Load LLM summaries from CSV
-		async function loadLLMSummaries() {
-			try {
-				const response = await fetch('./database/pubmed_results2.csv');
-				if (!response.ok) throw new Error('pubmed_results2.csv not found');
-				
-				const csvText = await response.text();
-				const lines = csvText.split('\n');
-				
-				// Skip header line and process data
-				for (let i = 1; i < lines.length; i++) {
-					if (lines[i].trim() === '') continue;
-					
-					// Parse CSV line - handle commas in quoted fields
-					const line = lines[i];
-					const columns = [];
-					let current = '';
-					let inQuotes = false;
-					
-					for (let j = 0; j < line.length; j++) {
-						const char = line[j];
-						if (char === '"') {
-							inQuotes = !inQuotes;
-						} else if (char === ',' && !inQuotes) {
-							columns.push(current.trim());
-							current = '';
-						} else {
-							current += char;
-						}
-					}
-					columns.push(current.trim()); // Add last column
-					
-					if (columns.length >= 8) { // Ensure we have all expected columns
-						const pmid = columns[0];
-						const llmSummary = columns[7]; // llm_summary is the 8th column (index 7)
-						
-						if (pmid && llmSummary && llmSummary !== 'LLM summary not generated') {
-							pubmedSummaryData.set(pmid, llmSummary);
-						}
-					}
-				}
-				
-				console.log(`Loaded ${pubmedSummaryData.size} LLM summaries`);
-			} catch (err) {
-				console.error('Error loading LLM summaries:', err);
-			}
-		}
 
 		// Modal functions
 		function showAbstractModal(link) {
@@ -616,6 +567,7 @@
 			const pmid = link.getAttribute('data-pmid');
 			const authors = link.getAttribute('data-authors');
 			const affiliations = link.getAttribute('data-affiliations');
+			const llmSummary = link.getAttribute('data-llm-summary');
 
 			// Title in black at top
 			modalTitle.innerHTML = `<span style='color:#111;font-weight:800;font-size:1.3em;'>${title}</span>`;
@@ -629,36 +581,19 @@
 				authorList += `<div style='margin-bottom:18px;font-size:0.95em;color:#444;'><strong>Affiliations:</strong> ${affiliations.replace(/;/g, '; ')}</div>`;
 			}
 
-			// Start with authors, affiliations, then abstract
-			let content = `${authorList}<h4>Abstract</h4><p>${abstract}</p>`;
-
-			// Check if we have an LLM summary for this PMID
-			if (pubmedSummaryData.has(pmid)) {
-				const llmSummary = pubmedSummaryData.get(pmid);
-				try {
-					// Parse the LLM summary JSON
-					const summaryObj = JSON.parse(llmSummary);
-					content += `<hr style="margin: 20px 0; border: 1px solid #eee;">`;
-					content += `<h4>AI Summary</h4>`;
-
-					if (summaryObj.main_findings) {
-						content += `<p><strong>Main Findings:</strong> ${summaryObj.main_findings}</p>`;
-					}
-					if (summaryObj.clinical_significance) {
-						content += `<p><strong>Clinical Significance:</strong> ${summaryObj.clinical_significance}</p>`;
-					}
-					if (summaryObj.methodology) {
-						content += `<p><strong>Methodology:</strong> ${summaryObj.methodology}</p>`;
-					}
-					if (summaryObj.limitations) {
-						content += `<p><strong>Limitations:</strong> ${summaryObj.limitations}</p>`;
-					}
-				} catch (e) {
-					// If parsing fails, show the raw summary
-					content += `<hr style="margin: 20px 0; border: 1px solid #eee;">`;
-					content += `<h4>AI Summary</h4><p>${llmSummary}</p>`;
-				}
+			// Start with LLM summary if available, then abstract
+			let content = authorList;
+			
+			// Show LLM Summary first if available
+			if (llmSummary && llmSummary.trim() !== '' && llmSummary !== 'No abstract available.') {
+				content += `<div style="background: linear-gradient(135deg, #e8f5e9 0%, #f1f8f4 100%); padding: 20px; border-radius: 12px; margin-bottom: 24px; border-left: 4px solid #4caf50;">`;
+				content += `<h4 style="color: #2e7d32; margin-top: 0; display: flex; align-items: center;"><span style="margin-right: 8px;">✨</span> Plain Language Summary</h4>`;
+				content += `<p style="margin: 0; line-height: 1.7; color: #1b5e20;">${llmSummary}</p>`;
+				content += `</div>`;
 			}
+			
+			// Then show the technical abstract
+			content += `<h4>Abstract</h4><p>${abstract}</p>`;
 
 			modalAbstract.innerHTML = content;
 			modalBg.style.display = 'flex';
@@ -833,6 +768,7 @@
 				const journal = article.journal;
 				const pubdate = article.pubdate;
 				const url = article.url;
+				const llmSummary = article.llm_summary || '';
 				
 				// Parse publication date to check if NEW
 				const year = article.year;
@@ -886,6 +822,7 @@
 							data-pmid="${pmid}"
 							data-authors="${authorsList.join(';').replace(/"/g,'&quot;')}"
 							data-affiliations="${affiliationsList.join(';').replace(/"/g,'&quot;')}"
+							data-llm-summary="${llmSummary.replace(/"/g,'&quot;')}"
 							onclick="showAbstractModal(this); return false;">${title}</a>
 						<div class="result-authors">${authorsHtml}</div>
 						<div class="result-citation"><em>${citation}</em></div>
@@ -949,7 +886,6 @@
 
 			// Load data and display results
 			loadStatistics();
-			loadLLMSummaries();
 			loadCSVData().then(() => {
 				fetchPubMedResults('', 1);
 			});
