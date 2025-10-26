@@ -1013,6 +1013,7 @@
 							<!-- Back of card (AI Summary) -->
 							${hasSummary ? `
 							<div class="card-face card-back" onclick="flipCard(this.closest('.card-flip-container'), event);">
+								${isNew ? '<div class="new-tab">🤖</div>' : ''}
 								<div class="card-back-header">
 									<h4 style="color: #1565c0; margin: 0; font-size: 16px; font-weight: 700;">AI SUMMARY</h4>
 								</div>
