@@ -1,0 +1,332 @@
+name: Update PubMed Data
+
+on:
+  schedule:
+    # Run daily at 1:00 AM CST (7:00 AM UTC)
+    - cron: '0 7 * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests pandas anthropic
+      
+      - name: Copy fetch script to workflow directory
+        run: |
+          # Create a temporary directory for the script
+          mkdir -p scripts
+          # We'll need to fetch the script from query_pubmed repo or include it
+          # For now, create a standalone version
+          cat > scripts/fetch_pubmed_data.py << 'EOF'
+          """
+          Fetch PubMed data for Rochester, MN publications and save to CSV file with LLM summaries
+          """
+          import requests
+          import xml.etree.ElementTree as ET
+          import pandas as pd
+          from datetime import datetime
+          import time
+          import os
+          from anthropic import Anthropic
+
+          def fetch_all_pubmed_data():
+              """Fetch all PubMed articles with Rochester, MN affiliation"""
+              
+              # Base search term for Rochester, MN
+              base_location = '("Rochester"[AD] AND ("Minnesota"[AD] OR "MN"[AD]))'
+              
+              # Try 1 day first
+              esearch_url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term={base_location}&sort=pub+date&retmode=json&retmax=1000&datetype=pdat&reldate=1"
+              
+              print("Fetching article IDs from PubMed (last 24 hours)...")
+              response = requests.get(esearch_url)
+              data = response.json()
+              
+              article_ids = data['esearchresult']['idlist']
+              print(f"Found {len(article_ids)} articles from last 24 hours")
+              
+              # If fewer than 5 articles, expand to 2 days
+              if len(article_ids) < 5:
+                  print("Fewer than 5 articles found. Expanding to last 2 days...")
+                  esearch_url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term={base_location}&sort=pub+date&retmode=json&retmax=1000&datetype=pdat&reldate=2"
+                  response = requests.get(esearch_url)
+                  data = response.json()
+                  article_ids = data['esearchresult']['idlist']
+                  print(f"Found {len(article_ids)} articles from last 2 days")
+              
+              # Fetch articles in batches
+              all_articles = []
+              batch_size = 200
+              
+              for i in range(0, len(article_ids), batch_size):
+                  batch_ids = article_ids[i:i+batch_size]
+                  print(f"Fetching batch {i//batch_size + 1}...")
+                  
+                  efetch_url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id={','.join(batch_ids)}&retmode=xml"
+                  
+                  response = requests.get(efetch_url)
+                  xml_data = response.text
+                  
+                  # Parse XML
+                  root = ET.fromstring(xml_data)
+                  
+                  for article in root.findall('.//PubmedArticle'):
+                      article_data = parse_article(article)
+                      if article_data:
+                          all_articles.append(article_data)
+                  
+                  time.sleep(0.5)
+              
+              return all_articles
+
+          def parse_article(article):
+              """Parse a single PubMed article XML element"""
+              try:
+                  # PMID
+                  pmid_elem = article.find('.//PMID')
+                  pmid = pmid_elem.text if pmid_elem is not None else ""
+                  
+                  # Title
+                  title_elem = article.find('.//ArticleTitle')
+                  title = ''.join(title_elem.itertext()) if title_elem is not None else "No title"
+                  
+                  # Abstract
+                  abstract_elem = article.find('.//Abstract')
+                  abstract = ''.join(abstract_elem.itertext()) if abstract_elem is not None else "No abstract available."
+                  
+                  # Journal
+                  journal_elem = article.find('.//Journal/Title')
+                  journal = journal_elem.text if journal_elem is not None else ""
+                  
+                  journal_abbr_elem = article.find('.//Journal/ISOAbbreviation')
+                  journal_abbr = journal_abbr_elem.text if journal_abbr_elem is not None else ""
+                  
+                  if journal and len(journal.split()) > 10 and journal_abbr:
+                      journal = journal_abbr
+                  
+                  # Publication date
+                  year_elem = article.find('.//PubDate/Year')
+                  month_elem = article.find('.//PubDate/Month')
+                  day_elem = article.find('.//PubDate/Day')
+                  
+                  year = year_elem.text if year_elem is not None else ""
+                  month = month_elem.text if month_elem is not None else ""
+                  day = day_elem.text if day_elem is not None else ""
+                  
+                  # Convert numeric month to name
+                  month_names = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+                  if month.isdigit():
+                      month = month_names[int(month)]
+                  
+                  # Format publication date
+                  if year and month and day:
+                      pubdate = f"{month} {day}, {year}"
+                      try:
+                          month_num = month_names.index(month)
+                          pub_datetime = datetime(int(year), month_num, int(day))
+                      except:
+                          pub_datetime = None
+                  elif year and month:
+                      pubdate = f"{month}, {year}"
+                      try:
+                          month_num = month_names.index(month)
+                          pub_datetime = datetime(int(year), month_num, 1)
+                      except:
+                          pub_datetime = None
+                  elif year:
+                      pubdate = year
+                      try:
+                          pub_datetime = datetime(int(year), 1, 1)
+                      except:
+                          pub_datetime = None
+                  else:
+                      pubdate = ""
+                      pub_datetime = None
+                  
+                  # Authors
+                  authors = []
+                  affiliations_list = []
+                  
+                  for author_elem in article.findall('.//Author'):
+                      lastname_elem = author_elem.find('LastName')
+                      forename_elem = author_elem.find('ForeName')
+                      
+                      lastname = lastname_elem.text if lastname_elem is not None else ""
+                      forename = forename_elem.text if forename_elem is not None else ""
+                      
+                      if forename:
+                          initials = ' '.join([n[0] for n in forename.split() if n])
+                          name = f"{lastname} {initials}" if lastname else ""
+                      else:
+                          name = lastname
+                      
+                      # Check affiliations
+                      author_affiliations = []
+                      for aff_elem in author_elem.findall('.//Affiliation'):
+                          aff_text = aff_elem.text if aff_elem is not None else ""
+                          if aff_text:
+                              author_affiliations.append(aff_text)
+                              if aff_text not in affiliations_list:
+                                  affiliations_list.append(aff_text)
+                      
+                      # Mark Rochester/Mayo authors
+                      is_rochester = any('rochester' in a.lower() or 'mayo' in a.lower() for a in author_affiliations)
+                      
+                      if name:
+                          authors.append({
+                              'name': name,
+                              'is_rochester': is_rochester
+                          })
+                  
+                  # Format authors for display
+                  author_names = [a['name'] for a in authors]
+                  rochester_authors = [a['name'] for a in authors if a['is_rochester']]
+                  
+                  if len(author_names) > 16:
+                      authors_display = ', '.join(author_names[:15]) + ', ' + author_names[-1] + ', et al.'
+                  else:
+                      authors_display = ', '.join(author_names)
+                  
+                  return {
+                      'pmid': pmid,
+                      'title': title,
+                      'abstract': abstract,
+                      'journal': journal,
+                      'pubdate': pubdate,
+                      'pub_datetime': pub_datetime,
+                      'year': year,
+                      'month': month,
+                      'day': day,
+                      'authors': '|'.join(author_names),
+                      'rochester_authors': '|'.join(rochester_authors),
+                      'affiliations': '|'.join(affiliations_list),
+                      'authors_display': authors_display,
+                      'url': f"https://pubmed.ncbi.nlm.nih.gov/{pmid}/"
+                  }
+                  
+              except Exception as e:
+                  print(f"Error parsing article: {e}")
+                  return None
+
+          def generate_summaries(articles):
+              """Generate LLM summaries for all articles"""
+              print("\n" + "="*60)
+              print("Generating LLM Summaries")
+              print("="*60)
+              
+              anthropic_key = os.getenv("ANTHROPIC_API_KEY")
+              
+              if not anthropic_key:
+                  print("WARNING: No ANTHROPIC_API_KEY found. Skipping summaries.")
+                  for article in articles:
+                      article['llm_summary'] = ""
+                  return articles
+              
+              print("Using Anthropic Claude for summaries...")
+              client = Anthropic(api_key=anthropic_key)
+              
+              for i, article in enumerate(articles):
+                  print(f"\n[{i+1}/{len(articles)}] Processing PMID: {article['pmid']}")
+                  print(f"Title: {article['title'][:80]}...")
+                  
+                  has_abstract = article['abstract'] and article['abstract'] != "No abstract available."
+                  
+                  try:
+                      if has_abstract:
+                          prompt = f"""Summarize this medical research in 2-3 sentences for a general audience. Focus on the key finding and its impact. Use simple language.
+
+Title: {article['title']}
+Abstract: {article['abstract']}
+
+Provide only the summary, no other text."""
+                      else:
+                          prompt = f"""Based only on this research title, write a 2-3 sentence general summary about what this research likely explores. Use simple language.
+
+Title: {article['title']}
+
+Provide only the summary, no other text."""
+                      
+                      message = client.messages.create(
+                          model="claude-3-haiku-20240307",
+                          max_tokens=100,
+                          temperature=0.3,
+                          messages=[{"role": "user", "content": prompt}]
+                      )
+                      
+                      summary = message.content[0].text.strip()
+                      print(f"  ✓ Summary generated ({len(summary)} characters)")
+                      article['llm_summary'] = summary
+                      
+                      if i < len(articles) - 1:
+                          time.sleep(1.0)
+                          
+                  except Exception as e:
+                      print(f"  ✗ Exception: {str(e)}")
+                      article['llm_summary'] = ""
+              
+              return articles
+
+          def main():
+              """Main function to fetch data and save to CSV"""
+              print("Starting PubMed data fetch...")
+              
+              articles = fetch_all_pubmed_data()
+              print(f"\nProcessing {len(articles)} articles...")
+              
+              # Generate LLM summaries
+              articles = generate_summaries(articles)
+              
+              # Create DataFrame
+              df = pd.DataFrame(articles)
+              
+              # Sort by publication date
+              df = df.sort_values('pub_datetime', ascending=False, na_position='last')
+              
+              # Drop the datetime column
+              df = df.drop(columns=['pub_datetime'])
+              
+              # Save to CSV
+              output_path = 'pubmed_data.csv'
+              df.to_csv(output_path, index=False, encoding='utf-8')
+              
+              print("\n" + "="*60)
+              print("COMPLETE")
+              print("="*60)
+              print(f"Data saved to: {output_path}")
+              print(f"Total articles: {len(df)}")
+              print(f"Articles with summaries: {sum(1 for s in df['llm_summary'] if s)}")
+
+          if __name__ == "__main__":
+              main()
+          EOF
+      
+      - name: Run PubMed data fetch
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          cd scripts
+          python fetch_pubmed_data.py
+          mv pubmed_data.csv ../pubmed_data.csv
+      
+      - name: Commit and push if changed
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add pubmed_data.csv
+          git diff --staged --quiet || git commit -m "Auto-update PubMed data [$(date +'%Y-%m-%d %H:%M:%S UTC')]"
+          git push
