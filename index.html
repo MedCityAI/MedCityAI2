@@ -117,6 +117,18 @@
 		display: flex;
 		flex-direction: column;
 		overflow: hidden;
+		z-index: 3;
+	}
+	
+	.card-back::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%);
+		z-index: -1;
 	}
 	
 	.card-back-header {
