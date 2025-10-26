@@ -761,6 +761,22 @@
 		let allArticlesData = [];
 		let filteredArticlesData = [];
 
+		// Function to flip card and match heights
+		function flipCard(container, event) {
+			event.stopPropagation();
+			
+			const cardFront = container.querySelector('.card-front');
+			const cardBack = container.querySelector('.card-back');
+			
+			if (!container.classList.contains('flipped')) {
+				// Flipping to back - capture front height and apply to back
+				const frontHeight = cardFront.offsetHeight;
+				cardBack.style.height = frontHeight + 'px';
+			}
+			
+			container.classList.toggle('flipped');
+		}
+
 		// Load CSV data
 		async function loadCSVData() {
 			try {
@@ -940,7 +956,7 @@
 				resultsHTML += `
 					<div class="result-item">
 						${isNew ? '<div class="new-tab">NEW</div>' : ''}
-						<div class="card-flip-container" onclick="this.classList.toggle('flipped'); event.stopPropagation();">
+						<div class="card-flip-container" onclick="flipCard(this, event);">
 							<!-- Front of card -->
 							<div class="card-face card-front">
 								<a href="${url}" class="result-title" target="_blank" onclick="event.stopPropagation();">${title}</a>
