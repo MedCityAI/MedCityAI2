@@ -784,6 +784,7 @@
 		// Global variables for CSV data
 		let allArticlesData = [];
 		let filteredArticlesData = [];
+		let currentlyFlippedCard = null;
 
 		// Function to flip card and match heights
 		function flipCard(container, event) {
@@ -798,23 +799,21 @@
 				return;
 			}
 			
+			// If there's a currently flipped card and it's not this one, flip it back
+			if (currentlyFlippedCard && currentlyFlippedCard !== container && currentlyFlippedCard.classList.contains('flipped')) {
+				currentlyFlippedCard.classList.remove('flipped');
+			}
+			
 			if (!container.classList.contains('flipped')) {
 				// Flipping to back - capture front height and apply to back
 				const frontHeight = cardFront.offsetHeight;
 				cardBack.style.height = frontHeight + 'px';
+				currentlyFlippedCard = container;
+			} else {
+				currentlyFlippedCard = null;
 			}
 			
 			container.classList.toggle('flipped');
-		}
-		
-		// Handle touch events for mobile scrolling
-		function setupTouchHandling() {
-			document.addEventListener('click', function(e) {
-				const cardBackContent = e.target.closest('.card-back-content');
-				if (cardBackContent) {
-					e.stopPropagation();
-				}
-			});
 		}
 
 		// Load CSV data
@@ -1013,7 +1012,6 @@
 										<i class="icon brands fa-linkedin"></i> 
 									</a>
 								</div>
-								${hasSummary ? '<div class="flip-instruction">💡 Click to see AI summary</div>' : ''}
 							</div>
 							
 							<!-- Back of card (AI Summary) -->
@@ -1031,7 +1029,6 @@
 										</p>
 									</div>
 								</div>
-								<div class="flip-instruction" style="margin-top: 12px;" onclick="flipCard(this.closest('.card-flip-container'), event);">🔄 Click to flip back</div>
 							</div>
 							` : ''}
 						</div>
