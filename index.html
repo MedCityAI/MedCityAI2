@@ -792,12 +792,6 @@
 			
 			const cardFront = container.querySelector('.card-front');
 			const cardBack = container.querySelector('.card-back');
-			const cardBackContent = container.querySelector('.card-back-content');
-			
-			// If clicking on the back content area while scrolling, don't flip
-			if (container.classList.contains('flipped') && cardBackContent && cardBackContent.contains(event.target)) {
-				return;
-			}
 			
 			// If there's a currently flipped card and it's not this one, flip it back
 			if (currentlyFlippedCard && currentlyFlippedCard !== container && currentlyFlippedCard.classList.contains('flipped')) {
@@ -1016,12 +1010,11 @@
 							
 							<!-- Back of card (AI Summary) -->
 							${hasSummary ? `
-							<div class="card-face card-back">
-								<div class="card-back-header" onclick="flipCard(this.closest('.card-flip-container'), event);">
-									<span style="font-size: 24px; margin-right: 10px;">🤖</span>
-									<h4 style="color: #1565c0; margin: 0; font-size: 16px; font-weight: 700;">AI-GENERATED SUMMARY</h4>
+							<div class="card-face card-back" onclick="flipCard(this.closest('.card-flip-container'), event);">
+								<div class="card-back-header">
+									<h4 style="color: #1565c0; margin: 0; font-size: 16px; font-weight: 700;">AI SUMMARY</h4>
 								</div>
-								<div class="card-back-content" onclick="event.stopPropagation();">
+								<div class="card-back-content">
 									<div class="card-back-summary">${llmSummary}</div>
 									<div class="card-back-disclaimer">
 										<p style="margin: 0; font-size: 11px; color: #546e7a; font-style: italic; line-height: 1.4;">
