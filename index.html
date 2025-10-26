@@ -1003,9 +1003,9 @@
 				resultsHTML += `
 					<div class="result-item">
 						<div class="card-flip-container">
-							${isNew ? '<div class="new-tab">NEW</div>' : ''}
 							<!-- Front of card -->
 							<div class="card-face card-front" onclick="flipCard(this.closest('.card-flip-container'), event);">
+								${isNew ? '<div class="new-tab">NEW</div>' : ''}
 								<br>
 								<a href="${url}" class="result-title" target="_blank" onclick="event.stopPropagation();">${title}</a>
 								<div class="result-authors">${authorsHtml}</div>
