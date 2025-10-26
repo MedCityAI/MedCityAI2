@@ -204,6 +204,7 @@
 			padding: 4px 12px;
 			border-radius: 8px 0 8px 0;
 			z-index: 10;
+			pointer-events: none; /* Prevent blocking clicks */
 		}
 		.result-title {
 			display: block;
@@ -988,8 +989,8 @@
 				
 				resultsHTML += `
 					<div class="result-item">
-						${isNew ? '<div class="new-tab">NEW</div>' : ''}
 						<div class="card-flip-container">
+							${isNew ? '<div class="new-tab">NEW</div>' : ''}
 							<!-- Front of card -->
 							<div class="card-face card-front" onclick="flipCard(this.closest('.card-flip-container'), event);">
 								<br>
