@@ -65,16 +65,93 @@
 			column-gap: 20px;
 		}
 		.result-item {
-			background: #fff;
+			background: transparent;
 			border-radius: 10px;
-			padding: 20px;
 			margin: 0 0 20px;
-			box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 			display: inline-block;
 			width: 100%;
 			box-sizing: border-box;
 			position: relative;
+			perspective: 1000px;
+			min-height: 200px;
 		}
+		
+		.card-flip-container {
+			position: relative;
+			width: 100%;
+			height: 100%;
+			transition: transform 0.6s;
+			transform-style: preserve-3d;
+			cursor: pointer;
+		}
+		
+		.card-flip-container.flipped {
+			transform: rotateY(180deg);
+		}
+		
+		.card-face {
+			position: absolute;
+			width: 100%;
+			min-height: 180px;
+			backface-visibility: hidden;
+			-webkit-backface-visibility: hidden;
+			border-radius: 10px;
+			padding: 20px;
+			box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+			background: #fff;
+			box-sizing: border-box;
+		}
+		
+		.card-front {
+			z-index: 2;
+			position: relative;
+		}
+		
+		.card-back {
+			transform: rotateY(180deg);
+			background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%);
+			border: 2px solid #2196f3;
+			min-height: 200px;
+			display: flex;
+			flex-direction: column;
+		}
+		
+		.card-back-header {
+			display: flex;
+			align-items: center;
+			margin-bottom: 12px;
+			padding-bottom: 12px;
+			border-bottom: 2px solid #2196f3;
+		}
+		
+		.card-back-content {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+		}
+		
+		.card-back-summary {
+			flex: 1;
+			line-height: 1.7;
+			color: #1a237e;
+			font-size: 15px;
+			margin-bottom: 12px;
+		}
+		
+		.card-back-disclaimer {
+			padding-top: 12px;
+			border-top: 1px solid #bbdefb;
+			margin-top: auto;
+		}
+		
+		.flip-instruction {
+			text-align: center;
+			font-size: 12px;
+			color: #999;
+			margin-top: 8px;
+			font-style: italic;
+		}
+		
 		.new-tab {
 			position: absolute;
 			top: 0;
@@ -716,6 +793,13 @@
 			return result;
 		}
 
+		// Escape HTML for data attributes
+		function escapeHtml(text) {
+			const div = document.createElement('div');
+			div.textContent = text;
+			return div.innerHTML;
+		}
+
 		// PubMed data display with search and pagination (now using CSV data)
 		async function fetchPubMedResults(searchQuery = '', page = 1) {
 			currentSearchQuery = searchQuery;
@@ -824,29 +908,51 @@
 				
 				const citation = `${journal}. ${pubdate}. PMID: ${pmid}`;
 
+				// Build card with flip effect
+				const hasSummary = llmSummary && llmSummary.trim() !== '' && llmSummary !== 'No abstract available.';
+				
 				resultsHTML += `
 					<div class="result-item">
 						${isNew ? '<div class="new-tab">NEW</div>' : ''}
-						<br><a href="#" class="result-title" 
-							data-title="${title.replace(/"/g,'&quot;')}" 
-							data-abstract="${abstract.replace(/"/g,'&quot;')}" 
-							data-pmid="${pmid}"
-							data-authors="${authorsList.join(';').replace(/"/g,'&quot;')}"
-							data-affiliations="${affiliationsList.join(';').replace(/"/g,'&quot;')}"
-							data-llm-summary="${llmSummary.replace(/"/g,'&quot;')}"
-							onclick="showAbstractModal(this); return false;">${title}</a>
-						<div class="result-authors">${authorsHtml}</div>
-						<div class="result-citation"><em>${citation}</em></div>
-						<div class="share-buttons">
-							<a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" class="facebook" target="_blank">
-								<i class="icon brands fa-facebook-f"></i> 
-							</a>
-							<a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}" class="twitter" target="_blank">
-								<i class="icon brands fa-twitter"></i> 
-							</a>
-							<a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}" class="linkedin" target="_blank">
-								<i class="icon brands fa-linkedin"></i> 
-							</a>
+						<div class="card-flip-container" onclick="this.classList.toggle('flipped'); event.stopPropagation();">
+							<!-- Front of card -->
+							<div class="card-face card-front">
+								<a href="${url}" class="result-title" target="_blank" onclick="event.stopPropagation();">${title}</a>
+								<div class="result-authors">${authorsHtml}</div>
+								<div class="result-citation"><em>${citation}</em></div>
+								<div class="share-buttons">
+									<a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" class="facebook" target="_blank" onclick="event.stopPropagation();">
+										<i class="icon brands fa-facebook-f"></i> 
+									</a>
+									<a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}" class="twitter" target="_blank" onclick="event.stopPropagation();">
+										<i class="icon brands fa-twitter"></i> 
+									</a>
+									<a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}" class="linkedin" target="_blank" onclick="event.stopPropagation();">
+										<i class="icon brands fa-linkedin"></i> 
+									</a>
+								</div>
+								${hasSummary ? '<div class="flip-instruction">💡 Click to see AI summary</div>' : ''}
+							</div>
+							
+							<!-- Back of card (AI Summary) -->
+							${hasSummary ? `
+							<div class="card-face card-back">
+								<div class="card-back-header">
+									<span style="font-size: 24px; margin-right: 10px;">🤖</span>
+									<h4 style="color: #1565c0; margin: 0; font-size: 16px; font-weight: 700;">AI-GENERATED SUMMARY</h4>
+								</div>
+								<div class="card-back-content">
+									<div class="card-back-summary">${llmSummary}</div>
+									<div class="card-back-disclaimer">
+										<p style="margin: 0; font-size: 11px; color: #546e7a; font-style: italic; line-height: 1.4;">
+											<strong>⚠️ Disclaimer:</strong> AI-generated summary may contain inaccuracies. 
+											<a href="${url}" target="_blank" onclick="event.stopPropagation();" style="color: #1565c0;">View full article</a> for accurate information.
+										</p>
+									</div>
+								</div>
+								<div class="flip-instruction" style="margin-top: 12px;">🔄 Click to flip back</div>
+							</div>
+							` : ''}
 						</div>
 					</div>
 				`;
