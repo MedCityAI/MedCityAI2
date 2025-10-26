@@ -164,15 +164,16 @@
 	
 	.card-back-content::-webkit-scrollbar-thumb:hover {
 		background: #1976d2;
-	}		.card-back-summary {
-			flex: 1;
-			line-height: 1.7;
-			color: #1a237e;
-			font-size: 15px;
-			margin-bottom: 12px;
-		}
-		
-		.card-back-disclaimer {
+	}
+	
+	.card-back-summary {
+		flex: 1;
+		line-height: 1.7;
+		color: #1a237e;
+		font-size: 15px;
+		margin-bottom: 12px;
+		touch-action: pan-y;
+	}		.card-back-disclaimer {
 			padding-top: 12px;
 			border-top: 1px solid #bbdefb;
 			margin-top: auto;
@@ -786,6 +787,12 @@
 			
 			const cardFront = container.querySelector('.card-front');
 			const cardBack = container.querySelector('.card-back');
+			const cardBackContent = container.querySelector('.card-back-content');
+			
+			// If clicking on the back content area while scrolling, don't flip
+			if (container.classList.contains('flipped') && cardBackContent && cardBackContent.contains(event.target)) {
+				return;
+			}
 			
 			if (!container.classList.contains('flipped')) {
 				// Flipping to back - capture front height and apply to back
@@ -794,6 +801,16 @@
 			}
 			
 			container.classList.toggle('flipped');
+		}
+		
+		// Handle touch events for mobile scrolling
+		function setupTouchHandling() {
+			document.addEventListener('click', function(e) {
+				const cardBackContent = e.target.closest('.card-back-content');
+				if (cardBackContent) {
+					e.stopPropagation();
+				}
+			});
 		}
 
 		// Load CSV data
@@ -998,11 +1015,11 @@
 							<!-- Back of card (AI Summary) -->
 							${hasSummary ? `
 							<div class="card-face card-back">
-								<div class="card-back-header">
+								<div class="card-back-header" onclick="flipCard(this.closest('.card-flip-container'), event);">
 									<span style="font-size: 24px; margin-right: 10px;">🤖</span>
 									<h4 style="color: #1565c0; margin: 0; font-size: 16px; font-weight: 700;">AI-GENERATED SUMMARY</h4>
 								</div>
-								<div class="card-back-content">
+								<div class="card-back-content" onclick="event.stopPropagation();">
 									<div class="card-back-summary">${llmSummary}</div>
 									<div class="card-back-disclaimer">
 										<p style="margin: 0; font-size: 11px; color: #546e7a; font-style: italic; line-height: 1.4;">
@@ -1010,7 +1027,7 @@
 										</p>
 									</div>
 								</div>
-								<div class="flip-instruction" style="margin-top: 12px;">🔄 Click to flip back</div>
+								<div class="flip-instruction" style="margin-top: 12px;" onclick="flipCard(this.closest('.card-flip-container'), event);">🔄 Click to flip back</div>
 							</div>
 							` : ''}
 						</div>
