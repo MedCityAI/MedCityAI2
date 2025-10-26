@@ -995,7 +995,7 @@
 				// Parse affiliations (pipe-separated in CSV)
 				const affiliationsList = article.affiliations ? article.affiliations.split('|') : [];
 				
-				const citation = `${journal}. ${pubdate}. PMID: ${pmid}`;
+				const citation = `${journal}. ${pubdate}.`;
 
 				// Build card with flip effect
 				const hasSummary = llmSummary && llmSummary.trim() !== '' && llmSummary !== 'No abstract available.';
@@ -1010,6 +1010,11 @@
 								<a href="${url}" class="result-title" target="_blank" onclick="event.stopPropagation();">${title}</a>
 								<div class="result-authors">${authorsHtml}</div>
 								<div class="result-citation"><em>${citation}</em></div>
+								<div style="margin-top: 8px; margin-bottom: 10px;">
+									<a href="${url}" target="_blank" onclick="event.stopPropagation();" style="color: #0056a3; text-decoration: none; font-size: 14px; font-weight: 500;">
+										View on PubMed →
+									</a>
+								</div>
 								<div class="share-buttons">
 									<a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" class="facebook" target="_blank" onclick="event.stopPropagation();">
 										<i class="icon brands fa-facebook-f"></i> 
