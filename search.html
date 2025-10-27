@@ -209,121 +209,174 @@
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
-			margin-bottom: 30px;
-			padding-bottom: 20px;
-			border-bottom: 2px solid #e0e0e0;
+			margin-bottom: 24px;
+			padding-bottom: 16px;
+			border-bottom: 1px solid #e0e0e0;
 		}
 		.results-count {
-			font-size: 1.3em;
+			font-size: 1.2em;
 			color: #2c3e50;
 			font-weight: 600;
 		}
 		.results-count span {
 			color: #3498db;
 		}
-		.sort-options {
+		.results-actions {
 			display: flex;
 			align-items: center;
-			gap: 12px;
+			gap: 16px;
 		}
-		.sort-options label {
+		.select-all-container {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+		.select-all-container label {
 			font-weight: 500;
 			color: #2c3e50;
+			cursor: pointer;
+			user-select: none;
 		}
-		.sort-options select {
-			padding: 8px 12px;
-			border: 2px solid #e0e0e0;
-			border-radius: 6px;
-			font-size: 14px;
+		.select-all-container input[type="checkbox"] {
+			width: 18px;
+			height: 18px;
 			cursor: pointer;
 		}
+		.export-btn {
+			background: linear-gradient(135deg, #27ae60, #229954);
+			color: white;
+			border: none;
+			padding: 10px 20px;
+			border-radius: 8px;
+			font-size: 14px;
+			font-weight: 600;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+		.export-btn:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+		}
+		.export-btn:disabled {
+			background: #bdc3c7;
+			cursor: not-allowed;
+			transform: none;
+		}
 
-		/* Result Item */
-		.result-item {
+		/* Result Item - Sleek Sequential Design */
+		.results-list {
 			background: #fff;
 			border-radius: 12px;
-			padding: 28px;
-			margin-bottom: 24px;
-			box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-			transition: all 0.3s ease;
-			border: 1px solid #f0f0f0;
+			overflow: hidden;
+			box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+		}
+		.result-item {
+			padding: 20px 24px;
+			border-bottom: 1px solid #f0f0f0;
+			transition: all 0.2s ease;
+			display: flex;
+			gap: 16px;
+			align-items: flex-start;
+		}
+		.result-item:last-child {
+			border-bottom: none;
 		}
 		.result-item:hover {
-			box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-			transform: translateY(-2px);
+			background: #f8fbff;
+		}
+		.result-item.selected {
+			background: #e3f2fd;
+		}
+		.result-checkbox {
+			flex-shrink: 0;
+			margin-top: 4px;
+		}
+		.result-checkbox input[type="checkbox"] {
+			width: 18px;
+			height: 18px;
+			cursor: pointer;
+		}
+		.result-content {
+			flex: 1;
+			min-width: 0;
 		}
 		.result-title {
-			font-size: 1.4em;
-			font-weight: 700;
+			font-size: 1.15em;
+			font-weight: 600;
 			color: #0056a3;
 			text-decoration: none;
-			margin-bottom: 12px;
+			margin-bottom: 8px;
 			display: block;
 			line-height: 1.4;
 		}
 		.result-title:hover {
 			color: #3498db;
+			text-decoration: underline;
 		}
 		.result-meta {
 			display: flex;
 			flex-wrap: wrap;
 			gap: 16px;
-			margin-bottom: 16px;
-			font-size: 14px;
-			color: #666;
+			margin-bottom: 10px;
+			font-size: 13px;
+			color: #7f8c8d;
 		}
 		.result-meta-item {
 			display: flex;
 			align-items: center;
-			gap: 6px;
+			gap: 5px;
 		}
 		.result-meta-item i {
-			color: #3498db;
+			color: #95a5a6;
+			font-size: 12px;
 		}
 		.result-authors {
-			font-size: 15px;
-			color: #333;
-			margin-bottom: 12px;
-			line-height: 1.6;
+			font-size: 14px;
+			color: #555;
+			margin-bottom: 10px;
+			line-height: 1.5;
 		}
 		.result-authors u {
 			color: #2980b9;
 			font-weight: 600;
+			text-decoration: none;
+			border-bottom: 2px solid #3498db;
 		}
 		.result-abstract {
-			font-size: 14px;
-			color: #555;
-			line-height: 1.7;
-			margin-bottom: 16px;
+			font-size: 13px;
+			color: #666;
+			line-height: 1.6;
+			margin-bottom: 12px;
 		}
 		.result-actions {
 			display: flex;
-			gap: 12px;
+			gap: 8px;
 			align-items: center;
+			flex-wrap: wrap;
 		}
 		.btn-link {
-			background: #3498db;
-			color: white;
+			background: transparent;
+			color: #3498db;
 			text-decoration: none;
-			padding: 8px 20px;
+			padding: 6px 14px;
 			border-radius: 6px;
-			font-size: 14px;
+			font-size: 13px;
 			font-weight: 500;
-			transition: all 0.3s ease;
+			transition: all 0.2s ease;
 			display: inline-flex;
 			align-items: center;
-			gap: 6px;
+			gap: 5px;
+			border: 1px solid #e0e0e0;
 		}
 		.btn-link:hover {
-			background: #2980b9;
-			transform: translateY(-1px);
+			background: #f0f7ff;
+			border-color: #3498db;
 		}
-		.btn-link-secondary {
-			background: #ecf0f1;
-			color: #2c3e50;
-		}
-		.btn-link-secondary:hover {
-			background: #d5dbdd;
+		.btn-link i {
+			font-size: 11px;
 		}
 
 		/* Pagination */
@@ -419,11 +472,18 @@
 			}
 			.results-header {
 				flex-direction: column;
-				gap: 16px;
+				gap: 12px;
 				align-items: flex-start;
 			}
+			.results-actions {
+				width: 100%;
+				justify-content: space-between;
+			}
 			.result-item {
-				padding: 20px;
+				padding: 16px;
+			}
+			.result-content {
+				font-size: 14px;
 			}
 			.search-hero h1 {
 				font-size: 2em;
@@ -539,9 +599,18 @@
 						<div class="results-count">
 							Found <span id="resultCount">0</span> results
 						</div>
+						<div class="results-actions">
+							<div class="select-all-container">
+								<input type="checkbox" id="selectAll" />
+								<label for="selectAll">Select All</label>
+							</div>
+							<button class="export-btn" id="exportBtn" onclick="exportToCSV()" disabled>
+								<i class="fas fa-download"></i> Export CSV
+							</button>
+						</div>
 					</div>
 					
-					<div id="resultsContent"></div>
+					<div class="results-list" id="resultsContent"></div>
 					
 					<div id="paginationContainer" class="pagination"></div>
 				</div>
@@ -580,13 +649,79 @@
 		let currentPage = 1;
 		const resultsPerPage = 20;
 		let totalResults = 0;
+		let selectedArticles = new Set();
 
 		// Search Form Handler
 		document.getElementById('searchForm').addEventListener('submit', async function(e) {
 			e.preventDefault();
 			currentPage = 1;
+			selectedArticles.clear();
 			await performSearch();
 		});
+
+		// Select All Handler
+		document.getElementById('selectAll').addEventListener('change', function(e) {
+			const checkboxes = document.querySelectorAll('.article-checkbox');
+			checkboxes.forEach(cb => {
+				cb.checked = e.target.checked;
+				const pmid = cb.dataset.pmid;
+				if (e.target.checked) {
+					selectedArticles.add(pmid);
+					cb.closest('.result-item').classList.add('selected');
+				} else {
+					selectedArticles.delete(pmid);
+					cb.closest('.result-item').classList.remove('selected');
+				}
+			});
+			updateExportButton();
+		});
+
+		// Update Export Button State
+		function updateExportButton() {
+			const exportBtn = document.getElementById('exportBtn');
+			exportBtn.disabled = selectedArticles.size === 0;
+			if (selectedArticles.size > 0) {
+				exportBtn.innerHTML = `<i class="fas fa-download"></i> Export CSV (${selectedArticles.size})`;
+			} else {
+				exportBtn.innerHTML = `<i class="fas fa-download"></i> Export CSV`;
+			}
+		}
+
+		// Export to CSV
+		function exportToCSV() {
+			if (selectedArticles.size === 0) return;
+
+			// Get selected articles
+			const selectedData = currentResults.filter(article => selectedArticles.has(article.pmid));
+
+			// Build CSV content
+			const headers = ['PMID', 'Title', 'Authors', 'Journal', 'Publication Date', 'Abstract', 'URL'];
+			let csvContent = headers.join(',') + '\n';
+
+			selectedData.forEach(article => {
+				const row = [
+					article.pmid,
+					`"${article.title.replace(/"/g, '""')}"`,
+					`"${article.authors.replace(/"/g, '""')}"`,
+					`"${article.journal.replace(/"/g, '""')}"`,
+					article.pubdate,
+					`"${article.abstract.replace(/"/g, '""')}"`,
+					article.url
+				];
+				csvContent += row.join(',') + '\n';
+			});
+
+			// Create download
+			const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+			const link = document.createElement('a');
+			const url = URL.createObjectURL(blob);
+			link.setAttribute('href', url);
+			link.setAttribute('download', `pubmed_search_results_${new Date().toISOString().split('T')[0]}.csv`);
+			link.style.visibility = 'hidden';
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+		}
 
 		async function performSearch() {
 			const searchQuery = document.getElementById('searchQuery').value.trim();
@@ -821,47 +956,56 @@
 
 				// Truncate abstract for display
 				let abstractPreview = article.abstract;
-				if (abstractPreview.length > 400) {
-					abstractPreview = abstractPreview.substring(0, 400) + '...';
+				if (abstractPreview.length > 300) {
+					abstractPreview = abstractPreview.substring(0, 300) + '...';
 				}
 
+				const isSelected = selectedArticles.has(article.pmid);
+
 				resultsHTML += `
-					<div class="result-item">
-						<a href="${article.url}" target="_blank" class="result-title">${article.title}</a>
-						
-						<div class="result-meta">
-							<div class="result-meta-item">
-								<i class="fas fa-calendar"></i>
-								${article.pubdate}
-							</div>
-							<div class="result-meta-item">
-								<i class="fas fa-book"></i>
-								${article.journal}
-							</div>
-							<div class="result-meta-item">
-								<i class="fas fa-hashtag"></i>
-								PMID: ${article.pmid}
-							</div>
+					<div class="result-item ${isSelected ? 'selected' : ''}">
+						<div class="result-checkbox">
+							<input type="checkbox" class="article-checkbox" data-pmid="${article.pmid}" 
+								${isSelected ? 'checked' : ''} 
+								onchange="toggleArticleSelection('${article.pmid}', this)">
 						</div>
+						<div class="result-content">
+							<a href="${article.url}" target="_blank" class="result-title">${article.title}</a>
+							
+							<div class="result-meta">
+								<div class="result-meta-item">
+									<i class="fas fa-calendar"></i>
+									${article.pubdate}
+								</div>
+								<div class="result-meta-item">
+									<i class="fas fa-book"></i>
+									${article.journal}
+								</div>
+								<div class="result-meta-item">
+									<i class="fas fa-hashtag"></i>
+									${article.pmid}
+								</div>
+							</div>
 
-						<div class="result-authors">
-							<strong>Authors:</strong> ${authorsHTML}
-						</div>
+							<div class="result-authors">
+								${authorsHTML}
+							</div>
 
-						<div class="result-abstract">
-							${abstractPreview}
-						</div>
+							<div class="result-abstract">
+								${abstractPreview}
+							</div>
 
-						<div class="result-actions">
-							<a href="${article.url}" target="_blank" class="btn-link">
-								<i class="fas fa-external-link-alt"></i> View on PubMed
-							</a>
-							<a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(article.url)}" target="_blank" class="btn-link btn-link-secondary">
-								<i class="fab fa-facebook-f"></i> Share
-							</a>
-							<a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(article.url)}&text=${encodeURIComponent(article.title)}" target="_blank" class="btn-link btn-link-secondary">
-								<i class="fab fa-twitter"></i> Tweet
-							</a>
+							<div class="result-actions">
+								<a href="${article.url}" target="_blank" class="btn-link">
+									<i class="fas fa-external-link-alt"></i> PubMed
+								</a>
+								<a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(article.url)}" target="_blank" class="btn-link">
+									<i class="fab fa-facebook-f"></i> Share
+								</a>
+								<a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(article.url)}&text=${encodeURIComponent(article.title)}" target="_blank" class="btn-link">
+									<i class="fab fa-twitter"></i> Tweet
+								</a>
+							</div>
 						</div>
 					</div>
 				`;
@@ -869,11 +1013,38 @@
 
 			document.getElementById('resultsContent').innerHTML = resultsHTML;
 
+			// Update select all checkbox state
+			updateSelectAllCheckbox();
+
 			// Display pagination
 			displayPagination(totalPages);
 
 			// Scroll to results
 			document.getElementById('resultsContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+		}
+
+		// Toggle individual article selection
+		function toggleArticleSelection(pmid, checkbox) {
+			const resultItem = checkbox.closest('.result-item');
+			if (checkbox.checked) {
+				selectedArticles.add(pmid);
+				resultItem.classList.add('selected');
+			} else {
+				selectedArticles.delete(pmid);
+				resultItem.classList.remove('selected');
+			}
+			updateSelectAllCheckbox();
+			updateExportButton();
+		}
+
+		// Update select all checkbox state
+		function updateSelectAllCheckbox() {
+			const checkboxes = document.querySelectorAll('.article-checkbox');
+			const selectAllCheckbox = document.getElementById('selectAll');
+			const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+			
+			selectAllCheckbox.checked = checkboxes.length > 0 && checkedCount === checkboxes.length;
+			selectAllCheckbox.indeterminate = checkedCount > 0 && checkedCount < checkboxes.length;
 		}
 
 		function displayPagination(totalPages) {
