@@ -1,0 +1,952 @@
+<!DOCTYPE HTML>
+<!--
+	MedCityAI - Advanced Search
+-->
+<html>
+	<head>
+		<title>Search - Med City AI</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<link rel="stylesheet" href="assets/css/fontawesome-all.min.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<style>
+		/* Top Navigation Bar */
+		.top-bar {
+			background: #ffffff;
+			color: #2c3e50;
+			padding: 15px 0;
+			font-size: 14px;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			z-index: 1001;
+			box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+			border-bottom: 1px solid #eee;
+		}
+		.top-bar-content {
+			max-width: 1200px;
+			margin: 0 auto;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 0 20px;
+		}
+		.logo {
+			display: flex;
+			align-items: center;
+		}
+		.logo img {
+			height: 40px;
+			width: auto;
+		}
+		.nav-links {
+			display: flex;
+			gap: 30px;
+			align-items: center;
+		}
+		.nav-links a {
+			color: #2c3e50;
+			text-decoration: none;
+			font-weight: 500;
+			font-size: 15px;
+			transition: color 0.3s ease;
+		}
+		.nav-links a:hover, .nav-links a.active {
+			color: #3498db;
+		}
+		.cta-button {
+			background: linear-gradient(135deg, #3498db, #2980b9);
+			color: white;
+			padding: 10px 20px;
+			border-radius: 25px;
+			text-decoration: none;
+			font-weight: 600;
+			font-size: 14px;
+			transition: all 0.3s ease;
+		}
+		.cta-button:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+		}
+
+		/* Search Hero Section */
+		.search-hero {
+			background: linear-gradient(135deg, #3a4660 0%, #4e6a8a 60%, #233045 100%);
+			min-height: 300px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin-top: 70px;
+			padding: 60px 20px;
+			position: relative;
+			overflow: hidden;
+		}
+		.search-hero::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="rgba(52,152,219,0.08)"><circle cx="100" cy="100" r="80"/><circle cx="300" cy="300" r="100"/></svg>') center/cover;
+			opacity: 0.5;
+		}
+		.search-hero-content {
+			max-width: 900px;
+			width: 100%;
+			position: relative;
+			z-index: 2;
+		}
+		.search-hero h1 {
+			color: #fff;
+			font-size: 2.8em;
+			font-weight: 800;
+			margin-bottom: 16px;
+			text-align: center;
+			text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+		}
+		.search-hero p {
+			color: #e0e0e0;
+			font-size: 1.1em;
+			text-align: center;
+			margin-bottom: 36px;
+		}
+
+		/* Advanced Search Form */
+		.search-container {
+			background: #fff;
+			border-radius: 16px;
+			padding: 32px;
+			box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+		}
+		.search-row {
+			display: flex;
+			gap: 16px;
+			margin-bottom: 20px;
+			align-items: flex-end;
+		}
+		.search-field {
+			flex: 1;
+		}
+		.search-field label {
+			display: block;
+			font-weight: 600;
+			color: #2c3e50;
+			margin-bottom: 8px;
+			font-size: 14px;
+		}
+		.search-field input, .search-field select {
+			width: 100%;
+			padding: 12px 16px;
+			border: 2px solid #e0e0e0;
+			border-radius: 8px;
+			font-size: 15px;
+			transition: all 0.3s ease;
+			box-sizing: border-box;
+		}
+		.search-field input:focus, .search-field select:focus {
+			outline: none;
+			border-color: #3498db;
+			box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+		}
+		.search-field-small {
+			flex: 0 0 200px;
+		}
+		.search-submit {
+			background: linear-gradient(135deg, #3498db, #2980b9);
+			color: white;
+			border: none;
+			padding: 14px 40px;
+			border-radius: 8px;
+			font-size: 16px;
+			font-weight: 600;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+		.search-submit:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+		}
+		.search-submit:active {
+			transform: translateY(0);
+		}
+		.search-filters {
+			display: flex;
+			gap: 12px;
+			flex-wrap: wrap;
+			margin-top: 20px;
+			padding-top: 20px;
+			border-top: 1px solid #e0e0e0;
+		}
+		.filter-tag {
+			background: #e3f2fd;
+			color: #1565c0;
+			padding: 6px 14px;
+			border-radius: 20px;
+			font-size: 13px;
+			font-weight: 500;
+			display: flex;
+			align-items: center;
+			gap: 6px;
+		}
+		.filter-tag .remove {
+			cursor: pointer;
+			font-weight: bold;
+		}
+
+		/* Results Section */
+		.results-section {
+			max-width: 1000px;
+			margin: 40px auto;
+			padding: 0 20px;
+		}
+		.results-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 30px;
+			padding-bottom: 20px;
+			border-bottom: 2px solid #e0e0e0;
+		}
+		.results-count {
+			font-size: 1.3em;
+			color: #2c3e50;
+			font-weight: 600;
+		}
+		.results-count span {
+			color: #3498db;
+		}
+		.sort-options {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+		}
+		.sort-options label {
+			font-weight: 500;
+			color: #2c3e50;
+		}
+		.sort-options select {
+			padding: 8px 12px;
+			border: 2px solid #e0e0e0;
+			border-radius: 6px;
+			font-size: 14px;
+			cursor: pointer;
+		}
+
+		/* Result Item */
+		.result-item {
+			background: #fff;
+			border-radius: 12px;
+			padding: 28px;
+			margin-bottom: 24px;
+			box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+			transition: all 0.3s ease;
+			border: 1px solid #f0f0f0;
+		}
+		.result-item:hover {
+			box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+			transform: translateY(-2px);
+		}
+		.result-title {
+			font-size: 1.4em;
+			font-weight: 700;
+			color: #0056a3;
+			text-decoration: none;
+			margin-bottom: 12px;
+			display: block;
+			line-height: 1.4;
+		}
+		.result-title:hover {
+			color: #3498db;
+		}
+		.result-meta {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 16px;
+			margin-bottom: 16px;
+			font-size: 14px;
+			color: #666;
+		}
+		.result-meta-item {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+		}
+		.result-meta-item i {
+			color: #3498db;
+		}
+		.result-authors {
+			font-size: 15px;
+			color: #333;
+			margin-bottom: 12px;
+			line-height: 1.6;
+		}
+		.result-authors u {
+			color: #2980b9;
+			font-weight: 600;
+		}
+		.result-abstract {
+			font-size: 14px;
+			color: #555;
+			line-height: 1.7;
+			margin-bottom: 16px;
+		}
+		.result-actions {
+			display: flex;
+			gap: 12px;
+			align-items: center;
+		}
+		.btn-link {
+			background: #3498db;
+			color: white;
+			text-decoration: none;
+			padding: 8px 20px;
+			border-radius: 6px;
+			font-size: 14px;
+			font-weight: 500;
+			transition: all 0.3s ease;
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+		}
+		.btn-link:hover {
+			background: #2980b9;
+			transform: translateY(-1px);
+		}
+		.btn-link-secondary {
+			background: #ecf0f1;
+			color: #2c3e50;
+		}
+		.btn-link-secondary:hover {
+			background: #d5dbdd;
+		}
+
+		/* Pagination */
+		.pagination {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			gap: 8px;
+			margin: 40px 0;
+		}
+		.pagination button {
+			padding: 10px 16px;
+			border: 2px solid #e0e0e0;
+			background: white;
+			border-radius: 8px;
+			cursor: pointer;
+			font-weight: 500;
+			color: #2c3e50;
+			transition: all 0.3s ease;
+			font-size: 14px;
+		}
+		.pagination button:hover:not(:disabled) {
+			border-color: #3498db;
+			color: #3498db;
+			background: #f8fbff;
+		}
+		.pagination button:disabled {
+			opacity: 0.4;
+			cursor: not-allowed;
+		}
+		.pagination button.active {
+			background: #3498db;
+			color: white;
+			border-color: #3498db;
+		}
+		.pagination .page-num {
+			padding: 10px 14px;
+			min-width: 44px;
+			text-align: center;
+		}
+		.pagination .ellipsis {
+			padding: 10px 8px;
+			border: none;
+			background: transparent;
+			cursor: default;
+		}
+
+		/* Loading Spinner */
+		.loading {
+			text-align: center;
+			padding: 60px 20px;
+		}
+		.spinner {
+			border: 4px solid #f0f0f0;
+			border-top: 4px solid #3498db;
+			border-radius: 50%;
+			width: 50px;
+			height: 50px;
+			animation: spin 1s linear infinite;
+			margin: 0 auto 20px;
+		}
+		@keyframes spin {
+			0% { transform: rotate(0deg); }
+			100% { transform: rotate(360deg); }
+		}
+
+		/* Empty State */
+		.empty-state {
+			text-align: center;
+			padding: 80px 20px;
+		}
+		.empty-state i {
+			font-size: 4em;
+			color: #bdc3c7;
+			margin-bottom: 20px;
+		}
+		.empty-state h3 {
+			color: #7f8c8d;
+			font-size: 1.5em;
+			margin-bottom: 12px;
+		}
+		.empty-state p {
+			color: #95a5a6;
+		}
+
+		/* Responsive */
+		@media (max-width: 768px) {
+			.search-row {
+				flex-direction: column;
+			}
+			.search-field-small {
+				flex: 1;
+			}
+			.results-header {
+				flex-direction: column;
+				gap: 16px;
+				align-items: flex-start;
+			}
+			.result-item {
+				padding: 20px;
+			}
+			.search-hero h1 {
+				font-size: 2em;
+			}
+			.pagination {
+				flex-wrap: wrap;
+			}
+		}
+		</style>
+	</head>
+	<body class="landing is-preload">
+		<!-- Page Wrapper -->
+		<div id="page-wrapper">
+			<!-- Navigation Header -->
+			<div class="top-bar">
+				<div class="top-bar-content">
+					<div class="logo">
+						<img src="images/medcityai_logo1.png" alt="MedCityAI" style="height:48px; width:auto;" />
+					</div>
+					<div class="nav-links">
+						<a href="search.html" class="active">Search</a>
+						<a href="index.html">New Today</a>
+						<a href="analytics.html">Analytics</a>
+						<a href="about.html">About</a>
+						<a href="contact.html">Contact</a>
+					</div>
+					<div style="display: flex; align-items: center; gap: 15px;">
+						<a href="#subscribe" class="cta-button">Subscribe</a>
+					</div>
+				</div>
+			</div>
+
+			<!-- Search Hero -->
+			<section class="search-hero">
+				<div class="search-hero-content">
+					<h1>Advanced Search</h1>
+					<p>Search Rochester, MN biomedical research by topic, author, or department</p>
+					
+					<div class="search-container">
+						<form id="searchForm">
+							<div class="search-row">
+								<div class="search-field">
+									<label for="searchQuery">
+										<i class="fas fa-search"></i> Search Query
+									</label>
+									<input type="text" id="searchQuery" placeholder="e.g., machine learning, cancer treatment, COVID-19..." />
+								</div>
+								<div class="search-field search-field-small">
+									<label for="searchType">Search In</label>
+									<select id="searchType">
+										<option value="all">All Fields</option>
+										<option value="title">Title</option>
+										<option value="abstract">Title/Abstract</option>
+										<option value="author">Author</option>
+										<option value="affiliation">Department</option>
+									</select>
+								</div>
+							</div>
+							
+							<div class="search-row">
+								<div class="search-field">
+									<label for="authorName">
+										<i class="fas fa-user"></i> Author Name (Optional)
+									</label>
+									<input type="text" id="authorName" placeholder="Last name, First name or Last name First Initial" />
+								</div>
+								<div class="search-field">
+									<label for="department">
+										<i class="fas fa-building"></i> Department (Optional)
+									</label>
+									<input type="text" id="department" placeholder="e.g., Radiology, Cardiology, Neurology..." />
+								</div>
+							</div>
+							
+							<div class="search-row">
+								<div class="search-field search-field-small">
+									<label for="timeRange">Time Range</label>
+									<select id="timeRange">
+										<option value="1">Last 24 hours</option>
+										<option value="7">Last 7 days</option>
+										<option value="30">Last 30 days</option>
+										<option value="90">Last 3 months</option>
+										<option value="365">Last year</option>
+										<option value="1825">Last 5 years</option>
+										<option value="all">All time</option>
+									</select>
+								</div>
+								<div class="search-field search-field-small">
+									<label for="sortBy">Sort By</label>
+									<select id="sortBy">
+										<option value="date">Most Recent</option>
+										<option value="relevance">Relevance</option>
+									</select>
+								</div>
+								<button type="submit" class="search-submit">
+									<i class="fas fa-search"></i> Search
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</section>
+
+			<!-- Results Section -->
+			<section class="results-section">
+				<div id="loadingState" class="loading" style="display: none;">
+					<div class="spinner"></div>
+					<p style="color: #7f8c8d; font-size: 16px;">Searching PubMed...</p>
+				</div>
+
+				<div id="resultsContainer" style="display: none;">
+					<div class="results-header">
+						<div class="results-count">
+							Found <span id="resultCount">0</span> results
+						</div>
+					</div>
+					
+					<div id="resultsContent"></div>
+					
+					<div id="paginationContainer" class="pagination"></div>
+				</div>
+
+				<div id="emptyState" class="empty-state">
+					<i class="fas fa-search"></i>
+					<h3>Start Your Search</h3>
+					<p>Enter your search criteria above to find Rochester, MN research publications</p>
+				</div>
+			</section>
+
+			<!-- Footer -->
+			<footer id="footer" style="margin-top: 80px;">
+				<ul class="icons">
+					<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+					<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+					<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+					<li><a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+				</ul>
+				<ul class="copyright">
+					<li>&copy; Med City AI</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+				</ul>
+			</footer>
+		</div>
+
+		<!-- Scripts -->
+		<script src="assets/js/jquery.min.js"></script>
+		<script src="assets/js/browser.min.js"></script>
+		<script src="assets/js/breakpoints.min.js"></script>
+		<script src="assets/js/util.js"></script>
+		<script src="assets/js/main.js"></script>
+
+		<script>
+		// Application State
+		let currentResults = [];
+		let currentPage = 1;
+		const resultsPerPage = 20;
+		let totalResults = 0;
+
+		// Search Form Handler
+		document.getElementById('searchForm').addEventListener('submit', async function(e) {
+			e.preventDefault();
+			currentPage = 1;
+			await performSearch();
+		});
+
+		async function performSearch() {
+			const searchQuery = document.getElementById('searchQuery').value.trim();
+			const searchType = document.getElementById('searchType').value;
+			const authorName = document.getElementById('authorName').value.trim();
+			const department = document.getElementById('department').value.trim();
+			const timeRange = document.getElementById('timeRange').value;
+			const sortBy = document.getElementById('sortBy').value;
+
+			// Show loading state
+			document.getElementById('emptyState').style.display = 'none';
+			document.getElementById('resultsContainer').style.display = 'none';
+			document.getElementById('loadingState').style.display = 'block';
+
+			try {
+				// Build PubMed query
+				let queryParts = [];
+				
+				// Base location filter - ALWAYS included
+				queryParts.push('(Rochester[AD] AND (Minnesota[AD] OR MN[AD]))');
+
+				// Add main search query
+				if (searchQuery) {
+					let queryField = '';
+					switch(searchType) {
+						case 'title':
+							queryField = '[Title]';
+							break;
+						case 'abstract':
+							queryField = '[Title/Abstract]';
+							break;
+						case 'author':
+							queryField = '[Author]';
+							break;
+						case 'affiliation':
+							queryField = '[Affiliation]';
+							break;
+						default:
+							queryField = '';
+					}
+					queryParts.push(`(${searchQuery}${queryField})`);
+				}
+
+				// Add author filter
+				if (authorName) {
+					queryParts.push(`(${authorName}[Author])`);
+				}
+
+				// Add department filter
+				if (department) {
+					queryParts.push(`(${department}[Affiliation])`);
+				}
+
+				const fullQuery = queryParts.join(' AND ');
+
+				// Build PubMed API URL
+				let esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(fullQuery)}&retmode=json&retmax=500`;
+				
+				// Add time range
+				if (timeRange !== 'all') {
+					esearchUrl += `&datetype=pdat&reldate=${timeRange}`;
+				}
+
+				// Add sort
+				if (sortBy === 'date') {
+					esearchUrl += '&sort=pub+date';
+				}
+
+				console.log('Search URL:', esearchUrl);
+
+				// Fetch article IDs
+				const searchResponse = await fetch(esearchUrl);
+				const searchData = await searchResponse.json();
+				
+				const articleIds = searchData.esearchresult.idlist;
+				totalResults = parseInt(searchData.esearchresult.count);
+
+				if (articleIds.length === 0) {
+					showEmptyResults();
+					return;
+				}
+
+				// Fetch article details
+				const efetchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${articleIds.join(',')}&retmode=xml`;
+				const fetchResponse = await fetch(efetchUrl);
+				const xmlText = await fetchResponse.text();
+
+				// Parse XML
+				const parser = new DOMParser();
+				const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+				
+				currentResults = parseArticles(xmlDoc);
+				displayResults();
+
+			} catch (error) {
+				console.error('Search error:', error);
+				document.getElementById('loadingState').style.display = 'none';
+				alert('An error occurred while searching. Please try again.');
+			}
+		}
+
+		function parseArticles(xmlDoc) {
+			const articles = [];
+			const articleNodes = xmlDoc.querySelectorAll('PubmedArticle');
+
+			articleNodes.forEach(articleNode => {
+				try {
+					// PMID
+					const pmidNode = articleNode.querySelector('PMID');
+					const pmid = pmidNode ? pmidNode.textContent : '';
+
+					// Title
+					const titleNode = articleNode.querySelector('ArticleTitle');
+					const title = titleNode ? titleNode.textContent : 'No title';
+
+					// Abstract
+					const abstractNode = articleNode.querySelector('Abstract');
+					let abstract = '';
+					if (abstractNode) {
+						const abstractTexts = abstractNode.querySelectorAll('AbstractText');
+						abstract = Array.from(abstractTexts).map(node => node.textContent).join(' ');
+					}
+
+					// Journal
+					const journalNode = articleNode.querySelector('Journal Title');
+					const journal = journalNode ? journalNode.textContent : '';
+
+					// Publication Date
+					const yearNode = articleNode.querySelector('PubDate Year');
+					const monthNode = articleNode.querySelector('PubDate Month');
+					const dayNode = articleNode.querySelector('PubDate Day');
+					
+					const year = yearNode ? yearNode.textContent : '';
+					const month = monthNode ? monthNode.textContent : '';
+					const day = dayNode ? dayNode.textContent : '';
+					
+					let pubdate = '';
+					if (year && month && day) {
+						pubdate = `${month} ${day}, ${year}`;
+					} else if (year && month) {
+						pubdate = `${month} ${year}`;
+					} else if (year) {
+						pubdate = year;
+					}
+
+					// Authors
+					const authorNodes = articleNode.querySelectorAll('Author');
+					const authors = [];
+					const rochesterAuthors = [];
+
+					authorNodes.forEach(authorNode => {
+						const lastNameNode = authorNode.querySelector('LastName');
+						const foreNameNode = authorNode.querySelector('ForeName');
+						
+						const lastName = lastNameNode ? lastNameNode.textContent : '';
+						const foreName = foreNameNode ? foreNameNode.textContent : '';
+						
+						let authorName = '';
+						if (foreName) {
+							const initials = foreName.split(' ').map(n => n[0]).join(' ');
+							authorName = `${lastName} ${initials}`;
+						} else {
+							authorName = lastName;
+						}
+
+						// Check if Rochester author
+						const affiliationNodes = authorNode.querySelectorAll('Affiliation');
+						let isRochester = false;
+						affiliationNodes.forEach(affNode => {
+							const affText = affNode.textContent.toLowerCase();
+							if (affText.includes('rochester') || affText.includes('mayo')) {
+								isRochester = true;
+							}
+						});
+
+						if (authorName) {
+							authors.push(authorName);
+							if (isRochester) {
+								rochesterAuthors.push(authorName);
+							}
+						}
+					});
+
+					// Format authors
+					let authorsDisplay = authors.join(', ');
+					if (authors.length > 15) {
+						authorsDisplay = authors.slice(0, 14).join(', ') + ', ' + authors[authors.length - 1] + ', et al.';
+					}
+
+					articles.push({
+						pmid,
+						title,
+						abstract: abstract || 'No abstract available.',
+						journal,
+						pubdate,
+						year,
+						authors: authorsDisplay,
+						rochesterAuthors,
+						url: `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`
+					});
+
+				} catch (error) {
+					console.error('Error parsing article:', error);
+				}
+			});
+
+			return articles;
+		}
+
+		function displayResults() {
+			document.getElementById('loadingState').style.display = 'none';
+			document.getElementById('resultsContainer').style.display = 'block';
+			document.getElementById('emptyState').style.display = 'none';
+
+			// Update result count
+			document.getElementById('resultCount').textContent = totalResults.toLocaleString();
+
+			// Calculate pagination
+			const totalPages = Math.ceil(currentResults.length / resultsPerPage);
+			const startIdx = (currentPage - 1) * resultsPerPage;
+			const endIdx = Math.min(startIdx + resultsPerPage, currentResults.length);
+			const pageResults = currentResults.slice(startIdx, endIdx);
+
+			// Display results
+			let resultsHTML = '';
+			pageResults.forEach(article => {
+				// Underline Rochester authors
+				let authorsHTML = article.authors;
+				article.rochesterAuthors.forEach(rochAuthor => {
+					authorsHTML = authorsHTML.replace(rochAuthor, `<u>${rochAuthor}</u>`);
+				});
+
+				// Truncate abstract for display
+				let abstractPreview = article.abstract;
+				if (abstractPreview.length > 400) {
+					abstractPreview = abstractPreview.substring(0, 400) + '...';
+				}
+
+				resultsHTML += `
+					<div class="result-item">
+						<a href="${article.url}" target="_blank" class="result-title">${article.title}</a>
+						
+						<div class="result-meta">
+							<div class="result-meta-item">
+								<i class="fas fa-calendar"></i>
+								${article.pubdate}
+							</div>
+							<div class="result-meta-item">
+								<i class="fas fa-book"></i>
+								${article.journal}
+							</div>
+							<div class="result-meta-item">
+								<i class="fas fa-hashtag"></i>
+								PMID: ${article.pmid}
+							</div>
+						</div>
+
+						<div class="result-authors">
+							<strong>Authors:</strong> ${authorsHTML}
+						</div>
+
+						<div class="result-abstract">
+							${abstractPreview}
+						</div>
+
+						<div class="result-actions">
+							<a href="${article.url}" target="_blank" class="btn-link">
+								<i class="fas fa-external-link-alt"></i> View on PubMed
+							</a>
+							<a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(article.url)}" target="_blank" class="btn-link btn-link-secondary">
+								<i class="fab fa-facebook-f"></i> Share
+							</a>
+							<a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(article.url)}&text=${encodeURIComponent(article.title)}" target="_blank" class="btn-link btn-link-secondary">
+								<i class="fab fa-twitter"></i> Tweet
+							</a>
+						</div>
+					</div>
+				`;
+			});
+
+			document.getElementById('resultsContent').innerHTML = resultsHTML;
+
+			// Display pagination
+			displayPagination(totalPages);
+
+			// Scroll to results
+			document.getElementById('resultsContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+		}
+
+		function displayPagination(totalPages) {
+			if (totalPages <= 1) {
+				document.getElementById('paginationContainer').style.display = 'none';
+				return;
+			}
+
+			document.getElementById('paginationContainer').style.display = 'flex';
+			
+			let paginationHTML = '';
+
+			// Previous button
+			paginationHTML += `<button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+				<i class="fas fa-chevron-left"></i> Previous
+			</button>`;
+
+			// Page numbers with smart ellipsis
+			const maxVisible = 7;
+			let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+			let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+			
+			if (endPage - startPage < maxVisible - 1) {
+				startPage = Math.max(1, endPage - maxVisible + 1);
+			}
+
+			// First page
+			if (startPage > 1) {
+				paginationHTML += `<button class="page-num" onclick="changePage(1)">1</button>`;
+				if (startPage > 2) {
+					paginationHTML += `<button class="ellipsis" disabled>...</button>`;
+				}
+			}
+
+			// Page numbers
+			for (let i = startPage; i <= endPage; i++) {
+				paginationHTML += `<button class="page-num ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+			}
+
+			// Last page
+			if (endPage < totalPages) {
+				if (endPage < totalPages - 1) {
+					paginationHTML += `<button class="ellipsis" disabled>...</button>`;
+				}
+				paginationHTML += `<button class="page-num" onclick="changePage(${totalPages})">${totalPages}</button>`;
+			}
+
+			// Next button
+			paginationHTML += `<button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+				Next <i class="fas fa-chevron-right"></i>
+			</button>`;
+
+			document.getElementById('paginationContainer').innerHTML = paginationHTML;
+		}
+
+		function changePage(page) {
+			const totalPages = Math.ceil(currentResults.length / resultsPerPage);
+			if (page < 1 || page > totalPages) return;
+			
+			currentPage = page;
+			displayResults();
+		}
+
+		function showEmptyResults() {
+			document.getElementById('loadingState').style.display = 'none';
+			document.getElementById('resultsContainer').style.display = 'none';
+			document.getElementById('emptyState').style.display = 'block';
+			document.getElementById('emptyState').innerHTML = `
+				<i class="fas fa-search"></i>
+				<h3>No Results Found</h3>
+				<p>Try adjusting your search criteria or expanding the time range</p>
+			`;
+		}
+		</script>
+	</body>
+</html>
