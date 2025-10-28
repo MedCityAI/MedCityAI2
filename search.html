@@ -274,70 +274,78 @@
 			box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 		}
 		.result-item {
-			padding: 20px 24px;
+			padding: 24px;
 			border-bottom: 1px solid #f0f0f0;
 			transition: all 0.2s ease;
 			display: flex;
-			gap: 16px;
+			gap: 18px;
 			align-items: flex-start;
 		}
 		.result-item:last-child {
 			border-bottom: none;
 		}
 		.result-item:hover {
-			background: #f8fbff;
+			background: linear-gradient(to right, #f8fbff, #ffffff);
+			border-left: 3px solid #3498db;
+			padding-left: 21px;
 		}
 		.result-item.selected {
-			background: #e3f2fd;
+			background: linear-gradient(to right, #e3f2fd, #f8fbff);
+			border-left: 3px solid #2196f3;
+			padding-left: 21px;
 		}
 		.result-checkbox {
 			flex-shrink: 0;
-			margin-top: 4px;
+			margin-top: 2px;
 		}
 		.result-checkbox input[type="checkbox"] {
-			width: 18px;
-			height: 18px;
+			width: 20px;
+			height: 20px;
 			cursor: pointer;
+			accent-color: #3498db;
 		}
 		.result-content {
 			flex: 1;
 			min-width: 0;
 		}
 		.result-title {
-			font-size: 1.15em;
+			font-size: 1.25em;
 			font-weight: 600;
 			color: #0056a3;
 			text-decoration: none;
-			margin-bottom: 8px;
+			margin-bottom: 10px;
 			display: block;
-			line-height: 1.4;
+			line-height: 1.5;
+			transition: color 0.2s ease;
 		}
 		.result-title:hover {
 			color: #3498db;
-			text-decoration: underline;
 		}
 		.result-meta {
 			display: flex;
 			flex-wrap: wrap;
-			gap: 16px;
-			margin-bottom: 10px;
+			gap: 20px;
+			margin-bottom: 14px;
 			font-size: 13px;
 			color: #7f8c8d;
 		}
 		.result-meta-item {
 			display: flex;
 			align-items: center;
-			gap: 5px;
+			gap: 6px;
+			background: #f8f9fa;
+			padding: 4px 10px;
+			border-radius: 4px;
 		}
 		.result-meta-item i {
-			color: #95a5a6;
+			color: #3498db;
 			font-size: 12px;
 		}
 		.result-authors {
 			font-size: 14px;
 			color: #555;
-			margin-bottom: 10px;
-			line-height: 1.5;
+			margin-bottom: 14px;
+			line-height: 1.6;
 		}
 		.result-authors u {
 			color: #2980b9;
@@ -345,15 +353,9 @@
 			text-decoration: none;
 			border-bottom: 2px solid #3498db;
 		}
-		.result-abstract {
-			font-size: 13px;
-			color: #666;
-			line-height: 1.6;
-			margin-bottom: 12px;
-		}
 		.result-actions {
 			display: flex;
-			gap: 8px;
+			gap: 10px;
 			align-items: center;
 			flex-wrap: wrap;
 		}
@@ -361,22 +363,34 @@
 			background: transparent;
 			color: #3498db;
 			text-decoration: none;
-			padding: 6px 14px;
+			padding: 7px 16px;
 			border-radius: 6px;
 			font-size: 13px;
 			font-weight: 500;
 			transition: all 0.2s ease;
 			display: inline-flex;
 			align-items: center;
-			gap: 5px;
+			gap: 6px;
 			border: 1px solid #e0e0e0;
 		}
 		.btn-link:hover {
-			background: #f0f7ff;
+			background: #3498db;
+			color: white;
 			border-color: #3498db;
+			transform: translateY(-1px);
+			box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
 		}
 		.btn-link i {
 			font-size: 11px;
+		}
+		.btn-link.primary {
+			background: #3498db;
+			color: white;
+			border-color: #3498db;
+		}
+		.btn-link.primary:hover {
+			background: #2980b9;
+			border-color: #2980b9;
 		}
 
 		/* Pagination */
@@ -384,12 +398,16 @@
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			gap: 8px;
-			margin: 40px 0;
+			gap: 6px;
+			margin: 50px 0 30px;
+			padding: 20px;
+			background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+			border-radius: 12px;
+			box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 		}
 		.pagination button {
 			padding: 10px 16px;
-			border: 2px solid #e0e0e0;
+			border: none;
 			background: white;
 			border-radius: 8px;
 			cursor: pointer;
@@ -397,31 +415,48 @@
 			color: #2c3e50;
 			transition: all 0.3s ease;
 			font-size: 14px;
+			box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+			min-width: 44px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 6px;
 		}
 		.pagination button:hover:not(:disabled) {
-			border-color: #3498db;
-			color: #3498db;
-			background: #f8fbff;
-		}
-		.pagination button:disabled {
-			opacity: 0.4;
-			cursor: not-allowed;
-		}
-		.pagination button.active {
 			background: #3498db;
 			color: white;
-			border-color: #3498db;
+			transform: translateY(-2px);
+			box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+		}
+		.pagination button:disabled {
+			opacity: 0.3;
+			cursor: not-allowed;
+			box-shadow: none;
+		}
+		.pagination button.active {
+			background: linear-gradient(135deg, #3498db, #2980b9);
+			color: white;
+			box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+			font-weight: 600;
 		}
 		.pagination .page-num {
-			padding: 10px 14px;
 			min-width: 44px;
 			text-align: center;
 		}
 		.pagination .ellipsis {
-			padding: 10px 8px;
 			border: none;
 			background: transparent;
 			cursor: default;
+			box-shadow: none;
+			color: #95a5a6;
+			font-weight: 600;
+		}
+		.pagination .nav-btn {
+			padding: 10px 20px;
+			font-weight: 600;
+		}
+		.pagination .nav-btn i {
+			font-size: 12px;
 		}
 
 		/* Loading Spinner */
@@ -954,12 +989,6 @@
 					authorsHTML = authorsHTML.replace(rochAuthor, `<u>${rochAuthor}</u>`);
 				});
 
-				// Truncate abstract for display
-				let abstractPreview = article.abstract;
-				if (abstractPreview.length > 300) {
-					abstractPreview = abstractPreview.substring(0, 300) + '...';
-				}
-
 				const isSelected = selectedArticles.has(article.pmid);
 
 				resultsHTML += `
@@ -991,13 +1020,9 @@
 								${authorsHTML}
 							</div>
 
-							<div class="result-abstract">
-								${abstractPreview}
-							</div>
-
 							<div class="result-actions">
-								<a href="${article.url}" target="_blank" class="btn-link">
-									<i class="fas fa-external-link-alt"></i> PubMed
+								<a href="${article.url}" target="_blank" class="btn-link primary">
+									<i class="fas fa-external-link-alt"></i> View on PubMed
 								</a>
 								<a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(article.url)}" target="_blank" class="btn-link">
 									<i class="fab fa-facebook-f"></i> Share
@@ -1058,7 +1083,7 @@
 			let paginationHTML = '';
 
 			// Previous button
-			paginationHTML += `<button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+			paginationHTML += `<button class="nav-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
 				<i class="fas fa-chevron-left"></i> Previous
 			</button>`;
 
@@ -1073,7 +1098,7 @@
 
 			// First page
 			if (startPage > 1) {
-				paginationHTML += `<button class="page-num" onclick="changePage(1)">1</button>`;
+				paginationHTML += `<button class="page-num ${1 === currentPage ? 'active' : ''}" onclick="changePage(1)">1</button>`;
 				if (startPage > 2) {
 					paginationHTML += `<button class="ellipsis" disabled>...</button>`;
 				}
@@ -1089,11 +1114,11 @@
 				if (endPage < totalPages - 1) {
 					paginationHTML += `<button class="ellipsis" disabled>...</button>`;
 				}
-				paginationHTML += `<button class="page-num" onclick="changePage(${totalPages})">${totalPages}</button>`;
+				paginationHTML += `<button class="page-num ${totalPages === currentPage ? 'active' : ''}" onclick="changePage(${totalPages})">${totalPages}</button>`;
 			}
 
 			// Next button
-			paginationHTML += `<button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+			paginationHTML += `<button class="nav-btn" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
 				Next <i class="fas fa-chevron-right"></i>
 			</button>`;
 
