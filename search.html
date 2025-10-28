@@ -692,16 +692,6 @@
 									</label>
 									<input type="text" id="searchQuery" placeholder="e.g., machine learning, cancer treatment, COVID-19..." />
 								</div>
-								<div class="search-field search-field-small">
-									<label for="searchType">Search In</label>
-									<select id="searchType">
-										<option value="all">All Fields</option>
-										<option value="title">Title</option>
-										<option value="abstract">Title/Abstract</option>
-										<option value="author">Author</option>
-										<option value="affiliation">Department</option>
-									</select>
-								</div>
 							</div>
 							
 							<div class="search-row">
@@ -720,25 +710,6 @@
 							</div>
 							
 							<div class="search-row">
-								<div class="search-field search-field-small">
-									<label for="timeRange">Time Range</label>
-									<select id="timeRange">
-										<option value="1">Last 24 hours</option>
-										<option value="7">Last 7 days</option>
-										<option value="30">Last 30 days</option>
-										<option value="90">Last 3 months</option>
-										<option value="365">Last year</option>
-										<option value="1825">Last 5 years</option>
-										<option value="all">All time</option>
-									</select>
-								</div>
-								<div class="search-field search-field-small">
-									<label for="sortBy">Sort By</label>
-									<select id="sortBy">
-										<option value="date">Most Recent</option>
-										<option value="relevance">Relevance</option>
-									</select>
-								</div>
 								<button type="submit" class="search-submit">
 									<i class="fas fa-search"></i> Search
 								</button>
@@ -913,11 +884,8 @@
 
 		async function performSearch() {
 			const searchQuery = document.getElementById('searchQuery').value.trim();
-			const searchType = document.getElementById('searchType').value;
 			const authorName = document.getElementById('authorName').value.trim();
 			const department = document.getElementById('department').value.trim();
-			const timeRange = document.getElementById('timeRange').value;
-			const sortBy = document.getElementById('sortBy').value;
 
 			// Show loading state
 			document.getElementById('emptyState').style.display = 'none';
@@ -933,24 +901,7 @@
 
 				// Add main search query
 				if (searchQuery) {
-					let queryField = '';
-					switch(searchType) {
-						case 'title':
-							queryField = '[Title]';
-							break;
-						case 'abstract':
-							queryField = '[Title/Abstract]';
-							break;
-						case 'author':
-							queryField = '[Author]';
-							break;
-						case 'affiliation':
-							queryField = '[Affiliation]';
-							break;
-						default:
-							queryField = '';
-					}
-					queryParts.push(`(${searchQuery}${queryField})`);
+					queryParts.push(`(${searchQuery})`);
 				}
 
 				// Add author filter
@@ -965,17 +916,23 @@
 
 				const fullQuery = queryParts.join(' AND ');
 
-				// Build PubMed API URL
-				let esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(fullQuery)}&retmode=json&retmax=500`;
+				// First, get total count to check if we need to narrow
+				let countUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(fullQuery)}&retmode=json&retmax=0&sort=pub+date`;
 				
-				// Add time range
-				if (timeRange !== 'all') {
-					esearchUrl += `&datetype=pdat&reldate=${timeRange}`;
-				}
+				const countResponse = await fetch(countUrl);
+				const countData = await countResponse.json();
+				totalResults = parseInt(countData.esearchresult.count);
 
-				// Add sort
-				if (sortBy === 'date') {
-					esearchUrl += '&sort=pub+date';
+				let esearchUrl;
+				let showNarrowNotice = false;
+
+				// If more than 1000 results, limit to most recent 1000
+				if (totalResults > 1000) {
+					showNarrowNotice = true;
+					// Fetch only the 1000 most recent
+					esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(fullQuery)}&retmode=json&retmax=1000&sort=pub+date`;
+				} else {
+					esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(fullQuery)}&retmode=json&retmax=500&sort=pub+date`;
 				}
 
 				console.log('Search URL:', esearchUrl);
@@ -985,7 +942,7 @@
 				const searchData = await searchResponse.json();
 				
 				const articleIds = searchData.esearchresult.idlist;
-				totalResults = parseInt(searchData.esearchresult.count);
+				const displayCount = articleIds.length;
 
 				if (articleIds.length === 0) {
 					showEmptyResults();
@@ -1004,11 +961,38 @@
 				currentResults = parseArticles(xmlDoc);
 				displayResults();
 
+				// Show narrowed notice if needed
+				if (showNarrowNotice) {
+					showNarrowedSearchNotice(totalResults, displayCount);
+				}
+
 			} catch (error) {
 				console.error('Search error:', error);
 				document.getElementById('loadingState').style.display = 'none';
 				alert('An error occurred while searching. Please try again.');
 			}
+		}
+
+		function showNarrowedSearchNotice(actualTotal, displayed) {
+			const resultsContainer = document.getElementById('resultsContainer');
+			const existingNotice = document.getElementById('narrowedNotice');
+			if (existingNotice) {
+				existingNotice.remove();
+			}
+
+			const notice = document.createElement('div');
+			notice.id = 'narrowedNotice';
+			notice.style.cssText = 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px 24px; border-radius: 12px; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3); display: flex; align-items: center; gap: 14px; font-size: 15px;';
+			notice.innerHTML = `
+				<i class="fas fa-info-circle" style="font-size: 1.8em; flex-shrink: 0;"></i>
+				<div>
+					<strong style="font-size: 16px;">Search Too Broad</strong><br>
+					<span style="opacity: 0.95;">Found ${actualTotal.toLocaleString()} total results. Displaying the ${displayed.toLocaleString()} most recent publications. Please narrow your search criteria (e.g., add author, department, or more specific keywords) for more targeted results.</span>
+				</div>
+			`;
+			
+			const resultsContent = document.getElementById('resultsContent');
+			resultsContainer.insertBefore(notice, resultsContent);
 		}
 
 		function parseArticles(xmlDoc) {
