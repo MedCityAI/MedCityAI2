@@ -293,13 +293,25 @@
 		}
 		.result-checkbox {
 			flex-shrink: 0;
-			margin-top: 2px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 8px;
+			min-width: 50px;
 		}
 		.result-checkbox input[type="checkbox"] {
-			width: 20px;
-			height: 20px;
+			width: 24px;
+			height: 24px;
 			cursor: pointer;
 			accent-color: #3498db;
+			border: 2px solid #3498db;
+			border-radius: 4px;
+		}
+		.result-number {
+			font-size: 13px;
+			color: #7f8c8d;
+			font-weight: 600;
+			text-align: center;
 		}
 		.result-content {
 			flex: 1;
@@ -1019,7 +1031,19 @@
 
 					// Journal
 					const journalNode = articleNode.querySelector('Journal Title');
-					const journal = journalNode ? journalNode.textContent : '';
+					let journal = journalNode ? journalNode.textContent : '';
+					
+					// Abbreviate journal if more than 5 words
+					if (journal) {
+						const journalWords = journal.split(/\s+/);
+						if (journalWords.length > 5) {
+							// Try to get abbreviated journal name
+							const isoAbbrevNode = articleNode.querySelector('ISOAbbreviation');
+							if (isoAbbrevNode && isoAbbrevNode.textContent) {
+								journal = isoAbbrevNode.textContent;
+							}
+						}
+					}
 
 					// Publication Date
 					const yearNode = articleNode.querySelector('PubDate Year');
@@ -1119,7 +1143,7 @@
 
 			// Display results
 			let resultsHTML = '';
-			pageResults.forEach(article => {
+			pageResults.forEach((article, index) => {
 				// Underline Rochester authors
 				let authorsHTML = article.authors;
 				article.rochesterAuthors.forEach(rochAuthor => {
@@ -1127,6 +1151,7 @@
 				});
 
 				const isSelected = selectedArticles.has(article.pmid);
+				const resultNumber = startIdx + index + 1;
 
 				resultsHTML += `
 					<div class="result-item ${isSelected ? 'selected' : ''}">
@@ -1134,6 +1159,7 @@
 							<input type="checkbox" class="article-checkbox" data-pmid="${article.pmid}" 
 								${isSelected ? 'checked' : ''} 
 								onchange="toggleArticleSelection('${article.pmid}', this)">
+							<div class="result-number">#${resultNumber}</div>
 						</div>
 						<div class="result-content">
 							<a href="${article.url}" target="_blank" class="result-title">${article.title}</a>
