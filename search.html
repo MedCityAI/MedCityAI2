@@ -276,23 +276,20 @@
 		.result-item {
 			padding: 24px;
 			border-bottom: 1px solid #f0f0f0;
-			transition: all 0.2s ease;
+			transition: background 0.2s ease;
 			display: flex;
 			gap: 18px;
 			align-items: flex-start;
+			position: relative;
 		}
 		.result-item:last-child {
 			border-bottom: none;
 		}
 		.result-item:hover {
-			background: linear-gradient(to right, #f8fbff, #ffffff);
-			border-left: 3px solid #3498db;
-			padding-left: 21px;
+			background: #f8fbff;
 		}
 		.result-item.selected {
-			background: linear-gradient(to right, #e3f2fd, #f8fbff);
-			border-left: 3px solid #2196f3;
-			padding-left: 21px;
+			background: #e3f2fd;
 		}
 		.result-checkbox {
 			flex-shrink: 0;
@@ -372,12 +369,12 @@
 			align-items: center;
 			gap: 6px;
 			border: 1px solid #e0e0e0;
+			cursor: pointer;
 		}
 		.btn-link:hover {
 			background: #3498db;
 			color: white;
 			border-color: #3498db;
-			transform: translateY(-1px);
 			box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
 		}
 		.btn-link i {
@@ -391,6 +388,135 @@
 		.btn-link.primary:hover {
 			background: #2980b9;
 			border-color: #2980b9;
+		}
+
+		/* Citation Modal */
+		.citation-modal {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: rgba(0, 0, 0, 0.6);
+			z-index: 2000;
+			justify-content: center;
+			align-items: center;
+			backdrop-filter: blur(4px);
+		}
+		.citation-modal-content {
+			background: white;
+			border-radius: 16px;
+			padding: 32px;
+			max-width: 700px;
+			width: 90%;
+			max-height: 80vh;
+			overflow-y: auto;
+			box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+			animation: modalSlideIn 0.3s ease-out;
+		}
+		@keyframes modalSlideIn {
+			from {
+				transform: translateY(-50px);
+				opacity: 0;
+			}
+			to {
+				transform: translateY(0);
+				opacity: 1;
+			}
+		}
+		.citation-modal-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 24px;
+			padding-bottom: 16px;
+			border-bottom: 2px solid #e0e0e0;
+		}
+		.citation-modal-header h3 {
+			margin: 0;
+			color: #2c3e50;
+			font-size: 1.5em;
+		}
+		.citation-close {
+			background: none;
+			border: none;
+			font-size: 28px;
+			color: #95a5a6;
+			cursor: pointer;
+			transition: color 0.2s ease;
+			padding: 0;
+			width: 32px;
+			height: 32px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.citation-close:hover {
+			color: #2c3e50;
+		}
+		.citation-tabs {
+			display: flex;
+			gap: 8px;
+			margin-bottom: 20px;
+			border-bottom: 2px solid #e0e0e0;
+		}
+		.citation-tab {
+			background: transparent;
+			border: none;
+			padding: 12px 24px;
+			cursor: pointer;
+			font-weight: 500;
+			color: #7f8c8d;
+			transition: all 0.2s ease;
+			border-bottom: 3px solid transparent;
+			margin-bottom: -2px;
+		}
+		.citation-tab:hover {
+			color: #3498db;
+		}
+		.citation-tab.active {
+			color: #3498db;
+			border-bottom-color: #3498db;
+		}
+		.citation-content {
+			background: #f8f9fa;
+			border: 1px solid #e0e0e0;
+			border-radius: 8px;
+			padding: 20px;
+			margin-bottom: 16px;
+			font-family: 'Courier New', monospace;
+			font-size: 14px;
+			line-height: 1.8;
+			color: #2c3e50;
+			min-height: 120px;
+			white-space: pre-wrap;
+			word-wrap: break-word;
+		}
+		.citation-actions {
+			display: flex;
+			gap: 12px;
+		}
+		.citation-copy-btn {
+			background: linear-gradient(135deg, #27ae60, #229954);
+			color: white;
+			border: none;
+			padding: 12px 24px;
+			border-radius: 8px;
+			font-size: 14px;
+			font-weight: 600;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+		.citation-copy-btn:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+		}
+		.citation-copy-btn.copied {
+			background: #95a5a6;
 		}
 
 		/* Pagination */
@@ -657,6 +783,31 @@
 				</div>
 			</section>
 
+			<!-- Citation Modal -->
+			<div id="citationModal" class="citation-modal">
+				<div class="citation-modal-content">
+					<div class="citation-modal-header">
+						<h3>Citation Formats</h3>
+						<button class="citation-close" onclick="closeCitationModal()">&times;</button>
+					</div>
+					
+					<div class="citation-tabs">
+						<button class="citation-tab active" onclick="switchCitationTab('mla')">MLA</button>
+						<button class="citation-tab" onclick="switchCitationTab('apa')">APA</button>
+						<button class="citation-tab" onclick="switchCitationTab('chicago')">Chicago</button>
+						<button class="citation-tab" onclick="switchCitationTab('vancouver')">Vancouver</button>
+					</div>
+					
+					<div id="citationText" class="citation-content"></div>
+					
+					<div class="citation-actions">
+						<button class="citation-copy-btn" onclick="copyCitation()">
+							<i class="fas fa-copy"></i> Copy Citation
+						</button>
+					</div>
+				</div>
+			</div>
+
 			<!-- Footer -->
 			<footer id="footer" style="margin-top: 80px;">
 				<ul class="icons">
@@ -685,6 +836,8 @@
 		const resultsPerPage = 20;
 		let totalResults = 0;
 		let selectedArticles = new Set();
+		let currentCitationArticle = null;
+		let currentCitationStyle = 'mla';
 
 		// Search Form Handler
 		document.getElementById('searchForm').addEventListener('submit', async function(e) {
@@ -1024,12 +1177,9 @@
 								<a href="${article.url}" target="_blank" class="btn-link primary">
 									<i class="fas fa-external-link-alt"></i> View on PubMed
 								</a>
-								<a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(article.url)}" target="_blank" class="btn-link">
-									<i class="fab fa-facebook-f"></i> Share
-								</a>
-								<a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(article.url)}&text=${encodeURIComponent(article.title)}" target="_blank" class="btn-link">
-									<i class="fab fa-twitter"></i> Tweet
-								</a>
+								<button class="btn-link" onclick='showCitationModal(${JSON.stringify(article).replace(/'/g, "&apos;")})'>
+									<i class="fas fa-quote-right"></i> Cite
+								</button>
 							</div>
 						</div>
 					</div>
@@ -1143,6 +1293,114 @@
 				<p>Try adjusting your search criteria or expanding the time range</p>
 			`;
 		}
+
+		// Citation Modal Functions
+		function showCitationModal(article) {
+			currentCitationArticle = article;
+			currentCitationStyle = 'mla';
+			
+			// Reset tabs
+			document.querySelectorAll('.citation-tab').forEach(tab => tab.classList.remove('active'));
+			document.querySelector('.citation-tab').classList.add('active');
+			
+			// Generate citation
+			generateCitation();
+			
+			// Show modal
+			document.getElementById('citationModal').style.display = 'flex';
+		}
+
+		function closeCitationModal() {
+			document.getElementById('citationModal').style.display = 'none';
+			currentCitationArticle = null;
+		}
+
+		function switchCitationTab(style) {
+			currentCitationStyle = style;
+			
+			// Update active tab
+			document.querySelectorAll('.citation-tab').forEach(tab => tab.classList.remove('active'));
+			event.target.classList.add('active');
+			
+			// Generate new citation
+			generateCitation();
+		}
+
+		function generateCitation() {
+			if (!currentCitationArticle) return;
+			
+			const article = currentCitationArticle;
+			let citation = '';
+			
+			// Parse authors
+			const authors = article.authors.split(', ').filter(a => a && !a.includes('et al'));
+			const firstAuthor = authors[0] || 'Unknown Author';
+			const year = article.year || 'n.d.';
+			
+			switch(currentCitationStyle) {
+				case 'mla':
+					// MLA Format: Last, First. "Title." Journal, vol. #, no. #, Year, pp. #-#.
+					citation = `${firstAuthor}`;
+					if (authors.length > 1) {
+						citation += `, et al`;
+					}
+					citation += `. "${article.title}" ${article.journal}, ${year}. PubMed, ${article.url}.`;
+					break;
+					
+				case 'apa':
+					// APA Format: Author, A. A. (Year). Title. Journal Name, volume(issue), pages.
+					citation = `${firstAuthor}`;
+					if (authors.length > 1) {
+						citation += `, et al.`;
+					}
+					citation += ` (${year}). ${article.title} ${article.journal}. ${article.url}`;
+					break;
+					
+				case 'chicago':
+					// Chicago Format: Author. "Title." Journal Volume, no. Issue (Year): Pages.
+					citation = `${firstAuthor}`;
+					if (authors.length > 1) {
+						citation += ` et al.`;
+					}
+					citation += ` "${article.title}" ${article.journal} (${year}). ${article.url}.`;
+					break;
+					
+				case 'vancouver':
+					// Vancouver Format: Author AA. Title. Journal. Year;volume(issue):pages.
+					const vancouverAuthor = firstAuthor.split(' ').reverse().join(' ');
+					citation = `${vancouverAuthor}`;
+					if (authors.length > 1) {
+						citation += `, et al`;
+					}
+					citation += `. ${article.title} ${article.journal}. ${year}. PMID: ${article.pmid}. Available from: ${article.url}`;
+					break;
+			}
+			
+			document.getElementById('citationText').textContent = citation;
+		}
+
+		function copyCitation() {
+			const citationText = document.getElementById('citationText').textContent;
+			const copyBtn = document.querySelector('.citation-copy-btn');
+			
+			navigator.clipboard.writeText(citationText).then(() => {
+				// Show success feedback
+				copyBtn.classList.add('copied');
+				copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+				
+				setTimeout(() => {
+					copyBtn.classList.remove('copied');
+					copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy Citation';
+				}, 2000);
+			});
+		}
+
+		// Close modal when clicking outside
+		document.getElementById('citationModal').addEventListener('click', function(e) {
+			if (e.target === this) {
+				closeCitationModal();
+			}
+		});
 		</script>
 	</body>
 </html>
