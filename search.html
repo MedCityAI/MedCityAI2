@@ -297,6 +297,18 @@
 		.result-item.selected {
 			background: #e3f2fd;
 		}
+		.result-number {
+			position: absolute;
+			top: 12px;
+			left: 12px;
+			font-size: 14px;
+			color: #7f8c8d;
+			font-weight: 700;
+			background: white;
+			padding: 4px 8px;
+			border-radius: 4px;
+			border: 1px solid #e0e0e0;
+		}
 		.result-checkbox {
 			flex-shrink: 0;
 			display: flex;
@@ -336,15 +348,10 @@
 			font-size: 16px;
 			font-weight: bold;
 		}
-		.result-number {
-			font-size: 13px;
-			color: #7f8c8d;
-			font-weight: 600;
-			text-align: center;
-		}
 		.result-content {
 			flex: 1;
 			min-width: 0;
+			padding-left: 40px;
 		}
 		.result-title {
 			font-size: 1.25em;
@@ -382,11 +389,17 @@
 			margin-bottom: 14px;
 			line-height: 1.6;
 		}
-		.result-authors u {
-			color: #2980b9;
-			font-weight: 600;
+		.result-authors .roch-author {
+			color: #555;
+			font-weight: 500;
 			text-decoration: none;
-			border-bottom: 2px solid #3498db;
+			border-bottom: 1px dotted #3498db;
+			cursor: pointer;
+			transition: all 0.2s ease;
+		}
+		.result-authors .roch-author:hover {
+			color: #2980b9;
+			border-bottom-color: #2980b9;
 		}
 		.result-actions {
 			display: flex;
@@ -555,6 +568,95 @@
 		}
 		.citation-copy-btn.copied {
 			background: #95a5a6;
+		}
+
+		/* Author Bibliography Modal */
+		.author-modal {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: rgba(0, 0, 0, 0.6);
+			z-index: 2000;
+			justify-content: center;
+			align-items: center;
+			backdrop-filter: blur(4px);
+		}
+		.author-modal-content {
+			background: white;
+			border-radius: 16px;
+			padding: 32px;
+			max-width: 900px;
+			width: 90%;
+			max-height: 85vh;
+			overflow-y: auto;
+			box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+			animation: modalSlideIn 0.3s ease-out;
+		}
+		.author-modal-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 24px;
+			padding-bottom: 16px;
+			border-bottom: 2px solid #e0e0e0;
+		}
+		.author-modal-header h3 {
+			margin: 0;
+			color: #2c3e50;
+			font-size: 1.6em;
+		}
+		.author-modal-close {
+			background: none;
+			border: none;
+			font-size: 28px;
+			color: #95a5a6;
+			cursor: pointer;
+			transition: color 0.2s ease;
+			padding: 0;
+			width: 32px;
+			height: 32px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.author-modal-close:hover {
+			color: #2c3e50;
+		}
+		.author-modal-loading {
+			text-align: center;
+			padding: 40px;
+			color: #7f8c8d;
+		}
+		.author-bibliography {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+		}
+		.author-bibliography li {
+			padding: 16px 0;
+			border-bottom: 1px solid #e0e0e0;
+			font-size: 14px;
+			line-height: 1.7;
+			color: #2c3e50;
+		}
+		.author-bibliography li:last-child {
+			border-bottom: none;
+		}
+		.author-bibliography .pub-title {
+			font-weight: 600;
+			color: #0056a3;
+			margin-bottom: 4px;
+		}
+		.author-bibliography .pub-journal {
+			color: #555;
+			font-style: italic;
+		}
+		.author-bibliography .pub-year {
+			color: #7f8c8d;
+			font-weight: 500;
 		}
 
 		/* Pagination */
@@ -769,15 +871,6 @@
 						<div class="results-count">
 							Found <span id="resultCount">0</span> results
 						</div>
-						<div class="results-actions">
-							<div class="select-all-container">
-								<input type="checkbox" id="selectAll" />
-								<label for="selectAll">Select All</label>
-							</div>
-							<button class="export-btn" id="exportBtn" onclick="exportToCSV()" disabled>
-								<i class="fas fa-download"></i> Export CSV
-							</button>
-						</div>
 					</div>
 					
 					<div class="results-list" id="resultsContent"></div>
@@ -814,6 +907,21 @@
 							<i class="fas fa-copy"></i> Copy Citation
 						</button>
 					</div>
+				</div>
+			</div>
+
+			<!-- Author Bibliography Modal -->
+			<div id="authorModal" class="author-modal">
+				<div class="author-modal-content">
+					<div class="author-modal-header">
+						<h3 id="authorModalTitle">Author Publications</h3>
+						<button class="author-modal-close" onclick="closeAuthorModal()">&times;</button>
+					</div>
+					<div id="authorModalLoading" class="author-modal-loading" style="display: none;">
+						<div class="spinner"></div>
+						<p>Loading publications...</p>
+					</div>
+					<ol id="authorBibliography" class="author-bibliography"></ol>
 				</div>
 			</div>
 
@@ -1170,10 +1278,14 @@
 			// Display results
 			let resultsHTML = '';
 			pageResults.forEach((article, index) => {
-				// Underline Rochester authors
+				// Make Rochester authors clickable links
 				let authorsHTML = article.authors;
 				article.rochesterAuthors.forEach(rochAuthor => {
-					authorsHTML = authorsHTML.replace(rochAuthor, `<u>${rochAuthor}</u>`);
+					const escapedAuthor = rochAuthor.replace(/'/g, "\\'");
+					authorsHTML = authorsHTML.replace(
+						rochAuthor, 
+						`<span class="roch-author" onclick="showAuthorBibliography('${escapedAuthor}')">${rochAuthor}</span>`
+					);
 				});
 
 				const isSelected = selectedArticles.has(article.pmid);
@@ -1181,11 +1293,11 @@
 
 				resultsHTML += `
 					<div class="result-item ${isSelected ? 'selected' : ''}">
+						<div class="result-number">#${resultNumber}</div>
 						<div class="result-checkbox">
 							<input type="checkbox" class="article-checkbox" data-pmid="${article.pmid}" 
 								${isSelected ? 'checked' : ''} 
 								onchange="toggleArticleSelection('${article.pmid}', this)">
-							<div class="result-number">#${resultNumber}</div>
 						</div>
 						<div class="result-content">
 							<a href="${article.url}" target="_blank" class="result-title">${article.title}</a>
@@ -1431,10 +1543,89 @@
 			});
 		}
 
+		// Author Bibliography Modal Functions
+		async function showAuthorBibliography(authorName) {
+			const modal = document.getElementById('authorModal');
+			const title = document.getElementById('authorModalTitle');
+			const loading = document.getElementById('authorModalLoading');
+			const bibliography = document.getElementById('authorBibliography');
+			
+			// Show modal and loading state
+			modal.style.display = 'flex';
+			title.textContent = `Publications by ${authorName}`;
+			loading.style.display = 'block';
+			bibliography.innerHTML = '';
+			
+			try {
+				// Build query for this author + Rochester affiliation
+				const query = `(${authorName}[Author]) AND (Rochester[AD] AND (Minnesota[AD] OR MN[AD]))`;
+				
+				// Search PubMed
+				const searchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmax=100&retmode=json&sort=pub+date`;
+				const searchResponse = await fetch(searchUrl);
+				const searchData = await searchResponse.json();
+				
+				const articleIds = searchData.esearchresult.idlist;
+				
+				if (articleIds.length === 0) {
+					bibliography.innerHTML = '<li style="color: #7f8c8d; text-align: center; padding: 40px;">No publications found for this author.</li>';
+					loading.style.display = 'none';
+					return;
+				}
+				
+				// Fetch article details
+				const fetchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${articleIds.join(',')}&retmode=xml`;
+				const fetchResponse = await fetch(fetchUrl);
+				const xmlText = await fetchResponse.text();
+				
+				// Parse XML
+				const parser = new DOMParser();
+				const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+				const articles = parseArticles(xmlDoc);
+				
+				// Sort by year (most recent first)
+				articles.sort((a, b) => {
+					const yearA = parseInt(a.year) || 0;
+					const yearB = parseInt(b.year) || 0;
+					return yearB - yearA;
+				});
+				
+				// Display bibliography in MLA format
+				let bibliographyHTML = '';
+				articles.forEach((article, index) => {
+					const citation = generateMLACitation(article);
+					bibliographyHTML += `<li>${citation}</li>`;
+				});
+				
+				bibliography.innerHTML = bibliographyHTML;
+				loading.style.display = 'none';
+				
+			} catch (error) {
+				console.error('Error fetching author bibliography:', error);
+				bibliography.innerHTML = '<li style="color: #e74c3c; text-align: center; padding: 40px;">Error loading publications. Please try again.</li>';
+				loading.style.display = 'none';
+			}
+		}
+		
+		function generateMLACitation(article) {
+			// Format: Authors. "Title." Journal, Year.
+			return `${article.authors}. "${article.title}" <span class="pub-journal">${article.journal}</span>, <span class="pub-year">${article.year}</span>. <a href="${article.url}" target="_blank" style="color: #3498db;">PubMed</a>`;
+		}
+		
+		function closeAuthorModal() {
+			document.getElementById('authorModal').style.display = 'none';
+		}
+
 		// Close modal when clicking outside
 		document.getElementById('citationModal').addEventListener('click', function(e) {
 			if (e.target === this) {
 				closeCitationModal();
+			}
+		});
+		
+		document.getElementById('authorModal').addEventListener('click', function(e) {
+			if (e.target === this) {
+				closeAuthorModal();
 			}
 		});
 		</script>
