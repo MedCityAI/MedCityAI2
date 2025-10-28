@@ -303,9 +303,32 @@
 			width: 24px;
 			height: 24px;
 			cursor: pointer;
-			accent-color: #3498db;
+			appearance: none;
+			-webkit-appearance: none;
+			-moz-appearance: none;
 			border: 2px solid #3498db;
 			border-radius: 4px;
+			background: white;
+			position: relative;
+			transition: all 0.2s ease;
+		}
+		.result-checkbox input[type="checkbox"]:hover {
+			border-color: #2980b9;
+			box-shadow: 0 0 8px rgba(52, 152, 219, 0.3);
+		}
+		.result-checkbox input[type="checkbox"]:checked {
+			background: #3498db;
+			border-color: #3498db;
+		}
+		.result-checkbox input[type="checkbox"]:checked::after {
+			content: '✓';
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			color: white;
+			font-size: 16px;
+			font-weight: bold;
 		}
 		.result-number {
 			font-size: 13px;
@@ -342,9 +365,6 @@
 			display: flex;
 			align-items: center;
 			gap: 6px;
-			background: #f8f9fa;
-			padding: 4px 10px;
-			border-radius: 4px;
 		}
 		.result-meta-item i {
 			color: #3498db;
