@@ -6,6 +6,9 @@ on:
     - cron: '0 7 * * *'
   workflow_dispatch: # Allows manual trigger from GitHub Actions tab
 
+permissions:
+  contents: write  # Allows the workflow to push changes
+
 jobs:
   update-data:
     runs-on: ubuntu-latest
