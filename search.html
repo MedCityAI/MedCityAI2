@@ -2,9 +2,9 @@
 <!--
 	MedCityAI - Advanced Search
 -->
-<html>
+<html lang="en">
 	<head>
-		<title>Search - Med City AI</title>
+		<title>Search - Med City AI - Rochester MN Biomedical Research</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
@@ -793,65 +793,178 @@
 				flex-wrap: wrap;
 			}
 		}
+		
+		/* ===== ACCESSIBILITY IMPROVEMENTS ===== */
+		
+		/* Skip to main content link */
+		.skip-link {
+			position: absolute;
+			top: -50px;
+			left: 10px;
+			background: #3498db;
+			color: white;
+			padding: 10px 20px;
+			text-decoration: none;
+			z-index: 10001;
+			font-weight: 600;
+			border-radius: 0 0 8px 8px;
+			transition: top 0.3s;
+		}
+		.skip-link:focus {
+			top: 0;
+		}
+		
+		/* Enhanced focus styles for keyboard navigation */
+		*:focus {
+			outline: 3px solid #3498db;
+			outline-offset: 2px;
+		}
+		
+		a:focus {
+			outline: 3px solid #3498db;
+			outline-offset: 3px;
+		}
+		
+		button:focus {
+			outline: 3px solid #3498db;
+			outline-offset: 3px;
+		}
+		
+		input:focus, select:focus, textarea:focus {
+			outline: 3px solid #3498db;
+			outline-offset: 2px;
+		}
+		
+		.nav-links a:focus {
+			text-decoration: underline;
+		}
+		
+		.menu-icon {
+			cursor: pointer;
+			background: none;
+			border: none;
+			padding: 8px;
+		}
+		
+		.menu-icon:hover,
+		.menu-icon:focus {
+			background: rgba(52, 152, 219, 0.1);
+			border-radius: 4px;
+		}
+		
+		/* Modal accessibility */
+		.modal-bg[aria-hidden="true"],
+		.author-modal-bg[aria-hidden="true"],
+		.citation-modal-bg[aria-hidden="true"] {
+			display: none;
+		}
+		
+		.modal-close, .author-modal-close, .citation-modal-close {
+			cursor: pointer;
+		}
+		
+		.modal-close:hover, .author-modal-close:hover, .citation-modal-close:hover {
+			color: #3498db;
+		}
+		
+		.modal-close:focus, .author-modal-close:focus, .citation-modal-close:focus {
+			outline: 3px solid #3498db;
+			outline-offset: 2px;
+			border-radius: 4px;
+		}
+		
+		/* Ensure sufficient color contrast */
+		.result-authors {
+			color: #2c3e50;
+		}
+		
+		.result-citation {
+			color: #555;
+		}
+		
+		/* Screen reader only text */
+		.sr-only {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			padding: 0;
+			margin: -1px;
+			overflow: hidden;
+			clip: rect(0, 0, 0, 0);
+			white-space: nowrap;
+			border-width: 0;
+		}
 		</style>
 	</head>
 	<body class="landing is-preload">
+		<!-- Skip to main content link for keyboard users -->
+		<a href="#main-content" class="skip-link">Skip to main content</a>
+		
 		<!-- Page Wrapper -->
 		<div id="page-wrapper">
 			<!-- Navigation Header -->
-			<div class="top-bar">
+			<nav class="top-bar" role="navigation" aria-label="Main navigation">
 				<div class="top-bar-content">
 					<div class="logo">
-						<img src="images/medcityai_logo1.png" alt="MedCityAI" style="height:48px; width:auto;" />
+						<img src="images/medcityai_logo1.png" alt="Med City AI Logo" style="height:48px; width:auto;" />
 					</div>
-					<div class="nav-links">
-						<a href="search.html" class="active">Search</a>
-						<a href="index.html">New Today</a>
-						<a href="analytics.html">Analytics</a>
-						<a href="about.html">About</a>
-						<a href="contact.html">Contact</a>
+					<div class="nav-links" role="menubar">
+						<a href="index.html" role="menuitem">New Today</a>
+						<a href="search.html" role="menuitem" aria-current="page">Search</a>
+						<a href="analytics.html" role="menuitem">Analytics</a>
+						<a href="about.html" role="menuitem">About</a>
+						<a href="contact.html" role="menuitem">Contact</a>
 					</div>
 					<div style="display: flex; align-items: center; gap: 15px;">
 						<a href="#subscribe" class="cta-button">Subscribe</a>
+						<button class="menu-icon" aria-label="Toggle mobile menu" aria-expanded="false" aria-controls="mobile-menu">
+							<span class="sr-only">Menu</span>
+							<div aria-hidden="true"></div>
+							<div aria-hidden="true"></div>
+							<div aria-hidden="true"></div>
+						</button>
+					</div>
+				</div>
+			</nav>
 					</div>
 				</div>
 			</div>
 
 			<!-- Search Hero -->
-			<section class="search-hero">
+			<section class="search-hero" aria-label="Search form">
 				<div class="search-hero-content">
 					<h1>Advanced Search</h1>
 					<p>Search Rochester, MN biomedical research by topic, author, or department</p>
 					
 					<div class="search-container">
-						<form id="searchForm">
+						<form id="searchForm" role="search" aria-label="Advanced search for publications">
 							<div class="search-row">
 								<div class="search-field">
 									<label for="searchQuery">
-										<i class="fas fa-search"></i> Search Query
+										<i class="fas fa-search" aria-hidden="true"></i> Search Query
 									</label>
-									<input type="text" id="searchQuery" placeholder="e.g., machine learning, cancer treatment, COVID-19..." />
+									<input type="search" id="searchQuery" name="query" aria-label="Search topics, keywords, or terms" placeholder="e.g., machine learning, cancer treatment, COVID-19..." />
 								</div>
 							</div>
 							
 							<div class="search-row">
 								<div class="search-field">
 									<label for="authorName">
-										<i class="fas fa-user"></i> Author Name (Optional)
+										<i class="fas fa-user" aria-hidden="true"></i> Author Name (Optional)
 									</label>
-									<input type="text" id="authorName" placeholder="Last name, First name or Last name First Initial" />
+									<input type="text" id="authorName" name="author" aria-label="Filter by author name" placeholder="Last name, First name or Last name First Initial" />
 								</div>
 								<div class="search-field">
 									<label for="department">
-										<i class="fas fa-building"></i> Department (Optional)
+										<i class="fas fa-building" aria-hidden="true"></i> Department (Optional)
 									</label>
-									<input type="text" id="department" placeholder="e.g., Radiology, Cardiology, Neurology..." />
+									<input type="text" id="department" name="department" aria-label="Filter by department" placeholder="e.g., Radiology, Cardiology, Neurology..." />
 								</div>
 							</div>
 							
 							<div class="search-row">
-								<button type="submit" class="search-submit">
-									<i class="fas fa-search"></i> Search
+								<button type="submit" class="search-submit" aria-label="Search publications">
+									<i class="fas fa-search" aria-hidden="true"></i> Search
 								</button>
 							</div>
 						</form>
@@ -860,11 +973,12 @@
 			</section>
 
 			<!-- Results Section -->
-			<section class="results-section">
-				<div id="loadingState" class="loading" style="display: none;">
-					<div class="spinner"></div>
-					<p style="color: #7f8c8d; font-size: 16px;">Searching PubMed...</p>
-				</div>
+			<main id="main-content" role="main">
+				<section class="results-section">
+					<div id="loadingState" class="loading" style="display: none;" role="status" aria-live="polite">
+						<div class="spinner" aria-hidden="true"></div>
+						<p style="color: #7f8c8d; font-size: 16px;">Searching PubMed...</p>
+					</div>
 
 				<div id="resultsContainer" style="display: none;">
 					<div class="results-header">
@@ -886,42 +1000,42 @@
 			</section>
 
 			<!-- Citation Modal -->
-			<div id="citationModal" class="citation-modal">
-				<div class="citation-modal-content">
+			<div id="citationModal" class="citation-modal citation-modal-bg" role="dialog" aria-modal="true" aria-labelledby="citationModalTitle" aria-hidden="true">
+				<div class="citation-modal-content" role="document">
 					<div class="citation-modal-header">
-						<h3>Citation Formats</h3>
-						<button class="citation-close" onclick="closeCitationModal()">&times;</button>
+						<h3 id="citationModalTitle">Citation Formats</h3>
+						<button class="citation-close citation-modal-close" onclick="closeCitationModal()" aria-label="Close citation modal">&times;</button>
 					</div>
 					
-					<div class="citation-tabs">
-						<button class="citation-tab active" onclick="switchCitationTab('mla')">MLA</button>
-						<button class="citation-tab" onclick="switchCitationTab('apa')">APA</button>
-						<button class="citation-tab" onclick="switchCitationTab('chicago')">Chicago</button>
-						<button class="citation-tab" onclick="switchCitationTab('vancouver')">Vancouver</button>
+					<div class="citation-tabs" role="tablist">
+						<button class="citation-tab active" onclick="switchCitationTab('mla')" role="tab" aria-selected="true" aria-controls="mla-panel">MLA</button>
+						<button class="citation-tab" onclick="switchCitationTab('apa')" role="tab" aria-selected="false" aria-controls="apa-panel">APA</button>
+						<button class="citation-tab" onclick="switchCitationTab('chicago')" role="tab" aria-selected="false" aria-controls="chicago-panel">Chicago</button>
+						<button class="citation-tab" onclick="switchCitationTab('vancouver')" role="tab" aria-selected="false" aria-controls="vancouver-panel">Vancouver</button>
 					</div>
 					
-					<div id="citationText" class="citation-content"></div>
+					<div id="citationText" class="citation-content" role="tabpanel"></div>
 					
 					<div class="citation-actions">
-						<button class="citation-copy-btn" onclick="copyCitation()">
-							<i class="fas fa-copy"></i> Copy Citation
+						<button class="citation-copy-btn" onclick="copyCitation()" aria-label="Copy citation to clipboard">
+							<i class="fas fa-copy" aria-hidden="true"></i> Copy Citation
 						</button>
 					</div>
 				</div>
 			</div>
 
 			<!-- Author Bibliography Modal -->
-			<div id="authorModal" class="author-modal">
-				<div class="author-modal-content">
+			<div id="authorModal" class="author-modal author-modal-bg" role="dialog" aria-modal="true" aria-labelledby="authorModalTitle" aria-hidden="true">
+				<div class="author-modal-content" role="document">
 					<div class="author-modal-header">
 						<h3 id="authorModalTitle">Author Publications</h3>
-						<button class="author-modal-close" onclick="closeAuthorModal()">&times;</button>
+						<button class="author-modal-close" onclick="closeAuthorModal()" aria-label="Close author publications modal">&times;</button>
 					</div>
-					<div id="authorModalLoading" class="author-modal-loading" style="display: none;">
-						<div class="spinner"></div>
+					<div id="authorModalLoading" class="author-modal-loading" style="display: none;" role="status" aria-live="polite">
+						<div class="spinner" aria-hidden="true"></div>
 						<p>Loading publications...</p>
 					</div>
-					<ol id="authorBibliography" class="author-bibliography"></ol>
+					<ol id="authorBibliography" class="author-bibliography" aria-label="List of author publications"></ol>
 				</div>
 			</div>
 
@@ -1459,8 +1573,56 @@
 		}
 
 		function closeCitationModal() {
-			document.getElementById('citationModal').style.display = 'none';
+			const modal = document.getElementById('citationModal');
+			modal.style.display = 'none';
+			modal.setAttribute('aria-hidden', 'true');
 			currentCitationArticle = null;
+			
+			// Return focus to triggering element
+			if (window.lastFocusedElement) {
+				window.lastFocusedElement.focus();
+			}
+		}
+		
+		function closeAuthorModal() {
+			const modal = document.getElementById('authorModal');
+			modal.style.display = 'none';
+			modal.setAttribute('aria-hidden', 'true');
+			
+			// Return focus to triggering element
+			if (window.lastFocusedElement) {
+				window.lastFocusedElement.focus();
+			}
+		}
+		
+		// Keyboard accessibility for modals
+		document.addEventListener('keydown', function(e) {
+			if (e.key === 'Escape') {
+				const citationModal = document.getElementById('citationModal');
+				const authorModal = document.getElementById('authorModal');
+				
+				if (citationModal.style.display === 'flex') {
+					closeCitationModal();
+				} else if (authorModal.style.display === 'flex') {
+					closeAuthorModal();
+				}
+			}
+		});
+		
+		// Store focus before opening modal
+		function openCitationModal(article) {
+			window.lastFocusedElement = document.activeElement;
+			showCitationModal(article);
+			const modal = document.getElementById('citationModal');
+			modal.setAttribute('aria-hidden', 'false');
+		}
+		
+		function openAuthorBibliography(authorName) {
+			window.lastFocusedElement = document.activeElement;
+			const modal = document.getElementById('authorModal');
+			modal.setAttribute('aria-hidden', 'false');
+			// Call existing function
+			showAuthorBibliography(authorName);
 		}
 
 		function switchCitationTab(style) {

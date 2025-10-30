@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="en">
 	<head>
-		<title>Terms of Use - Med City AI</title>
+		<title>Terms of Use - Med City AI - Rochester MN Biomedical Research</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
@@ -167,31 +167,75 @@
 				font-size: 1.5em;
 			}
 		}
+		
+		/* ===== ACCESSIBILITY IMPROVEMENTS ===== */
+		.skip-link {
+			position: absolute;
+			top: -50px;
+			left: 10px;
+			background: #3498db;
+			color: white;
+			padding: 10px 20px;
+			text-decoration: none;
+			z-index: 10001;
+			font-weight: 600;
+			border-radius: 0 0 8px 8px;
+			transition: top 0.3s;
+		}
+		.skip-link:focus {
+			top: 0;
+		}
+		*:focus {
+			outline: 3px solid #3498db;
+			outline-offset: 2px;
+		}
+		a:focus, button:focus {
+			outline: 3px solid #3498db;
+			outline-offset: 3px;
+		}
+		.nav-links a:focus {
+			text-decoration: underline;
+		}
+		.sr-only {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			padding: 0;
+			margin: -1px;
+			overflow: hidden;
+			clip: rect(0, 0, 0, 0);
+			white-space: nowrap;
+			border-width: 0;
+		}
 		</style>
 	</head>
 	<body>
+		<!-- Skip to main content link -->
+		<a href="#main-content" class="skip-link">Skip to main content</a>
+		
 		<!-- Top Navigation Bar -->
-		<div class="top-bar">
+		<nav class="top-bar" role="navigation" aria-label="Main navigation">
 			<div class="top-bar-content">
 				<div class="logo">
-					<img src="images/medcityai_logo1.png" alt="MedCityAI" style="height:48px; width:auto;" />
+					<img src="images/medcityai_logo1.png" alt="Med City AI Logo" style="height:48px; width:auto;" />
 				</div>
-				<div class="nav-links">
-					<a href="search.html">Search</a>
-					<a href="index.html">New Today</a>
-					<a href="analytics.html">Analytics</a>
-					<a href="about.html">About</a>
-					<a href="contact.html">Contact</a>
+				<div class="nav-links" role="menubar">
+					<a href="index.html" role="menuitem">New Today</a>
+					<a href="search.html" role="menuitem">Search</a>
+					<a href="analytics.html" role="menuitem">Analytics</a>
+					<a href="about.html" role="menuitem">About</a>
+					<a href="contact.html" role="menuitem">Contact</a>
 				</div>
 				<div style="display: flex; align-items: center; gap: 15px;">
 					<a href="#subscribe" class="cta-button">Subscribe</a>
 				</div>
 			</div>
-		</div>
+		</nav>
 
 		<!-- Main Content -->
-		<div class="content-section">
-			<h1>Terms of Use</h1>
+		<main id="main-content" role="main">
+			<div class="content-section">
+				<h1>Terms of Use</h1>
 			<p class="last-updated">Last Updated: October 28, 2025</p>
 
 			<div class="policy-links">
@@ -275,6 +319,7 @@
 				<strong>By using Med City AI, you acknowledge that you have read, understood, and agree to these Terms of Use.</strong>
 			</p>
 		</div>
+		</main>
 
 		<!-- Footer -->
 		<footer id="footer" style="margin-top: 80px;">
@@ -285,8 +330,7 @@
 				<li><a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
 			</ul>
 			<ul class="copyright">
-				<li>&copy; Med City AI</li>
-				<li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+				<li>&copy; MedCityAI</li>
 				<li><a href="terms_of_use.html" style="color: #999;">Terms</a> | <a href="privacy_policy.html" style="color: #999;">Privacy</a> | <a href="cookie_policy.html" style="color: #999;">Cookies</a></li>
 			</ul>
 		</footer>

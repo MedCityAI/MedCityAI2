@@ -2,9 +2,9 @@
 <!--
 	MedCityAI - Real-time research analytics
 -->
-<html>
+<html lang="en">
 	<head>
-		<title>Med City AI</title>
+		<title>Med City AI - Rochester MN Biomedical Research</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
@@ -565,39 +565,145 @@
 			}
 			.count-number { font-size: 2em; }
 		}
+		
+		/* ===== ACCESSIBILITY IMPROVEMENTS ===== */
+		
+		/* Skip to main content link */
+		.skip-link {
+			position: absolute;
+			top: -50px;
+			left: 10px;
+			background: #3498db;
+			color: white;
+			padding: 10px 20px;
+			text-decoration: none;
+			z-index: 10001;
+			font-weight: 600;
+			border-radius: 0 0 8px 8px;
+			transition: top 0.3s;
+		}
+		.skip-link:focus {
+			top: 0;
+		}
+		
+		/* Enhanced focus styles for keyboard navigation */
+		*:focus {
+			outline: 3px solid #3498db;
+			outline-offset: 2px;
+		}
+		
+		a:focus {
+			outline: 3px solid #3498db;
+			outline-offset: 3px;
+		}
+		
+		button:focus {
+			outline: 3px solid #3498db;
+			outline-offset: 3px;
+		}
+		
+		.nav-links a:focus {
+			text-decoration: underline;
+		}
+		
+		.menu-icon {
+			cursor: pointer;
+			background: none;
+			border: none;
+			padding: 8px;
+		}
+		
+		.menu-icon:hover,
+		.menu-icon:focus {
+			background: rgba(52, 152, 219, 0.1);
+			border-radius: 4px;
+		}
+		
+		/* Modal accessibility */
+		.modal-bg[aria-hidden="true"] {
+			display: none;
+		}
+		
+		.modal-content {
+			position: relative;
+		}
+		
+		.modal-close {
+			cursor: pointer;
+			background: none;
+			border: none;
+			font-size: 28px;
+			line-height: 1;
+		}
+		
+		.modal-close:hover {
+			color: #3498db;
+		}
+		
+		.modal-close:focus {
+			outline: 3px solid #3498db;
+			outline-offset: 2px;
+			border-radius: 4px;
+		}
+		
+		/* Ensure sufficient color contrast */
+		.result-authors {
+			color: #2c3e50; /* Improved from #333 */
+		}
+		
+		.result-citation {
+			color: #555; /* Improved from #666 */
+		}
+		
+		/* Screen reader only text */
+		.sr-only {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			padding: 0;
+			margin: -1px;
+			overflow: hidden;
+			clip: rect(0, 0, 0, 0);
+			white-space: nowrap;
+			border-width: 0;
+		}
 		</style>
 	</head>
 	<body class="landing is-preload">
+		<!-- Skip to main content link for keyboard users -->
+		<a href="#main-content" class="skip-link">Skip to main content</a>
+		
 		<!-- Page Wrapper -->
 		<div id="page-wrapper">
 			<!-- Modern Medical Navigation Header -->
-			<div class="top-bar">
+			<nav class="top-bar" role="navigation" aria-label="Main navigation">
 				<div class="top-bar-content">
 					<div class="logo">
-						<img src="images/medcityai_logo1.png" alt="MedCityAI" style="height:48px; width:auto;" />
+						<img src="images/medcityai_logo1.png" alt="Med City AI Logo" style="height:48px; width:auto;" />
 					</div>
-					<div class="nav-links">
-						<a href="index.html">New Today</a>
-						<a href="search.html">Search</a>
-						<a href="analytics.html">Analytics</a>
-						<a href="about.html">About</a>
-						<a href="contact.html">Contact</a>
+					<div class="nav-links" role="menubar">
+						<a href="index.html" role="menuitem" aria-current="page">New Today</a>
+						<a href="search.html" role="menuitem">Search</a>
+						<a href="analytics.html" role="menuitem">Analytics</a>
+						<a href="about.html" role="menuitem">About</a>
+						<a href="contact.html" role="menuitem">Contact</a>
 					</div>
 					<div style="display: flex; align-items: center; gap: 15px;">
 						<a href="#subscribe" class="cta-button">Subscribe</a>
-						<div class="menu-icon">
-							<div></div>
-							<div></div>
-							<div></div>
-						</div>
+						<button class="menu-icon" aria-label="Toggle mobile menu" aria-expanded="false" aria-controls="mobile-menu">
+							<span class="sr-only">Menu</span>
+							<div aria-hidden="true"></div>
+							<div aria-hidden="true"></div>
+							<div aria-hidden="true"></div>
+						</button>
 					</div>
 				</div>
-			</div>
+			</nav>
 
 			<!-- Hero Section -->
-			<section class="hero-section" style="position:relative; overflow:hidden;">
+			<section class="hero-section" aria-label="Hero banner" style="position:relative; overflow:hidden;">
 				<!-- Animated SVG background blobs -->
-				   <svg class="hero-bg-blobs" width="100%" height="900" viewBox="0 0 1440 900" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;">
+				   <svg class="hero-bg-blobs" width="100%" height="900" viewBox="0 0 1440 900" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;" aria-hidden="true" role="presentation">
 					   <defs>
 						   <linearGradient id="blobGradient1" x1="0" y1="0" x2="1" y2="1">
 							   <stop offset="0%" stop-color="#3498db" stop-opacity="0.18"/>
@@ -628,44 +734,48 @@
 						<div class="subtitle" style="color:#e0e0e0;">Rochester, Minnesota</div>
 						<h1 style="color:#fff; text-shadow: 0 4px 18px rgba(0,0,0,0.28);">What's New in Med City?</h1>
 						<p style="color:#e0e0e0;">MedCityAI is a real-time feed of biomedical research from Rochester, MN. All information freely sourced from the National Library of Medicine (PubMed).</p>
-						<form class="search-bar" id="searchForm" style="display: flex; gap: 12px; margin-bottom: 24px;">
+						<form class="search-bar" id="searchForm" role="search" aria-label="Search publications" style="display: flex; gap: 12px; margin-bottom: 24px;">
 							<div style="position:relative; flex:1; display:flex; align-items:center;">
-								<span style="position:absolute;left:18px;top:50%;transform:translateY(-50%);color:#aaa;font-size:1.3em;pointer-events:none;">
-									<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+								<label for="searchInput" class="sr-only">Search topics, authors, or keywords</label>
+								<span style="position:absolute;left:18px;top:50%;transform:translateY(-50%);color:#aaa;font-size:1.3em;pointer-events:none;" aria-hidden="true">
+									<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Search icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
 								</span>
-								<input type="text" id="searchInput" placeholder="Search topics, authors, or keywords (e.g., AI, radiology, oncology)..." style="width:100%;padding:14px 18px 14px 48px;border-radius:30px;border:1px solid #ccc;font-size:16px;display:flex;align-items:center;">
+								<input type="search" id="searchInput" name="query" aria-label="Search topics, authors, or keywords" placeholder="Search topics, authors, or keywords (e.g., AI, radiology, oncology)..." style="width:100%;padding:14px 18px 14px 48px;border-radius:30px;border:1px solid #ccc;font-size:16px;display:flex;align-items:center;">
 							</div>
+							<button type="submit" class="sr-only">Search</button>
 						</form>
 					</div>
 					<div class="hero-right">
 						<div class="chart-container">
-							<img src="images/med_city_publications_web.png" alt="Rochester Publications Growth Chart" style="width: 100%; height: 100%; object-fit: contain;">
+							<img src="images/med_city_publications_web.png" alt="Chart showing growth of Rochester, Minnesota biomedical publications over time" style="width: 100%; height: 100%; object-fit: contain;">
 						</div>
 					</div>
 				</div>
 			</section>
 
-						<!-- Main Content Section -->
-						<section id="one" class="wrapper style1 special" style="padding: 40px 0;">
-				<!-- Results Grid -->
-				<div id="pubmed-results" style="margin-top:40px;"></div>
-				
-				<!-- Pagination Controls -->
-				<div id="pagination-controls" style="display:none; text-align:center; margin: 30px 0; padding: 20px;">
-					<button id="prevPage" style="padding:12px 24px; margin:0 10px; border-radius:25px; border:1px solid #3498db; background:white; color:#3498db; cursor:pointer; font-weight:600;">← Previous</button>
-					<span id="pageInfo" style="margin:0 20px; font-size:16px; color:#2c3e50; font-weight:500;">Page 1</span>
-					<button id="nextPage" style="padding:12px 24px; margin:0 10px; border-radius:25px; border:1px solid #3498db; background:white; color:#3498db; cursor:pointer; font-weight:600;">Next →</button>
-				</div>
+			<!-- Main Content Section -->
+			<main id="main-content" role="main">
+				<section id="one" class="wrapper style1 special" style="padding: 40px 0;">
+					<!-- Results Grid -->
+					<div id="pubmed-results" role="region" aria-live="polite" aria-atomic="false" aria-label="Publication results" style="margin-top:40px;"></div>
+					
+					<!-- Pagination Controls -->
+					<nav id="pagination-controls" style="display:none; text-align:center; margin: 30px 0; padding: 20px;" role="navigation" aria-label="Pagination">
+						<button id="prevPage" aria-label="Go to previous page" style="padding:12px 24px; margin:0 10px; border-radius:25px; border:1px solid #3498db; background:white; color:#3498db; cursor:pointer; font-weight:600;">← Previous</button>
+						<span id="pageInfo" role="status" aria-live="polite" style="margin:0 20px; font-size:16px; color:#2c3e50; font-weight:500;">Page 1</span>
+						<button id="nextPage" aria-label="Go to next page" style="padding:12px 24px; margin:0 10px; border-radius:25px; border:1px solid #3498db; background:white; color:#3498db; cursor:pointer; font-weight:600;">Next →</button>
+					</nav>
 
-				<!-- Modal for abstracts -->
-				<div id="modalBg" class="modal-bg">
-					<div class="modal-content">
-						<span class="modal-close" id="modalClose">&times;</span>
-						<h3 id="modalTitle"></h3>
-						<div class="modal-abstract" id="modalAbstract"></div>
+					<!-- Modal for abstracts -->
+					<div id="modalBg" class="modal-bg" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
+						<div class="modal-content" role="document">
+							<button class="modal-close" id="modalClose" aria-label="Close modal">&times;</button>
+							<h3 id="modalTitle"></h3>
+							<div class="modal-abstract" id="modalAbstract"></div>
+						</div>
 					</div>
-				</div>
-			</section>
+				</section>
+			</main>
 
 			<!-- Footer -->
 			<footer id="footer">
@@ -758,8 +868,69 @@
 		}
 
 		function closeModal() {
-			document.getElementById('modalBg').style.display = 'none';
+			const modalBg = document.getElementById('modalBg');
+			modalBg.style.display = 'none';
+			modalBg.setAttribute('aria-hidden', 'true');
+			
+			// Return focus to the element that opened the modal
+			if (window.lastFocusedElement) {
+				window.lastFocusedElement.focus();
+			}
 		}
+		
+		// Accessibility: Focus trap for modal
+		function trapFocus(element) {
+			const focusableElements = element.querySelectorAll(
+				'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+			);
+			const firstFocusable = focusableElements[0];
+			const lastFocusable = focusableElements[focusableElements.length - 1];
+
+			element.addEventListener('keydown', function(e) {
+				if (e.key === 'Tab') {
+					if (e.shiftKey) {
+						if (document.activeElement === firstFocusable) {
+							e.preventDefault();
+							lastFocusable.focus();
+						}
+					} else {
+						if (document.activeElement === lastFocusable) {
+							e.preventDefault();
+							firstFocusable.focus();
+						}
+					}
+				}
+			});
+		}
+		
+		// Accessibility: Keyboard support for modal
+		document.addEventListener('keydown', function(e) {
+			const modalBg = document.getElementById('modalBg');
+			if (e.key === 'Escape' && modalBg.style.display === 'flex') {
+				closeModal();
+			}
+		});
+		
+		// Update showAbstractModal to handle focus and ARIA
+		const originalShowAbstractModal = showAbstractModal;
+		showAbstractModal = function(link) {
+			// Store the element that triggered the modal
+			window.lastFocusedElement = document.activeElement;
+			
+			// Call original function
+			originalShowAbstractModal(link);
+			
+			// Update ARIA and focus
+			const modalBg = document.getElementById('modalBg');
+			const modalClose = document.getElementById('modalClose');
+			modalBg.setAttribute('aria-hidden', 'false');
+			
+			// Set up focus trap
+			trapFocus(modalBg);
+			
+			// Focus the close button
+			setTimeout(() => modalClose.focus(), 100);
+		};
 
 		// Statistics loading
 		async function loadStatistics() {
@@ -801,9 +972,15 @@
 		let filteredArticlesData = [];
 		let currentlyFlippedCard = null;
 
-		// Function to flip card and match heights
+		// Function to flip card and match heights (with keyboard support)
 		function flipCard(container, event) {
+			// Support both click and keyboard events
+			if (event.type === 'keydown' && event.key !== 'Enter' && event.key !== ' ') {
+				return; // Only respond to Enter or Space key
+			}
+			
 			event.stopPropagation();
+			event.preventDefault(); // Prevent space from scrolling
 			
 			const cardFront = container.querySelector('.card-front');
 			const cardBack = container.querySelector('.card-back');
@@ -1003,12 +1180,17 @@
 				
 				resultsHTML += `
 					<div class="result-item">
-						<div class="card-flip-container">
+						<div class="card-flip-container" role="group" aria-label="${title.substring(0, 100)}...">
 							<!-- Front of card -->
-							<div class="card-face card-front" onclick="flipCard(this.closest('.card-flip-container'), event);">
+							<div class="card-face card-front" 
+								 tabindex="0" 
+								 role="button" 
+								 aria-label="Flip card to view AI summary. ${title}"
+								 onclick="flipCard(this.closest('.card-flip-container'), event);"
+								 onkeydown="flipCard(this.closest('.card-flip-container'), event);">
 								${isNew ? '<div class="new-tab">NEW</div>' : ''}
 								<br>
-								<a href="${url}" class="result-title" target="_blank" onclick="event.stopPropagation();">${title}</a>
+								<a href="${url}" class="result-title" target="_blank" onclick="event.stopPropagation();" aria-label="Read full article: ${title}">${title}</a>
 								<div class="result-authors">${authorsHtml}</div>
 								<div class="result-citation"><em>${citation}</em></div>
 								<div style="margin-top: 8px; margin-bottom: 10px;">
@@ -1016,22 +1198,27 @@
 										View on PubMed →
 									</a>
 								</div>
-								<div class="share-buttons">
-									<a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" class="facebook" target="_blank" onclick="event.stopPropagation();">
-										<i class="icon brands fa-facebook-f"></i> 
+								<div class="share-buttons" role="group" aria-label="Share on social media">
+									<a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" class="facebook" target="_blank" onclick="event.stopPropagation();" aria-label="Share on Facebook">
+										<i class="icon brands fa-facebook-f" aria-hidden="true"></i> 
 									</a>
-									<a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}" class="twitter" target="_blank" onclick="event.stopPropagation();">
-										<i class="icon brands fa-twitter"></i> 
+									<a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}" class="twitter" target="_blank" onclick="event.stopPropagation();" aria-label="Share on Twitter">
+										<i class="icon brands fa-twitter" aria-hidden="true"></i> 
 									</a>
-									<a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}" class="linkedin" target="_blank" onclick="event.stopPropagation();">
-										<i class="icon brands fa-linkedin"></i> 
+									<a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}" class="linkedin" target="_blank" onclick="event.stopPropagation();" aria-label="Share on LinkedIn">
+										<i class="icon brands fa-linkedin" aria-hidden="true"></i> 
 									</a>
 								</div>
 							</div>
 							
 							<!-- Back of card (AI Summary) -->
 							${hasSummary ? `
-							<div class="card-face card-back" onclick="flipCard(this.closest('.card-flip-container'), event);">
+							<div class="card-face card-back" 
+								 tabindex="0" 
+								 role="button" 
+								 aria-label="Flip back to article details"
+								 onclick="flipCard(this.closest('.card-flip-container'), event);"
+								 onkeydown="flipCard(this.closest('.card-flip-container'), event);">
 								<div class="card-back-header">
 									<h4 style="color: #1565c0; margin: 0; font-size: 16px; font-weight: 700;">AI SUMMARY</h4>
 								</div>
