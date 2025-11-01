@@ -235,6 +235,21 @@
 			font-size: 14px; 
 			margin-bottom: 6px; 
 		}
+		
+		/* Clickable Rochester authors */
+		.result-authors .roch-author {
+			color: #555;
+			font-weight: 600;
+			text-decoration: none;
+			border-bottom: 1px dotted #3498db;
+			cursor: pointer;
+			transition: all 0.2s ease;
+		}
+		.result-authors .roch-author:hover {
+			color: #2980b9;
+			border-bottom-color: #2980b9;
+		}
+		
 		.result-citation { 
 			color: #666; 
 			font-size: 13px; 
@@ -259,20 +274,19 @@
 			opacity: 0.85; 
 		}
 
-		/* Top Navigation Bar - Compact & Subtle */
+		/* Top Navigation Bar */
 		.top-bar {
-			background: rgba(255, 255, 255, 0.98);
+			background: #ffffff;
 			color: #2c3e50;
-			padding: 8px 0;
-			font-size: 13px;
+			padding: 15px 0;
+			font-size: 14px;
 			position: fixed;
 			top: 0;
 			left: 0;
 			width: 100%;
 			z-index: 1001;
-			box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-			border-bottom: 1px solid #e8e8e8;
-			backdrop-filter: blur(10px);
+			box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+			border-bottom: 1px solid #eee;
 		}
 		.top-bar-content {
 			max-width: 1200px;
@@ -287,42 +301,37 @@
 			align-items: center;
 		}
 		.logo img {
-			height: 32px;
+			height: 40px;
 			width: auto;
 		}
 		.nav-links {
 			display: flex;
-			gap: 24px;
+			gap: 30px;
 			align-items: center;
 		}
 		.nav-links a {
-			color: #5a6c7d;
+			color: #2c3e50;
 			text-decoration: none;
 			font-weight: 500;
-			font-size: 14px;
-			transition: color 0.2s ease;
-			padding: 4px 0;
+			font-size: 15px;
+			transition: color 0.3s ease;
 		}
 		.nav-links a:hover {
 			color: #3498db;
 		}
-		.nav-links a[aria-current="page"] {
-			color: #2c3e50;
-			font-weight: 600;
-		}
 		.cta-button {
-			background: #3498db;
+			background: linear-gradient(135deg, #3498db, #2980b9);
 			color: white;
-			padding: 6px 16px;
-			border-radius: 6px;
+			padding: 10px 20px;
+			border-radius: 25px;
 			text-decoration: none;
 			font-weight: 600;
-			font-size: 13px;
-			transition: all 0.2s ease;
+			font-size: 14px;
+			transition: all 0.3s ease;
 		}
 		.cta-button:hover {
-			background: #2980b9;
 			transform: translateY(-1px);
+			box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
 		}
 		.menu-icon {
 			display: none;
@@ -337,15 +346,15 @@
 			transition: 0.3s;
 		}
 
-		/* Hero section - Compact */
+		/* Hero section */
 		   .hero-section {
 			   background: linear-gradient(135deg, #3a4660 0%, #4e6a8a 60%, #233045 100%);
-			   min-height: 220px;
+			   min-height: 340px;
 			   display: flex;
 			   align-items: center;
 			   position: relative;
 			   overflow: hidden;
-			   margin-top: 50px;
+			   margin-top: 70px;
 			   z-index: 1;
 		   }
 		   .hero-bg-blobs {
@@ -378,10 +387,10 @@
 		.hero-content {
 			max-width: 1200px;
 			margin: 0 auto;
-			   padding: 24px 20px;
+			   padding: 36px 20px;
 			display: grid;
-			grid-template-columns: 1fr 350px;
-			gap: 40px;
+			grid-template-columns: 1fr 450px;
+			gap: 60px;
 			align-items: center;
 			position: relative;
 			z-index: 2;
@@ -398,25 +407,23 @@
 		}
 
 		.hero-left h1 {
-			font-size: 2em;
-			font-weight: 700;
+			font-size: 3em;
+			font-weight: 800;
 			color: #2c3e50;
-			margin-bottom: 16px;
-			line-height: 1.2;
+			margin-bottom: 24px;
+			line-height: 1.1;
 		}
 		.hero-left .subtitle {
-			font-size: 0.9em;
+			font-size: 1.2em;
 			color: #7f8c8d;
-			margin-bottom: 12px;
+			margin-bottom: 16px;
 			font-weight: 500;
-			text-transform: uppercase;
-			letter-spacing: 0.5px;
 		}
 		.hero-left p {
-			font-size: 0.95em;
+			font-size: 1.1em;
 			color: #34495e;
-			margin-bottom: 20px;
-			line-height: 1.6;
+			margin-bottom: 36px;
+			line-height: 1.7;
 		}
 		.button-row {
 			display: flex;
@@ -574,6 +581,106 @@
 			.count-number { font-size: 2em; }
 		}
 		
+		/* Author Bibliography Modal */
+		.author-modal {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.6);
+			z-index: 4000;
+			justify-content: center;
+			align-items: center;
+		}
+		.author-modal-content {
+			background: white;
+			border-radius: 12px;
+			max-width: 800px;
+			width: 90%;
+			max-height: 80vh;
+			overflow: hidden;
+			display: flex;
+			flex-direction: column;
+			box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+		}
+		.author-modal-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 24px;
+			border-bottom: 2px solid #e0e0e0;
+			background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+		}
+		.author-modal-header h3 {
+			margin: 0;
+			color: #2c3e50;
+			font-size: 1.6em;
+		}
+		.author-modal-close {
+			background: none;
+			border: none;
+			font-size: 28px;
+			color: #95a5a6;
+			cursor: pointer;
+			transition: color 0.2s ease;
+			padding: 0;
+			width: 32px;
+			height: 32px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.author-modal-close:hover {
+			color: #2c3e50;
+		}
+		.author-modal-loading {
+			text-align: center;
+			padding: 40px;
+			color: #7f8c8d;
+		}
+		.author-bibliography {
+			list-style: none;
+			padding: 24px;
+			margin: 0;
+			overflow-y: auto;
+			flex: 1;
+		}
+		.author-bibliography li {
+			padding: 16px 0;
+			border-bottom: 1px solid #e0e0e0;
+			font-size: 14px;
+			line-height: 1.7;
+			color: #2c3e50;
+		}
+		.author-bibliography li:last-child {
+			border-bottom: none;
+		}
+		.author-bibliography .pub-journal {
+			font-style: italic;
+			color: #555;
+		}
+		.author-bibliography .pub-year {
+			font-weight: 600;
+			color: #2c3e50;
+		}
+		
+		/* Loading spinner */
+		.spinner {
+			border: 3px solid #f3f3f3;
+			border-top: 3px solid #3498db;
+			border-radius: 50%;
+			width: 40px;
+			height: 40px;
+			animation: spin 1s linear infinite;
+			margin: 0 auto 20px;
+		}
+		@keyframes spin {
+			0% { transform: rotate(0deg); }
+			100% { transform: rotate(360deg); }
+		}
+		
 		/* ===== ACCESSIBILITY IMPROVEMENTS ===== */
 		
 		/* Skip to main content link */
@@ -687,7 +794,7 @@
 			<nav class="top-bar" role="navigation" aria-label="Main navigation">
 				<div class="top-bar-content">
 					<div class="logo">
-						<img src="images/medcityai_logo1.png" alt="Med City AI Logo" style="height:32px; width:auto;" />
+						<img src="images/medcityai_logo1.png" alt="Med City AI Logo" style="height:48px; width:auto;" />
 					</div>
 					<div class="nav-links" role="menubar">
 						<a href="index.html" role="menuitem" aria-current="page">New Today</a>
@@ -696,7 +803,7 @@
 						<a href="about.html" role="menuitem">About</a>
 						<a href="contact.html" role="menuitem">Contact</a>
 					</div>
-					<div style="display: flex; align-items: center; gap: 12px;">
+					<div style="display: flex; align-items: center; gap: 15px;">
 						<a href="#subscribe" class="cta-button">Subscribe</a>
 						<button class="menu-icon" aria-label="Toggle mobile menu" aria-expanded="false" aria-controls="mobile-menu">
 							<span class="sr-only">Menu</span>
@@ -711,7 +818,7 @@
 			<!-- Hero Section -->
 			<section class="hero-section" aria-label="Hero banner" style="position:relative; overflow:hidden;">
 				<!-- Animated SVG background blobs -->
-				   <svg class="hero-bg-blobs" width="100%" height="600" viewBox="0 0 1440 600" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;" aria-hidden="true" role="presentation">
+				   <svg class="hero-bg-blobs" width="100%" height="900" viewBox="0 0 1440 900" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;" aria-hidden="true" role="presentation">
 					   <defs>
 						   <linearGradient id="blobGradient1" x1="0" y1="0" x2="1" y2="1">
 							   <stop offset="0%" stop-color="#3498db" stop-opacity="0.18"/>
@@ -739,16 +846,16 @@
 				   </svg>
 				<div class="hero-content">
 					<div class="hero-left">
-						<div class="subtitle" style="color:#b0b8c0;">Rochester, Minnesota</div>
-						<h1 style="color:#fff; text-shadow: 0 2px 12px rgba(0,0,0,0.2);">Rochester Biomedical Research</h1>
-						<p style="color:#d5dce3; font-size: 0.95em;">Real-time feed from the National Library of Medicine (PubMed)</p>
-						<form class="search-bar" id="searchForm" role="search" aria-label="Search publications" style="display: flex; gap: 10px; margin-bottom: 0;">
+						<div class="subtitle" style="color:#e0e0e0;">Rochester, Minnesota</div>
+						<h1 style="color:#fff; text-shadow: 0 4px 18px rgba(0,0,0,0.28);">What's New in Med City?</h1>
+						<p style="color:#e0e0e0;">MedCityAI is a real-time feed of biomedical research from Rochester, MN. All information freely sourced from the National Library of Medicine (PubMed).</p>
+						<form class="search-bar" id="searchForm" role="search" aria-label="Search publications" style="display: flex; gap: 12px; margin-bottom: 24px;">
 							<div style="position:relative; flex:1; display:flex; align-items:center;">
 								<label for="searchInput" class="sr-only">Search topics, authors, or keywords</label>
-								<span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#999;font-size:1.1em;pointer-events:none;" aria-hidden="true">
-									<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Search icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+								<span style="position:absolute;left:18px;top:50%;transform:translateY(-50%);color:#aaa;font-size:1.3em;pointer-events:none;" aria-hidden="true">
+									<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Search icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
 								</span>
-								<input type="search" id="searchInput" name="query" aria-label="Search topics, authors, or keywords" placeholder="Search publications..." style="width:100%;padding:10px 14px 10px 42px;border-radius:8px;border:1px solid rgba(255,255,255,0.3);font-size:14px;background:rgba(255,255,255,0.95);color:#2c3e50;">
+								<input type="search" id="searchInput" name="query" aria-label="Search topics, authors, or keywords" placeholder="Search topics, authors, or keywords (e.g., AI, radiology, oncology)..." style="width:100%;padding:14px 18px 14px 48px;border-radius:30px;border:1px solid #ccc;font-size:16px;display:flex;align-items:center;">
 							</div>
 							<button type="submit" class="sr-only">Search</button>
 						</form>
@@ -780,6 +887,21 @@
 							<button class="modal-close" id="modalClose" aria-label="Close modal">&times;</button>
 							<h3 id="modalTitle"></h3>
 							<div class="modal-abstract" id="modalAbstract"></div>
+						</div>
+					</div>
+					
+					<!-- Author Bibliography Modal -->
+					<div id="authorModal" class="author-modal author-modal-bg" role="dialog" aria-modal="true" aria-labelledby="authorModalTitle" aria-hidden="true">
+						<div class="author-modal-content" role="document">
+							<div class="author-modal-header">
+								<h3 id="authorModalTitle">Author Publications</h3>
+								<button class="author-modal-close" onclick="closeAuthorModal()" aria-label="Close author publications modal">&times;</button>
+							</div>
+							<div id="authorModalLoading" class="author-modal-loading" style="display: none;" role="status" aria-live="polite">
+								<div class="spinner" aria-hidden="true"></div>
+								<p>Loading publications...</p>
+							</div>
+							<ol id="authorBibliography" class="author-bibliography" aria-label="List of author publications"></ol>
 						</div>
 					</div>
 				</section>
@@ -886,6 +1008,131 @@
 			}
 		}
 		
+		// Author Bibliography Modal Functions
+		async function showAuthorBibliography(authorName) {
+			const modal = document.getElementById('authorModal');
+			const title = document.getElementById('authorModalTitle');
+			const loading = document.getElementById('authorModalLoading');
+			const bibliography = document.getElementById('authorBibliography');
+			
+			// Store focus for accessibility
+			window.lastFocusedElement = document.activeElement;
+			
+			// Show modal and loading state
+			modal.style.display = 'flex';
+			modal.setAttribute('aria-hidden', 'false');
+			title.textContent = `Publications by ${authorName}`;
+			loading.style.display = 'block';
+			bibliography.innerHTML = '';
+			
+			try {
+				// Build query for this author + Rochester affiliation
+				const query = `(${authorName}[Author]) AND (Rochester[AD] AND (Minnesota[AD] OR MN[AD]))`;
+				
+				// Search PubMed
+				const searchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmax=100&retmode=json&sort=pub+date`;
+				const searchResponse = await fetch(searchUrl);
+				const searchData = await searchResponse.json();
+				
+				const articleIds = searchData.esearchresult.idlist;
+				
+				if (articleIds.length === 0) {
+					bibliography.innerHTML = '<li style="color: #7f8c8d; text-align: center; padding: 40px;">No publications found for this author.</li>';
+					loading.style.display = 'none';
+					return;
+				}
+				
+				// Fetch article details
+				const fetchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${articleIds.join(',')}&retmode=xml`;
+				const fetchResponse = await fetch(fetchUrl);
+				const xmlText = await fetchResponse.text();
+				
+				// Parse XML
+				const parser = new DOMParser();
+				const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+				const articles = parseAuthorArticles(xmlDoc);
+				
+				// Sort by year (most recent first)
+				articles.sort((a, b) => {
+					const yearA = parseInt(a.year) || 0;
+					const yearB = parseInt(b.year) || 0;
+					return yearB - yearA;
+				});
+				
+				// Display bibliography in MLA format
+				let bibliographyHTML = '';
+				articles.forEach((article, index) => {
+					const citation = generateMLACitation(article);
+					bibliographyHTML += `<li>${citation}</li>`;
+				});
+				
+				bibliography.innerHTML = bibliographyHTML;
+				loading.style.display = 'none';
+				
+			} catch (error) {
+				console.error('Error fetching author bibliography:', error);
+				bibliography.innerHTML = '<li style="color: #e74c3c; text-align: center; padding: 40px;">Error loading publications. Please try again.</li>';
+				loading.style.display = 'none';
+			}
+		}
+		
+		function parseAuthorArticles(xmlDoc) {
+			const articles = [];
+			const articleNodes = xmlDoc.querySelectorAll('PubmedArticle');
+			
+			articleNodes.forEach(articleNode => {
+				const article = {};
+				
+				// PMID
+				const pmidNode = articleNode.querySelector('PMID');
+				article.pmid = pmidNode ? pmidNode.textContent : '';
+				article.url = `https://pubmed.ncbi.nlm.nih.gov/${article.pmid}/`;
+				
+				// Title
+				const titleNode = articleNode.querySelector('ArticleTitle');
+				article.title = titleNode ? titleNode.textContent : 'No title available';
+				
+				// Authors
+				const authorNodes = articleNode.querySelectorAll('Author');
+				const authorNames = [];
+				authorNodes.forEach(authorNode => {
+					const lastName = authorNode.querySelector('LastName')?.textContent || '';
+					const initials = authorNode.querySelector('Initials')?.textContent || '';
+					if (lastName) {
+						authorNames.push(`${lastName} ${initials}`);
+					}
+				});
+				article.authors = authorNames.length > 0 ? authorNames.slice(0, 3).join(', ') + (authorNames.length > 3 ? ', et al.' : '') : 'Unknown Authors';
+				
+				// Journal
+				const journalNode = articleNode.querySelector('Title');
+				article.journal = journalNode ? journalNode.textContent : 'Unknown Journal';
+				
+				// Publication Year
+				const yearNode = articleNode.querySelector('PubDate Year');
+				article.year = yearNode ? yearNode.textContent : 'n.d.';
+				
+				articles.push(article);
+			});
+			
+			return articles;
+		}
+		
+		function generateMLACitation(article) {
+			return `${article.authors}. "${article.title}" <span class="pub-journal">${article.journal}</span>, <span class="pub-year">${article.year}</span>. <a href="${article.url}" target="_blank" style="color: #3498db;">PubMed</a>`;
+		}
+		
+		function closeAuthorModal() {
+			const modal = document.getElementById('authorModal');
+			modal.style.display = 'none';
+			modal.setAttribute('aria-hidden', 'true');
+			
+			// Return focus to triggering element
+			if (window.lastFocusedElement) {
+				window.lastFocusedElement.focus();
+			}
+		}
+		
 		// Accessibility: Focus trap for modal
 		function trapFocus(element) {
 			const focusableElements = element.querySelectorAll(
@@ -914,8 +1161,14 @@
 		// Accessibility: Keyboard support for modal
 		document.addEventListener('keydown', function(e) {
 			const modalBg = document.getElementById('modalBg');
-			if (e.key === 'Escape' && modalBg.style.display === 'flex') {
-				closeModal();
+			const authorModal = document.getElementById('authorModal');
+			
+			if (e.key === 'Escape') {
+				if (modalBg.style.display === 'flex') {
+					closeModal();
+				} else if (authorModal.style.display === 'flex') {
+					closeAuthorModal();
+				}
 			}
 		});
 		
@@ -1170,10 +1423,14 @@
 				let authorsHtml = "";
 				if (article.authors_display) {
 					authorsHtml = article.authors_display;
-					// Underline Rochester authors
+					// Make Rochester authors clickable
 					rochesterAuthorsList.forEach(rochAuthor => {
 						if (rochAuthor) {
-							authorsHtml = authorsHtml.replace(rochAuthor, `<u>${rochAuthor}</u>`);
+							const escapedAuthor = rochAuthor.replace(/'/g, "\\'");
+							authorsHtml = authorsHtml.replace(
+								rochAuthor, 
+								`<span class="roch-author" onclick="showAuthorBibliography('${escapedAuthor}')" tabindex="0" role="button" aria-label="View publications by ${escapedAuthor}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showAuthorBibliography('${escapedAuthor}');}">${rochAuthor}</span>`
+							);
 						}
 					});
 				}
@@ -1262,6 +1519,12 @@
 			modalClose.addEventListener('click', closeModal);
 			modalBg.addEventListener('click', function(e) {
 				if (e.target === modalBg) closeModal();
+			});
+			
+			// Set up author modal close event listener
+			const authorModal = document.getElementById('authorModal');
+			authorModal.addEventListener('click', function(e) {
+				if (e.target === authorModal) closeAuthorModal();
 			});
 
 			// Set up search form event listener
