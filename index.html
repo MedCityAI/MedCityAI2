@@ -219,6 +219,24 @@
 			z-index: 10;
 			pointer-events: none; /* Prevent blocking clicks */
 		}
+		
+		.department-badge {
+			position: absolute;
+			top: 8px;
+			right: 8px;
+			background: #2c3e50;
+			color: #fff;
+			font-size: 11px;
+			font-weight: 500;
+			padding: 4px 10px;
+			border-radius: 4px;
+			z-index: 10;
+			max-width: 200px;
+			text-align: right;
+			line-height: 1.3;
+			pointer-events: none; /* Prevent blocking clicks */
+		}
+		
 		.result-title {
 			display: block;
 			font-size: 18px;
@@ -1438,6 +1456,24 @@
 				// Parse affiliations (pipe-separated in CSV)
 				const affiliationsList = article.affiliations ? article.affiliations.split('|') : [];
 				
+				// Extract department/division from first Rochester author
+				let departmentText = '';
+				if (rochesterAuthorsList.length > 0 && affiliationsList.length > 0) {
+					// Find the affiliation index for the first Rochester author
+					const firstRochAuthor = rochesterAuthorsList[0];
+					const authorIndex = authorsList.indexOf(firstRochAuthor);
+					
+					if (authorIndex >= 0 && authorIndex < affiliationsList.length) {
+						const affiliation = affiliationsList[authorIndex];
+						
+						// Extract department/division - look for patterns like "Department of..." or "Division of..."
+						const deptMatch = affiliation.match(/(?:Department|Division|Center|Institute|Clinic|Unit|Section)\s+of\s+[^,\.]+/i);
+						if (deptMatch) {
+							departmentText = deptMatch[0].trim();
+						}
+					}
+				}
+				
 				const citation = `${journal}. ${pubdate}.`;
 
 				// Build card with flip effect
@@ -1449,6 +1485,7 @@
 							<!-- Front of card -->
 							<div class="card-face card-front" onclick="flipCard(this.closest('.card-flip-container'), event);" style="cursor: pointer;">
 								${isNew ? '<div class="new-tab">NEW</div>' : ''}
+								${departmentText ? `<div class="department-badge">${departmentText}</div>` : ''}
 								<br>
 								<a href="#" class="result-title" 
 								   onclick="event.preventDefault(); event.stopPropagation(); flipCard(this.closest('.card-flip-container'), event);" 
