@@ -224,10 +224,11 @@
 			position: absolute;
 			top: 8px;
 			right: 8px;
-			background: #2c3e50;
-			color: #fff;
+			background: transparent;
+			color: #2c3e50;
 			font-size: 11px;
 			font-weight: 500;
+			font-style: italic;
 			padding: 4px 10px;
 			border-radius: 4px;
 			z-index: 10;
@@ -1467,9 +1468,10 @@
 						const affiliation = affiliationsList[authorIndex];
 						
 						// Extract department/division - look for patterns like "Department of..." or "Division of..."
-						const deptMatch = affiliation.match(/(?:Department|Division|Center|Institute|Clinic|Unit|Section)\s+of\s+[^,\.]+/i);
+						const deptMatch = affiliation.match(/(?:Department|Division|Center|Institute|Clinic|Unit|Section)\s+of\s+([^,\.]+)/i);
 						if (deptMatch) {
-							departmentText = deptMatch[0].trim();
+							// Extract just the department name without the prefix
+							departmentText = deptMatch[1].trim();
 						}
 					}
 				}
