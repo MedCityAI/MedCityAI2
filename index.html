@@ -868,13 +868,19 @@
 						<div class="subtitle" style="color:#e0e0e0;">Rochester, Minnesota</div>
 						<h1 style="color:#fff; text-shadow: 0 4px 18px rgba(0,0,0,0.28);">What's New in Med City?</h1>
 						<p style="color:#e0e0e0;">MedCityAI is a real-time feed of biomedical research from Rochester, MN. All information freely sourced from the National Library of Medicine (PubMed).</p>
-						<form class="search-bar" id="searchForm" role="search" aria-label="Search publications" style="display: flex; gap: 12px; margin-bottom: 24px;">
-							<div style="position:relative; flex:1; display:flex; align-items:center;">
+						<form class="search-bar" id="searchForm" role="search" aria-label="Search publications" style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
+							<div style="position:relative; flex:1; display:flex; align-items:center; min-width: 300px;">
 								<label for="searchInput" class="sr-only">Search topics, authors, or keywords</label>
 								<span style="position:absolute;left:18px;top:50%;transform:translateY(-50%);color:#aaa;font-size:1.3em;pointer-events:none;" aria-hidden="true">
 									<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Search icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
 								</span>
 								<input type="search" id="searchInput" name="query" aria-label="Search topics, authors, or keywords" placeholder="Search topics, authors, or keywords (e.g., AI, radiology, oncology)..." style="width:100%;padding:14px 18px 14px 48px;border-radius:30px;border:1px solid #ccc;font-size:16px;display:flex;align-items:center;">
+							</div>
+							<div style="position:relative; min-width: 200px;">
+								<label for="departmentFilter" class="sr-only">Filter by department</label>
+								<select id="departmentFilter" aria-label="Filter by department" style="width:100%;padding:14px 18px;border-radius:30px;border:1px solid #ccc;font-size:16px;background:white;cursor:pointer;appearance:none;background-image:url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%23666%22%2F%3E%3C%2Fsvg%3E');background-repeat:no-repeat;background-position:right 12px center;">
+									<option value="">All Departments</option>
+								</select>
 							</div>
 							<button type="submit" class="sr-only">Search</button>
 						</form>
@@ -1310,11 +1316,41 @@
 				}
 				
 				console.log(`Loaded ${allArticlesData.length} articles from CSV`);
+				populateDepartmentFilter(); // Populate department dropdown after loading data
 				return allArticlesData;
 			} catch (error) {
 				console.error('Error loading CSV:', error);
 				return [];
 			}
+		}
+
+		// Populate department filter dropdown
+		function populateDepartmentFilter() {
+			const departmentSet = new Set();
+			
+			// Extract all unique departments from all articles
+			allArticlesData.forEach(article => {
+				const affiliationsList = article.affiliations ? article.affiliations.split('|') : [];
+				affiliationsList.forEach(affiliation => {
+					const deptMatch = affiliation.match(/(?:Department|Division|Center|Institute|Clinic|Unit|Section)\s+of\s+([^,\.]+)/i);
+					if (deptMatch) {
+						const deptName = deptMatch[1].trim();
+						departmentSet.add(deptName);
+					}
+				});
+			});
+			
+			// Sort departments alphabetically
+			const departments = Array.from(departmentSet).sort();
+			
+			// Populate dropdown
+			const selectElement = document.getElementById('departmentFilter');
+			departments.forEach(dept => {
+				const option = document.createElement('option');
+				option.value = dept;
+				option.textContent = dept;
+				selectElement.appendChild(option);
+			});
 		}
 
 		// Parse CSV line handling quoted fields
@@ -1348,7 +1384,7 @@
 		}
 
 		// PubMed data display with search and pagination (now using CSV data)
-		async function fetchPubMedResults(searchQuery = '', page = 1) {
+		async function fetchPubMedResults(searchQuery = '', page = 1, departmentFilter = '') {
 			currentSearchQuery = searchQuery;
 			currentPage = page;
 			
@@ -1369,6 +1405,22 @@
 			} else {
 				// No search query, show all articles
 				filteredArticlesData = [...allArticlesData];
+			}
+			
+			// Apply department filter if selected
+			if (departmentFilter && departmentFilter.trim() !== '') {
+				filteredArticlesData = filteredArticlesData.filter(article => {
+					const affiliationsList = article.affiliations ? article.affiliations.split('|') : [];
+					// Check if any affiliation contains the selected department
+					return affiliationsList.some(affiliation => {
+						const deptMatch = affiliation.match(/(?:Department|Division|Center|Institute|Clinic|Unit|Section)\s+of\s+([^,\.]+)/i);
+						if (deptMatch) {
+							const deptName = deptMatch[1].trim();
+							return deptName === departmentFilter;
+						}
+						return false;
+					});
+				});
 			}
 			
 			// Check if we have results
@@ -1572,24 +1624,35 @@
 			// Set up search form event listener
 			const searchForm = document.getElementById('searchForm');
 			const searchInput = document.getElementById('searchInput');
+			const departmentFilter = document.getElementById('departmentFilter');
 			
 			searchForm.addEventListener('submit', function(e) {
 				e.preventDefault();
 				const query = searchInput.value.trim();
-				fetchPubMedResults(query, 1);
+				const department = departmentFilter.value;
+				fetchPubMedResults(query, 1, department);
+			});
+			
+			// Add change event listener to department filter
+			departmentFilter.addEventListener('change', function() {
+				const query = searchInput.value.trim();
+				const department = departmentFilter.value;
+				fetchPubMedResults(query, 1, department);
 			});
 
 			// Set up pagination event listeners
 			document.getElementById('prevPage').addEventListener('click', function() {
 				if (currentPage > 1) {
-					fetchPubMedResults(currentSearchQuery, currentPage - 1);
+					const department = departmentFilter.value;
+					fetchPubMedResults(currentSearchQuery, currentPage - 1, department);
 				}
 			});
 
 			document.getElementById('nextPage').addEventListener('click', function() {
 				const totalPages = Math.ceil(filteredArticlesData.length / resultsPerPage);
 				if (currentPage < totalPages) {
-					fetchPubMedResults(currentSearchQuery, currentPage + 1);
+					const department = departmentFilter.value;
+					fetchPubMedResults(currentSearchQuery, currentPage + 1, department);
 				}
 			});
 
