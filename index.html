@@ -1509,21 +1509,38 @@
 				// Parse affiliations (pipe-separated in CSV)
 				const affiliationsList = article.affiliations ? article.affiliations.split('|') : [];
 				
-				// Extract department/division from any affiliation
+				// Extract department/division - prioritize first Rochester author's department
 				let departmentText = '';
-				if (affiliationsList.length > 0) {
-					// Loop through all affiliations to find the first department/division
-					for (let i = 0; i < affiliationsList.length; i++) {
-						const affiliation = affiliationsList[i];
-						
-						// Extract department/division - look for patterns like "Department of..." or "Division of..."
+				
+				// First, try to get department from first Rochester author
+				if (rochesterAuthorsList.length > 0 && affiliationsList.length > 0) {
+					const firstRochAuthor = rochesterAuthorsList[0];
+					const authorIndex = authorsList.indexOf(firstRochAuthor);
+					
+					if (authorIndex >= 0 && authorIndex < affiliationsList.length) {
+						const affiliation = affiliationsList[authorIndex];
 						const deptMatch = affiliation.match(/(?:Department|Division|Center|Institute|Clinic|Unit|Section)\s+of\s+([^,\.]+)/i);
 						if (deptMatch) {
-							// Extract just the department name without the prefix
+							departmentText = deptMatch[1].trim();
+						}
+					}
+				}
+				
+				// If no department found from first Rochester author, check all affiliations
+				if (!departmentText && affiliationsList.length > 0) {
+					for (let i = 0; i < affiliationsList.length; i++) {
+						const affiliation = affiliationsList[i];
+						const deptMatch = affiliation.match(/(?:Department|Division|Center|Institute|Clinic|Unit|Section)\s+of\s+([^,\.]+)/i);
+						if (deptMatch) {
 							departmentText = deptMatch[1].trim();
 							break; // Use the first match found
 						}
 					}
+				}
+				
+				// Default to "Medicine" if no department found
+				if (!departmentText) {
+					departmentText = 'Medicine';
 				}
 				
 				const citation = `${journal}. ${pubdate}.`;
