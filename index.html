@@ -255,6 +255,68 @@
 			font-weight: 600;
 		}
 		
+		/* Fixed Sidebar Filter */
+		.sidebar-filter {
+			position: fixed;
+			left: 20px;
+			top: 120px;
+			width: 220px;
+			background: white;
+			border: 1px solid #ddd;
+			border-radius: 8px;
+			padding: 20px;
+			box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+			z-index: 100;
+			max-height: calc(100vh - 140px);
+			overflow-y: auto;
+		}
+		
+		.sidebar-content {
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+		}
+		
+		.filter-checkbox {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			cursor: pointer;
+			padding: 6px 8px;
+			border-radius: 4px;
+			transition: background 0.2s;
+		}
+		
+		.filter-checkbox:hover {
+			background: #f5f5f5;
+		}
+		
+		.filter-checkbox input[type="checkbox"] {
+			cursor: pointer;
+			width: 18px;
+			height: 18px;
+		}
+		
+		.filter-checkbox span {
+			font-size: 14px;
+			color: #2c3e50;
+			user-select: none;
+		}
+		
+		/* Adjust main content to make room for sidebar */
+		@media (min-width: 1024px) {
+			#main-content {
+				padding-left: 260px;
+			}
+		}
+		
+		/* Hide sidebar on smaller screens */
+		@media (max-width: 1023px) {
+			.sidebar-filter {
+				display: none;
+			}
+		}
+		
 		.result-title {
 			display: block;
 			font-size: 18px;
@@ -922,6 +984,52 @@
 
 			<!-- Main Content Section -->
 			<main id="main-content" role="main">
+				<!-- Fixed Sidebar Filter -->
+				<aside id="sidebarFilter" class="sidebar-filter" role="complementary" aria-label="Department filters">
+					<div class="sidebar-header">
+						<h3 style="margin: 0 0 16px 0; font-size: 16px; font-weight: 700; color: #2c3e50;">Filter by Department</h3>
+					</div>
+					<div class="sidebar-content">
+						<label class="filter-checkbox">
+							<input type="checkbox" value="Surgery" class="dept-checkbox">
+							<span>Surgery</span>
+						</label>
+						<label class="filter-checkbox">
+							<input type="checkbox" value="Cardiology" class="dept-checkbox">
+							<span>Cardiology</span>
+						</label>
+						<label class="filter-checkbox">
+							<input type="checkbox" value="Neurology" class="dept-checkbox">
+							<span>Neurology</span>
+						</label>
+						<label class="filter-checkbox">
+							<input type="checkbox" value="Oncology" class="dept-checkbox">
+							<span>Oncology</span>
+						</label>
+						<label class="filter-checkbox">
+							<input type="checkbox" value="Radiology" class="dept-checkbox">
+							<span>Radiology</span>
+						</label>
+						<label class="filter-checkbox">
+							<input type="checkbox" value="Pediatrics" class="dept-checkbox">
+							<span>Pediatrics</span>
+						</label>
+						<label class="filter-checkbox">
+							<input type="checkbox" value="Internal Medicine" class="dept-checkbox">
+							<span>Internal Medicine</span>
+						</label>
+						<label class="filter-checkbox">
+							<input type="checkbox" value="Psychiatry" class="dept-checkbox">
+							<span>Psychiatry</span>
+						</label>
+						<label class="filter-checkbox">
+							<input type="checkbox" value="Other" class="dept-checkbox">
+							<span>Other</span>
+						</label>
+						<button id="clearFilters" style="width: 100%; margin-top: 16px; padding: 8px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600;">Clear All</button>
+					</div>
+				</aside>
+				
 				<section id="one" class="wrapper style1 special" style="padding: 40px 0;">
 					<!-- Results Grid -->
 					<div id="pubmed-results" role="region" aria-live="polite" aria-atomic="false" aria-label="Publication results" style="margin-top:40px;"></div>
@@ -1651,6 +1759,266 @@
 			}
 		}
 
+		// Function to handle multiple department selections from sidebar
+		async function fetchPubMedResultsMultiple(searchQuery = '', page = 1, departmentFilters = []) {
+			currentSearchQuery = searchQuery;
+			currentPage = page;
+			
+			// Ensure data is loaded
+			if (allArticlesData.length === 0) {
+				await loadCSVData();
+			}
+			
+			// Start with all articles
+			filteredArticlesData = [...allArticlesData];
+			
+			// Apply multiple department filters if selected
+			if (departmentFilters.length > 0) {
+				const categoryKeywords = {
+					'Surgery': ['surgery', 'surgical', 'cardiovascular surgery', 'cardiac surgery', 'thoracic surgery', 'neurosurgery', 'orthopedic surgery', 'plastic surgery', 'vascular surgery', 'transplant surgery'],
+					'Cardiology': ['cardiology', 'cardiovascular', 'cardiac', 'heart'],
+					'Neurology': ['neurology', 'neurological', 'neuroscience', 'neuroimaging', 'brain'],
+					'Oncology': ['oncology', 'cancer', 'hematology', 'radiation oncology', 'medical oncology', 'leukemia', 'lymphoma'],
+					'Radiology': ['radiology', 'imaging', 'diagnostic radiology', 'interventional radiology'],
+					'Pediatrics': ['pediatrics', 'pediatric', 'child', 'children', 'neonatal'],
+					'Internal Medicine': ['internal medicine', 'medicine', 'general medicine'],
+					'Psychiatry': ['psychiatry', 'psychiatric', 'mental health', 'psychology']
+				};
+				
+				filteredArticlesData = filteredArticlesData.filter(article => {
+					const affiliationsList = article.affiliations ? article.affiliations.split('|') : [];
+					
+					// Check if article matches ANY of the selected departments
+					return departmentFilters.some(selectedDept => {
+						return affiliationsList.some(affiliation => {
+							const deptMatch = affiliation.match(/(?:Department|Division|Center|Institute|Clinic|Unit|Section)\s+of\s+([^,\.]+)/i);
+							if (deptMatch) {
+								const deptName = deptMatch[1].trim().toLowerCase();
+								
+								if (selectedDept === 'Other') {
+									let matchesAnyCategory = false;
+									for (const [category, keywords] of Object.entries(categoryKeywords)) {
+										if (keywords.some(keyword => deptName.includes(keyword))) {
+											matchesAnyCategory = true;
+											break;
+										}
+									}
+									return !matchesAnyCategory;
+								} else {
+									const keywords = categoryKeywords[selectedDept] || [];
+									return keywords.some(keyword => deptName.includes(keyword));
+								}
+							}
+							return false;
+						});
+					});
+				});
+			}
+			
+			// Display results (reuse same pagination/display logic)
+			displayFilteredResults(page);
+		}
+
+		// Shared function to display filtered results with pagination
+		function displayFilteredResults(page) {
+			// Check if we have results
+			if (filteredArticlesData.length === 0) {
+				document.getElementById("pubmed-results").innerHTML = "<p style='text-align:center; padding:40px; color:#666;'>No results found. Try a different filter.</p>";
+				document.getElementById("pagination-controls").style.display = 'none';
+				return;
+			}
+			
+			// Calculate pagination
+			const totalPages = Math.ceil(filteredArticlesData.length / resultsPerPage);
+			const startIdx = (page - 1) * resultsPerPage;
+			const endIdx = Math.min(startIdx + resultsPerPage, filteredArticlesData.length);
+			const pageArticles = filteredArticlesData.slice(startIdx, endIdx);
+			
+			// Show/hide pagination controls
+			if (filteredArticlesData.length > resultsPerPage) {
+				document.getElementById("pagination-controls").style.display = 'block';
+				document.getElementById("pageInfo").textContent = `Page ${page} of ${totalPages} (${filteredArticlesData.length} results)`;
+				document.getElementById("prevPage").disabled = page === 1;
+				document.getElementById("nextPage").disabled = page === totalPages;
+				document.getElementById("prevPage").style.opacity = page === 1 ? '0.5' : '1';
+				document.getElementById("nextPage").style.opacity = page === totalPages ? '0.5' : '1';
+			} else {
+				document.getElementById("pagination-controls").style.display = 'none';
+			}
+			
+			// Get current date for NEW badge logic
+			const now = new Date();
+			const twoDaysAgo = new Date(now.getTime() - (2 * 24 * 60 * 60 * 1000));
+			
+			// Build results HTML from CSV data
+			let resultsHTML = '';
+			
+			pageArticles.forEach(article => {
+				const pmid = article.pmid;
+				const title = article.title;
+				const abstract = article.abstract;
+				const journal = article.journal;
+				const pubdate = article.pubdate;
+				const url = article.url;
+				const llmSummary = article.llm_summary || '';
+				
+				// Parse publication date to check if NEW
+				const year = article.year;
+				const month = article.month;
+				const day = article.day;
+				
+				let articleDate = null;
+				const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+				if (year && month && day) {
+					const monthNum = monthNames.indexOf(month);
+					if (monthNum > 0) {
+						articleDate = new Date(year, monthNum - 1, day);
+					}
+				} else if (year && month) {
+					const monthNum = monthNames.indexOf(month);
+					if (monthNum > 0) {
+						articleDate = new Date(year, monthNum - 1, 1);
+					}
+				}
+				
+				// Determine if article is NEW (within last 2 days)
+				const isNew = articleDate && articleDate >= twoDaysAgo;
+				
+				// Parse authors (pipe-separated in CSV)
+				const authorsList = article.authors ? article.authors.split('|') : [];
+				const rochesterAuthorsList = article.rochester_authors ? article.rochester_authors.split('|') : [];
+				
+				// Format authors for display
+				let authorsHtml = "";
+				if (article.authors_display) {
+					authorsHtml = article.authors_display;
+					// Make Rochester authors clickable
+					rochesterAuthorsList.forEach(rochAuthor => {
+						if (rochAuthor) {
+							const escapedAuthor = rochAuthor.replace(/'/g, "\\'");
+							authorsHtml = authorsHtml.replace(
+								rochAuthor, 
+								`<span class="roch-author" onclick="showAuthorBibliography('${escapedAuthor}')" tabindex="0" role="button" aria-label="View publications by ${escapedAuthor}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showAuthorBibliography('${escapedAuthor}');}">${rochAuthor}</span>`
+							);
+						}
+					});
+				}
+				
+				// Parse affiliations (pipe-separated in CSV)
+				const affiliationsList = article.affiliations ? article.affiliations.split('|') : [];
+				
+				// Extract department/division - prioritize first Rochester author's department
+				let departmentText = '';
+				
+				// First, try to get department from first Rochester author
+				if (rochesterAuthorsList.length > 0 && affiliationsList.length > 0) {
+					const firstRochAuthor = rochesterAuthorsList[0];
+					const authorIndex = authorsList.indexOf(firstRochAuthor);
+					
+					if (authorIndex >= 0 && authorIndex < affiliationsList.length) {
+						const affiliation = affiliationsList[authorIndex];
+						const deptMatch = affiliation.match(/(?:Department|Division|Center|Institute|Clinic|Unit|Section)\s+of\s+([^,\.]+)/i);
+						if (deptMatch) {
+							departmentText = deptMatch[1].trim();
+						}
+					}
+				}
+				
+				// If no department found from first Rochester author, check all affiliations
+				if (!departmentText && affiliationsList.length > 0) {
+					for (let i = 0; i < affiliationsList.length; i++) {
+						const affiliation = affiliationsList[i];
+						const deptMatch = affiliation.match(/(?:Department|Division|Center|Institute|Clinic|Unit|Section)\s+of\s+([^,\.]+)/i);
+						if (deptMatch) {
+							departmentText = deptMatch[1].trim();
+							break; // Use the first match found
+						}
+					}
+				}
+				
+				// Default to "Medicine" if no department found
+				if (!departmentText) {
+					departmentText = 'Medicine';
+				}
+				
+				const citation = `${journal}. ${pubdate}.`;
+
+				// Build card with flip effect
+				const hasSummary = llmSummary && llmSummary.trim() !== '' && llmSummary !== 'No abstract available.';
+				
+				resultsHTML += `
+					<div class="result-item">
+						<div class="card-flip-container" role="group" aria-label="${title.substring(0, 100)}...">
+							<!-- Front of card -->
+							<div class="card-face card-front" onclick="flipCard(this.closest('.card-flip-container'), event);" style="cursor: pointer;">
+								${isNew ? '<div class="new-tab">NEW</div>' : ''}
+								${departmentText ? `<div class="department-badge">${departmentText}</div>` : ''}
+								<br>
+								<a href="#" class="result-title" 
+								   onclick="event.preventDefault(); event.stopPropagation(); flipCard(this.closest('.card-flip-container'), event);" 
+								   onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flipCard(this.closest('.card-flip-container'), event);}"
+								   tabindex="0"
+								   role="button"
+								   aria-label="Click to view AI summary of: ${title}">${title}</a>
+								<div class="result-authors" onclick="event.stopPropagation();">${authorsHtml}</div>
+								<div class="result-citation"><em>${citation}</em></div>
+								<div style="margin-top: 8px; margin-bottom: 10px;">
+									<a href="${url}" target="_blank" onclick="event.stopPropagation();" style="color: #0056a3; text-decoration: none; font-size: 14px; font-weight: 500;">
+										View on PubMed →
+									</a>
+								</div>
+								<div class="share-buttons" role="group" aria-label="Share on social media" onclick="event.stopPropagation();">
+									<a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" class="facebook" target="_blank" aria-label="Share on Facebook">
+										<i class="icon brands fa-facebook-f" aria-hidden="true"></i> 
+									</a>
+									<a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}" class="twitter" target="_blank" aria-label="Share on Twitter">
+										<i class="icon brands fa-twitter" aria-hidden="true"></i> 
+									</a>
+									<a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}" class="linkedin" target="_blank" aria-label="Share on LinkedIn">
+										<i class="icon brands fa-linkedin" aria-hidden="true"></i> 
+									</a>
+								</div>
+							</div>
+							
+							<!-- Back of card (AI Summary) -->
+							${hasSummary ? `
+							<div class="card-face card-back" onclick="flipCard(this.closest('.card-flip-container'), event);" style="cursor: pointer;">
+								<div class="card-back-header">
+									<h4 style="color: #1565c0; margin: 0; font-size: 16px; font-weight: 700; cursor: pointer;"
+									    onclick="event.stopPropagation(); flipCard(this.closest('.card-flip-container'), event);"
+									    onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flipCard(this.closest('.card-flip-container'), event);}"
+									    tabindex="0"
+									    role="button"
+									    aria-label="Click to return to article details">
+										AI SUMMARY <span style="font-size: 14px;">↩</span>
+									</h4>
+								</div>
+								<div class="card-back-content">
+									<div class="card-back-summary">${llmSummary}</div>
+									<div class="card-back-disclaimer">
+										<p style="margin: 0 0 10px 0; font-size: 11px; color: #546e7a; font-style: italic; line-height: 1.4;">
+											This summary was generated by AI and may contain inaccuracies. Refer to the full publication for accurate information.
+										</p>
+										<a href="${url}" target="_blank" onclick="event.stopPropagation();" style="color: #0056a3; text-decoration: none; font-size: 14px; font-weight: 500;">
+											View on PubMed →
+										</a>
+									</div>
+								</div>
+							</div>
+							` : ''}
+						</div>
+					</div>
+				`;
+			});
+
+			document.getElementById("pubmed-results").innerHTML = `<div class="results">${resultsHTML}</div>`;
+			
+			// Scroll to top of results after page change
+			if (page > 1) {
+				document.getElementById("pubmed-results").scrollIntoView({ behavior: 'smooth', block: 'start' });
+			}
+		}
+
 		// Initialize application
 		document.addEventListener('DOMContentLoaded', function() {
 			// Set up modal event listeners
@@ -1670,8 +2038,9 @@
 
 			// Set up department filter
 			let currentDepartmentFilter = '';
+			let selectedDepartments = new Set(); // Track multiple selections from sidebar
 			
-			// Add click event listeners to department filter links
+			// Add click event listeners to department filter links (top)
 			document.querySelectorAll('.dept-filter-link').forEach(link => {
 				link.addEventListener('click', function(e) {
 					e.preventDefault();
@@ -1685,22 +2054,69 @@
 					// Get department from data attribute
 					currentDepartmentFilter = this.getAttribute('data-dept');
 					
+					// Clear sidebar checkboxes when using top filter
+					document.querySelectorAll('.dept-checkbox').forEach(cb => cb.checked = false);
+					selectedDepartments.clear();
+					
 					// Fetch filtered results
 					fetchPubMedResults('', 1, currentDepartmentFilter);
 				});
+			});
+			
+			// Add change event listeners to sidebar checkboxes
+			document.querySelectorAll('.dept-checkbox').forEach(checkbox => {
+				checkbox.addEventListener('change', function() {
+					if (this.checked) {
+						selectedDepartments.add(this.value);
+					} else {
+						selectedDepartments.delete(this.value);
+					}
+					
+					// Clear top filter active state when using sidebar
+					document.querySelectorAll('.dept-filter-link').forEach(l => l.classList.remove('active'));
+					currentDepartmentFilter = '';
+					
+					// Fetch filtered results with multiple departments
+					fetchPubMedResultsMultiple('', 1, Array.from(selectedDepartments));
+				});
+			});
+			
+			// Clear all filters button
+			document.getElementById('clearFilters').addEventListener('click', function() {
+				// Uncheck all checkboxes
+				document.querySelectorAll('.dept-checkbox').forEach(cb => cb.checked = false);
+				selectedDepartments.clear();
+				
+				// Reset top filter to "All"
+				document.querySelectorAll('.dept-filter-link').forEach(l => l.classList.remove('active'));
+				document.querySelector('.dept-filter-link[data-dept=""]').classList.add('active');
+				currentDepartmentFilter = '';
+				
+				// Show all results
+				fetchPubMedResults('', 1, '');
 			});
 
 			// Set up pagination event listeners
 			document.getElementById('prevPage').addEventListener('click', function() {
 				if (currentPage > 1) {
-					fetchPubMedResults(currentSearchQuery, currentPage - 1, currentDepartmentFilter);
+					// Check if using sidebar filters or top filter
+					if (selectedDepartments.size > 0) {
+						fetchPubMedResultsMultiple(currentSearchQuery, currentPage - 1, Array.from(selectedDepartments));
+					} else {
+						fetchPubMedResults(currentSearchQuery, currentPage - 1, currentDepartmentFilter);
+					}
 				}
 			});
 
 			document.getElementById('nextPage').addEventListener('click', function() {
 				const totalPages = Math.ceil(filteredArticlesData.length / resultsPerPage);
 				if (currentPage < totalPages) {
-					fetchPubMedResults(currentSearchQuery, currentPage + 1, currentDepartmentFilter);
+					// Check if using sidebar filters or top filter
+					if (selectedDepartments.size > 0) {
+						fetchPubMedResultsMultiple(currentSearchQuery, currentPage + 1, Array.from(selectedDepartments));
+					} else {
+						fetchPubMedResults(currentSearchQuery, currentPage + 1, currentDepartmentFilter);
+					}
 				}
 			});
 
