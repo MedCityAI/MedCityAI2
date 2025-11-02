@@ -523,8 +523,8 @@
 
 		/* Hero section */
 		   .hero-section {
-			   background: linear-gradient(120deg, #006FFD 0%, #0056a3 100%);
-			   min-height: 340px;
+			   background: linear-gradient(135deg, #006FFD 0%, #0043a8 100%);
+			   min-height: 420px;
 			   display: flex;
 			   align-items: center;
 			   position: relative;
@@ -543,6 +543,16 @@
 			   opacity: 1;
 			   transition: opacity 0.5s;
 		   }
+
+		/* Subtle pulse animation for new count */
+		@keyframes pulse-glow {
+			0%, 100% { opacity: 1; transform: scale(1); }
+			50% { opacity: 0.9; transform: scale(1.05); }
+		}
+		
+		#VarDay {
+			animation: pulse-glow 2s ease-in-out infinite;
+		}
 
 		/* Extend the backdrop into the results grid section */
 		#one.wrapper.style1.special {
@@ -604,10 +614,22 @@
 			display: flex;
 			gap: 16px;
 			flex-wrap: wrap;
+			align-items: center;
 		}
 		.btn {
 			padding: 14px 28px;
 			border-radius: 50px;
+			text-decoration: none;
+			font-weight: 600;
+			font-size: 16px;
+			transition: all 0.3s ease;
+			cursor: pointer;
+			border: none;
+		}
+		.btn-primary:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 12px 32px rgba(76, 175, 80, 0.5) !important;
+		}
 			font-weight: 600;
 			text-decoration: none;
 			transition: all 0.3s ease;
@@ -709,13 +731,30 @@
 			.hero-content {
 				grid-template-columns: 1fr;
 				gap: 40px;
-				text-align: center;
+				text-align: left;
+				padding: 48px 24px;
 			}
-			.chart-container {
+			.hero-right {
 				display: none;
 			}
-			.hero-left h1 { font-size: 2.4em; }
-			.hero-left p { font-size: 1.1em; }
+			.hero-section {
+				min-height: 360px;
+			}
+			.hero-left h1 { 
+				font-size: 2.6em !important; 
+				line-height: 1.15 !important;
+			}
+			.hero-left p { 
+				font-size: 1.15em !important; 
+			}
+			.hero-left .subtitle {
+				font-size: 0.9em !important;
+			}
+			.button-row {
+				flex-direction: column;
+				align-items: flex-start;
+				gap: 20px;
+			}
 			.nav-links {
 				display: none;
 			}
@@ -726,16 +765,26 @@
 		@media (max-width: 600px) {
 			.results { column-count: 1; }
 			.hero-content {
-				padding: 40px 15px;
+				padding: 40px 20px;
 			}
-			.hero-left h1 { font-size: 2em; }
-			.hero-left p { font-size: 1em; }
+			.hero-section {
+				min-height: 340px;
+			}
+			.hero-left h1 { 
+				font-size: 2.2em !important;
+			}
+			.hero-left p { 
+				font-size: 1.05em !important;
+			}
 			.button-row {
-				justify-content: center;
+				justify-content: flex-start;
+				width: 100%;
 			}
 			.btn {
-				padding: 12px 24px;
-				font-size: 14px;
+				padding: 14px 28px;
+				font-size: 15px;
+				width: 100%;
+				justify-content: center;
 			}
 			
 			/* Hide scrollbar on mobile for cleaner look */
@@ -1021,13 +1070,33 @@
 				   </svg>
 				<div class="hero-content">
 					<div class="hero-left">
-						<div class="subtitle" style="color:#e0e0e0;">Rochester, Minnesota</div>
-						<h1 style="color:#fff; text-shadow: 0 4px 18px rgba(0,0,0,0.28);">What's New in Med City?</h1>
-						<p style="color:#e0e0e0;">MedCityAI is a real-time feed of biomedical research from Rochester, MN. All information freely sourced from the National Library of Medicine (PubMed).</p>
+						<div class="subtitle" style="color:#fff; font-size: 0.95em; font-weight: 400; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 16px; opacity: 0.9;">
+							<span style="display: inline-block; width: 40px; height: 2px; background: #4CAF50; vertical-align: middle; margin-right: 12px;"></span>
+							Rochester, MN
+						</div>
+						<h1 style="color:#fff; text-shadow: 0 4px 24px rgba(0,0,0,0.35); font-size: 3.2em; line-height: 1.2; margin: 0 0 24px 0; font-weight: 700;">
+							Latest Biomedical<br>Research. Daily.
+						</h1>
+						<p style="color:#e8e8e8; font-size: 1.25em; line-height: 1.6; margin: 0 0 32px 0; max-width: 540px;">
+							Track every Rochester publication as it hits PubMed. Zero lag. Zero noise.
+						</p>
+						<div class="button-row" style="display: flex; gap: 16px; align-items: center;">
+							<a href="#pubmed-results" class="btn btn-primary" style="background: #4CAF50; color: white; padding: 16px 32px; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 1.05em; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 8px 24px rgba(76, 175, 80, 0.4); transition: all 0.3s ease;">
+								<span>See Today's Research</span>
+								<i class="fas fa-arrow-right" style="font-size: 0.9em;"></i>
+							</a>
+							<div style="color: rgba(255,255,255,0.7); font-size: 0.95em;">
+								<span id="VarDay" style="font-weight: 700; color: #4CAF50; font-size: 1.4em;">0</span> new today
+							</div>
+						</div>
 					</div>
 					<div class="hero-right">
-						<div class="chart-container">
-							<img src="images/med_city_publications_web.png" alt="Chart showing growth of Rochester, Minnesota biomedical publications over time" style="width: 100%; height: 100%; object-fit: contain;">
+						<div class="chart-container" style="position: relative;">
+							<div style="position: absolute; top: -20px; right: -20px; background: rgba(76, 175, 80, 0.15); backdrop-filter: blur(10px); padding: 16px 24px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.2); z-index: 10;">
+								<div style="font-size: 0.85em; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Total Articles</div>
+								<div id="VarTot" style="font-size: 2.2em; font-weight: 700; color: #fff;">0</div>
+							</div>
+							<img src="images/med_city_publications_web.png" alt="Rochester research growth over time" style="width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));">
 						</div>
 					</div>
 				</div>
