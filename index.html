@@ -1058,9 +1058,7 @@
 						<span>•</span>
 					<a href="#" class="dept-filter-link" data-dept="Psychiatry">Psychiatry</a>
 					<span>•</span>
-					<a href="#" class="dept-filter-link" data-dept="Generative AI">Generative AI</a>
-					<span>•</span>
-					<a href="#" class="dept-filter-link" data-dept="Other">Other</a>
+					<a href="#" class="dept-filter-link" data-dept="AI/ML/DL & Generative AI">AI/ML/DL & Generative AI</a>
 				</div>					<!-- Results Grid -->
 					<div id="pubmed-results" role="region" aria-live="polite" aria-atomic="false" aria-label="Publication results"></div>
 					
@@ -1115,8 +1113,6 @@
 							<span>Psychiatry</span>
 						</label>
 						<label class="filter-checkbox">
-							<input type="checkbox" value="Other" class="dept-checkbox">
-							<span>Other</span>
 						</label>
 						<button id="clearFilters" style="width: 100%; margin-top: 12px; padding: 6px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600;">Clear All</button>
 					</div>
@@ -1312,9 +1308,9 @@
 					return yearB - yearA;
 				});
 				
-				// Display bibliography in MLA format
+				// Build bibliography HTML
 				let bibliographyHTML = '';
-				articles.forEach((article, index) => {
+				articles.forEach(article => {
 					const citation = generateMLACitation(article);
 					bibliographyHTML += `<li>${citation}</li>`;
 				});
@@ -1622,7 +1618,10 @@
 					'Pediatrics': ['pediatrics', 'pediatric', 'child', 'children', 'neonatal'],
 					'Internal Medicine': ['internal medicine', 'medicine', 'general medicine'],
 					'Psychiatry': ['psychiatry', 'psychiatric', 'mental health', 'psychology'],
-					'Generative AI': ['generative ai', 'artificial intelligence', 'machine learning', 'deep learning', 'neural network', 'large language model', 'llm', 'chatgpt', 'gpt', 'ai']
+					'AI/ML/DL & Generative AI': [
+						'artificial intelligence', 'machine learning', 'deep learning', 'neural network', 'ai', 'ml', 'dl', 'data science',
+						'generative ai', 'large language model', 'llm', 'chatgpt', 'gpt', 'generative', 'gen ai'
+					]
 				};
 				
 				filteredArticlesData = filteredArticlesData.filter(article => {
@@ -1634,22 +1633,9 @@
 						if (deptMatch) {
 							const deptName = deptMatch[1].trim().toLowerCase();
 							
-							// Check if this department matches the selected category
-							if (departmentFilter === 'Other') {
-								// For "Other", include departments that don't match any category
-								let matchesAnyCategory = false;
-								for (const [category, keywords] of Object.entries(categoryKeywords)) {
-									if (keywords.some(keyword => deptName.includes(keyword))) {
-										matchesAnyCategory = true;
-										break;
-									}
-								}
-								return !matchesAnyCategory;
-							} else {
-								// Check if department name contains any keyword from the selected category
-								const keywords = categoryKeywords[departmentFilter] || [];
-								return keywords.some(keyword => deptName.includes(keyword));
-							}
+							// Check if department name contains any keyword from the selected category
+							const keywords = categoryKeywords[departmentFilter] || [];
+							return keywords.some(keyword => deptName.includes(keyword));
 						}
 						return false;
 					});
@@ -1879,7 +1865,10 @@
 					'Pediatrics': ['pediatrics', 'pediatric', 'child', 'children', 'neonatal'],
 					'Internal Medicine': ['internal medicine', 'medicine', 'general medicine'],
 					'Psychiatry': ['psychiatry', 'psychiatric', 'mental health', 'psychology'],
-					'Generative AI': ['generative ai', 'artificial intelligence', 'machine learning', 'deep learning', 'neural network', 'large language model', 'llm', 'chatgpt', 'gpt', 'ai']
+					'AI/ML/DL & Generative AI': [
+						'artificial intelligence', 'machine learning', 'deep learning', 'neural network', 'ai', 'ml', 'dl', 'data science',
+						'generative ai', 'large language model', 'llm', 'chatgpt', 'gpt', 'generative', 'gen ai'
+					]
 				};
 				
 				filteredArticlesData = filteredArticlesData.filter(article => {
@@ -1892,19 +1881,8 @@
 							if (deptMatch) {
 								const deptName = deptMatch[1].trim().toLowerCase();
 								
-								if (selectedDept === 'Other') {
-									let matchesAnyCategory = false;
-									for (const [category, keywords] of Object.entries(categoryKeywords)) {
-										if (keywords.some(keyword => deptName.includes(keyword))) {
-											matchesAnyCategory = true;
-											break;
-										}
-									}
-									return !matchesAnyCategory;
-								} else {
-									const keywords = categoryKeywords[selectedDept] || [];
-									return keywords.some(keyword => deptName.includes(keyword));
-								}
+								const keywords = categoryKeywords[selectedDept] || [];
+								return keywords.some(keyword => deptName.includes(keyword));
 							}
 							return false;
 						});
