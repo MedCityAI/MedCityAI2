@@ -255,6 +255,51 @@
 			font-weight: 600;
 		}
 		
+		/* Filter bar below header */
+		.filter-bar {
+			background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+			border-bottom: 2px solid #1a252f;
+			padding: 20px 0;
+			box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+		}
+		
+		.filter-bar-content {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 0 20px;
+		}
+		
+		.filter-bar-title {
+			color: #e0e0e0;
+			font-size: 14px;
+			font-weight: 600;
+			margin-bottom: 12px;
+		}
+		
+		.filter-bar-links {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px;
+			align-items: center;
+		}
+		
+		.filter-bar .dept-filter-link {
+			color: #e0e0e0;
+			text-decoration: none;
+			font-size: 14px;
+			padding: 6px 12px;
+			transition: all 0.2s;
+		}
+		
+		.filter-bar .dept-filter-link.active {
+			color: #fff !important;
+			background: rgba(255, 255, 255, 0.2);
+		}
+		
+		.filter-bar-links span {
+			color: #999;
+		}
+		
 		/* Sidebar Filter */
 		.sidebar-filter {
 			width: 160px;
@@ -958,32 +1003,6 @@
 						<div class="subtitle" style="color:#e0e0e0;">Rochester, Minnesota</div>
 						<h1 style="color:#fff; text-shadow: 0 4px 18px rgba(0,0,0,0.28);">What's New in Med City?</h1>
 						<p style="color:#e0e0e0;">MedCityAI is a real-time feed of biomedical research from Rochester, MN. All information freely sourced from the National Library of Medicine (PubMed).</p>
-						
-						<!-- Department Filter Links -->
-						<div id="departmentFilterLinks" style="margin-top: 24px; text-align: left;">
-							<div style="color: #e0e0e0; font-size: 14px; font-weight: 600; margin-bottom: 12px;">Filter by Specialty:</div>
-							<div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
-								<a href="#" class="dept-filter-link active" data-dept="" style="color: #fff; text-decoration: none; font-size: 14px; padding: 6px 12px; border-radius: 4px; transition: all 0.2s;">All</a>
-								<span style="color: #999;">•</span>
-								<a href="#" class="dept-filter-link" data-dept="Surgery" style="color: #e0e0e0; text-decoration: none; font-size: 14px; padding: 6px 12px; transition: all 0.2s;">Surgery</a>
-								<span style="color: #999;">•</span>
-								<a href="#" class="dept-filter-link" data-dept="Cardiology" style="color: #e0e0e0; text-decoration: none; font-size: 14px; padding: 6px 12px; transition: all 0.2s;">Cardiology</a>
-								<span style="color: #999;">•</span>
-								<a href="#" class="dept-filter-link" data-dept="Neurology" style="color: #e0e0e0; text-decoration: none; font-size: 14px; padding: 6px 12px; transition: all 0.2s;">Neurology</a>
-								<span style="color: #999;">•</span>
-								<a href="#" class="dept-filter-link" data-dept="Oncology" style="color: #e0e0e0; text-decoration: none; font-size: 14px; padding: 6px 12px; transition: all 0.2s;">Oncology</a>
-								<span style="color: #999;">•</span>
-								<a href="#" class="dept-filter-link" data-dept="Radiology" style="color: #e0e0e0; text-decoration: none; font-size: 14px; padding: 6px 12px; transition: all 0.2s;">Radiology</a>
-								<span style="color: #999;">•</span>
-								<a href="#" class="dept-filter-link" data-dept="Pediatrics" style="color: #e0e0e0; text-decoration: none; font-size: 14px; padding: 6px 12px; transition: all 0.2s;">Pediatrics</a>
-								<span style="color: #999;">•</span>
-								<a href="#" class="dept-filter-link" data-dept="Internal Medicine" style="color: #e0e0e0; text-decoration: none; font-size: 14px; padding: 6px 12px; transition: all 0.2s;">Internal Medicine</a>
-								<span style="color: #999;">•</span>
-								<a href="#" class="dept-filter-link" data-dept="Psychiatry" style="color: #e0e0e0; text-decoration: none; font-size: 14px; padding: 6px 12px; transition: all 0.2s;">Psychiatry</a>
-								<span style="color: #999;">•</span>
-								<a href="#" class="dept-filter-link" data-dept="Other" style="color: #e0e0e0; text-decoration: none; font-size: 14px; padding: 6px 12px; transition: all 0.2s;">Other</a>
-							</div>
-						</div>
 					</div>
 					<div class="hero-right">
 						<div class="chart-container">
@@ -992,6 +1011,36 @@
 					</div>
 				</div>
 			</section>
+
+			<!-- Filter Bar -->
+			<div class="filter-bar">
+				<div class="filter-bar-content">
+					<div class="filter-bar-title">Filter by Specialty:</div>
+					<div class="filter-bar-links">
+						<a href="#" class="dept-filter-link active" data-dept="">All</a>
+						<span>•</span>
+						<a href="#" class="dept-filter-link" data-dept="Surgery">Surgery</a>
+						<span>•</span>
+						<a href="#" class="dept-filter-link" data-dept="Cardiology">Cardiology</a>
+						<span>•</span>
+						<a href="#" class="dept-filter-link" data-dept="Neurology">Neurology</a>
+						<span>•</span>
+						<a href="#" class="dept-filter-link" data-dept="Oncology">Oncology</a>
+						<span>•</span>
+						<a href="#" class="dept-filter-link" data-dept="Radiation Oncology">Radiation Oncology</a>
+						<span>•</span>
+						<a href="#" class="dept-filter-link" data-dept="Radiology">Radiology</a>
+						<span>•</span>
+						<a href="#" class="dept-filter-link" data-dept="Pediatrics">Pediatrics</a>
+						<span>•</span>
+						<a href="#" class="dept-filter-link" data-dept="Internal Medicine">Internal Medicine</a>
+						<span>•</span>
+						<a href="#" class="dept-filter-link" data-dept="Psychiatry">Psychiatry</a>
+						<span>•</span>
+						<a href="#" class="dept-filter-link" data-dept="Other">Other</a>
+					</div>
+				</div>
+			</div>
 
 			<!-- Main Content Section -->
 			<main id="main-content" role="main">
@@ -1536,7 +1585,8 @@
 					'Surgery': ['surgery', 'surgical', 'cardiovascular surgery', 'cardiac surgery', 'thoracic surgery', 'neurosurgery', 'orthopedic surgery', 'plastic surgery', 'vascular surgery', 'transplant surgery'],
 					'Cardiology': ['cardiology', 'cardiovascular', 'cardiac', 'heart'],
 					'Neurology': ['neurology', 'neurological', 'neuroscience', 'neuroimaging', 'brain'],
-					'Oncology': ['oncology', 'cancer', 'hematology', 'radiation oncology', 'medical oncology', 'leukemia', 'lymphoma'],
+					'Oncology': ['oncology', 'cancer', 'hematology', 'medical oncology', 'leukemia', 'lymphoma'],
+					'Radiation Oncology': ['radiation oncology', 'radiation', 'radiotherapy'],
 					'Radiology': ['radiology', 'imaging', 'diagnostic radiology', 'interventional radiology'],
 					'Pediatrics': ['pediatrics', 'pediatric', 'child', 'children', 'neonatal'],
 					'Internal Medicine': ['internal medicine', 'medicine', 'general medicine'],
@@ -1791,7 +1841,8 @@
 					'Surgery': ['surgery', 'surgical', 'cardiovascular surgery', 'cardiac surgery', 'thoracic surgery', 'neurosurgery', 'orthopedic surgery', 'plastic surgery', 'vascular surgery', 'transplant surgery'],
 					'Cardiology': ['cardiology', 'cardiovascular', 'cardiac', 'heart'],
 					'Neurology': ['neurology', 'neurological', 'neuroscience', 'neuroimaging', 'brain'],
-					'Oncology': ['oncology', 'cancer', 'hematology', 'radiation oncology', 'medical oncology', 'leukemia', 'lymphoma'],
+					'Oncology': ['oncology', 'cancer', 'hematology', 'medical oncology', 'leukemia', 'lymphoma'],
+					'Radiation Oncology': ['radiation oncology', 'radiation', 'radiotherapy'],
 					'Radiology': ['radiology', 'imaging', 'diagnostic radiology', 'interventional radiology'],
 					'Pediatrics': ['pediatrics', 'pediatric', 'child', 'children', 'neonatal'],
 					'Internal Medicine': ['internal medicine', 'medicine', 'general medicine'],
