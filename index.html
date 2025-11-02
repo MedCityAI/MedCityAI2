@@ -1326,29 +1326,25 @@
 
 		// Populate department filter dropdown
 		function populateDepartmentFilter() {
-			const departmentSet = new Set();
+			// Define broad department categories
+			const categories = {
+				'Surgery': ['Surgery', 'Surgical', 'Cardiovascular Surgery', 'Cardiac Surgery', 'Thoracic Surgery', 'Neurosurgery', 'Orthopedic Surgery', 'Plastic Surgery', 'Vascular Surgery', 'Transplant Surgery'],
+				'Cardiology': ['Cardiology', 'Cardiovascular', 'Cardiac', 'Heart'],
+				'Neurology': ['Neurology', 'Neurological', 'Neuroscience', 'Neuroimaging', 'Brain'],
+				'Oncology': ['Oncology', 'Cancer', 'Hematology', 'Radiation Oncology', 'Medical Oncology'],
+				'Radiology': ['Radiology', 'Imaging', 'Diagnostic Radiology', 'Interventional Radiology'],
+				'Pediatrics': ['Pediatrics', 'Pediatric', 'Child', 'Children', 'Neonatal'],
+				'Internal Medicine': ['Internal Medicine', 'Medicine', 'General Medicine'],
+				'Psychiatry': ['Psychiatry', 'Psychiatric', 'Mental Health', 'Psychology'],
+				'Other': []
+			};
 			
-			// Extract all unique departments from all articles
-			allArticlesData.forEach(article => {
-				const affiliationsList = article.affiliations ? article.affiliations.split('|') : [];
-				affiliationsList.forEach(affiliation => {
-					const deptMatch = affiliation.match(/(?:Department|Division|Center|Institute|Clinic|Unit|Section)\s+of\s+([^,\.]+)/i);
-					if (deptMatch) {
-						const deptName = deptMatch[1].trim();
-						departmentSet.add(deptName);
-					}
-				});
-			});
-			
-			// Sort departments alphabetically
-			const departments = Array.from(departmentSet).sort();
-			
-			// Populate dropdown
+			// Populate dropdown with categories
 			const selectElement = document.getElementById('departmentFilter');
-			departments.forEach(dept => {
+			Object.keys(categories).forEach(category => {
 				const option = document.createElement('option');
-				option.value = dept;
-				option.textContent = dept;
+				option.value = category;
+				option.textContent = category;
 				selectElement.appendChild(option);
 			});
 		}
@@ -1409,14 +1405,43 @@
 			
 			// Apply department filter if selected
 			if (departmentFilter && departmentFilter.trim() !== '') {
+				// Define category mappings
+				const categoryKeywords = {
+					'Surgery': ['surgery', 'surgical', 'cardiovascular surgery', 'cardiac surgery', 'thoracic surgery', 'neurosurgery', 'orthopedic surgery', 'plastic surgery', 'vascular surgery', 'transplant surgery'],
+					'Cardiology': ['cardiology', 'cardiovascular', 'cardiac', 'heart'],
+					'Neurology': ['neurology', 'neurological', 'neuroscience', 'neuroimaging', 'brain'],
+					'Oncology': ['oncology', 'cancer', 'hematology', 'radiation oncology', 'medical oncology', 'leukemia', 'lymphoma'],
+					'Radiology': ['radiology', 'imaging', 'diagnostic radiology', 'interventional radiology'],
+					'Pediatrics': ['pediatrics', 'pediatric', 'child', 'children', 'neonatal'],
+					'Internal Medicine': ['internal medicine', 'medicine', 'general medicine'],
+					'Psychiatry': ['psychiatry', 'psychiatric', 'mental health', 'psychology']
+				};
+				
 				filteredArticlesData = filteredArticlesData.filter(article => {
 					const affiliationsList = article.affiliations ? article.affiliations.split('|') : [];
-					// Check if any affiliation contains the selected department
+					
+					// Check if any affiliation contains a department that matches the selected category
 					return affiliationsList.some(affiliation => {
 						const deptMatch = affiliation.match(/(?:Department|Division|Center|Institute|Clinic|Unit|Section)\s+of\s+([^,\.]+)/i);
 						if (deptMatch) {
-							const deptName = deptMatch[1].trim();
-							return deptName === departmentFilter;
+							const deptName = deptMatch[1].trim().toLowerCase();
+							
+							// Check if this department matches the selected category
+							if (departmentFilter === 'Other') {
+								// For "Other", include departments that don't match any category
+								let matchesAnyCategory = false;
+								for (const [category, keywords] of Object.entries(categoryKeywords)) {
+									if (keywords.some(keyword => deptName.includes(keyword))) {
+										matchesAnyCategory = true;
+										break;
+									}
+								}
+								return !matchesAnyCategory;
+							} else {
+								// Check if department name contains any keyword from the selected category
+								const keywords = categoryKeywords[departmentFilter] || [];
+								return keywords.some(keyword => deptName.includes(keyword));
+							}
 						}
 						return false;
 					});
