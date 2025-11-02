@@ -299,16 +299,28 @@
 		
 		/* Main content layout with sidebar */
 		#main-content {
-			max-width: 1200px;
-			margin: 0 auto;
-			padding: 40px 20px;
+			width: 100%;
+			padding: 0;
 		}
 		
 		.content-with-sidebar {
 			display: grid;
 			grid-template-columns: 220px 1fr;
-			gap: 40px;
+			gap: 0;
 			align-items: start;
+			max-width: 1400px;
+			margin: 0 auto;
+		}
+		
+		.sidebar-filter {
+			padding-right: 30px;
+			padding-left: 20px;
+		}
+		
+		#one {
+			max-width: 1200px;
+			padding-left: 20px;
+			padding-right: 20px;
 		}
 		
 		/* Hide sidebar on smaller screens */
