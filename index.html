@@ -255,20 +255,14 @@
 			font-weight: 600;
 		}
 		
-		/* Fixed Sidebar Filter */
+		/* Sidebar Filter */
 		.sidebar-filter {
-			position: fixed;
-			left: 20px;
-			top: 120px;
 			width: 220px;
 			background: white;
 			border: 1px solid #ddd;
 			border-radius: 8px;
 			padding: 20px;
 			box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-			z-index: 100;
-			max-height: calc(100vh - 140px);
-			overflow-y: auto;
 		}
 		
 		.sidebar-content {
@@ -303,17 +297,27 @@
 			user-select: none;
 		}
 		
-		/* Adjust main content to make room for sidebar */
-		@media (min-width: 1024px) {
-			#main-content {
-				padding-left: 260px;
-			}
+		/* Main content layout with sidebar */
+		#main-content {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 40px 20px;
+		}
+		
+		.content-with-sidebar {
+			display: grid;
+			grid-template-columns: 220px 1fr;
+			gap: 40px;
+			align-items: start;
 		}
 		
 		/* Hide sidebar on smaller screens */
 		@media (max-width: 1023px) {
 			.sidebar-filter {
 				display: none;
+			}
+			.content-with-sidebar {
+				grid-template-columns: 1fr;
 			}
 		}
 		
@@ -984,11 +988,12 @@
 
 			<!-- Main Content Section -->
 			<main id="main-content" role="main">
-				<!-- Fixed Sidebar Filter -->
-				<aside id="sidebarFilter" class="sidebar-filter" role="complementary" aria-label="Department filters">
-					<div class="sidebar-header">
-						<h3 style="margin: 0 0 16px 0; font-size: 16px; font-weight: 700; color: #2c3e50;">Filter by Department</h3>
-					</div>
+				<div class="content-with-sidebar">
+					<!-- Fixed Sidebar Filter -->
+					<aside id="sidebarFilter" class="sidebar-filter" role="complementary" aria-label="Department filters">
+						<div class="sidebar-header">
+							<h3 style="margin: 0 0 16px 0; font-size: 16px; font-weight: 700; color: #2c3e50;">Filter by Department</h3>
+						</div>
 					<div class="sidebar-content">
 						<label class="filter-checkbox">
 							<input type="checkbox" value="Surgery" class="dept-checkbox">
@@ -1065,9 +1070,10 @@
 						</div>
 					</div>
 				</section>
-			</main>
+			</div>
+		</main>
 
-			<!-- Footer -->
+		<!-- Footer -->
 			<footer id="footer">
 				<ul class="icons">
 					<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
