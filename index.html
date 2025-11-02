@@ -271,10 +271,17 @@
 		
 		.filter-bar-content #pubmed-results {
 			background: #f5f5f5;
-			padding: 40px 20px;
+			padding: 40px 0;
 			margin-top: 40px;
 			border-radius: 0;
 			box-shadow: none;
+		}
+		
+		/* Add side padding only on mobile */
+		@media (max-width: 768px) {
+			.filter-bar-content #pubmed-results {
+				padding: 40px 20px;
+			}
 		}
 		
 		.filter-bar-title {
