@@ -257,9 +257,9 @@
 		
 		/* Filter bar below header */
 		.filter-bar {
-			background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-			border-bottom: 2px solid #1a252f;
-			padding: 20px 0;
+			background: white;
+			border-bottom: 2px solid #e0e0e0;
+			padding: 20px 0 60px 0;
 			box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 		}
 		
@@ -269,8 +269,16 @@
 			padding: 0 20px;
 		}
 		
+		.filter-bar-content #pubmed-results {
+			background: white;
+			padding: 40px 20px;
+			margin-top: 40px;
+			border-radius: 8px;
+			box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+		}
+		
 		.filter-bar-title {
-			color: #e0e0e0;
+			color: #2c3e50;
 			font-size: 14px;
 			font-weight: 600;
 			margin-bottom: 12px;
@@ -284,20 +292,26 @@
 		}
 		
 		.filter-bar .dept-filter-link {
-			color: #e0e0e0;
+			color: #555;
 			text-decoration: none;
 			font-size: 14px;
 			padding: 6px 12px;
 			transition: all 0.2s;
+			border-radius: 4px;
+		}
+		
+		.filter-bar .dept-filter-link:hover {
+			background: #f5f5f5;
+			color: #2c3e50;
 		}
 		
 		.filter-bar .dept-filter-link.active {
 			color: #fff !important;
-			background: rgba(255, 255, 255, 0.2);
+			background: #3498db;
 		}
 		
 		.filter-bar-links span {
-			color: #999;
+			color: #ccc;
 		}
 		
 		/* Sidebar Filter */
@@ -1017,7 +1031,7 @@
 				<div class="filter-bar-content">
 					<div class="filter-bar-title">Filter by Specialty:</div>
 					<div class="filter-bar-links">
-						<a href="#" class="dept-filter-link active" data-dept="">All</a>
+						<a href="#" class="dept-filter-link active" data-dept="">Everything</a>
 						<span>•</span>
 						<a href="#" class="dept-filter-link" data-dept="Surgery">Surgery</a>
 						<span>•</span>
@@ -1039,11 +1053,21 @@
 						<span>•</span>
 						<a href="#" class="dept-filter-link" data-dept="Other">Other</a>
 					</div>
+					
+					<!-- Results Grid -->
+					<div id="pubmed-results" role="region" aria-live="polite" aria-atomic="false" aria-label="Publication results"></div>
+					
+					<!-- Pagination Controls -->
+					<nav id="pagination-controls" style="display:none; text-align:center; margin: 30px 0; padding: 20px;" role="navigation" aria-label="Pagination">
+						<button id="prevPage" aria-label="Go to previous page" style="padding:12px 24px; margin:0 10px; border-radius:25px; border:1px solid #3498db; background:white; color:#3498db; cursor:pointer; font-weight:600;">← Previous</button>
+						<span id="pageInfo" role="status" aria-live="polite" style="margin:0 20px; font-size:16px; color:#2c3e50; font-weight:500;">Page 1</span>
+						<button id="nextPage" aria-label="Go to next page" style="padding:12px 24px; margin:0 10px; border-radius:25px; border:1px solid #3498db; background:white; color:#3498db; cursor:pointer; font-weight:600;">Next →</button>
+					</nav>
 				</div>
 			</div>
 
-			<!-- Main Content Section -->
-			<main id="main-content" role="main">
+			<!-- Main Content Section (Hidden) -->
+			<main id="main-content" role="main" style="display: none;">
 				<div class="content-with-sidebar">
 					<!-- Fixed Sidebar Filter -->
 					<aside id="sidebarFilter" class="sidebar-filter" role="complementary" aria-label="Department filters" style="display: none;">
