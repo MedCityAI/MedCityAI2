@@ -310,18 +310,9 @@
 		}
 		
 		.content-with-sidebar {
-			display: grid;
-			grid-template-columns: 180px 1fr;
-			gap: 20px;
-			align-items: start;
-			max-width: 1400px;
+			max-width: 1200px;
 			margin: 0 auto;
 			padding: 40px 20px;
-		}
-		
-		.sidebar-filter {
-			padding-right: 0;
-			padding-left: 0;
 		}
 		
 		#one {
@@ -334,9 +325,6 @@
 		@media (max-width: 1023px) {
 			.sidebar-filter {
 				display: none;
-			}
-			.content-with-sidebar {
-				grid-template-columns: 1fr;
 			}
 		}
 		
@@ -1009,7 +997,7 @@
 			<main id="main-content" role="main">
 				<div class="content-with-sidebar">
 					<!-- Fixed Sidebar Filter -->
-					<aside id="sidebarFilter" class="sidebar-filter" role="complementary" aria-label="Department filters">
+					<aside id="sidebarFilter" class="sidebar-filter" role="complementary" aria-label="Department filters" style="display: none;">
 						<div class="sidebar-header">
 							<h3 style="margin: 0 0 16px 0; font-size: 16px; font-weight: 700; color: #2c3e50;">Filter by Department</h3>
 						</div>
