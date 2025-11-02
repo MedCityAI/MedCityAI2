@@ -425,7 +425,7 @@
 			margin: 0 auto;
 			   padding: 36px 20px;
 			display: grid;
-			grid-template-columns: 1fr 450px;
+			grid-template-columns: 1fr 350px;
 			gap: 60px;
 			align-items: center;
 			position: relative;
@@ -887,39 +887,30 @@
 						<p style="color:#e0e0e0;">MedCityAI is a real-time feed of biomedical research from Rochester, MN. All information freely sourced from the National Library of Medicine (PubMed).</p>
 						
 						<!-- Department Filter Links -->
-						<div id="departmentFilterLinks" style="margin-bottom: 16px; text-align: center;">
-							<span style="color: #e0e0e0; font-size: 14px; font-weight: 600; margin-right: 8px;">Filter by:</span>
-							<a href="#" class="dept-filter-link active" data-dept="" style="color: #fff; text-decoration: none; font-size: 14px; padding: 4px 8px; border-radius: 4px; transition: all 0.2s;">All</a>
-							<span style="color: #999; margin: 0 6px;">•</span>
-							<a href="#" class="dept-filter-link" data-dept="Surgery" style="color: #e0e0e0; text-decoration: none; font-size: 14px; padding: 4px 8px; transition: all 0.2s;">Surgery</a>
-							<span style="color: #999; margin: 0 6px;">•</span>
-							<a href="#" class="dept-filter-link" data-dept="Cardiology" style="color: #e0e0e0; text-decoration: none; font-size: 14px; padding: 4px 8px; transition: all 0.2s;">Cardiology</a>
-							<span style="color: #999; margin: 0 6px;">•</span>
-							<a href="#" class="dept-filter-link" data-dept="Neurology" style="color: #e0e0e0; text-decoration: none; font-size: 14px; padding: 4px 8px; transition: all 0.2s;">Neurology</a>
-							<span style="color: #999; margin: 0 6px;">•</span>
-							<a href="#" class="dept-filter-link" data-dept="Oncology" style="color: #e0e0e0; text-decoration: none; font-size: 14px; padding: 4px 8px; transition: all 0.2s;">Oncology</a>
-							<span style="color: #999; margin: 0 6px;">•</span>
-							<a href="#" class="dept-filter-link" data-dept="Radiology" style="color: #e0e0e0; text-decoration: none; font-size: 14px; padding: 4px 8px; transition: all 0.2s;">Radiology</a>
-							<span style="color: #999; margin: 0 6px;">•</span>
-							<a href="#" class="dept-filter-link" data-dept="Pediatrics" style="color: #e0e0e0; text-decoration: none; font-size: 14px; padding: 4px 8px; transition: all 0.2s;">Pediatrics</a>
-							<span style="color: #999; margin: 0 6px;">•</span>
-							<a href="#" class="dept-filter-link" data-dept="Internal Medicine" style="color: #e0e0e0; text-decoration: none; font-size: 14px; padding: 4px 8px; transition: all 0.2s;">Internal Medicine</a>
-							<span style="color: #999; margin: 0 6px;">•</span>
-							<a href="#" class="dept-filter-link" data-dept="Psychiatry" style="color: #e0e0e0; text-decoration: none; font-size: 14px; padding: 4px 8px; transition: all 0.2s;">Psychiatry</a>
-							<span style="color: #999; margin: 0 6px;">•</span>
-							<a href="#" class="dept-filter-link" data-dept="Other" style="color: #e0e0e0; text-decoration: none; font-size: 14px; padding: 4px 8px; transition: all 0.2s;">Other</a>
-						</div>
-						
-						<form class="search-bar" id="searchForm" role="search" aria-label="Search publications" style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
-							<div style="position:relative; flex:1; display:flex; align-items:center; min-width: 300px;">
-								<label for="searchInput" class="sr-only">Search topics, authors, or keywords</label>
-								<span style="position:absolute;left:18px;top:50%;transform:translateY(-50%);color:#aaa;font-size:1.3em;pointer-events:none;" aria-hidden="true">
-									<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Search icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-								</span>
-								<input type="search" id="searchInput" name="query" aria-label="Search topics, authors, or keywords" placeholder="Search topics, authors, or keywords (e.g., AI, radiology, oncology)..." style="width:100%;padding:14px 18px 14px 48px;border-radius:30px;border:1px solid #ccc;font-size:16px;display:flex;align-items:center;">
+						<div id="departmentFilterLinks" style="margin-top: 24px; text-align: left;">
+							<div style="color: #e0e0e0; font-size: 14px; font-weight: 600; margin-bottom: 12px;">Filter by Specialty:</div>
+							<div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+								<a href="#" class="dept-filter-link active" data-dept="" style="color: #fff; text-decoration: none; font-size: 14px; padding: 6px 12px; border-radius: 4px; transition: all 0.2s;">All</a>
+								<span style="color: #999;">•</span>
+								<a href="#" class="dept-filter-link" data-dept="Surgery" style="color: #e0e0e0; text-decoration: none; font-size: 14px; padding: 6px 12px; transition: all 0.2s;">Surgery</a>
+								<span style="color: #999;">•</span>
+								<a href="#" class="dept-filter-link" data-dept="Cardiology" style="color: #e0e0e0; text-decoration: none; font-size: 14px; padding: 6px 12px; transition: all 0.2s;">Cardiology</a>
+								<span style="color: #999;">•</span>
+								<a href="#" class="dept-filter-link" data-dept="Neurology" style="color: #e0e0e0; text-decoration: none; font-size: 14px; padding: 6px 12px; transition: all 0.2s;">Neurology</a>
+								<span style="color: #999;">•</span>
+								<a href="#" class="dept-filter-link" data-dept="Oncology" style="color: #e0e0e0; text-decoration: none; font-size: 14px; padding: 6px 12px; transition: all 0.2s;">Oncology</a>
+								<span style="color: #999;">•</span>
+								<a href="#" class="dept-filter-link" data-dept="Radiology" style="color: #e0e0e0; text-decoration: none; font-size: 14px; padding: 6px 12px; transition: all 0.2s;">Radiology</a>
+								<span style="color: #999;">•</span>
+								<a href="#" class="dept-filter-link" data-dept="Pediatrics" style="color: #e0e0e0; text-decoration: none; font-size: 14px; padding: 6px 12px; transition: all 0.2s;">Pediatrics</a>
+								<span style="color: #999;">•</span>
+								<a href="#" class="dept-filter-link" data-dept="Internal Medicine" style="color: #e0e0e0; text-decoration: none; font-size: 14px; padding: 6px 12px; transition: all 0.2s;">Internal Medicine</a>
+								<span style="color: #999;">•</span>
+								<a href="#" class="dept-filter-link" data-dept="Psychiatry" style="color: #e0e0e0; text-decoration: none; font-size: 14px; padding: 6px 12px; transition: all 0.2s;">Psychiatry</a>
+								<span style="color: #999;">•</span>
+								<a href="#" class="dept-filter-link" data-dept="Other" style="color: #e0e0e0; text-decoration: none; font-size: 14px; padding: 6px 12px; transition: all 0.2s;">Other</a>
 							</div>
-							<button type="submit" class="sr-only">Search</button>
-						</form>
+						</div>
 					</div>
 					<div class="hero-right">
 						<div class="chart-container">
@@ -1677,16 +1668,8 @@
 				if (e.target === authorModal) closeAuthorModal();
 			});
 
-			// Set up search form event listener
-			const searchForm = document.getElementById('searchForm');
-			const searchInput = document.getElementById('searchInput');
+			// Set up department filter
 			let currentDepartmentFilter = '';
-			
-			searchForm.addEventListener('submit', function(e) {
-				e.preventDefault();
-				const query = searchInput.value.trim();
-				fetchPubMedResults(query, 1, currentDepartmentFilter);
-			});
 			
 			// Add click event listeners to department filter links
 			document.querySelectorAll('.dept-filter-link').forEach(link => {
@@ -1703,8 +1686,7 @@
 					currentDepartmentFilter = this.getAttribute('data-dept');
 					
 					// Fetch filtered results
-					const query = searchInput.value.trim();
-					fetchPubMedResults(query, 1, currentDepartmentFilter);
+					fetchPubMedResults('', 1, currentDepartmentFilter);
 				});
 			});
 
