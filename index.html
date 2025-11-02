@@ -257,28 +257,34 @@
 		
 		/* Sidebar Filter */
 		.sidebar-filter {
-			width: 220px;
+			width: 160px;
 			background: white;
 			border: 1px solid #ddd;
 			border-radius: 8px;
-			padding: 20px;
+			padding: 16px 12px;
 			box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+		}
+		
+		.sidebar-filter .sidebar-header h3 {
+			font-size: 14px !important;
+			margin: 0 0 10px 0 !important;
 		}
 		
 		.sidebar-content {
 			display: flex;
 			flex-direction: column;
-			gap: 10px;
+			gap: 6px;
 		}
 		
 		.filter-checkbox {
 			display: flex;
 			align-items: center;
-			gap: 10px;
+			gap: 8px;
 			cursor: pointer;
-			padding: 6px 8px;
+			padding: 4px 6px;
 			border-radius: 4px;
 			transition: background 0.2s;
+			font-size: 13px;
 		}
 		
 		.filter-checkbox:hover {
@@ -305,22 +311,23 @@
 		
 		.content-with-sidebar {
 			display: grid;
-			grid-template-columns: 220px 1fr;
-			gap: 0;
+			grid-template-columns: 180px 1fr;
+			gap: 20px;
 			align-items: start;
 			max-width: 1400px;
 			margin: 0 auto;
+			padding: 40px 20px;
 		}
 		
 		.sidebar-filter {
-			padding-right: 30px;
-			padding-left: 20px;
+			padding-right: 0;
+			padding-left: 0;
 		}
 		
 		#one {
 			max-width: 1200px;
-			padding-left: 20px;
-			padding-right: 20px;
+			margin: 0 auto;
+			padding: 0 20px;
 		}
 		
 		/* Hide sidebar on smaller screens */
@@ -1043,7 +1050,7 @@
 							<input type="checkbox" value="Other" class="dept-checkbox">
 							<span>Other</span>
 						</label>
-						<button id="clearFilters" style="width: 100%; margin-top: 16px; padding: 8px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600;">Clear All</button>
+						<button id="clearFilters" style="width: 100%; margin-top: 12px; padding: 6px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600;">Clear All</button>
 					</div>
 				</aside>
 				
