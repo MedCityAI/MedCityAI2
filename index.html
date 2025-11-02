@@ -259,7 +259,7 @@
 		.filter-bar {
 			background: #f5f5f5;
 			border-bottom: 2px solid #e0e0e0;
-			padding: 20px 0 60px 0;
+			padding: 20px 0 20px 0;
 			box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 		}
 		
@@ -271,8 +271,8 @@
 		
 		.filter-bar-content #pubmed-results {
 			background: #f5f5f5;
-			padding: 40px 0;
-			margin-top: 40px;
+			padding: 20px 0;
+			margin-top: 0;
 			border-radius: 0;
 			box-shadow: none;
 		}
@@ -280,7 +280,7 @@
 		/* Add side padding only on mobile */
 		@media (max-width: 768px) {
 			.filter-bar-content #pubmed-results {
-				padding: 40px 20px;
+				padding: 20px 20px;
 			}
 		}
 		
@@ -1056,12 +1056,12 @@
 						<span>•</span>
 						<a href="#" class="dept-filter-link" data-dept="Internal Medicine">Internal Medicine</a>
 						<span>•</span>
-						<a href="#" class="dept-filter-link" data-dept="Psychiatry">Psychiatry</a>
-						<span>•</span>
-						<a href="#" class="dept-filter-link" data-dept="Other">Other</a>
-					</div>
-					
-					<!-- Results Grid -->
+					<a href="#" class="dept-filter-link" data-dept="Psychiatry">Psychiatry</a>
+					<span>•</span>
+					<a href="#" class="dept-filter-link" data-dept="Generative AI">Generative AI</a>
+					<span>•</span>
+					<a href="#" class="dept-filter-link" data-dept="Other">Other</a>
+				</div>					<!-- Results Grid -->
 					<div id="pubmed-results" role="region" aria-live="polite" aria-atomic="false" aria-label="Publication results"></div>
 					
 					<!-- Pagination Controls -->
@@ -1621,7 +1621,8 @@
 					'Radiology': ['radiology', 'imaging', 'diagnostic radiology', 'interventional radiology'],
 					'Pediatrics': ['pediatrics', 'pediatric', 'child', 'children', 'neonatal'],
 					'Internal Medicine': ['internal medicine', 'medicine', 'general medicine'],
-					'Psychiatry': ['psychiatry', 'psychiatric', 'mental health', 'psychology']
+					'Psychiatry': ['psychiatry', 'psychiatric', 'mental health', 'psychology'],
+					'Generative AI': ['generative ai', 'artificial intelligence', 'machine learning', 'deep learning', 'neural network', 'large language model', 'llm', 'chatgpt', 'gpt', 'ai']
 				};
 				
 				filteredArticlesData = filteredArticlesData.filter(article => {
@@ -1877,7 +1878,8 @@
 					'Radiology': ['radiology', 'imaging', 'diagnostic radiology', 'interventional radiology'],
 					'Pediatrics': ['pediatrics', 'pediatric', 'child', 'children', 'neonatal'],
 					'Internal Medicine': ['internal medicine', 'medicine', 'general medicine'],
-					'Psychiatry': ['psychiatry', 'psychiatric', 'mental health', 'psychology']
+					'Psychiatry': ['psychiatry', 'psychiatric', 'mental health', 'psychology'],
+					'Generative AI': ['generative ai', 'artificial intelligence', 'machine learning', 'deep learning', 'neural network', 'large language model', 'llm', 'chatgpt', 'gpt', 'ai']
 				};
 				
 				filteredArticlesData = filteredArticlesData.filter(article => {
