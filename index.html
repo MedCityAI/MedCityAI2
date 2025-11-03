@@ -60,7 +60,7 @@
 		.results {
 			max-width: 1200px;
 			margin: 40px auto;
-			padding: 0 20px;
+			padding: 0;
 			column-count: 3;
 			column-gap: 20px;
 		}
@@ -266,7 +266,7 @@
 		.filter-bar-content {
 			max-width: 1200px;
 			margin: 0 auto;
-			padding: 0 20px;
+			padding: 0;
 		}
 		
 		.filter-bar-content #pubmed-results {
@@ -279,6 +279,9 @@
 		
 		/* Add side padding only on mobile */
 		@media (max-width: 768px) {
+			.filter-bar-content {
+				padding: 0 20px;
+			}
 			.filter-bar-content #pubmed-results {
 				padding: 20px 20px;
 			}
@@ -885,7 +888,10 @@
 			}
 		}
 		@media (max-width: 600px) {
-			.results { column-count: 1; }
+			.results { 
+				column-count: 1;
+				padding: 0 20px;
+			}
 			.hero-content {
 				padding: 40px 15px;
 			}
