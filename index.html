@@ -628,17 +628,19 @@
 			left: 0;
 			background: #e74c3c;
 			color: #fff;
-			font-size: 11px;
+			font-size: 12px;
 			font-weight: bold;
-			padding: 6px 14px;
-			border-radius: 16px 0 12px 0;
-			display: flex;
-			align-items: center;
-			gap: 6px;
+			padding: 4px 12px;
+			border-radius: 8px 0 8px 0;
 			z-index: 10;
 		}
-		.featured-badge i {
+		.featured-star {
+			position: absolute;
+			top: 12px;
+			right: 12px;
+			color: #e74c3c;
 			font-size: 12px;
+			z-index: 10;
 		}
 		.featured-card .result-title {
 			display: block;
@@ -2285,9 +2287,9 @@
 			return `
 				<div class="featured-card">
 					<div class="featured-badge">
-						<i class="fas fa-star"></i>
 						FEATURED
 					</div>
+					<i class="fas fa-star featured-star"></i>
 					<a href="${url}" class="result-title" target="_blank" rel="noopener noreferrer">
 						${title}
 					</a>
