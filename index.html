@@ -581,6 +581,120 @@
 			justify-content: center;
 		}
 
+		/* Featured Carousel Styles */
+		.featured-carousel {
+			position: relative;
+			width: 100%;
+			max-width: 380px;
+			aspect-ratio: 1;
+		}
+		.carousel-container {
+			position: relative;
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+			border-radius: 16px;
+		}
+		.carousel-slide {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			opacity: 0;
+			transition: opacity 0.6s ease-in-out;
+			pointer-events: none;
+		}
+		.carousel-slide.active {
+			opacity: 1;
+			pointer-events: auto;
+		}
+		.featured-card {
+			background: #fff;
+			border-radius: 16px;
+			padding: 24px;
+			height: 100%;
+			box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+			display: flex;
+			flex-direction: column;
+			gap: 14px;
+			position: relative;
+			overflow: hidden;
+		}
+		.featured-badge {
+			position: absolute;
+			top: 0;
+			right: 0;
+			background: #e74c3c;
+			color: #fff;
+			font-size: 11px;
+			font-weight: bold;
+			padding: 6px 14px;
+			border-radius: 0 16px 0 12px;
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			z-index: 10;
+		}
+		.featured-badge i {
+			font-size: 12px;
+		}
+		.featured-card .result-title {
+			display: block;
+			font-size: 16px;
+			font-weight: 600;
+			color: #0056a3;
+			text-decoration: none;
+			margin-top: 24px;
+			margin-bottom: 10px;
+			line-height: 1.4;
+		}
+		.featured-card .result-title:hover {
+			text-decoration: underline;
+		}
+		.featured-card .result-authors {
+			color: #555;
+			font-size: 13px;
+			margin-bottom: 8px;
+			line-height: 1.5;
+		}
+		.featured-card .result-citation {
+			color: #777;
+			font-size: 12px;
+			margin-bottom: 12px;
+		}
+		.featured-card .result-abstract {
+			color: #666;
+			font-size: 13px;
+			line-height: 1.6;
+			flex: 1;
+			overflow: hidden;
+			display: -webkit-box;
+			-webkit-line-clamp: 6;
+			line-clamp: 6;
+			-webkit-box-orient: vertical;
+		}
+		.carousel-dots {
+			display: flex;
+			justify-content: center;
+			gap: 10px;
+			margin-top: 16px;
+		}
+		.carousel-dots .dot {
+			width: 10px;
+			height: 10px;
+			border-radius: 50%;
+			background: rgba(255,255,255,0.4);
+			cursor: pointer;
+			transition: all 0.3s ease;
+		}
+		.carousel-dots .dot.active {
+			background: #fff;
+			width: 28px;
+			border-radius: 5px;
+		}
+		.carousel-dots .dot:hover {
+			background: rgba(255,255,255,0.7);
+		}
+
 		.hero-left h1 {
 			font-size: 3em;
 			font-weight: 800;
@@ -714,6 +828,10 @@
 			.chart-container {
 				display: none;
 			}
+			.featured-carousel {
+				max-width: 100%;
+				margin: 0 auto;
+			}
 			.hero-left h1 { font-size: 2.4em; }
 			.hero-left p { font-size: 1.1em; }
 			.nav-links {
@@ -748,6 +866,19 @@
 			}
 			.chart-container {
 				display: none;
+			}
+			.featured-carousel {
+				max-width: 320px;
+			}
+			.featured-card {
+				padding: 20px;
+			}
+			.featured-card .result-title {
+				font-size: 15px;
+			}
+			.featured-card .result-authors,
+			.featured-card .result-abstract {
+				font-size: 12px;
 			}
 
 			.stats-card {
@@ -1026,8 +1157,17 @@
 						<p style="color:#e0e0e0;">MedCityAI is a real-time feed of biomedical research from Rochester, MN. All information freely sourced from the National Library of Medicine (PubMed).</p>
 					</div>
 					<div class="hero-right">
-						<div class="chart-container">
-							<img src="images/med_city_publications_web.png" alt="Chart showing growth of Rochester, Minnesota biomedical publications over time" style="width: 100%; height: 100%; object-fit: contain;">
+						<div class="featured-carousel">
+							<div class="carousel-container">
+								<div class="carousel-slide" id="featuredSlide1"></div>
+								<div class="carousel-slide" id="featuredSlide2"></div>
+								<div class="carousel-slide" id="featuredSlide3"></div>
+							</div>
+							<div class="carousel-dots">
+								<span class="dot active" data-slide="0"></span>
+								<span class="dot" data-slide="1"></span>
+								<span class="dot" data-slide="2"></span>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -2093,8 +2233,114 @@
 			}
 		}
 
+		// Featured Carousel Functions
+		let carouselInterval;
+		let currentSlideIndex = 0;
+
+		function initializeFeaturedCarousel(articles) {
+			if (!articles || articles.length === 0) return;
+
+			// Populate each slide
+			articles.forEach((article, index) => {
+				const slide = document.getElementById(`featuredSlide${index + 1}`);
+				if (slide) {
+					slide.innerHTML = createFeaturedCard(article);
+				}
+			});
+
+			// Show first slide
+			showSlide(0);
+
+			// Set up dot navigation
+			const dots = document.querySelectorAll('.carousel-dots .dot');
+			dots.forEach((dot, index) => {
+				dot.addEventListener('click', () => {
+					showSlide(index);
+					resetCarouselTimer();
+				});
+			});
+
+			// Start auto-rotation
+			startCarouselRotation();
+		}
+
+		function createFeaturedCard(article) {
+			const title = article.title || 'Untitled';
+			const authors = article.authors_display || article.authors?.replaceAll('|', ', ') || 'Authors unavailable';
+			const journal = article.journal || 'Journal pending';
+			const pubdate = article.pubdate || '';
+			const pmid = article.pmid || '';
+			const abstract = article.abstract || 'No abstract available.';
+			const url = article.url || `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`;
+			
+			// Truncate authors if too long
+			let authorsHtml = authors;
+			const authorList = authors.split(',').map(a => a.trim());
+			if (authorList.length > 8) {
+				authorsHtml = authorList.slice(0, 7).join(', ') + ', et al.';
+			}
+
+			// Truncate abstract for preview
+			const abstractPreview = abstract.length > 250 ? abstract.substring(0, 247) + '...' : abstract;
+
+			const citation = `${journal}. ${pubdate}. PMID: ${pmid}`;
+
+			return `
+				<div class="featured-card">
+					<div class="featured-badge">
+						<i class="fas fa-star"></i>
+						FEATURED
+					</div>
+					<a href="${url}" class="result-title" target="_blank" rel="noopener noreferrer">
+						${title}
+					</a>
+					<div class="result-authors">${authorsHtml}</div>
+					<div class="result-citation"><em>${citation}</em></div>
+					<div class="result-abstract">${abstractPreview}</div>
+				</div>
+			`;
+		}
+
+		function showSlide(index) {
+			const slides = document.querySelectorAll('.carousel-slide');
+			const dots = document.querySelectorAll('.carousel-dots .dot');
+
+			// Remove active class from all slides and dots
+			slides.forEach(slide => slide.classList.remove('active'));
+			dots.forEach(dot => dot.classList.remove('active'));
+
+			// Add active class to current slide and dot
+			if (slides[index]) {
+				slides[index].classList.add('active');
+			}
+			if (dots[index]) {
+				dots[index].classList.add('active');
+			}
+
+			currentSlideIndex = index;
+		}
+
+		function startCarouselRotation() {
+			carouselInterval = setInterval(() => {
+				const nextIndex = (currentSlideIndex + 1) % 3;
+				showSlide(nextIndex);
+			}, 5000); // Rotate every 5 seconds
+		}
+
+		function resetCarouselTimer() {
+			clearInterval(carouselInterval);
+			startCarouselRotation();
+		}
+
 		// Initialize application
 		document.addEventListener('DOMContentLoaded', function() {
+			// Load data and initialize featured carousel
+			loadCSVData().then(articles => {
+				if (articles && articles.length > 0) {
+					initializeFeaturedCarousel(articles.slice(0, 3));
+				}
+			});
+
 			// Set up modal event listeners
 			const modalBg = document.getElementById('modalBg');
 			const modalClose = document.getElementById('modalClose');
