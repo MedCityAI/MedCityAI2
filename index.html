@@ -1148,7 +1148,7 @@
 					<div class="nav-links" role="menubar">
 						<a href="index.html" role="menuitem" aria-current="page">New Today</a>
 						<a href="search.html" role="menuitem">Search</a>
-						<a href="analytics.html" role="menuitem">Analytics</a>
+						<a href="featured.html" role="menuitem">Featured</a>
 						<a href="about.html" role="menuitem">About</a>
 						<a href="contact.html" role="menuitem">Contact</a>
 					</div>
@@ -1200,12 +1200,16 @@
 						<p style="color:#e0e0e0;">MedCityAI is a real-time feed of biomedical research from Rochester, MN. All information freely sourced from the National Library of Medicine (PubMed).</p>
 						<div class="hero-buttons">
 							<button class="hero-btn hero-btn-primary" id="newTodayBtn">
-								<i class="fas fa-sparkles"></i>
+								<i class="fas fa-arrow-down"></i>
 								New Today
 							</button>
-							<button class="hero-btn hero-btn-secondary" id="searchDatabaseBtn">
+							<button class="hero-btn hero-btn-primary" id="featuredBtn">
+								<i class="fas fa-star"></i>
+								Featured
+							</button>
+							<button class="hero-btn hero-btn-primary" id="searchDatabaseBtn">
 								<i class="fas fa-search"></i>
-								Search Database
+								Search
 							</button>
 						</div>
 					</div>
@@ -2396,6 +2400,7 @@
 
 			// Hero button event listeners
 			const newTodayBtn = document.getElementById('newTodayBtn');
+			const featuredBtn = document.getElementById('featuredBtn');
 			const searchDatabaseBtn = document.getElementById('searchDatabaseBtn');
 
 			if (newTodayBtn) {
@@ -2419,6 +2424,13 @@
 					setTimeout(() => {
 						fetchPubMedResults('', 1, '', today);
 					}, 500);
+				});
+			}
+
+			if (featuredBtn) {
+				featuredBtn.addEventListener('click', function() {
+					// Navigate to featured page
+					window.location.href = 'featured.html';
 				});
 			}
 
