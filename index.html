@@ -59,7 +59,7 @@
 		/* Research results grid */
 		.results {
 			max-width: 1200px;
-			margin: 40px auto;
+			margin: 10px auto;
 			padding: 0;
 			column-count: 3;
 			column-gap: 20px;
@@ -526,7 +526,7 @@
 
 		/* Hero section */
 		   .hero-section {
-			   background: linear-gradient(120deg, #006FFD 0%, #0056a3 100%);
+			   background: linear-gradient(120deg, #0056D6 0%, #004080 100%);
 			   min-height: 340px;
 			   display: flex;
 			   align-items: center;
@@ -867,7 +867,10 @@
 
 		/* Responsive design */
 		@media (max-width: 900px) {
-			.results { column-count: 2; }
+			.results { 
+				column-count: 2;
+				padding: 0 20px;
+			}
 			.hero-content {
 				grid-template-columns: 1fr;
 				gap: 40px;
