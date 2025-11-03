@@ -748,6 +748,49 @@
 			border-color: rgba(255, 255, 255, 0.5);
 		}
 
+		/* Hero Buttons */
+		.hero-buttons {
+			display: flex;
+			gap: 16px;
+			flex-wrap: wrap;
+			margin-top: 32px;
+		}
+		.hero-btn {
+			display: inline-flex;
+			align-items: center;
+			gap: 10px;
+			padding: 14px 28px;
+			border-radius: 50px;
+			font-weight: 600;
+			font-size: 15px;
+			border: none;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+		}
+		.hero-btn i {
+			font-size: 16px;
+		}
+		.hero-btn-primary {
+			background: linear-gradient(135deg, #3498db, #2980b9);
+			color: white;
+		}
+		.hero-btn-primary:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+		}
+		.hero-btn-secondary {
+			background: rgba(255, 255, 255, 0.95);
+			color: #2c3e50;
+			border: 2px solid rgba(52, 152, 219, 0.3);
+		}
+		.hero-btn-secondary:hover {
+			background: white;
+			border-color: #3498db;
+			transform: translateY(-2px);
+			box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
+		}
+
 		/* Stats card */
 		.stats-card {
 			background: #ffffff;
@@ -1155,6 +1198,16 @@
 						<div class="subtitle" style="color:#e0e0e0;">Rochester, Minnesota</div>
 						<h1 style="color:#fff; text-shadow: 0 4px 18px rgba(0,0,0,0.28);">What's New in Med City?</h1>
 						<p style="color:#e0e0e0;">MedCityAI is a real-time feed of biomedical research from Rochester, MN. All information freely sourced from the National Library of Medicine (PubMed).</p>
+						<div class="hero-buttons">
+							<button class="hero-btn hero-btn-primary" id="newTodayBtn">
+								<i class="fas fa-sparkles"></i>
+								New Today
+							</button>
+							<button class="hero-btn hero-btn-secondary" id="searchDatabaseBtn">
+								<i class="fas fa-search"></i>
+								Search Database
+							</button>
+						</div>
 					</div>
 					<div class="hero-right">
 						<div class="featured-carousel">
@@ -2340,6 +2393,52 @@
 					initializeFeaturedCarousel(articles.slice(0, 3));
 				}
 			});
+
+			// Hero button event listeners
+			const newTodayBtn = document.getElementById('newTodayBtn');
+			const searchDatabaseBtn = document.getElementById('searchDatabaseBtn');
+
+			if (newTodayBtn) {
+				newTodayBtn.addEventListener('click', function() {
+					// Get today's date in YYYY-MM-DD format
+					const today = new Date().toISOString().split('T')[0];
+					
+					// Clear any existing department filters
+					document.querySelectorAll('.dept-filter-link').forEach(l => l.classList.remove('active'));
+					document.querySelector('.dept-filter-link[data-dept=""]').classList.add('active');
+					document.querySelectorAll('.dept-checkbox').forEach(cb => cb.checked = false);
+					selectedDepartments.clear();
+					
+					// Scroll to results section
+					const resultsSection = document.getElementById('pubmed-results');
+					if (resultsSection) {
+						resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+					}
+					
+					// Filter for today's publications
+					setTimeout(() => {
+						fetchPubMedResults('', 1, '', today);
+					}, 500);
+				});
+			}
+
+			if (searchDatabaseBtn) {
+				searchDatabaseBtn.addEventListener('click', function() {
+					// Scroll to search/filter section
+					const searchSection = document.getElementById('pubmed-results');
+					if (searchSection) {
+						searchSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+						
+						// Focus on search input after scroll
+						setTimeout(() => {
+							const searchInput = document.getElementById('search-input');
+							if (searchInput) {
+								searchInput.focus();
+							}
+						}, 600);
+					}
+				});
+			}
 
 			// Set up modal event listeners
 			const modalBg = document.getElementById('modalBg');
