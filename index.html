@@ -1230,33 +1230,10 @@
 				</div>
 			</section>
 
-			<!-- Filter Bar -->
+			<!-- Results Section -->
 			<div class="filter-bar">
 				<div class="filter-bar-content">
-					<div class="filter-bar-title">Filter by Specialty:</div>
-					<div class="filter-bar-links">
-						<a href="#" class="dept-filter-link active" data-dept="">Everything</a>
-						<span>•</span>
-						<a href="#" class="dept-filter-link" data-dept="Surgery">Surgery</a>
-						<span>•</span>
-						<a href="#" class="dept-filter-link" data-dept="Cardiology">Cardiology</a>
-						<span>•</span>
-						<a href="#" class="dept-filter-link" data-dept="Neurology">Neurology</a>
-						<span>•</span>
-						<a href="#" class="dept-filter-link" data-dept="Oncology">Oncology</a>
-						<span>•</span>
-						<a href="#" class="dept-filter-link" data-dept="Radiation Oncology">Radiation Oncology</a>
-						<span>•</span>
-						<a href="#" class="dept-filter-link" data-dept="Radiology">Radiology</a>
-						<span>•</span>
-						<a href="#" class="dept-filter-link" data-dept="Pediatrics">Pediatrics</a>
-						<span>•</span>
-						<a href="#" class="dept-filter-link" data-dept="Internal Medicine">Internal Medicine</a>
-						<span>•</span>
-					<a href="#" class="dept-filter-link" data-dept="Psychiatry">Psychiatry</a>
-					<span>•</span>
-					<a href="#" class="dept-filter-link" data-dept="AI/ML/DL & Generative AI">AI/ML/DL & Generative AI</a>
-				</div>					<!-- Results Grid -->
+					<!-- Results Grid -->
 					<div id="pubmed-results" role="region" aria-live="polite" aria-atomic="false" aria-label="Publication results"></div>
 					
 					<!-- Pagination Controls -->
@@ -1271,49 +1248,6 @@
 			<!-- Main Content Section (Hidden) -->
 			<main id="main-content" role="main" style="display: none;">
 				<div class="content-with-sidebar">
-					<!-- Fixed Sidebar Filter -->
-					<aside id="sidebarFilter" class="sidebar-filter" role="complementary" aria-label="Department filters" style="display: none;">
-						<div class="sidebar-header">
-							<h3 style="margin: 0 0 16px 0; font-size: 16px; font-weight: 700; color: #2c3e50;">Filter by Department</h3>
-						</div>
-					<div class="sidebar-content">
-						<label class="filter-checkbox">
-							<input type="checkbox" value="Surgery" class="dept-checkbox">
-							<span>Surgery</span>
-						</label>
-						<label class="filter-checkbox">
-							<input type="checkbox" value="Cardiology" class="dept-checkbox">
-							<span>Cardiology</span>
-						</label>
-						<label class="filter-checkbox">
-							<input type="checkbox" value="Neurology" class="dept-checkbox">
-							<span>Neurology</span>
-						</label>
-						<label class="filter-checkbox">
-							<input type="checkbox" value="Oncology" class="dept-checkbox">
-							<span>Oncology</span>
-						</label>
-						<label class="filter-checkbox">
-							<input type="checkbox" value="Radiology" class="dept-checkbox">
-							<span>Radiology</span>
-						</label>
-						<label class="filter-checkbox">
-							<input type="checkbox" value="Pediatrics" class="dept-checkbox">
-							<span>Pediatrics</span>
-						</label>
-						<label class="filter-checkbox">
-							<input type="checkbox" value="Internal Medicine" class="dept-checkbox">
-							<span>Internal Medicine</span>
-						</label>
-						<label class="filter-checkbox">
-							<input type="checkbox" value="Psychiatry" class="dept-checkbox">
-							<span>Psychiatry</span>
-						</label>
-						<label class="filter-checkbox">
-						</label>
-						<button id="clearFilters" style="width: 100%; margin-top: 12px; padding: 6px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600;">Clear All</button>
-					</div>
-				</aside>
 				
 				<section id="one" class="wrapper style1 special" style="padding: 40px 0;">
 					<!-- Results Grid -->
@@ -2408,12 +2342,6 @@
 					// Get today's date in YYYY-MM-DD format
 					const today = new Date().toISOString().split('T')[0];
 					
-					// Clear any existing department filters
-					document.querySelectorAll('.dept-filter-link').forEach(l => l.classList.remove('active'));
-					document.querySelector('.dept-filter-link[data-dept=""]').classList.add('active');
-					document.querySelectorAll('.dept-checkbox').forEach(cb => cb.checked = false);
-					selectedDepartments.clear();
-					
 					// Scroll to results section
 					const resultsSection = document.getElementById('pubmed-results');
 					if (resultsSection) {
@@ -2467,87 +2395,17 @@
 				if (e.target === authorModal) closeAuthorModal();
 			});
 
-			// Set up department filter
-			let currentDepartmentFilter = '';
-			let selectedDepartments = new Set(); // Track multiple selections from sidebar
-			
-			// Add click event listeners to department filter links (top)
-			document.querySelectorAll('.dept-filter-link').forEach(link => {
-				link.addEventListener('click', function(e) {
-					e.preventDefault();
-					
-					// Remove active class from all links
-					document.querySelectorAll('.dept-filter-link').forEach(l => l.classList.remove('active'));
-					
-					// Add active class to clicked link
-					this.classList.add('active');
-					
-					// Get department from data attribute
-					currentDepartmentFilter = this.getAttribute('data-dept');
-					
-					// Clear sidebar checkboxes when using top filter
-					document.querySelectorAll('.dept-checkbox').forEach(cb => cb.checked = false);
-					selectedDepartments.clear();
-					
-					// Fetch filtered results
-					fetchPubMedResults('', 1, currentDepartmentFilter);
-				});
-			});
-			
-			// Add change event listeners to sidebar checkboxes
-			document.querySelectorAll('.dept-checkbox').forEach(checkbox => {
-				checkbox.addEventListener('change', function() {
-					if (this.checked) {
-						selectedDepartments.add(this.value);
-					} else {
-						selectedDepartments.delete(this.value);
-					}
-					
-					// Clear top filter active state when using sidebar
-					document.querySelectorAll('.dept-filter-link').forEach(l => l.classList.remove('active'));
-					currentDepartmentFilter = '';
-					
-					// Fetch filtered results with multiple departments
-					fetchPubMedResultsMultiple('', 1, Array.from(selectedDepartments));
-				});
-			});
-			
-			// Clear all filters button
-			document.getElementById('clearFilters').addEventListener('click', function() {
-				// Uncheck all checkboxes
-				document.querySelectorAll('.dept-checkbox').forEach(cb => cb.checked = false);
-				selectedDepartments.clear();
-				
-				// Reset top filter to "All"
-				document.querySelectorAll('.dept-filter-link').forEach(l => l.classList.remove('active'));
-				document.querySelector('.dept-filter-link[data-dept=""]').classList.add('active');
-				currentDepartmentFilter = '';
-				
-				// Show all results
-				fetchPubMedResults('', 1, '');
-			});
-
 			// Set up pagination event listeners
 			document.getElementById('prevPage').addEventListener('click', function() {
 				if (currentPage > 1) {
-					// Check if using sidebar filters or top filter
-					if (selectedDepartments.size > 0) {
-						fetchPubMedResultsMultiple(currentSearchQuery, currentPage - 1, Array.from(selectedDepartments));
-					} else {
-						fetchPubMedResults(currentSearchQuery, currentPage - 1, currentDepartmentFilter);
-					}
+					fetchPubMedResults(currentSearchQuery, currentPage - 1);
 				}
 			});
 
 			document.getElementById('nextPage').addEventListener('click', function() {
 				const totalPages = Math.ceil(filteredArticlesData.length / resultsPerPage);
 				if (currentPage < totalPages) {
-					// Check if using sidebar filters or top filter
-					if (selectedDepartments.size > 0) {
-						fetchPubMedResultsMultiple(currentSearchQuery, currentPage + 1, Array.from(selectedDepartments));
-					} else {
-						fetchPubMedResults(currentSearchQuery, currentPage + 1, currentDepartmentFilter);
-					}
+					fetchPubMedResults(currentSearchQuery, currentPage + 1);
 				}
 			});
 
