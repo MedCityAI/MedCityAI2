@@ -78,46 +78,116 @@
 		}
 
 		/* Search Hero Section */
-		.search-hero {
-			background: linear-gradient(135deg, #3a4660 0%, #4e6a8a 60%, #233045 100%);
-			min-height: 300px;
+		.hero-section {
+			background: linear-gradient(120deg, #2568BE 0%, #1B4C7D 100%);
+			min-height: 340px;
 			display: flex;
 			align-items: center;
-			justify-content: center;
-			margin-top: 70px;
-			padding: 60px 20px;
 			position: relative;
 			overflow: hidden;
+			margin-top: 70px;
+			z-index: 1;
 		}
-		.search-hero::before {
-			content: '';
+		.hero-bg-blobs {
 			position: absolute;
 			top: 0;
 			left: 0;
-			right: 0;
-			bottom: 0;
-			background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="rgba(52,152,219,0.08)"><circle cx="100" cy="100" r="80"/><circle cx="300" cy="300" r="100"/></svg>') center/cover;
-			opacity: 0.5;
-		}
-		.search-hero-content {
-			max-width: 900px;
 			width: 100%;
+			height: 100%;
+			z-index: 0;
+			pointer-events: none;
+			opacity: 1;
+			transition: opacity 0.5s;
+		}
+		.hero-section::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			right: 0;
+			width: 50%;
+			height: 100%;
+			background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" fill="rgba(52,152,219,0.05)"><circle cx="300" cy="150" r="100"/><circle cx="350" cy="400" r="80"/><path d="M200,100 Q300,200 400,300" stroke="rgba(52,152,219,0.1)" stroke-width="3" fill="none"/></svg>') center/cover;
+			z-index: 1;
+		}
+		.hero-content {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 36px 20px;
+			display: grid;
+			grid-template-columns: 1fr 350px;
+			gap: 60px;
+			align-items: center;
 			position: relative;
 			z-index: 2;
 		}
-		.search-hero h1 {
-			color: #fff;
-			font-size: 2.8em;
-			font-weight: 800;
-			margin-bottom: 16px;
-			text-align: center;
-			text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+		.hero-left {
+			display: flex;
+			flex-direction: column;
+			gap: 20px;
 		}
-		.search-hero p {
+		.hero-right {
+			position: relative;
+		}
+		.chart-container {
+			position: relative;
+			aspect-ratio: 1;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.subtitle {
+			color: #e0e0e0;
+			font-size: 14px;
+			font-weight: 600;
+			text-transform: uppercase;
+			letter-spacing: 1px;
+		}
+		.hero-left h1 {
+			color: #fff;
+			text-shadow: 0 4px 18px rgba(0,0,0,0.28);
+			font-size: 3em;
+			margin: 0;
+		}
+		.hero-left p {
 			color: #e0e0e0;
 			font-size: 1.1em;
-			text-align: center;
-			margin-bottom: 36px;
+			margin: 0;
+		}
+		
+		/* Search Bar Styling */
+		.search-bar-container {
+			position: relative;
+			width: 100%;
+			margin-top: 24px;
+		}
+		.search-bar {
+			width: 100%;
+			padding: 16px 20px 16px 50px;
+			font-size: 16px;
+			border: 2px solid rgba(255, 255, 255, 0.3);
+			border-radius: 50px;
+			background: rgba(255, 255, 255, 0.95);
+			color: #2c3e50;
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+			transition: all 0.3s ease;
+		}
+		.search-bar:focus {
+			outline: none;
+			border-color: rgba(255, 255, 255, 0.8);
+			background: #fff;
+			box-shadow: 0 6px 30px rgba(0, 0, 0, 0.2);
+		}
+		.search-bar::placeholder {
+			color: #7f8c8d;
+		}
+		.search-icon {
+			position: absolute;
+			left: 20px;
+			top: 50%;
+			transform: translateY(-50%);
+			color: #3498db;
+			font-size: 18px;
+			pointer-events: none;
 		}
 
 		/* Advanced Search Form */
@@ -764,7 +834,27 @@
 		}
 
 		/* Responsive */
+		@media (max-width: 900px) {
+			.hero-content {
+				grid-template-columns: 1fr;
+				gap: 40px;
+				text-align: center;
+			}
+			.chart-container {
+				display: none;
+			}
+			.hero-left h1 { font-size: 2.4em; }
+			.hero-left p { font-size: 1.1em; }
+			.nav-links {
+				display: none;
+			}
+		}
 		@media (max-width: 768px) {
+			.hero-content {
+				padding: 40px 15px;
+			}
+			.hero-left h1 { font-size: 2em; }
+			.hero-left p { font-size: 1em; }
 			.search-row {
 				flex-direction: column;
 			}
@@ -911,7 +1001,7 @@
 					<div class="nav-links" role="menubar">
 						<a href="index.html" role="menuitem">New Today</a>
 						<a href="search.html" role="menuitem" aria-current="page">Search</a>
-						<a href="analytics.html" role="menuitem">Analytics</a>
+						<a href="featured.html" role="menuitem">Featured</a>
 						<a href="about.html" role="menuitem">About</a>
 						<a href="contact.html" role="menuitem">Contact</a>
 					</div>
@@ -926,48 +1016,50 @@
 					</div>
 				</div>
 			</nav>
-					</div>
-				</div>
-			</div>
 
-			<!-- Search Hero -->
-			<section class="search-hero" aria-label="Search form">
-				<div class="search-hero-content">
-					<h1>Advanced Search</h1>
-					<p>Search Rochester, MN biomedical research by topic, author, or department</p>
-					
-					<div class="search-container">
-						<form id="searchForm" role="search" aria-label="Advanced search for publications">
-							<div class="search-row">
-								<div class="search-field">
-									<label for="searchQuery">
-										<i class="fas fa-search" aria-hidden="true"></i> Search Query
-									</label>
-									<input type="search" id="searchQuery" name="query" aria-label="Search topics, keywords, or terms" placeholder="e.g., machine learning, cancer treatment, COVID-19..." />
-								</div>
-							</div>
-							
-							<div class="search-row">
-								<div class="search-field">
-									<label for="authorName">
-										<i class="fas fa-user" aria-hidden="true"></i> Author Name (Optional)
-									</label>
-									<input type="text" id="authorName" name="author" aria-label="Filter by author name" placeholder="Last name, First name or Last name First Initial" />
-								</div>
-								<div class="search-field">
-									<label for="department">
-										<i class="fas fa-building" aria-hidden="true"></i> Department (Optional)
-									</label>
-									<input type="text" id="department" name="department" aria-label="Filter by department" placeholder="e.g., Radiology, Cardiology, Neurology..." />
-								</div>
-							</div>
-							
-							<div class="search-row">
-								<button type="submit" class="search-submit" aria-label="Search publications">
-									<i class="fas fa-search" aria-hidden="true"></i> Search
-								</button>
-							</div>
-						</form>
+			<!-- Hero Section -->
+			<section class="hero-section" aria-label="Search banner" style="position:relative; overflow:hidden;">
+				<!-- Animated SVG background blobs -->
+				<svg class="hero-bg-blobs" width="100%" height="900" viewBox="0 0 1440 900" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;" aria-hidden="true" role="presentation">
+					<defs>
+						<linearGradient id="blobGradient1" x1="0" y1="0" x2="1" y2="1">
+							<stop offset="0%" stop-color="#3498db" stop-opacity="0.18"/>
+							<stop offset="100%" stop-color="#b6c7e0" stop-opacity="0.12"/>
+						</linearGradient>
+						<linearGradient id="blobGradient2" x1="0" y1="1" x2="1" y2="0">
+							<stop offset="0%" stop-color="#e3eaf3" stop-opacity="0.16"/>
+							<stop offset="100%" stop-color="#2980b9" stop-opacity="0.10"/>
+						</linearGradient>
+					</defs>
+					<g>
+						<circle id="blob1" cx="330" cy="220" r="330" fill="url(#blobGradient1)">
+							<animate attributeName="cx" values="330;1110;330" dur="15s" repeatCount="indefinite"/>
+							<animate attributeName="cy" values="220;680;220" dur="13.125s" repeatCount="indefinite"/>
+						</circle>
+						<circle id="blob2" cx="270" cy="180" r="270" fill="url(#blobGradient2)">
+							<animate attributeName="cx" values="270;1170;270" dur="16.875s" repeatCount="indefinite"/>
+							<animate attributeName="cy" values="180;720;180" dur="11.25s" repeatCount="indefinite"/>
+						</circle>
+						<circle id="blob3" cx="450" cy="450" r="450" fill="url(#blobGradient1)" opacity="0.7">
+							<animate attributeName="cx" values="450;990;450" dur="18.75s" repeatCount="indefinite"/>
+							<animate attributeName="cy" values="450;850;450" dur="15s" repeatCount="indefinite"/>
+						</circle>
+					</g>
+				</svg>
+				<div class="hero-content">
+					<div class="hero-left">
+						<div class="subtitle" style="color:#e0e0e0;">Rochester, Minnesota</div>
+						<h1 style="color:#fff; text-shadow: 0 4px 18px rgba(0,0,0,0.28);">Search Research Database</h1>
+						<p style="color:#e0e0e0;">Search biomedical research publications from Rochester, MN. All information freely sourced from the National Library of Medicine (PubMed).</p>
+						<div class="search-bar-container">
+							<i class="fas fa-search search-icon"></i>
+							<input type="search" id="heroSearchBar" class="search-bar" placeholder="Search by topic, keyword, author..." aria-label="Search publications">
+						</div>
+					</div>
+					<div class="hero-right">
+						<div class="chart-container">
+							<canvas id="publicationChart" aria-label="Publication growth chart"></canvas>
+						</div>
 					</div>
 				</div>
 			</section>
@@ -1059,6 +1151,7 @@
 		<script src="assets/js/breakpoints.min.js"></script>
 		<script src="assets/js/util.js"></script>
 		<script src="assets/js/main.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 		<script>
 		// Application State
@@ -1070,8 +1163,150 @@
 		let currentCitationArticle = null;
 		let currentCitationStyle = 'mla';
 
-		// Search Form Handler
-		document.getElementById('searchForm').addEventListener('submit', async function(e) {
+		// Initialize Chart (Desktop only)
+		function initializeChart() {
+			const chartCanvas = document.getElementById('publicationChart');
+			if (!chartCanvas || window.innerWidth <= 900) return;
+
+			// Sample data - you can replace this with actual data from your CSV
+			const ctx = chartCanvas.getContext('2d');
+			new Chart(ctx, {
+				type: 'line',
+				data: {
+					labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+					datasets: [{
+						label: 'Publications',
+						data: [850, 920, 1050, 1180, 1320, 1450],
+						borderColor: '#fff',
+						backgroundColor: 'rgba(255, 255, 255, 0.1)',
+						borderWidth: 3,
+						tension: 0.4,
+						fill: true
+					}]
+				},
+				options: {
+					responsive: true,
+					maintainAspectRatio: true,
+					plugins: {
+						legend: {
+							display: false
+						}
+					},
+					scales: {
+						y: {
+							ticks: { color: '#fff', font: { size: 12 } },
+							grid: { color: 'rgba(255, 255, 255, 0.1)' }
+						},
+						x: {
+							ticks: { color: '#fff', font: { size: 12 } },
+							grid: { color: 'rgba(255, 255, 255, 0.1)' }
+						}
+					}
+				}
+			});
+		}
+
+		// Hero Search Bar Handler
+		document.getElementById('heroSearchBar').addEventListener('input', function(e) {
+			const query = e.target.value.trim();
+			if (query) {
+				performHeroSearch(query);
+			}
+		});
+
+		async function performHeroSearch(query) {
+			if (query.length < 2) return;
+			
+			// Show loading state
+			document.getElementById('loadingState').style.display = 'block';
+			document.getElementById('resultsContainer').style.display = 'none';
+			document.getElementById('emptyState').style.display = 'none';
+			
+			try {
+				const response = await fetch('pubmed_data.csv');
+				const csvText = await response.text();
+				const lines = csvText.trim().split('\n');
+				
+				if (lines.length <= 1) {
+					showEmptyState();
+					return;
+				}
+				
+				const headers = parseCSVLine(lines[0]);
+				const results = [];
+				
+				// Parse and filter results
+				for (let i = 1; i < lines.length; i++) {
+					if (lines[i].trim()) {
+						const values = parseCSVLine(lines[i]);
+						const article = {};
+						headers.forEach((header, index) => {
+							article[header] = values[index] || '';
+						});
+						
+						// Simple search filter
+						const searchText = query.toLowerCase();
+						const titleMatch = article.title?.toLowerCase().includes(searchText);
+						const abstractMatch = article.abstract?.toLowerCase().includes(searchText);
+						const authorMatch = article.authors?.toLowerCase().includes(searchText);
+						
+						if (titleMatch || abstractMatch || authorMatch) {
+							results.push(article);
+						}
+					}
+				}
+				
+				currentResults = results;
+				totalResults = results.length;
+				currentPage = 1;
+				displayResults();
+				
+			} catch (error) {
+				console.error('Search error:', error);
+				showEmptyState();
+			}
+		}
+
+		function parseCSVLine(line) {
+			const result = [];
+			let current = '';
+			let inQuotes = false;
+			
+			for (let i = 0; i < line.length; i++) {
+				const char = line[i];
+				const nextChar = line[i + 1];
+				
+				if (char === '"') {
+					if (inQuotes && nextChar === '"') {
+						current += '"';
+						i++;
+					} else {
+						inQuotes = !inQuotes;
+					}
+				} else if (char === ',' && !inQuotes) {
+					result.push(current);
+					current = '';
+				} else {
+					current += char;
+				}
+			}
+			result.push(current);
+			return result;
+		}
+
+		function showEmptyState() {
+			document.getElementById('loadingState').style.display = 'none';
+			document.getElementById('resultsContainer').style.display = 'none';
+			document.getElementById('emptyState').style.display = 'block';
+		}
+
+		// Initialize on page load
+		document.addEventListener('DOMContentLoaded', function() {
+			initializeChart();
+		});
+
+		// Search Form Handler (keep existing form functionality)
+		document.getElementById('searchForm')?.addEventListener('submit', async function(e) {
 			e.preventDefault();
 			currentPage = 1;
 			selectedArticles.clear();
