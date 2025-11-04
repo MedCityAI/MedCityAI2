@@ -1058,7 +1058,7 @@
 					</div>
 					<div class="hero-right">
 						<div class="chart-container">
-							<canvas id="publicationChart" aria-label="Publication growth chart"></canvas>
+							<img src="images/med_city_publications_web.png" alt="Publication growth chart" style="width: 100%; height: auto; border-radius: 8px;" />
 						</div>
 					</div>
 				</div>
@@ -1151,7 +1151,6 @@
 		<script src="assets/js/breakpoints.min.js"></script>
 		<script src="assets/js/util.js"></script>
 		<script src="assets/js/main.js"></script>
-		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 		<script>
 		// Application State
@@ -1163,54 +1162,14 @@
 		let currentCitationArticle = null;
 		let currentCitationStyle = 'mla';
 
-		// Initialize Chart (Desktop only)
-		function initializeChart() {
-			const chartCanvas = document.getElementById('publicationChart');
-			if (!chartCanvas || window.innerWidth <= 900) return;
-
-			// Sample data - you can replace this with actual data from your CSV
-			const ctx = chartCanvas.getContext('2d');
-			new Chart(ctx, {
-				type: 'line',
-				data: {
-					labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
-					datasets: [{
-						label: 'Publications',
-						data: [850, 920, 1050, 1180, 1320, 1450],
-						borderColor: '#fff',
-						backgroundColor: 'rgba(255, 255, 255, 0.1)',
-						borderWidth: 3,
-						tension: 0.4,
-						fill: true
-					}]
-				},
-				options: {
-					responsive: true,
-					maintainAspectRatio: true,
-					plugins: {
-						legend: {
-							display: false
-						}
-					},
-					scales: {
-						y: {
-							ticks: { color: '#fff', font: { size: 12 } },
-							grid: { color: 'rgba(255, 255, 255, 0.1)' }
-						},
-						x: {
-							ticks: { color: '#fff', font: { size: 12 } },
-							grid: { color: 'rgba(255, 255, 255, 0.1)' }
-						}
-					}
-				}
-			});
-		}
-
 		// Hero Search Bar Handler
-		document.getElementById('heroSearchBar').addEventListener('input', function(e) {
+		const heroSearchBar = document.getElementById('heroSearchBar');
+		heroSearchBar.addEventListener('input', function(e) {
 			const query = e.target.value.trim();
-			if (query) {
+			if (query.length >= 2) {
 				performHeroSearch(query);
+			} else if (query.length === 0) {
+				showEmptyState();
 			}
 		});
 
@@ -1241,7 +1200,7 @@
 						const values = parseCSVLine(lines[i]);
 						const article = {};
 						headers.forEach((header, index) => {
-							article[header] = values[index] || '';
+							article[header.trim()] = values[index] || '';
 						});
 						
 						// Simple search filter
@@ -1251,6 +1210,8 @@
 						const authorMatch = article.authors?.toLowerCase().includes(searchText);
 						
 						if (titleMatch || abstractMatch || authorMatch) {
+							// Parse Rochester authors if available
+							article.rochesterAuthors = [];
 							results.push(article);
 						}
 					}
@@ -1259,7 +1220,20 @@
 				currentResults = results;
 				totalResults = results.length;
 				currentPage = 1;
-				displayResults();
+				
+				if (results.length > 0) {
+					displayResults();
+				} else {
+					// Show no results message
+					document.getElementById('loadingState').style.display = 'none';
+					document.getElementById('resultsContainer').style.display = 'none';
+					document.getElementById('emptyState').style.display = 'block';
+					document.getElementById('emptyState').innerHTML = `
+						<i class="fas fa-search"></i>
+						<h3>No Results Found</h3>
+						<p>No publications found matching "${query}". Try different keywords.</p>
+					`;
+				}
 				
 			} catch (error) {
 				console.error('Search error:', error);
@@ -1298,11 +1272,17 @@
 			document.getElementById('loadingState').style.display = 'none';
 			document.getElementById('resultsContainer').style.display = 'none';
 			document.getElementById('emptyState').style.display = 'block';
+			document.getElementById('emptyState').innerHTML = `
+				<i class="fas fa-search"></i>
+				<h3>Start Your Search</h3>
+				<p>Enter your search criteria above to find Rochester, MN research publications</p>
+			`;
 		}
 
-		// Initialize on page load
+		// Initialize on page load - removed Chart.js initialization
 		document.addEventListener('DOMContentLoaded', function() {
-			initializeChart();
+			// Show empty state initially
+			showEmptyState();
 		});
 
 		// Search Form Handler (keep existing form functionality)
