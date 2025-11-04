@@ -2082,6 +2082,7 @@
 		document.addEventListener('DOMContentLoaded', function() {
 			// Define author bibliography functions globally
 			window.showAuthorBibliography = async function(authorName) {
+				console.log('showAuthorBibliography called with:', authorName);
 				const modal = document.getElementById('authorModal');
 				const title = document.getElementById('authorModalTitle');
 				const loading = document.getElementById('authorLoading');
@@ -2089,8 +2090,15 @@
 				const countDiv = document.getElementById('authorCount');
 				const countText = document.getElementById('authorCountText');
 				
+				console.log('Modal element:', modal);
+				console.log('Modal current display:', modal ? modal.style.display : 'modal not found');
+				
 				// Show modal
 				modal.style.display = 'flex';
+				// Debug computed style after change
+				try {
+					console.log('Computed display after open:', window.getComputedStyle(modal).display);
+				} catch (e) { /* noop */ }
 				title.textContent = `Publications by ${authorName}`;
 				loading.style.display = 'block';
 				bibliography.innerHTML = '';
@@ -2179,6 +2187,27 @@
 			window.closeAuthorModal = function() {
 				document.getElementById('authorModal').style.display = 'none';
 			};
+
+			// Event delegation for Rochester author clicks (robust against inline handler/CSP issues)
+			document.addEventListener('click', function(e) {
+				const trigger = e.target.closest('.roch-author');
+				if (trigger) {
+					const name = (trigger.getAttribute('data-author') || trigger.textContent || '').trim();
+					if (name) {
+						e.preventDefault();
+						e.stopPropagation();
+						window.showAuthorBibliography(name);
+					}
+				}
+			});
+
+			document.addEventListener('keydown', function(e) {
+				if ((e.key === 'Enter' || e.key === ' ') && e.target && e.target.classList && e.target.classList.contains('roch-author')) {
+					e.preventDefault();
+					const name = (e.target.getAttribute('data-author') || e.target.textContent || '').trim();
+					if (name) window.showAuthorBibliography(name);
+				}
+			});
 			
 			// Load data and initialize featured carousel
 			loadCSVData().then(articles => {
