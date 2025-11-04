@@ -1392,14 +1392,17 @@
 			}
 		}
 		
-		// Author Bibliography Modal Functions
-		async function showAuthorBibliography(authorName) {
+		// Author Bibliography Modal Functions (Global)
+		window.showAuthorBibliography = async function(authorName) {
+			console.log('showAuthorBibliography called for:', authorName);
 			const modal = document.getElementById('authorModal');
 			const title = document.getElementById('authorModalTitle');
 			const loading = document.getElementById('authorModalLoading');
 			const bibliography = document.getElementById('authorBibliography');
 			const countDiv = document.getElementById('authorPublicationCount');
 			const countText = document.getElementById('authorCountText');
+			
+			console.log('Modal element:', modal);
 			
 			// Store focus for accessibility
 			window.lastFocusedElement = document.activeElement;
@@ -1475,7 +1478,7 @@
 				bibliography.innerHTML = '<li style="color: #e74c3c; text-align: center; padding: 40px;">Error loading publications. Please try again.</li>';
 				loading.style.display = 'none';
 			}
-		}
+		};
 		
 		function parseAuthorArticles(xmlDoc) {
 			const articles = [];
@@ -1537,7 +1540,8 @@
 			return `${article.authors}. "${article.title}" <span class="pub-journal">${article.journal}</span>, <span class="pub-year">${article.year}</span>. <a href="${article.url}" target="_blank" style="color: #3498db;">PubMed</a>`;
 		}
 		
-		function closeAuthorModal() {
+		
+		window.closeAuthorModal = function() {
 			const modal = document.getElementById('authorModal');
 			modal.style.display = 'none';
 			modal.setAttribute('aria-hidden', 'true');
@@ -1546,7 +1550,7 @@
 			if (window.lastFocusedElement) {
 				window.lastFocusedElement.focus();
 			}
-		}
+		};
 		
 		// Accessibility: Focus trap for modal
 		function trapFocus(element) {
