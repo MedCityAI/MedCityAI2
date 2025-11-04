@@ -2339,10 +2339,17 @@
 					// Get today's date in YYYY-MM-DD format
 					const today = new Date().toISOString().split('T')[0];
 					
-					// Scroll to results section
+					// Scroll to results section with header offset
 					const resultsSection = document.getElementById('pubmed-results');
 					if (resultsSection) {
-						resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+						const headerHeight = 70; // Fixed header height
+						const elementPosition = resultsSection.getBoundingClientRect().top;
+						const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
+						
+						window.scrollTo({
+							top: offsetPosition,
+							behavior: 'smooth'
+						});
 					}
 					
 					// Filter for today's publications
