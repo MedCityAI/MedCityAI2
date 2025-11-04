@@ -1307,106 +1307,6 @@
 			}
 		}
 		
-		// Author Bibliography Functions
-		window.showAuthorBibliography = async function(authorName) {
-			const modal = document.getElementById('authorModal');
-			const title = document.getElementById('authorModalTitle');
-			const loading = document.getElementById('authorLoading');
-			const bibliography = document.getElementById('authorBibliography');
-			const countDiv = document.getElementById('authorCount');
-			const countText = document.getElementById('authorCountText');
-			
-			// Show modal
-			modal.style.display = 'flex';
-			title.textContent = `Publications by ${authorName}`;
-			loading.style.display = 'block';
-			bibliography.innerHTML = '';
-			countDiv.style.display = 'none';
-			
-			try {
-				// Query PubMed
-				const query = `(${authorName}[Author]) AND Rochester[AD]`;
-				const searchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmax=500&retmode=json&sort=pub+date`;
-				
-				const searchResponse = await fetch(searchUrl);
-				const searchData = await searchResponse.json();
-				const articleIds = searchData.esearchresult.idlist || [];
-				const totalCount = parseInt(searchData.esearchresult.count) || 0;
-				
-				if (articleIds.length === 0) {
-					loading.style.display = 'none';
-					bibliography.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 40px;">No publications found for this author with Rochester affiliation.</p>';
-					return;
-				}
-				
-				// Show count
-				countText.textContent = `${totalCount} Publication${totalCount !== 1 ? 's' : ''} Found`;
-				countDiv.style.display = 'block';
-				
-				// Fetch details
-				const fetchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${articleIds.join(',')}&retmode=xml`;
-				const fetchResponse = await fetch(fetchUrl);
-				const xmlText = await fetchResponse.text();
-				
-				// Parse XML
-				const parser = new DOMParser();
-				const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-				const articles = [];
-				const articleNodes = xmlDoc.querySelectorAll('PubmedArticle');
-				
-				articleNodes.forEach(node => {
-					const pmid = node.querySelector('PMID')?.textContent || '';
-					const title = node.querySelector('ArticleTitle')?.textContent || 'No title';
-					const journal = node.querySelector('Journal Title')?.textContent || 'Unknown';
-					const year = node.querySelector('PubDate Year')?.textContent || '';
-					const month = node.querySelector('PubDate Month')?.textContent || '';
-					
-					const authorNodes = node.querySelectorAll('Author');
-					const authors = [];
-					authorNodes.forEach(a => {
-						const last = a.querySelector('LastName')?.textContent || '';
-						const init = a.querySelector('Initials')?.textContent || '';
-						if (last) authors.push(`${last} ${init}`);
-					});
-					const authorsStr = authors.length > 5 ? authors.slice(0,5).join(', ') + ', et al.' : authors.join(', ');
-					
-					articles.push({ pmid, title, journal, year, month, authors: authorsStr });
-				});
-				
-				// Sort by year
-				articles.sort((a, b) => parseInt(b.year) - parseInt(a.year));
-				
-				// Display
-				let html = '<ol style="list-style: decimal; padding-left: 20px; margin: 0;">';
-				articles.forEach(art => {
-					const date = art.month ? `${art.month} ${art.year}` : art.year;
-					html += `
-						<li style="margin-bottom: 20px; line-height: 1.7;">
-							<strong style="color: #2c3e50; font-size: 15px;">${art.title}</strong><br>
-							<span style="color: #7f8c8d; font-size: 14px;">${art.authors}</span><br>
-							<em style="color: #3498db; font-size: 14px;">${art.journal}</em>, ${date}.<br>
-							<a href="https://pubmed.ncbi.nlm.nih.gov/${art.pmid}/" target="_blank" style="color: #3498db; font-size: 13px; text-decoration: none;">
-								<i class="fas fa-external-link-alt"></i> View on PubMed
-							</a>
-						</li>
-					`;
-				});
-				html += '</ol>';
-				
-				bibliography.innerHTML = html;
-				loading.style.display = 'none';
-				
-			} catch (error) {
-				console.error('Error:', error);
-				loading.style.display = 'none';
-				bibliography.innerHTML = '<p style="text-align: center; color: #e74c3c; padding: 40px;">Error loading publications. Please try again.</p>';
-			}
-		};
-		
-		window.closeAuthorModal = function() {
-			document.getElementById('authorModal').style.display = 'none';
-		};
-		
 		// Update showAbstractModal to handle focus and ARIA
 		const originalShowAbstractModal = showAbstractModal;
 		showAbstractModal = function(link) {
@@ -2180,6 +2080,106 @@
 
 		// Initialize application
 		document.addEventListener('DOMContentLoaded', function() {
+			// Define author bibliography functions globally
+			window.showAuthorBibliography = async function(authorName) {
+				const modal = document.getElementById('authorModal');
+				const title = document.getElementById('authorModalTitle');
+				const loading = document.getElementById('authorLoading');
+				const bibliography = document.getElementById('authorBibliography');
+				const countDiv = document.getElementById('authorCount');
+				const countText = document.getElementById('authorCountText');
+				
+				// Show modal
+				modal.style.display = 'flex';
+				title.textContent = `Publications by ${authorName}`;
+				loading.style.display = 'block';
+				bibliography.innerHTML = '';
+				countDiv.style.display = 'none';
+				
+				try {
+					// Query PubMed
+					const query = `(${authorName}[Author]) AND Rochester[AD]`;
+					const searchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmax=500&retmode=json&sort=pub+date`;
+					
+					const searchResponse = await fetch(searchUrl);
+					const searchData = await searchResponse.json();
+					const articleIds = searchData.esearchresult.idlist || [];
+					const totalCount = parseInt(searchData.esearchresult.count) || 0;
+					
+					if (articleIds.length === 0) {
+						loading.style.display = 'none';
+						bibliography.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 40px;">No publications found for this author with Rochester affiliation.</p>';
+						return;
+					}
+					
+					// Show count
+					countText.textContent = `${totalCount} Publication${totalCount !== 1 ? 's' : ''} Found`;
+					countDiv.style.display = 'block';
+					
+					// Fetch details
+					const fetchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${articleIds.join(',')}&retmode=xml`;
+					const fetchResponse = await fetch(fetchUrl);
+					const xmlText = await fetchResponse.text();
+					
+					// Parse XML
+					const parser = new DOMParser();
+					const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+					const articles = [];
+					const articleNodes = xmlDoc.querySelectorAll('PubmedArticle');
+					
+					articleNodes.forEach(node => {
+						const pmid = node.querySelector('PMID')?.textContent || '';
+						const title = node.querySelector('ArticleTitle')?.textContent || 'No title';
+						const journal = node.querySelector('Journal Title')?.textContent || 'Unknown';
+						const year = node.querySelector('PubDate Year')?.textContent || '';
+						const month = node.querySelector('PubDate Month')?.textContent || '';
+						
+						const authorNodes = node.querySelectorAll('Author');
+						const authors = [];
+						authorNodes.forEach(a => {
+							const last = a.querySelector('LastName')?.textContent || '';
+							const init = a.querySelector('Initials')?.textContent || '';
+							if (last) authors.push(`${last} ${init}`);
+						});
+						const authorsStr = authors.length > 5 ? authors.slice(0,5).join(', ') + ', et al.' : authors.join(', ');
+						
+						articles.push({ pmid, title, journal, year, month, authors: authorsStr });
+					});
+					
+					// Sort by year
+					articles.sort((a, b) => parseInt(b.year) - parseInt(a.year));
+					
+					// Display
+					let html = '<ol style="list-style: decimal; padding-left: 20px; margin: 0;">';
+					articles.forEach(art => {
+						const date = art.month ? `${art.month} ${art.year}` : art.year;
+						html += `
+							<li style="margin-bottom: 20px; line-height: 1.7;">
+								<strong style="color: #2c3e50; font-size: 15px;">${art.title}</strong><br>
+								<span style="color: #7f8c8d; font-size: 14px;">${art.authors}</span><br>
+								<em style="color: #3498db; font-size: 14px;">${art.journal}</em>, ${date}.<br>
+								<a href="https://pubmed.ncbi.nlm.nih.gov/${art.pmid}/" target="_blank" style="color: #3498db; font-size: 13px; text-decoration: none;">
+									<i class="fas fa-external-link-alt"></i> View on PubMed
+								</a>
+							</li>
+						`;
+					});
+					html += '</ol>';
+					
+					bibliography.innerHTML = html;
+					loading.style.display = 'none';
+					
+				} catch (error) {
+					console.error('Error:', error);
+					loading.style.display = 'none';
+					bibliography.innerHTML = '<p style="text-align: center; color: #e74c3c; padding: 40px;">Error loading publications. Please try again.</p>';
+				}
+			};
+			
+			window.closeAuthorModal = function() {
+				document.getElementById('authorModal').style.display = 'none';
+			};
+			
 			// Load data and initialize featured carousel
 			loadCSVData().then(articles => {
 				if (articles && articles.length > 0) {
