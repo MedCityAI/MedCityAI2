@@ -930,91 +930,6 @@
 			.count-number { font-size: 2em; }
 		}
 		
-		/* Author Bibliography Modal */
-		.author-modal {
-			display: none;
-			position: fixed;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background: rgba(0, 0, 0, 0.6);
-			z-index: 4000;
-			justify-content: center;
-			align-items: center;
-		}
-		.author-modal-content {
-			background: white;
-			border-radius: 12px;
-			max-width: 800px;
-			width: 90%;
-			max-height: 80vh;
-			overflow: hidden;
-			display: flex;
-			flex-direction: column;
-			box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-		}
-		.author-modal-header {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			padding: 24px;
-			border-bottom: 2px solid #e0e0e0;
-			background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-		}
-		.author-modal-header h3 {
-			margin: 0;
-			color: #2c3e50;
-			font-size: 1.6em;
-		}
-		.author-modal-close {
-			background: none;
-			border: none;
-			font-size: 28px;
-			color: #95a5a6;
-			cursor: pointer;
-			transition: color 0.2s ease;
-			padding: 0;
-			width: 32px;
-			height: 32px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-		}
-		.author-modal-close:hover {
-			color: #2c3e50;
-		}
-		.author-modal-loading {
-			text-align: center;
-			padding: 40px;
-			color: #7f8c8d;
-		}
-		.author-bibliography {
-			list-style: none;
-			padding: 24px;
-			margin: 0;
-			overflow-y: auto;
-			flex: 1;
-		}
-		.author-bibliography li {
-			padding: 16px 0;
-			border-bottom: 1px solid #e0e0e0;
-			font-size: 14px;
-			line-height: 1.7;
-			color: #2c3e50;
-		}
-		.author-bibliography li:last-child {
-			border-bottom: none;
-		}
-		.author-bibliography .pub-journal {
-			font-style: italic;
-			color: #555;
-		}
-		.author-bibliography .pub-year {
-			font-weight: 600;
-			color: #2c3e50;
-		}
-		
 		/* Loading spinner */
 		.spinner {
 			border: 3px solid #f3f3f3;
@@ -1270,21 +1185,21 @@
 					</div>
 					
 					<!-- Author Bibliography Modal -->
-					<div id="authorModal" class="author-modal author-modal-bg" role="dialog" aria-modal="true" aria-labelledby="authorModalTitle" aria-hidden="true">
-						<div class="author-modal-content" role="document">
-							<div class="author-modal-header">
-								<h3 id="authorModalTitle">Author Publications</h3>
-								<button class="author-modal-close" onclick="closeAuthorModal()" aria-label="Close author publications modal">&times;</button>
+					<div id="authorModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 5000; align-items: center; justify-content: center;">
+						<div style="background: white; border-radius: 12px; max-width: 900px; width: 90%; max-height: 85vh; overflow: hidden; display: flex; flex-direction: column;">
+							<div style="display: flex; justify-content: space-between; align-items: center; padding: 24px; border-bottom: 2px solid #e0e0e0; background: linear-gradient(135deg, #3498db, #2980b9);">
+								<h3 id="authorModalTitle" style="margin: 0; color: white; font-size: 1.6em;">Author Publications</h3>
+								<button onclick="closeAuthorModal()" style="background: none; border: none; font-size: 32px; color: white; cursor: pointer; padding: 0; width: 36px; height: 36px;">&times;</button>
 							</div>
-							<div id="authorPublicationCount" style="display: none; padding: 12px 24px; background: linear-gradient(135deg, #3498db, #2980b9); color: white; border-radius: 8px; margin: 0 24px 20px 24px; text-align: center; font-size: 16px; font-weight: 600;">
-								<i class="fas fa-file-alt" style="margin-right: 8px;"></i>
+							<div id="authorCount" style="display: none; padding: 16px 24px; background: #f8f9fa; border-bottom: 1px solid #e0e0e0; font-size: 16px; font-weight: 600; color: #2c3e50;">
+								<i class="fas fa-file-alt" style="margin-right: 8px; color: #3498db;"></i>
 								<span id="authorCountText"></span>
 							</div>
-							<div id="authorModalLoading" class="author-modal-loading" style="display: none;" role="status" aria-live="polite">
-								<div class="spinner" aria-hidden="true"></div>
+							<div id="authorLoading" style="display: none; padding: 60px; text-align: center; color: #7f8c8d;">
+								<div class="spinner"></div>
 								<p>Loading publications...</p>
 							</div>
-							<ol id="authorBibliography" class="author-bibliography" aria-label="List of author publications"></ol>
+							<div id="authorBibliography" style="padding: 24px; overflow-y: auto; flex: 1;"></div>
 						</div>
 					</div>
 				</section>
@@ -1392,52 +1307,43 @@
 			}
 		}
 		
-		// Author Bibliography Modal Functions (Global)
+		// Author Bibliography Functions
 		window.showAuthorBibliography = async function(authorName) {
-			console.log('showAuthorBibliography called for:', authorName);
 			const modal = document.getElementById('authorModal');
 			const title = document.getElementById('authorModalTitle');
-			const loading = document.getElementById('authorModalLoading');
+			const loading = document.getElementById('authorLoading');
 			const bibliography = document.getElementById('authorBibliography');
-			const countDiv = document.getElementById('authorPublicationCount');
+			const countDiv = document.getElementById('authorCount');
 			const countText = document.getElementById('authorCountText');
 			
-			console.log('Modal element:', modal);
-			
-			// Store focus for accessibility
-			window.lastFocusedElement = document.activeElement;
-			
-			// Show modal and loading state
+			// Show modal
 			modal.style.display = 'flex';
-			modal.setAttribute('aria-hidden', 'false');
 			title.textContent = `Publications by ${authorName}`;
 			loading.style.display = 'block';
 			bibliography.innerHTML = '';
 			countDiv.style.display = 'none';
 			
 			try {
-				// Build PubMed query for this author with Rochester affiliation
+				// Query PubMed
 				const query = `(${authorName}[Author]) AND Rochester[AD]`;
+				const searchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmax=500&retmode=json&sort=pub+date`;
 				
-				// Search PubMed
-				const searchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmax=200&retmode=json&sort=pub+date`;
 				const searchResponse = await fetch(searchUrl);
 				const searchData = await searchResponse.json();
-				
-				const articleIds = searchData.esearchresult.idlist;
+				const articleIds = searchData.esearchresult.idlist || [];
 				const totalCount = parseInt(searchData.esearchresult.count) || 0;
 				
 				if (articleIds.length === 0) {
-					bibliography.innerHTML = '<li style="color: #7f8c8d; text-align: center; padding: 40px;">No publications found for this author with Rochester affiliation.</li>';
 					loading.style.display = 'none';
+					bibliography.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 40px;">No publications found for this author with Rochester affiliation.</p>';
 					return;
 				}
 				
-				// Display count
+				// Show count
 				countText.textContent = `${totalCount} Publication${totalCount !== 1 ? 's' : ''} Found`;
 				countDiv.style.display = 'block';
 				
-				// Fetch article details
+				// Fetch details
 				const fetchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${articleIds.join(',')}&retmode=xml`;
 				const fetchResponse = await fetch(fetchUrl);
 				const xmlText = await fetchResponse.text();
@@ -1445,151 +1351,61 @@
 				// Parse XML
 				const parser = new DOMParser();
 				const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-				const articles = parseAuthorArticles(xmlDoc);
+				const articles = [];
+				const articleNodes = xmlDoc.querySelectorAll('PubmedArticle');
 				
-				// Sort by year (most recent first)
-				articles.sort((a, b) => {
-					const yearA = parseInt(a.year) || 0;
-					const yearB = parseInt(b.year) || 0;
-					return yearB - yearA;
+				articleNodes.forEach(node => {
+					const pmid = node.querySelector('PMID')?.textContent || '';
+					const title = node.querySelector('ArticleTitle')?.textContent || 'No title';
+					const journal = node.querySelector('Journal Title')?.textContent || 'Unknown';
+					const year = node.querySelector('PubDate Year')?.textContent || '';
+					const month = node.querySelector('PubDate Month')?.textContent || '';
+					
+					const authorNodes = node.querySelectorAll('Author');
+					const authors = [];
+					authorNodes.forEach(a => {
+						const last = a.querySelector('LastName')?.textContent || '';
+						const init = a.querySelector('Initials')?.textContent || '';
+						if (last) authors.push(`${last} ${init}`);
+					});
+					const authorsStr = authors.length > 5 ? authors.slice(0,5).join(', ') + ', et al.' : authors.join(', ');
+					
+					articles.push({ pmid, title, journal, year, month, authors: authorsStr });
 				});
 				
-				// Build bibliography HTML
-				let bibliographyHTML = '';
-				articles.forEach(article => {
-					const pubYear = article.year || 'n.d.';
-					bibliographyHTML += `
-						<li style="margin-bottom: 16px; line-height: 1.6;">
-							<strong style="color: #2c3e50;">${article.title || 'No title available'}</strong><br>
-							<span style="color: #7f8c8d; font-size: 14px;">${article.authors || 'Unknown Authors'}</span><br>
-							<em style="color: #3498db;">${article.journal || 'Unknown Journal'}</em>, ${article.pubdate || pubYear}.<br>
-							<a href="${article.url || `https://pubmed.ncbi.nlm.nih.gov/${article.pmid}/`}" target="_blank" style="color: #3498db; text-decoration: none; font-size: 14px;">
+				// Sort by year
+				articles.sort((a, b) => parseInt(b.year) - parseInt(a.year));
+				
+				// Display
+				let html = '<ol style="list-style: decimal; padding-left: 20px; margin: 0;">';
+				articles.forEach(art => {
+					const date = art.month ? `${art.month} ${art.year}` : art.year;
+					html += `
+						<li style="margin-bottom: 20px; line-height: 1.7;">
+							<strong style="color: #2c3e50; font-size: 15px;">${art.title}</strong><br>
+							<span style="color: #7f8c8d; font-size: 14px;">${art.authors}</span><br>
+							<em style="color: #3498db; font-size: 14px;">${art.journal}</em>, ${date}.<br>
+							<a href="https://pubmed.ncbi.nlm.nih.gov/${art.pmid}/" target="_blank" style="color: #3498db; font-size: 13px; text-decoration: none;">
 								<i class="fas fa-external-link-alt"></i> View on PubMed
 							</a>
 						</li>
 					`;
 				});
+				html += '</ol>';
 				
-				bibliography.innerHTML = bibliographyHTML;
+				bibliography.innerHTML = html;
 				loading.style.display = 'none';
 				
 			} catch (error) {
-				console.error('Error fetching author bibliography:', error);
-				bibliography.innerHTML = '<li style="color: #e74c3c; text-align: center; padding: 40px;">Error loading publications. Please try again.</li>';
+				console.error('Error:', error);
 				loading.style.display = 'none';
+				bibliography.innerHTML = '<p style="text-align: center; color: #e74c3c; padding: 40px;">Error loading publications. Please try again.</p>';
 			}
 		};
-		
-		function parseAuthorArticles(xmlDoc) {
-			const articles = [];
-			const articleNodes = xmlDoc.querySelectorAll('PubmedArticle');
-			
-			articleNodes.forEach(articleNode => {
-				const article = {};
-				
-				// PMID
-				const pmidNode = articleNode.querySelector('PMID');
-				article.pmid = pmidNode ? pmidNode.textContent : '';
-				article.url = `https://pubmed.ncbi.nlm.nih.gov/${article.pmid}/`;
-				
-				// Title
-				const titleNode = articleNode.querySelector('ArticleTitle');
-				article.title = titleNode ? titleNode.textContent : 'No title available';
-				
-				// Authors
-				const authorNodes = articleNode.querySelectorAll('Author');
-				const authorNames = [];
-				authorNodes.forEach(authorNode => {
-					const lastName = authorNode.querySelector('LastName')?.textContent || '';
-					const initials = authorNode.querySelector('Initials')?.textContent || '';
-					if (lastName) {
-						authorNames.push(`${lastName} ${initials}`);
-					}
-				});
-				article.authors = authorNames.length > 0 ? authorNames.slice(0, 3).join(', ') + (authorNames.length > 3 ? ', et al.' : '') : 'Unknown Authors';
-				
-				// Journal
-				const journalNode = articleNode.querySelector('Title');
-				article.journal = journalNode ? journalNode.textContent : 'Unknown Journal';
-				
-				// Publication Date
-				const yearNode = articleNode.querySelector('PubDate Year');
-				const monthNode = articleNode.querySelector('PubDate Month');
-				const dayNode = articleNode.querySelector('PubDate Day');
-				
-				article.year = yearNode ? yearNode.textContent : 'n.d.';
-				const month = monthNode ? monthNode.textContent : '';
-				const day = dayNode ? dayNode.textContent : '';
-				
-				// Build formatted date
-				if (month && day) {
-					article.pubdate = `${month} ${day}, ${article.year}`;
-				} else if (month) {
-					article.pubdate = `${month} ${article.year}`;
-				} else {
-					article.pubdate = article.year;
-				}
-				
-				articles.push(article);
-			});
-			
-			return articles;
-		}
-		
-		function generateMLACitation(article) {
-			return `${article.authors}. "${article.title}" <span class="pub-journal">${article.journal}</span>, <span class="pub-year">${article.year}</span>. <a href="${article.url}" target="_blank" style="color: #3498db;">PubMed</a>`;
-		}
-		
 		
 		window.closeAuthorModal = function() {
-			const modal = document.getElementById('authorModal');
-			modal.style.display = 'none';
-			modal.setAttribute('aria-hidden', 'true');
-			
-			// Return focus to triggering element
-			if (window.lastFocusedElement) {
-				window.lastFocusedElement.focus();
-			}
+			document.getElementById('authorModal').style.display = 'none';
 		};
-		
-		// Accessibility: Focus trap for modal
-		function trapFocus(element) {
-			const focusableElements = element.querySelectorAll(
-				'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-			);
-			const firstFocusable = focusableElements[0];
-			const lastFocusable = focusableElements[focusableElements.length - 1];
-
-			element.addEventListener('keydown', function(e) {
-				if (e.key === 'Tab') {
-					if (e.shiftKey) {
-						if (document.activeElement === firstFocusable) {
-							e.preventDefault();
-							lastFocusable.focus();
-						}
-					} else {
-						if (document.activeElement === lastFocusable) {
-							e.preventDefault();
-							firstFocusable.focus();
-						}
-					}
-				}
-			});
-		}
-		
-		// Accessibility: Keyboard support for modal
-		document.addEventListener('keydown', function(e) {
-			const modalBg = document.getElementById('modalBg');
-			const authorModal = document.getElementById('authorModal');
-			
-			if (e.key === 'Escape') {
-				if (modalBg.style.display === 'flex') {
-					closeModal();
-				} else if (authorModal.style.display === 'flex') {
-					closeAuthorModal();
-				}
-			}
-		});
 		
 		// Update showAbstractModal to handle focus and ARIA
 		const originalShowAbstractModal = showAbstractModal;
