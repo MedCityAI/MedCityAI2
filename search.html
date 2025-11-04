@@ -11,12 +11,6 @@
 		<link rel="stylesheet" href="assets/css/fontawesome-all.min.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 		<style>
-		/* Page Background */
-		body {
-			background: linear-gradient(135deg, #e3eaf3 0%, #b6c7e0 100%);
-			min-height: 100vh;
-		}
-		
 		/* Top Navigation Bar */
 		.top-bar {
 			background: #ffffff;
@@ -1162,14 +1156,22 @@
 		let currentCitationArticle = null;
 		let currentCitationStyle = 'mla';
 
-		// Hero Search Bar Handler
-		const heroSearchBar = document.getElementById('heroSearchBar');
-		heroSearchBar.addEventListener('input', function(e) {
-			const query = e.target.value.trim();
-			if (query.length >= 2) {
-				performHeroSearch(query);
-			} else if (query.length === 0) {
-				showEmptyState();
+		// Initialize on page load
+		document.addEventListener('DOMContentLoaded', function() {
+			// Show empty state initially
+			showEmptyState();
+			
+			// Hero Search Bar Handler
+			const heroSearchBar = document.getElementById('heroSearchBar');
+			if (heroSearchBar) {
+				heroSearchBar.addEventListener('input', function(e) {
+					const query = e.target.value.trim();
+					if (query.length >= 2) {
+						performHeroSearch(query);
+					} else if (query.length === 0) {
+						showEmptyState();
+					}
+				});
 			}
 		});
 
@@ -1210,8 +1212,15 @@
 						const authorMatch = article.authors?.toLowerCase().includes(searchText);
 						
 						if (titleMatch || abstractMatch || authorMatch) {
-							// Parse Rochester authors if available
-							article.rochesterAuthors = [];
+							// Parse Rochester authors from the rochester_authors field
+							const rochesterAuthorsField = article.rochester_authors || article['rochester_authors'] || '';
+							article.rochesterAuthors = rochesterAuthorsField ? rochesterAuthorsField.split('|').map(a => a.trim()) : [];
+							
+							// Use authors_display if available, otherwise use authors
+							if (article.authors_display || article['authors_display']) {
+								article.authors = article.authors_display || article['authors_display'];
+							}
+							
 							results.push(article);
 						}
 					}
@@ -1278,12 +1287,6 @@
 				<p>Enter your search criteria above to find Rochester, MN research publications</p>
 			`;
 		}
-
-		// Initialize on page load - removed Chart.js initialization
-		document.addEventListener('DOMContentLoaded', function() {
-			// Show empty state initially
-			showEmptyState();
-		});
 
 		// Search Form Handler (keep existing form functionality)
 		document.getElementById('searchForm')?.addEventListener('submit', async function(e) {
