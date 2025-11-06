@@ -2110,7 +2110,7 @@
 						window.showAuthorBibliography(name);
 					}
 				}
-			});
+			}, true); // use capture to bypass stopPropagation on parent containers
 
 			document.addEventListener('keydown', function(e) {
 				if ((e.key === 'Enter' || e.key === ' ') && e.target && e.target.classList && e.target.classList.contains('roch-author')) {
