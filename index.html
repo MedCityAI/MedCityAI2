@@ -437,6 +437,59 @@
 			margin-bottom: 10px; 
 		}
 
+		/* New author popover styles */
+		.author-popover {
+			position: fixed;
+			display: none;
+			z-index: 6000;
+			max-width: 400px;
+			background: #fff;
+			border: 1px solid #d9e2ec;
+			border-radius: 10px;
+			box-shadow: 0 8px 28px -4px rgba(0,0,0,0.18);
+			font-size: 14px;
+			line-height: 1.5;
+			animation: fadeInScale 0.18s ease;
+		}
+		.author-popover.visible { display: block; }
+		.author-popover-arrow {
+			position: absolute;
+			width: 14px;
+			height: 14px;
+			background: #fff;
+			border-left: 1px solid #d9e2ec;
+			border-top: 1px solid #d9e2ec;
+			transform: rotate(45deg);
+			box-shadow: -3px -3px 6px rgba(0,0,0,0.05);
+		}
+		.author-popover-content { overflow: hidden; border-radius: 10px; }
+		.author-popover-header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 10px 14px 8px;
+			background: linear-gradient(120deg,#f7fafe,#eef5fb);
+			border-bottom: 1px solid #e3edf5;
+		}
+		.author-popover-title { font-weight: 600; font-size: 13px; letter-spacing: .5px; text-transform: uppercase; color:#385a7c; }
+		.author-popover-close {
+			background: none; border: none; font-size: 22px; line-height: 1; cursor: pointer; color:#6b7c89; padding: 0 4px;
+			border-radius: 4px; transition: background .15s, color .15s;
+		}
+		.author-popover-close:hover { background:#dde7ef; color:#1d364d; }
+		.author-popover-body { max-height: 340px; overflow-y: auto; padding: 10px 14px 14px; }
+		.author-popover-body::-webkit-scrollbar { width: 8px; }
+		.author-popover-body::-webkit-scrollbar-track { background: #f2f6fa; }
+		.author-popover-body::-webkit-scrollbar-thumb { background: #b9c9d6; border-radius: 4px; }
+		.author-popover-body::-webkit-scrollbar-thumb:hover { background: #94a8b9; }
+		.author-popover-item { margin-bottom: 10px; }
+		.author-popover-item a { color:#1d6bb3; text-decoration:none; font-weight:500; }
+		.author-popover-item a:hover { text-decoration:underline; }
+		.author-popover-loading { text-align:center; padding: 30px 10px; color:#607587; font-size:13px; }
+		.author-popover-error { color:#c0392b; font-weight:600; padding: 16px 10px; }
+		.author-popover-empty { color:#607587; padding: 18px 10px; text-align:center; }
+		@keyframes fadeInScale { from { opacity:0; transform: scale(.96);} to { opacity:1; transform: scale(1);} }
+
 		/* Share buttons */
 		.share-buttons { 
 			margin-top: 10px; 
@@ -1203,9 +1256,16 @@
 						</div>
 					</div>
 					
-								<!-- Anchored Author Popover (appears near clicked author) -->
-								<div id="authorPopover" style="position: fixed; display: none; z-index: 6000; max-width: 380px; background: white; border: 1px solid #e0e0e0; box-shadow: 0 6px 18px rgba(0,0,0,0.12); border-radius: 8px;">
-									<!-- content injected dynamically -->
+								<!-- Anchored Author Popover (new structured popover) -->
+								<div id="authorPopover" class="author-popover" role="dialog" aria-modal="false" aria-hidden="true">
+									<div class="author-popover-arrow" aria-hidden="true"></div>
+									<div class="author-popover-content" role="document">
+										<div class="author-popover-header">
+											<div class="author-popover-title" id="authorPopoverTitle">Author Publications</div>
+											<button type="button" class="author-popover-close" id="authorPopoverClose" aria-label="Close popover">&times;</button>
+										</div>
+										<div class="author-popover-body" id="authorPopoverBody"></div>
+									</div>
 								</div>
 				</section>
 			</div>
@@ -2117,63 +2177,92 @@
 
 		// Initialize application
 		document.addEventListener('DOMContentLoaded', function() {
-			// Define author bibliography popover function
+			// New popover logic with arrow & viewport flip
 			window.showAuthorBibliography = async function(authorName) {
 				const pop = document.getElementById('authorPopover');
-				if (!pop) return;
-				// Determine anchor element: lastAuthorTrigger set by delegated handler, or find by data-author
-				let anchor = window.lastAuthorTrigger || document.querySelector(`.roch-author[data-author="${authorName.replace(/"/g, '\\"')}"]`);
-				// Position the popover near the anchor
-				if (anchor) {
-					const rect = anchor.getBoundingClientRect();
-					const left = Math.max(8, rect.left);
-					let top = rect.bottom + 8;
-					// Adjust if offscreen
-					const maxWidth = 380;
-					const viewportWidth = document.documentElement.clientWidth;
-					let computedLeft = left;
-					if (computedLeft + maxWidth > viewportWidth - 10) computedLeft = viewportWidth - maxWidth - 10;
-					pop.style.left = computedLeft + 'px';
-					pop.style.top = top + 'px';
-				} else {
-					pop.style.left = '20px';
-					pop.style.top = '100px';
-				}
-				pop.style.display = 'block';
-				pop.innerHTML = '<div style="padding:12px; text-align:center; color:#7f8c8d;">Loading publications...</div>';
-				// Clear lastAuthorTrigger so subsequent operations don't reuse it
+				const body = document.getElementById('authorPopoverBody');
+				const titleEl = document.getElementById('authorPopoverTitle');
+				const arrow = pop.querySelector('.author-popover-arrow');
+				if (!pop || !body) return;
+
+				// Resolve anchor
+				let anchor = window.lastAuthorTrigger || document.querySelector(`.roch-author[data-author="${authorName.replace(/"/g,'\\"')}"]`);
 				window.lastAuthorTrigger = null;
-				
+
+				// Set title
+				titleEl.textContent = authorName + ' – Publications';
+				body.innerHTML = '<div class="author-popover-loading">Loading publications…</div>';
+
+				// Make visible early (for measurement) but transparent
+				pop.classList.add('visible');
+				pop.style.opacity = '0';
+
+				const viewportW = window.innerWidth;
+				const viewportH = window.innerHeight;
+				let top = 100, left = 40, placement = 'bottom';
+				if (anchor) {
+					const r = anchor.getBoundingClientRect();
+					const gap = 8;
+					left = Math.min(Math.max(r.left, 8), viewportW - 420);
+					// Try bottom placement first
+					if (r.bottom + gap + pop.offsetHeight < viewportH - 12) {
+						 top = r.bottom + gap;
+						 placement = 'bottom';
+					} else if (r.top - gap - pop.offsetHeight > 12) {
+						 top = r.top - gap - pop.offsetHeight;
+						 placement = 'top';
+					} else {
+						 top = Math.min(Math.max(r.bottom + gap, 12), viewportH - pop.offsetHeight - 12);
+						 placement = 'bottom';
+					}
+				}
+
+				pop.style.left = left + 'px';
+				pop.style.top = top + 'px';
+
+				// Arrow positioning
+				if (anchor) {
+					const r = anchor.getBoundingClientRect();
+					const arrowX = Math.min(Math.max(r.left + r.width/2 - 7, left + 18), left + pop.offsetWidth - 34);
+					arrow.style.left = (arrowX - left) + 'px';
+					if (placement === 'bottom') {
+						arrow.style.top = '-7px';
+					} else {
+						arrow.style.top = (pop.offsetHeight - 7) + 'px';
+					}
+				}
+
+				pop.style.opacity = '1';
+				pop.setAttribute('aria-hidden','false');
+				pop.focus?.();
+
 				try {
 					const query = `(${authorName}[Author]) AND Rochester[AD]`;
-					const searchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmax=200&retmode=json`;
-					const searchResp = await fetch(searchUrl);
-					const searchData = await searchResp.json();
-					const ids = searchData?.esearchresult?.idlist || [];
+					const searchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmax=100&retmode=json`;
+					const res = await fetch(searchUrl);
+					const data = await res.json();
+					const ids = data?.esearchresult?.idlist || [];
 					if (!ids.length) {
-						pop.innerHTML = '<div style="padding:12px; color:#7f8c8d;">No publications found for this author with Rochester affiliation.</div>';
+						body.innerHTML = '<div class="author-popover-empty">No publications found for Rochester affiliation.</div>';
 						return;
 					}
 					const fetchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${ids.join(',')}&retmode=xml`;
-					const fetchResp = await fetch(fetchUrl);
-					const xmlText = await fetchResp.text();
+					const fRes = await fetch(fetchUrl);
+					const xmlTxt = await fRes.text();
 					const parser = new DOMParser();
-					const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-					const nodes = xmlDoc.querySelectorAll('PubmedArticle');
-					let html = '<div style="max-height:320px; overflow:auto; padding:8px;">';
-					nodes.forEach((node, idx) => {
+					const xmlDoc = parser.parseFromString(xmlTxt,'text/xml');
+					const articles = [];
+					xmlDoc.querySelectorAll('PubmedArticle').forEach(node => {
 						const pmid = node.querySelector('PMID')?.textContent || '';
-						const title = node.querySelector('ArticleTitle')?.textContent || 'No title';
-						html += `<div style="margin-bottom:10px;"><a href="https://pubmed.ncbi.nlm.nih.gov/${pmid}/" target="_blank" style="color:#3498db; text-decoration:none;">${title}</a></div>`;
+						const title = node.querySelector('ArticleTitle')?.textContent || 'Untitled';
+						const year = node.querySelector('PubDate Year')?.textContent || '';
+						articles.push({pmid,title,year});
 					});
-					html += '</div>';
-					html += '<div style="padding:8px; text-align:right; border-top:1px solid #f1f1f1;"><button id="authorPopoverClose" style="background:#3498db;color:#fff;border:none;padding:6px 10px;border-radius:4px;cursor:pointer;">Close</button></div>';
-					pop.innerHTML = html;
-					const closeBtn = document.getElementById('authorPopoverClose');
-					if (closeBtn) closeBtn.addEventListener('click', () => pop.style.display = 'none');
-				} catch (err) {
-					console.error('Author popover error', err);
-					pop.innerHTML = '<div style="padding:12px; color:#e74c3c;">Error loading publications</div>';
+					articles.sort((a,b)=>parseInt(b.year||'0')-parseInt(a.year||'0'));
+					body.innerHTML = articles.map(a => `<div class="author-popover-item"><a href="https://pubmed.ncbi.nlm.nih.gov/${a.pmid}/" target="_blank" rel="noopener">${a.title}</a>${a.year?` <span style='color:#607587;font-size:11px;'>(${a.year})</span>`:''}</div>`).join('');
+				} catch(err) {
+					console.error('Popover fetch error', err);
+					body.innerHTML = '<div class="author-popover-error">Error loading publications.</div>';
 				}
 			};
 			
@@ -2208,17 +2297,28 @@
 			document.addEventListener('click', function(e) {
 				const pop = document.getElementById('authorPopover');
 				if (!pop) return;
-				if (pop.style.display === 'none' || pop.style.display === '') return;
-				if (e.target.closest('#authorPopover')) return; // clicked inside popover
-				if (e.target.closest('.roch-author')) return; // clicked another author
-				pop.style.display = 'none';
+				if (!pop.classList.contains('visible')) return;
+				if (e.target.closest('#authorPopover')) return;
+				if (e.target.closest('.roch-author')) return;
+				pop.classList.remove('visible');
+				pop.setAttribute('aria-hidden','true');
 			}, true);
 
 			document.addEventListener('keydown', function(e) {
 				if (e.key === 'Escape') {
 					const pop = document.getElementById('authorPopover');
-					if (pop) pop.style.display = 'none';
+					if (pop && pop.classList.contains('visible')) {
+						pop.classList.remove('visible');
+						pop.setAttribute('aria-hidden','true');
+					}
 				}
+			});
+
+			// Explicit close button for popover
+			document.getElementById('authorPopoverClose').addEventListener('click', () => {
+				const pop = document.getElementById('authorPopover');
+				pop.classList.remove('visible');
+				pop.setAttribute('aria-hidden','true');
 			});
 			
 			// Load data and initialize featured carousel
