@@ -1202,6 +1202,11 @@
 							<div id="authorBibliography" style="padding: 24px; overflow-y: auto; flex: 1;"></div>
 						</div>
 					</div>
+					
+								<!-- Anchored Author Popover (appears near clicked author) -->
+								<div id="authorPopover" style="position: fixed; display: none; z-index: 6000; max-width: 380px; background: white; border: 1px solid #e0e0e0; box-shadow: 0 6px 18px rgba(0,0,0,0.12); border-radius: 8px;">
+									<!-- content injected dynamically -->
+								</div>
 				</section>
 			</div>
 		</main>
@@ -1598,16 +1603,16 @@
 				let authorsHtml = "";
 				if (article.authors_display) {
 					authorsHtml = article.authors_display;
-					// Make Rochester authors clickable
-					rochesterAuthorsList.forEach(rochAuthor => {
-						if (rochAuthor) {
-							const escapedAuthor = rochAuthor.replace(/'/g, "\\'");
-							authorsHtml = authorsHtml.replace(
-								rochAuthor, 
-								`<span class="roch-author" onclick="showAuthorBibliography('${escapedAuthor}')" tabindex="0" role="button" aria-label="View publications by ${escapedAuthor}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showAuthorBibliography('${escapedAuthor}');}">${rochAuthor}</span>`
-							);
-						}
-					});
+						// Make Rochester authors clickable
+						rochesterAuthorsList.forEach(rochAuthor => {
+							if (rochAuthor) {
+								const escapedAuthor = rochAuthor.replace(/'/g, "\\'");
+								authorsHtml = authorsHtml.replace(
+									rochAuthor,
+									`<span class="roch-author" data-author="${escapedAuthor}" onclick="showAuthorBibliography('${escapedAuthor}')" tabindex="0" role="button" aria-label="View publications by ${escapedAuthor}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showAuthorBibliography('${escapedAuthor}');}">${rochAuthor}</span>`
+								);
+							}
+						});
 				}
 				
 				// Parse affiliations (pipe-separated in CSV)
@@ -1852,16 +1857,16 @@
 				let authorsHtml = "";
 				if (article.authors_display) {
 					authorsHtml = article.authors_display;
-					// Make Rochester authors clickable
-					rochesterAuthorsList.forEach(rochAuthor => {
-						if (rochAuthor) {
-							const escapedAuthor = rochAuthor.replace(/'/g, "\\'");
-							authorsHtml = authorsHtml.replace(
-								rochAuthor, 
-								`<span class="roch-author" onclick="showAuthorBibliography('${escapedAuthor}')" tabindex="0" role="button" aria-label="View publications by ${escapedAuthor}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showAuthorBibliography('${escapedAuthor}');}">${rochAuthor}</span>`
-							);
-						}
-					});
+						// Make Rochester authors clickable
+						rochesterAuthorsList.forEach(rochAuthor => {
+							if (rochAuthor) {
+								const escapedAuthor = rochAuthor.replace(/'/g, "\\'");
+								authorsHtml = authorsHtml.replace(
+									rochAuthor,
+									`<span class="roch-author" data-author="${escapedAuthor}" onclick="showAuthorBibliography('${escapedAuthor}')" tabindex="0" role="button" aria-label="View publications by ${escapedAuthor}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showAuthorBibliography('${escapedAuthor}');}">${rochAuthor}</span>`
+								);
+							}
+						});
 				}
 				
 				// Parse affiliations (pipe-separated in CSV)
@@ -2080,19 +2085,64 @@
 
 		// Initialize application
 		document.addEventListener('DOMContentLoaded', function() {
-			// Define author bibliography functions globally
+			// Define author bibliography popover function
 			window.showAuthorBibliography = async function(authorName) {
-				// Minimal behavior: only open the modal, no content or loading
-				const modal = document.getElementById('authorModal');
-				const loading = document.getElementById('authorLoading');
-				const bibliography = document.getElementById('authorBibliography');
-				const countDiv = document.getElementById('authorCount');
-				if (!modal) return;
-				// Ensure empty and no spinner
-				if (loading) loading.style.display = 'none';
-				if (countDiv) countDiv.style.display = 'none';
-				if (bibliography) bibliography.innerHTML = '';
-				modal.style.display = 'flex';
+				const pop = document.getElementById('authorPopover');
+				if (!pop) return;
+				// Determine anchor element: lastAuthorTrigger set by delegated handler, or find by data-author
+				let anchor = window.lastAuthorTrigger || document.querySelector(`.roch-author[data-author="${authorName.replace(/"/g, '\\"')}"]`);
+				// Position the popover near the anchor
+				if (anchor) {
+					const rect = anchor.getBoundingClientRect();
+					const left = Math.max(8, rect.left);
+					let top = rect.bottom + 8;
+					// Adjust if offscreen
+					const maxWidth = 380;
+					const viewportWidth = document.documentElement.clientWidth;
+					let computedLeft = left;
+					if (computedLeft + maxWidth > viewportWidth - 10) computedLeft = viewportWidth - maxWidth - 10;
+					pop.style.left = computedLeft + 'px';
+					pop.style.top = top + 'px';
+				} else {
+					pop.style.left = '20px';
+					pop.style.top = '100px';
+				}
+				pop.style.display = 'block';
+				pop.innerHTML = '<div style="padding:12px; text-align:center; color:#7f8c8d;">Loading publications...</div>';
+				// Clear lastAuthorTrigger so subsequent operations don't reuse it
+				window.lastAuthorTrigger = null;
+				
+				try {
+					const query = `(${authorName}[Author]) AND Rochester[AD]`;
+					const searchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmax=200&retmode=json`;
+					const searchResp = await fetch(searchUrl);
+					const searchData = await searchResp.json();
+					const ids = searchData?.esearchresult?.idlist || [];
+					if (!ids.length) {
+						pop.innerHTML = '<div style="padding:12px; color:#7f8c8d;">No publications found for this author with Rochester affiliation.</div>';
+						return;
+					}
+					const fetchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${ids.join(',')}&retmode=xml`;
+					const fetchResp = await fetch(fetchUrl);
+					const xmlText = await fetchResp.text();
+					const parser = new DOMParser();
+					const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+					const nodes = xmlDoc.querySelectorAll('PubmedArticle');
+					let html = '<div style="max-height:320px; overflow:auto; padding:8px;">';
+					nodes.forEach((node, idx) => {
+						const pmid = node.querySelector('PMID')?.textContent || '';
+						const title = node.querySelector('ArticleTitle')?.textContent || 'No title';
+						html += `<div style="margin-bottom:10px;"><a href="https://pubmed.ncbi.nlm.nih.gov/${pmid}/" target="_blank" style="color:#3498db; text-decoration:none;">${title}</a></div>`;
+					});
+					html += '</div>';
+					html += '<div style="padding:8px; text-align:right; border-top:1px solid #f1f1f1;"><button id="authorPopoverClose" style="background:#3498db;color:#fff;border:none;padding:6px 10px;border-radius:4px;cursor:pointer;">Close</button></div>';
+					pop.innerHTML = html;
+					const closeBtn = document.getElementById('authorPopoverClose');
+					if (closeBtn) closeBtn.addEventListener('click', () => pop.style.display = 'none');
+				} catch (err) {
+					console.error('Author popover error', err);
+					pop.innerHTML = '<div style="padding:12px; color:#e74c3c;">Error loading publications</div>';
+				}
 			};
 			
 			window.closeAuthorModal = function() {
@@ -2103,6 +2153,8 @@
 			document.addEventListener('click', function(e) {
 				const trigger = e.target.closest('.roch-author');
 				if (trigger) {
+					// remember which element triggered the request so we can anchor the popover
+					window.lastAuthorTrigger = trigger;
 					const name = (trigger.getAttribute('data-author') || trigger.textContent || '').trim();
 					if (name) {
 						e.preventDefault();
@@ -2117,6 +2169,23 @@
 					e.preventDefault();
 					const name = (e.target.getAttribute('data-author') || e.target.textContent || '').trim();
 					if (name) window.showAuthorBibliography(name);
+				}
+			});
+
+			// Hide author popover when clicking outside or pressing Escape
+			document.addEventListener('click', function(e) {
+				const pop = document.getElementById('authorPopover');
+				if (!pop) return;
+				if (pop.style.display === 'none' || pop.style.display === '') return;
+				if (e.target.closest('#authorPopover')) return; // clicked inside popover
+				if (e.target.closest('.roch-author')) return; // clicked another author
+				pop.style.display = 'none';
+			}, true);
+
+			document.addEventListener('keydown', function(e) {
+				if (e.key === 'Escape') {
+					const pop = document.getElementById('authorPopover');
+					if (pop) pop.style.display = 'none';
 				}
 			});
 			
