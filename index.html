@@ -1609,10 +1609,26 @@
 								const escapedAuthor = rochAuthor.replace(/'/g, "\\'");
 								authorsHtml = authorsHtml.replace(
 									rochAuthor,
-									`<span class="roch-author" data-author="${escapedAuthor}" onclick="showAuthorBibliography('${escapedAuthor}')" tabindex="0" role="button" aria-label="View publications by ${escapedAuthor}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showAuthorBibliography('${escapedAuthor}');}">${rochAuthor}</span>`
+									`<span class="roch-author" data-author="${escapedAuthor}" tabindex="0" role="button" aria-label="View publications by ${escapedAuthor}">${rochAuthor}</span>`
 								);
 							}
 						});
+
+					// Fallback: if replacement didn't inject any clickable spans, rebuild from raw authors list
+					if (!authorsHtml.includes('roch-author') && authorsList.length) {
+						const rebuilt = authorsList.map(raw => {
+							const t = (raw || '').trim();
+							if (!t) return t;
+							if (rochesterAuthorsList.includes(t)) {
+								const esc = t.replace(/'/g, "\\'");
+								return `<span class="roch-author" data-author="${esc}" tabindex="0" role="button" aria-label="View publications by ${esc}">${t}</span>`;
+							}
+							return t;
+						}).join(', ');
+						if (rebuilt) {
+							authorsHtml = rebuilt;
+						}
+					}
 				}
 				
 				// Parse affiliations (pipe-separated in CSV)
@@ -1863,10 +1879,26 @@
 								const escapedAuthor = rochAuthor.replace(/'/g, "\\'");
 								authorsHtml = authorsHtml.replace(
 									rochAuthor,
-									`<span class="roch-author" data-author="${escapedAuthor}" onclick="showAuthorBibliography('${escapedAuthor}')" tabindex="0" role="button" aria-label="View publications by ${escapedAuthor}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showAuthorBibliography('${escapedAuthor}');}">${rochAuthor}</span>`
+									`<span class="roch-author" data-author="${escapedAuthor}" tabindex="0" role="button" aria-label="View publications by ${escapedAuthor}">${rochAuthor}</span>`
 								);
 							}
 						});
+
+					// Fallback: if replacement didn't inject any clickable spans, rebuild from raw authors list
+					if (!authorsHtml.includes('roch-author') && authorsList.length) {
+						const rebuilt = authorsList.map(raw => {
+							const t = (raw || '').trim();
+							if (!t) return t;
+							if (rochesterAuthorsList.includes(t)) {
+								const esc = t.replace(/'/g, "\\'");
+								return `<span class="roch-author" data-author="${esc}" tabindex="0" role="button" aria-label="View publications by ${esc}">${t}</span>`;
+							}
+							return t;
+						}).join(', ');
+						if (rebuilt) {
+							authorsHtml = rebuilt;
+						}
+					}
 				}
 				
 				// Parse affiliations (pipe-separated in CSV)
