@@ -441,12 +441,12 @@
 		.author-popover {
 			position: fixed;
 			display: none;
-			z-index: 6000;
+			z-index: 999999; /* Elevated above all app layers */
 			max-width: 400px;
 			background: #fff;
 			border: 1px solid #d9e2ec;
 			border-radius: 10px;
-			box-shadow: 0 8px 28px -4px rgba(0,0,0,0.18);
+			box-shadow: 0 12px 32px -6px rgba(0,0,0,0.28), 0 0 0 1px rgba(0,0,0,0.04);
 			font-size: 14px;
 			line-height: 1.5;
 			animation: fadeInScale 0.18s ease;
@@ -454,6 +454,7 @@
 		.author-popover.visible { display: block; }
 		.author-popover-arrow {
 			position: absolute;
+			z-index: 999998; /* Just beneath popover for stacking sanity */
 			width: 14px;
 			height: 14px;
 			background: #fff;
