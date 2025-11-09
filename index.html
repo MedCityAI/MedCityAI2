@@ -416,19 +416,19 @@
 		
 		/* Clickable Rochester authors */
 		.result-authors .roch-author {
-			color: #3498db;
-			font-weight: 600;
+			color: #555; /* dark gray */
+			font-weight: 500; /* less bold */
 			text-decoration: none;
-			border-bottom: 1px solid #3498db;
+			border-bottom: 1px dashed #bbb; /* subtle underline */
 			cursor: pointer;
-			transition: all 0.2s ease;
-			padding: 2px 4px;
+			transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+			padding: 1px 2px;
 			border-radius: 3px;
 		}
 		.result-authors .roch-author:hover {
-			color: #fff;
-			background-color: #3498db;
-			border-bottom-color: #3498db;
+			color: #222; /* darker on hover */
+			background-color: #f0f0f0;
+			border-bottom-color: #999;
 		}
 		
 		.result-citation { 
