@@ -103,7 +103,7 @@
 			.podium {
 				display: flex;
 				justify-content: center;
-				align-items: flex-end;
+				align-items: stretch;
 				margin: 40px 0 60px;
 				gap: 20px;
 			}
@@ -122,6 +122,10 @@
 				box-shadow: 0 10px 30px rgba(0,0,0,0.15);
 				position: relative;
 				transition: transform 0.3s ease;
+				min-height: 320px;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
 			}
 			
 			.podium-card:hover {
@@ -465,19 +469,23 @@
 								</div>
 							</div>
 							
-							<!-- Third Place -->
-							<div class="podium-place third">
-								<div class="podium-card">
-									<div class="trophy-badge"><i class="fas fa-trophy"></i></div>
-									<div class="author-name">Sherief Ghozy</div>
+						
+						<!-- Third Place - TIE -->
+						<div class="podium-place third">
+							<div class="podium-card">
+								<div class="trophy-badge"><i class="fas fa-trophy"></i></div>
+								<div style="font-size: 0.85em; color: #CD7F32; font-weight: 600; margin-bottom: 10px;">TIE</div>
+								<div class="author-name">Sherief Ghozy</div>
+								<div class="department">Radiology</div>
+								<div style="border-top: 2px solid #e0e0e0; margin: 15px 0; padding-top: 15px;">
+									<div class="author-name">Clifford Jack</div>
 									<div class="department">Radiology</div>
-									<div class="paper-count">87</div>
-									<div class="paper-label">Papers</div>
 								</div>
+								<div class="paper-count">87</div>
+								<div class="paper-label">Papers</div>
 							</div>
 						</div>
-
-						<!-- Rest of Top 50 -->
+					</div>						<!-- Rest of Top 50 -->
 						<div class="leaderboard-table">
 							<div class="table-header">
 								<div>Rank</div>
