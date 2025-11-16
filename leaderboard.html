@@ -12,10 +12,14 @@
 		<style>
 			/* Hero Section - matching index.html */
 			.hero-section {
+				background: linear-gradient(120deg, #2568BE 0%, #1B4C7D 100%);
+				min-height: 340px;
+				display: flex;
+				align-items: center;
 				position: relative;
 				overflow: hidden;
-				padding: 80px 20px 60px;
-				background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+				margin-top: 70px;
+				z-index: 1;
 			}
 			
 			.hero-bg-blobs {
@@ -26,14 +30,17 @@
 				height: 100%;
 				z-index: 0;
 				pointer-events: none;
+				opacity: 1;
+				transition: opacity 0.5s;
 			}
 			
 			.hero-content {
-				position: relative;
-				z-index: 1;
-				text-align: center;
 				max-width: 1200px;
 				margin: 0 auto;
+				padding: 36px 20px;
+				position: relative;
+				z-index: 2;
+				text-align: center;
 			}
 			
 			.hero-content h1 {
@@ -283,6 +290,81 @@
 					font-size: 2.2em;
 				}
 			}
+			
+			/* Top Navigation Bar - matching index.html */
+			.top-bar {
+				background: #ffffff;
+				color: #2c3e50;
+				padding: 15px 0;
+				font-size: 14px;
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				z-index: 1001;
+				box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+				border-bottom: 1px solid #eee;
+			}
+			.top-bar-content {
+				max-width: 1200px;
+				margin: 0 auto;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				padding: 0 20px;
+			}
+			.logo {
+				display: flex;
+				align-items: center;
+			}
+			.logo img {
+				height: 40px;
+				width: auto;
+			}
+			.nav-links {
+				display: flex;
+				gap: 30px;
+				align-items: center;
+			}
+			.nav-links a {
+				color: #2c3e50;
+				text-decoration: none;
+				font-weight: 500;
+				font-size: 15px;
+				transition: color 0.3s ease;
+			}
+			.nav-links a:hover {
+				color: #3498db;
+			}
+			.nav-links a[aria-current="page"] {
+				color: #3498db;
+			}
+			.cta-button {
+				background: linear-gradient(135deg, #3498db, #2980b9);
+				color: white;
+				padding: 10px 20px;
+				border-radius: 25px;
+				text-decoration: none;
+				font-weight: 600;
+				font-size: 14px;
+				transition: all 0.3s ease;
+			}
+			.cta-button:hover {
+				transform: translateY(-1px);
+				box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+			}
+			.menu-icon {
+				display: none;
+				flex-direction: column;
+				cursor: pointer;
+			}
+			.menu-icon div {
+				width: 25px;
+				height: 3px;
+				background: #2c3e50;
+				margin: 3px 0;
+				transition: 0.3s;
+			}
 		</style>
 	</head>
 	<body class="landing is-preload">
@@ -350,8 +432,8 @@
 						<i class="fas fa-trophy"></i>
 						<i class="fas fa-trophy"></i>
 					</div>
-					<h1>🎉 Research Leaderboard 🎉</h1>
-					<p class="subtitle">Celebrating Rochester's Most Prolific Researchers</p>
+					<h1>2025 Leaderboard</h1>
+					<p class="subtitle">Celebrating Rochester's Most Prolific Researchers. Year to Date Counter, Updated Monthly.</p>
 					<div class="stats">
 						<strong>65,676</strong> unique authors | <strong>11,097</strong> PubMed indexed papers
 					</div>
