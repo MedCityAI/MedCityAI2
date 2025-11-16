@@ -9,7 +9,6 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 		<style>
 			/* Hero Section - matching index.html */
 			.hero-section {
@@ -286,114 +285,82 @@
 			}
 		</style>
 	</head>
-	<body class="is-preload">
+	<body class="landing is-preload">
 
-		<!-- Wrapper -->
-		<div id="wrapper">
-
-			<!-- Header -->
-			<header id="header">
-				<div class="inner">
-
-					<!-- Logo -->
-					<a href="index.html" class="logo">
-						<span class="symbol"><img src="images/medcityai_logo1.png" alt="MedCityAI Logo" /></span><span class="title">MedCityAI</span>
-					</a>
-
-					<!-- Nav -->
-					<nav class="top-bar" role="navigation" aria-label="Main navigation">
-						<div class="logo-container">
-							<img src="images/medcityai_logo1.png" alt="MedCityAI Logo" style="height:48px; width:auto;" />
-						</div>
-						<div class="nav-links" role="menubar">
-							<a href="index.html" role="menuitem">New Today</a>
-							<a href="search.html" role="menuitem">Search</a>
-							<a href="featured.html" role="menuitem">Featured</a>
-							<a href="leaderboard.html" role="menuitem" aria-current="page">Leaderboard</a>
-							<a href="about.html" role="menuitem">About</a>
-							<a href="contact.html" role="menuitem">Contact</a>
-						</div>
-						<div style="display: flex; align-items: center; gap: 15px;">
-							<a href="#subscribe" class="cta-button">Subscribe</a>
-							<div class="menu-icon">
-								<i class="fas fa-bars"></i>
-							</div>
-						</div>
-					</nav>
-
-					<!-- Mobile menu -->
-					<nav>
-						<ul>
-							<li><a href="#menu">Menu</a></li>
-						</ul>
-					</nav>
-
+		<!-- Page Wrapper -->
+		<div id="page-wrapper">
+			<!-- Modern Medical Navigation Header -->
+			<nav class="top-bar" role="navigation" aria-label="Main navigation">
+				<div class="top-bar-content">
+					<div class="logo">
+						<img src="images/medcityai_logo1.png" alt="MedCityAI Logo" style="height:48px; width:auto;" />
+					</div>
+					<div class="nav-links" role="menubar">
+						<a href="index.html" role="menuitem">New Today</a>
+						<a href="search.html" role="menuitem">Search</a>
+						<a href="featured.html" role="menuitem">Featured</a>
+						<a href="leaderboard.html" role="menuitem" aria-current="page">Leaderboard</a>
+						<a href="about.html" role="menuitem">About</a>
+						<a href="contact.html" role="menuitem">Contact</a>
+					</div>
+					<div style="display: flex; align-items: center; gap: 15px;">
+						<a href="#subscribe" class="cta-button">Subscribe</a>
+						<button class="menu-icon" aria-label="Toggle mobile menu" aria-expanded="false" aria-controls="mobile-menu">
+							<span class="sr-only">Menu</span>
+							<div aria-hidden="true"></div>
+							<div aria-hidden="true"></div>
+							<div aria-hidden="true"></div>
+						</button>
+					</div>
 				</div>
-			</header>
-
-			<!-- Menu -->
-			<nav id="menu">
-				<h2>Menu</h2>
-				<ul>
-					<li><a href="index.html">New Today</a></li>
-					<li><a href="search.html">Search</a></li>
-					<li><a href="featured.html">Featured</a></li>
-					<li><a href="leaderboard.html" class="active">Leaderboard</a></li>
-					<li><a href="about.html">About</a></li>
-					<li><a href="contact.html">Contact</a></li>
-				</ul>
 			</nav>
 
-			<!-- Main -->
-			<div id="main">
-				<div class="inner">
-					
-					<!-- Hero Section -->
-					<section class="hero-section" aria-label="Hero banner">
-						<!-- Animated SVG background blobs -->
-						<svg class="hero-bg-blobs" width="100%" height="500" viewBox="0 0 1440 500" aria-hidden="true" role="presentation">
-							<defs>
-								<linearGradient id="blobGradient1" x1="0" y1="0" x2="1" y2="1">
-									<stop offset="0%" stop-color="#3498db" stop-opacity="0.18"/>
-									<stop offset="100%" stop-color="#b6c7e0" stop-opacity="0.12"/>
-								</linearGradient>
-								<linearGradient id="blobGradient2" x1="0" y1="1" x2="1" y2="0">
-									<stop offset="0%" stop-color="#e3eaf3" stop-opacity="0.16"/>
-									<stop offset="100%" stop-color="#2980b9" stop-opacity="0.10"/>
-								</linearGradient>
-							</defs>
-							<g>
-								<circle id="blob1" cx="330" cy="150" r="280" fill="url(#blobGradient1)">
-									<animate attributeName="cx" values="330;1110;330" dur="15s" repeatCount="indefinite"/>
-									<animate attributeName="cy" values="150;350;150" dur="13.125s" repeatCount="indefinite"/>
-								</circle>
-								<circle id="blob2" cx="270" cy="120" r="220" fill="url(#blobGradient2)">
-									<animate attributeName="cx" values="270;1170;270" dur="16.875s" repeatCount="indefinite"/>
-									<animate attributeName="cy" values="120;380;120" dur="11.25s" repeatCount="indefinite"/>
-								</circle>
-								<circle id="blob3" cx="450" cy="250" r="350" fill="url(#blobGradient1)" opacity="0.7">
-									<animate attributeName="cx" values="450;990;450" dur="18.75s" repeatCount="indefinite"/>
-									<animate attributeName="cy" values="250;450;250" dur="15s" repeatCount="indefinite"/>
-								</circle>
-							</g>
-						</svg>
-						<div class="hero-content">
-							<div class="trophy-icons">
-								<i class="fas fa-trophy"></i>
-								<i class="fas fa-trophy"></i>
-								<i class="fas fa-trophy"></i>
-							</div>
-							<h1>🎉 Research Leaderboard 🎉</h1>
-							<p class="subtitle">Celebrating Rochester's Most Prolific Researchers</p>
-							<div class="stats">
-								<strong>65,676</strong> unique authors | <strong>11,097</strong> PubMed indexed papers
-							</div>
-						</div>
-					</section>
+			<!-- Hero Section -->
+			<section class="hero-section" aria-label="Hero banner">
+				<!-- Animated SVG background blobs -->
+				<svg class="hero-bg-blobs" width="100%" height="500" viewBox="0 0 1440 500" aria-hidden="true" role="presentation">
+					<defs>
+						<linearGradient id="blobGradient1" x1="0" y1="0" x2="1" y2="1">
+							<stop offset="0%" stop-color="#3498db" stop-opacity="0.18"/>
+							<stop offset="100%" stop-color="#b6c7e0" stop-opacity="0.12"/>
+						</linearGradient>
+						<linearGradient id="blobGradient2" x1="0" y1="1" x2="1" y2="0">
+							<stop offset="0%" stop-color="#e3eaf3" stop-opacity="0.16"/>
+							<stop offset="100%" stop-color="#2980b9" stop-opacity="0.10"/>
+						</linearGradient>
+					</defs>
+					<g>
+						<circle id="blob1" cx="330" cy="150" r="280" fill="url(#blobGradient1)">
+							<animate attributeName="cx" values="330;1110;330" dur="15s" repeatCount="indefinite"/>
+							<animate attributeName="cy" values="150;350;150" dur="13.125s" repeatCount="indefinite"/>
+						</circle>
+						<circle id="blob2" cx="270" cy="120" r="220" fill="url(#blobGradient2)">
+							<animate attributeName="cx" values="270;1170;270" dur="16.875s" repeatCount="indefinite"/>
+							<animate attributeName="cy" values="120;380;120" dur="11.25s" repeatCount="indefinite"/>
+						</circle>
+						<circle id="blob3" cx="450" cy="250" r="350" fill="url(#blobGradient1)" opacity="0.7">
+							<animate attributeName="cx" values="450;990;450" dur="18.75s" repeatCount="indefinite"/>
+							<animate attributeName="cy" values="250;450;250" dur="15s" repeatCount="indefinite"/>
+						</circle>
+					</g>
+				</svg>
+				<div class="hero-content">
+					<div class="trophy-icons">
+						<i class="fas fa-trophy"></i>
+						<i class="fas fa-trophy"></i>
+						<i class="fas fa-trophy"></i>
+					</div>
+					<h1>🎉 Research Leaderboard 🎉</h1>
+					<p class="subtitle">Celebrating Rochester's Most Prolific Researchers</p>
+					<div class="stats">
+						<strong>65,676</strong> unique authors | <strong>11,097</strong> PubMed indexed papers
+					</div>
+				</div>
+			</section>
 
-					<!-- Podium - Top 3 -->
-					<div class="leaderboard-container">
-						<div class="podium">
+			<!-- Podium - Top 3 -->
+			<div class="leaderboard-container">
+				<div class="podium">
 							<!-- First Place -->
 							<div class="podium-place first">
 								<div class="podium-card">
@@ -790,6 +757,7 @@
 					</div>
 
 				</div>
+
 			</div>
 
 			<!-- Footer -->
