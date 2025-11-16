@@ -1,0 +1,806 @@
+<!DOCTYPE HTML>
+<!--
+	MedCityAI - Research Leaderboard
+-->
+<html lang="en">
+	<head>
+		<title>Research Leaderboard - MedCityAI</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+		<style>
+			/* Hero Section */
+			.hero-leaderboard {
+				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+				padding: 80px 20px 60px;
+				text-align: center;
+				position: relative;
+				overflow: hidden;
+			}
+			
+			.hero-leaderboard::before {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120"><path d="M0,0 Q300,60 600,30 T1200,50 L1200,120 L0,120 Z" fill="rgba(255,255,255,0.1)"/></svg>') repeat-x bottom;
+				background-size: 1200px 120px;
+				opacity: 0.3;
+			}
+			
+			.hero-leaderboard h1 {
+				color: #fff;
+				font-size: 3.5em;
+				margin-bottom: 15px;
+				text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+				position: relative;
+				z-index: 1;
+			}
+			
+			.hero-leaderboard .subtitle {
+				color: rgba(255,255,255,0.95);
+				font-size: 1.3em;
+				margin-bottom: 10px;
+				position: relative;
+				z-index: 1;
+			}
+			
+			.hero-leaderboard .stats {
+				color: rgba(255,255,255,0.9);
+				font-size: 1.1em;
+				margin-top: 20px;
+				position: relative;
+				z-index: 1;
+			}
+			
+			.trophy-icons {
+				font-size: 3em;
+				margin: 20px 0;
+				position: relative;
+				z-index: 1;
+			}
+			
+			.trophy-icons i {
+				margin: 0 15px;
+				animation: float 3s ease-in-out infinite;
+			}
+			
+			.trophy-icons i:nth-child(1) {
+				color: #FFD700;
+				animation-delay: 0s;
+			}
+			
+			.trophy-icons i:nth-child(2) {
+				color: #C0C0C0;
+				animation-delay: 0.5s;
+			}
+			
+			.trophy-icons i:nth-child(3) {
+				color: #CD7F32;
+				animation-delay: 1s;
+			}
+			
+			@keyframes float {
+				0%, 100% { transform: translateY(0px); }
+				50% { transform: translateY(-20px); }
+			}
+			
+			/* Leaderboard Container */
+			.leaderboard-container {
+				max-width: 1200px;
+				margin: 40px auto;
+				padding: 0 20px;
+			}
+			
+			/* Podium Section */
+			.podium {
+				display: flex;
+				justify-content: center;
+				align-items: flex-end;
+				margin: 40px 0 60px;
+				gap: 20px;
+			}
+			
+			.podium-place {
+				flex: 1;
+				max-width: 280px;
+				text-align: center;
+				position: relative;
+			}
+			
+			.podium-card {
+				background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+				border-radius: 20px;
+				padding: 30px 20px;
+				box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+				position: relative;
+				transition: transform 0.3s ease;
+			}
+			
+			.podium-card:hover {
+				transform: translateY(-10px);
+			}
+			
+			.podium-place.first .podium-card {
+				background: linear-gradient(135deg, #fff9e6 0%, #fffbf0 100%);
+				border: 3px solid #FFD700;
+				box-shadow: 0 15px 40px rgba(255, 215, 0, 0.3);
+			}
+			
+			.podium-place.second .podium-card {
+				background: linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%);
+				border: 3px solid #C0C0C0;
+			}
+			
+			.podium-place.third .podium-card {
+				background: linear-gradient(135deg, #fff5f0 0%, #fff8f5 100%);
+				border: 3px solid #CD7F32;
+			}
+			
+			.rank-badge {
+				width: 60px;
+				height: 60px;
+				border-radius: 50%;
+				margin: 0 auto 15px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 2em;
+				font-weight: bold;
+				color: #fff;
+				box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+			}
+			
+			.podium-place.first .rank-badge {
+				background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+			}
+			
+			.podium-place.second .rank-badge {
+				background: linear-gradient(135deg, #C0C0C0 0%, #808080 100%);
+			}
+			
+			.podium-place.third .rank-badge {
+				background: linear-gradient(135deg, #CD7F32 0%, #8B4513 100%);
+			}
+			
+			.author-name {
+				font-size: 1.4em;
+				font-weight: bold;
+				color: #333;
+				margin-bottom: 8px;
+			}
+			
+			.department {
+				font-size: 0.95em;
+				color: #666;
+				margin-bottom: 15px;
+				min-height: 40px;
+			}
+			
+			.paper-count {
+				font-size: 2.5em;
+				font-weight: bold;
+				color: #667eea;
+				margin-bottom: 5px;
+			}
+			
+			.paper-label {
+				font-size: 0.9em;
+				color: #888;
+				text-transform: uppercase;
+				letter-spacing: 1px;
+			}
+			
+			/* Leaderboard Table */
+			.leaderboard-table {
+				background: #fff;
+				border-radius: 15px;
+				overflow: hidden;
+				box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+			}
+			
+			.table-header {
+				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+				color: #fff;
+				padding: 20px;
+				display: grid;
+				grid-template-columns: 80px 1fr 2fr 150px;
+				gap: 15px;
+				font-weight: bold;
+				font-size: 1.1em;
+			}
+			
+			.table-row {
+				display: grid;
+				grid-template-columns: 80px 1fr 2fr 150px;
+				gap: 15px;
+				padding: 20px;
+				border-bottom: 1px solid #e9ecef;
+				align-items: center;
+				transition: background 0.2s ease;
+			}
+			
+			.table-row:hover {
+				background: #f8f9fa;
+			}
+			
+			.table-row:last-child {
+				border-bottom: none;
+			}
+			
+			.rank-cell {
+				font-size: 1.3em;
+				font-weight: bold;
+				color: #667eea;
+				text-align: center;
+			}
+			
+			.rank-cell.top-10 {
+				color: #764ba2;
+			}
+			
+			.author-cell {
+				font-weight: 600;
+				color: #333;
+				font-size: 1.05em;
+			}
+			
+			.department-cell {
+				color: #666;
+				font-size: 0.95em;
+			}
+			
+			.count-cell {
+				text-align: center;
+				font-size: 1.2em;
+				font-weight: bold;
+				color: #667eea;
+			}
+			
+			/* Celebration elements */
+			.celebration-badge {
+				display: inline-block;
+				margin-left: 8px;
+				font-size: 0.9em;
+			}
+			
+			/* Responsive */
+			@media screen and (max-width: 968px) {
+				.podium {
+					flex-direction: column;
+					align-items: center;
+				}
+				
+				.podium-place {
+					max-width: 100%;
+					width: 100%;
+				}
+				
+				.table-header,
+				.table-row {
+					grid-template-columns: 60px 1fr 120px;
+					gap: 10px;
+					font-size: 0.9em;
+					padding: 15px;
+				}
+				
+				.department-cell {
+					display: none;
+				}
+				
+				.hero-leaderboard h1 {
+					font-size: 2.2em;
+				}
+			}
+		</style>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+		<div id="wrapper">
+
+			<!-- Header -->
+			<header id="header">
+				<div class="inner">
+
+					<!-- Logo -->
+					<a href="index.html" class="logo">
+						<span class="symbol"><img src="images/medcityai_logo1.png" alt="MedCityAI Logo" /></span><span class="title">MedCityAI</span>
+					</a>
+
+					<!-- Nav -->
+					<nav class="top-bar" role="navigation" aria-label="Main navigation">
+						<div class="logo-container">
+							<img src="images/medcityai_logo1.png" alt="MedCityAI Logo" style="height:48px; width:auto;" />
+						</div>
+						<div class="nav-links" role="menubar">
+							<a href="index.html" role="menuitem">New Today</a>
+							<a href="search.html" role="menuitem">Search</a>
+							<a href="featured.html" role="menuitem">Featured</a>
+							<a href="leaderboard.html" role="menuitem" aria-current="page">Leaderboard</a>
+							<a href="about.html" role="menuitem">About</a>
+							<a href="contact.html" role="menuitem">Contact</a>
+						</div>
+						<div style="display: flex; align-items: center; gap: 15px;">
+							<a href="#subscribe" class="cta-button">Subscribe</a>
+							<div class="menu-icon">
+								<i class="fas fa-bars"></i>
+							</div>
+						</div>
+					</nav>
+
+					<!-- Mobile menu -->
+					<nav>
+						<ul>
+							<li><a href="#menu">Menu</a></li>
+						</ul>
+					</nav>
+
+				</div>
+			</header>
+
+			<!-- Menu -->
+			<nav id="menu">
+				<h2>Menu</h2>
+				<ul>
+					<li><a href="index.html">New Today</a></li>
+					<li><a href="search.html">Search</a></li>
+					<li><a href="featured.html">Featured</a></li>
+					<li><a href="leaderboard.html" class="active">Leaderboard</a></li>
+					<li><a href="about.html">About</a></li>
+					<li><a href="contact.html">Contact</a></li>
+				</ul>
+			</nav>
+
+			<!-- Main -->
+			<div id="main">
+				<div class="inner">
+					
+					<!-- Hero Section -->
+					<div class="hero-leaderboard">
+						<div class="trophy-icons">
+							<i class="fas fa-trophy"></i>
+							<i class="fas fa-trophy"></i>
+							<i class="fas fa-trophy"></i>
+						</div>
+						<h1>🎉 Research Leaderboard 🎉</h1>
+						<p class="subtitle">Celebrating Rochester's Most Prolific Researchers</p>
+						<div class="stats">
+							<strong>65,676</strong> unique authors | <strong>11,097</strong> PubMed indexed papers
+						</div>
+					</div>
+
+					<!-- Podium - Top 3 -->
+					<div class="leaderboard-container">
+						<div class="podium">
+							<!-- Second Place -->
+							<div class="podium-place second">
+								<div class="podium-card">
+									<div class="rank-badge">2</div>
+									<div class="author-name">Barry Borlaug</div>
+									<div class="department">Cardiovascular Medicine</div>
+									<div class="paper-count">91</div>
+									<div class="paper-label">Papers</div>
+								</div>
+							</div>
+							
+							<!-- First Place -->
+							<div class="podium-place first">
+								<div class="podium-card">
+									<div class="rank-badge">1</div>
+									<div class="author-name">Waleed Brinjikji</div>
+									<div class="department">Radiology</div>
+									<div class="paper-count">92</div>
+									<div class="paper-label">Papers</div>
+								</div>
+							</div>
+							
+							<!-- Third Place -->
+							<div class="podium-place third">
+								<div class="podium-card">
+									<div class="rank-badge">3</div>
+									<div class="author-name">Sherief Ghozy</div>
+									<div class="department">Radiology</div>
+									<div class="paper-count">87</div>
+									<div class="paper-label">Papers</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Rest of Top 50 -->
+						<div class="leaderboard-table">
+							<div class="table-header">
+								<div>Rank</div>
+								<div>Author</div>
+								<div>Department</div>
+								<div>Papers</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell top-10">4</div>
+								<div class="author-cell">Clifford Jack</div>
+								<div class="department-cell">Radiology</div>
+								<div class="count-cell">87</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell top-10">5</div>
+								<div class="author-cell">Ronald Petersen</div>
+								<div class="department-cell">Neurology</div>
+								<div class="count-cell">82</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell top-10">6</div>
+								<div class="author-cell">David Kallmes</div>
+								<div class="department-cell">Radiology</div>
+								<div class="count-cell">80</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell top-10">7</div>
+								<div class="author-cell">Shaji Kumar</div>
+								<div class="department-cell">Hematology</div>
+								<div class="count-cell">77</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell top-10">8</div>
+								<div class="author-cell">Mohamad Bydon</div>
+								<div class="department-cell">Neurologic Surgery</div>
+								<div class="count-cell">71</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell top-10">9</div>
+								<div class="author-cell">Abhishek Deshmukh</div>
+								<div class="department-cell">Cardiovascular Medicine</div>
+								<div class="count-cell">69</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell top-10">10</div>
+								<div class="author-cell">Matthew Abdel</div>
+								<div class="department-cell">Orthopedic Surgery</div>
+								<div class="count-cell">68</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">11</div>
+								<div class="author-cell">Naseema Gangat</div>
+								<div class="department-cell">Hematology</div>
+								<div class="count-cell">64</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">12</div>
+								<div class="author-cell">Aaron Krych</div>
+								<div class="department-cell">Orthopedic Surgery</div>
+								<div class="count-cell">63</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">13</div>
+								<div class="author-cell">Ayalew Tefferi</div>
+								<div class="department-cell">Hematology</div>
+								<div class="count-cell">63</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">14</div>
+								<div class="author-cell">Michael Camilleri</div>
+								<div class="department-cell">Gastroenterology and Hepatology</div>
+								<div class="count-cell">59</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">15</div>
+								<div class="author-cell">Ryan D'Souza</div>
+								<div class="department-cell">Anesthesiology and Perioperative Medicine</div>
+								<div class="count-cell">58</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">16</div>
+								<div class="author-cell">Jonathan Graff-Radford</div>
+								<div class="department-cell">Neurology</div>
+								<div class="count-cell">58</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">17</div>
+								<div class="author-cell">M Murad</div>
+								<div class="department-cell">Evidence-based Practice Center</div>
+								<div class="count-cell">58</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">18</div>
+								<div class="author-cell">Matthew Carlson</div>
+								<div class="department-cell">Otolaryngology-Head and Neck Surgery</div>
+								<div class="count-cell">57</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">19</div>
+								<div class="author-cell">Mario Hevesi</div>
+								<div class="department-cell">Orthopedic Surgery</div>
+								<div class="count-cell">57</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">20</div>
+								<div class="author-cell">Paul Friedman</div>
+								<div class="department-cell">Cardiovascular Medicine</div>
+								<div class="count-cell">56</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">21</div>
+								<div class="author-cell">Mrinal Patnaik</div>
+								<div class="department-cell">Hematology</div>
+								<div class="count-cell">56</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">22</div>
+								<div class="author-cell">Yogesh Reddy</div>
+								<div class="department-cell">Cardiovascular Medicine</div>
+								<div class="count-cell">56</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">23</div>
+								<div class="author-cell">Mohamad Alkhouli</div>
+								<div class="department-cell">Cardiovascular Medicine</div>
+								<div class="count-cell">55</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">24</div>
+								<div class="author-cell">Angela Dispenzieri</div>
+								<div class="department-cell">Hematology</div>
+								<div class="count-cell">55</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">25</div>
+								<div class="author-cell">Robert Spinner</div>
+								<div class="department-cell">Neurosurgery</div>
+								<div class="count-cell">55</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">26</div>
+								<div class="author-cell">Mark Frye</div>
+								<div class="department-cell">Psychiatry and Psychology</div>
+								<div class="count-cell">54</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">27</div>
+								<div class="author-cell">Kathryn Ruddy</div>
+								<div class="department-cell">Oncology</div>
+								<div class="count-cell">54</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">28</div>
+								<div class="author-cell">Wisit Cheungpasitporn</div>
+								<div class="department-cell">Nephrology and Hypertension</div>
+								<div class="count-cell">53</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">29</div>
+								<div class="author-cell">Eoin Flanagan</div>
+								<div class="department-cell">Neurology</div>
+								<div class="count-cell">53</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">30</div>
+								<div class="author-cell">Morie Gertz</div>
+								<div class="department-cell">Hematology</div>
+								<div class="count-cell">53</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">31</div>
+								<div class="author-cell">Charles Hannon</div>
+								<div class="department-cell">Orthopedic Surgery</div>
+								<div class="count-cell">53</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">32</div>
+								<div class="author-cell">John Chen</div>
+								<div class="department-cell">Ophthalmology</div>
+								<div class="count-cell">52</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">33</div>
+								<div class="author-cell">Dennis Dickson</div>
+								<div class="department-cell">Neuroscience</div>
+								<div class="count-cell">52</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">34</div>
+								<div class="author-cell">Mark Litzow</div>
+								<div class="department-cell">Hematology</div>
+								<div class="count-cell">52</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">35</div>
+								<div class="author-cell">Jamie Van Gompel</div>
+								<div class="department-cell">Neurologic Surgery</div>
+								<div class="count-cell">52</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">36</div>
+								<div class="author-cell">Daniel Berry</div>
+								<div class="department-cell">Orthopedic Surgery</div>
+								<div class="count-cell">51</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">37</div>
+								<div class="author-cell">Ramanathan Kadirvel</div>
+								<div class="department-cell">Neurologic Surgery</div>
+								<div class="count-cell">51</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">38</div>
+								<div class="author-cell">Yi Lin</div>
+								<div class="department-cell">Hematology</div>
+								<div class="count-cell">51</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">39</div>
+								<div class="author-cell">Alexander Egbe</div>
+								<div class="department-cell">Cardiovascular Medicine</div>
+								<div class="count-cell">50</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">40</div>
+								<div class="author-cell">David Knopman</div>
+								<div class="department-cell">Neurology</div>
+								<div class="count-cell">50</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">41</div>
+								<div class="author-cell">Val Lowe</div>
+								<div class="department-cell">Radiology</div>
+								<div class="count-cell">50</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">42</div>
+								<div class="author-cell">Patricia Pellikka</div>
+								<div class="department-cell">Cardiovascular Medicine</div>
+								<div class="count-cell">50</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">43</div>
+								<div class="author-cell">Konstantinos Siontis</div>
+								<div class="department-cell">Cardiovascular Medicine</div>
+								<div class="count-cell">50</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">44</div>
+								<div class="author-cell">Surendra Dasari</div>
+								<div class="department-cell">Quantitative Health Sciences</div>
+								<div class="count-cell">49</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">45</div>
+								<div class="author-cell">Keith Josephs</div>
+								<div class="department-cell">Neurology</div>
+								<div class="count-cell">49</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">46</div>
+								<div class="author-cell">Nicholas Bedard</div>
+								<div class="department-cell">Orthopedic Surgery</div>
+								<div class="count-cell">48</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">47</div>
+								<div class="author-cell">Pascal Jabbour</div>
+								<div class="department-cell">Neurosurgery</div>
+								<div class="count-cell">48</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">48</div>
+								<div class="author-cell">Nelson Leung</div>
+								<div class="department-cell">Hematology</div>
+								<div class="count-cell">48</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">49</div>
+								<div class="author-cell">Zach Pennington</div>
+								<div class="department-cell">Neurologic Surgery</div>
+								<div class="count-cell">47</div>
+							</div>
+							
+							<div class="table-row">
+								<div class="rank-cell">50</div>
+								<div class="author-cell">Judy Boughey</div>
+								<div class="department-cell">Breast and Melanoma Surgical Oncology</div>
+								<div class="count-cell">46</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+			<!-- Footer -->
+			<footer id="footer">
+				<div class="inner">
+					<section>
+						<h2>Get in touch</h2>
+						<form method="post" action="#">
+							<div class="fields">
+								<div class="field half">
+									<input type="text" name="name" id="name" placeholder="Name" />
+								</div>
+								<div class="field half">
+									<input type="email" name="email" id="email" placeholder="Email" />
+								</div>
+								<div class="field">
+									<textarea name="message" id="message" placeholder="Message"></textarea>
+								</div>
+							</div>
+							<ul class="actions">
+								<li><input type="submit" value="Send" class="primary" /></li>
+							</ul>
+						</form>
+					</section>
+					<section>
+						<h2>Follow</h2>
+						<ul class="icons">
+							<li><a href="#" class="icon brands style2 fa-twitter"><span class="label">Twitter</span></a></li>
+							<li><a href="#" class="icon brands style2 fa-facebook-f"><span class="label">Facebook</span></a></li>
+							<li><a href="#" class="icon brands style2 fa-instagram"><span class="label">Instagram</span></a></li>
+							<li><a href="#" class="icon brands style2 fa-github"><span class="label">GitHub</span></a></li>
+							<li><a href="#" class="icon solid style2 fa-phone"><span class="label">Phone</span></a></li>
+							<li><a href="#" class="icon solid style2 fa-envelope"><span class="label">Email</span></a></li>
+						</ul>
+					</section>
+					<ul class="copyright">
+						<li>&copy; MedCityAI. All rights reserved</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+					</ul>
+				</div>
+			</footer>
+
+		</div>
+
+		<!-- Scripts -->
+		<script src="assets/js/jquery.min.js"></script>
+		<script src="assets/js/browser.min.js"></script>
+		<script src="assets/js/breakpoints.min.js"></script>
+		<script src="assets/js/util.js"></script>
+		<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
