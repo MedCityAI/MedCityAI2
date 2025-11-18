@@ -361,6 +361,20 @@
 		.result-item.selected {
 			background: #e3f2fd;
 		}
+		.new-badge {
+			position: absolute;
+			top: 8px;
+			left: 8px;
+			background: #e74c3c;
+			color: #fff;
+			font-size: 11px;
+			font-weight: bold;
+			padding: 4px 10px;
+			border-radius: 6px 0 6px 0;
+			z-index: 10;
+			pointer-events: none;
+			box-shadow: 0 2px 4px rgba(231, 76, 60, 0.3);
+		}
 		.result-number {
 			position: absolute;
 			top: 12px;
@@ -1166,6 +1180,238 @@
 		let currentCitationArticle = null;
 		let currentCitationStyle = 'mla';
 
+		async function performPubMedSearch(searchQuery) {
+			if (searchQuery.length < 2) return;
+			
+			// Show loading state
+			document.getElementById('loadingState').style.display = 'block';
+			document.getElementById('resultsContainer').style.display = 'none';
+			document.getElementById('emptyState').style.display = 'none';
+			
+			try {
+				// Build PubMed query - always include Rochester location
+				const locationFilter = '(Rochester[AD] AND (Minnesota[AD] OR MN[AD]))';
+				const fullQuery = `(${searchQuery}) AND ${locationFilter}`;
+
+				// First, get total count
+				let countUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(fullQuery)}&retmode=json&retmax=0&sort=pub+date`;
+				
+				const countResponse = await fetch(countUrl);
+				const countData = await countResponse.json();
+				const totalCount = parseInt(countData.esearchresult.count);
+
+				let esearchUrl;
+				let showNarrowNotice = false;
+
+				// If more than 1000 results, limit to most recent 1000
+				if (totalCount > 1000) {
+					showNarrowNotice = true;
+					esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(fullQuery)}&retmode=json&retmax=1000&sort=pub+date`;
+				} else {
+					esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(fullQuery)}&retmode=json&retmax=500&sort=pub+date`;
+				}
+
+				// Fetch article IDs
+				const searchResponse = await fetch(esearchUrl);
+				const searchData = await searchResponse.json();
+				
+				const articleIds = searchData.esearchresult.idlist;
+
+				if (articleIds.length === 0) {
+					showNoResults(searchQuery);
+					return;
+				}
+
+				// Fetch article details in batches (PubMed has limits)
+				const batchSize = 200;
+				let allArticles = [];
+				
+				for (let i = 0; i < articleIds.length; i += batchSize) {
+					const batchIds = articleIds.slice(i, i + batchSize);
+					const efetchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${batchIds.join(',')}&retmode=xml`;
+					const fetchResponse = await fetch(efetchUrl);
+					const xmlText = await fetchResponse.text();
+
+					// Parse XML
+					const parser = new DOMParser();
+					const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+					const batchArticles = parseArticles(xmlDoc);
+					allArticles = allArticles.concat(batchArticles);
+				}
+
+				currentResults = allArticles;
+				currentPage = 1;
+				
+				displayResults();
+
+				// Show narrowed notice if needed
+				if (showNarrowNotice) {
+					showNarrowedSearchNotice(totalCount, articleIds.length);
+				}
+
+			} catch (error) {
+				console.error('PubMed search error:', error);
+				document.getElementById('loadingState').style.display = 'none';
+				document.getElementById('emptyState').style.display = 'block';
+				document.getElementById('emptyState').innerHTML = `
+					<i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i>
+					<h3>Search Error</h3>
+					<p>An error occurred while searching PubMed. Please try again.</p>
+				`;
+			}
+		}
+
+		function showNarrowedSearchNotice(actualTotal, displayed) {
+			const resultsContainer = document.getElementById('resultsContainer');
+			const existingNotice = document.getElementById('narrowedNotice');
+			if (existingNotice) {
+				existingNotice.remove();
+			}
+
+			const notice = document.createElement('div');
+			notice.id = 'narrowedNotice';
+			notice.style.cssText = 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px 24px; border-radius: 12px; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3); display: flex; align-items: center; gap: 14px; font-size: 15px;';
+			notice.innerHTML = `
+				<i class="fas fa-info-circle" style="font-size: 1.8em; flex-shrink: 0;"></i>
+				<div>
+					<strong style="font-size: 16px;">Search Too Broad</strong><br>
+					<span style="opacity: 0.95;">Found ${actualTotal.toLocaleString()} total results. Displaying the ${displayed.toLocaleString()} most recent publications. Please narrow your search criteria for more targeted results.</span>
+				</div>
+			`;
+			
+			const resultsHeader = document.querySelector('.results-header');
+			resultsContainer.insertBefore(notice, resultsHeader.nextSibling);
+		}
+
+		function showNoResults(query) {
+			document.getElementById('loadingState').style.display = 'none';
+			document.getElementById('resultsContainer').style.display = 'none';
+			document.getElementById('emptyState').style.display = 'block';
+			document.getElementById('emptyState').innerHTML = `
+				<i class="fas fa-search"></i>
+				<h3>No Results Found</h3>
+				<p>No Rochester, MN publications found matching "${query}". Try different keywords.</p>
+			`;
+		}
+
+		function parseArticles(xmlDoc) {
+			const articles = [];
+			const articleNodes = xmlDoc.querySelectorAll('PubmedArticle');
+
+			articleNodes.forEach(articleNode => {
+				try {
+					// PMID
+					const pmidNode = articleNode.querySelector('PMID');
+					const pmid = pmidNode ? pmidNode.textContent : '';
+
+					// Title
+					const titleNode = articleNode.querySelector('ArticleTitle');
+					const title = titleNode ? titleNode.textContent : 'No title';
+
+					// Abstract
+					const abstractNode = articleNode.querySelector('Abstract');
+					let abstract = '';
+					if (abstractNode) {
+						const abstractTexts = abstractNode.querySelectorAll('AbstractText');
+						abstract = Array.from(abstractTexts).map(node => node.textContent).join(' ');
+					}
+
+					// Journal
+					const journalNode = articleNode.querySelector('Journal Title');
+					let journal = journalNode ? journalNode.textContent : '';
+					
+					// Try abbreviated journal name if full name is long
+					if (!journal || journal.split(/\s+/).length > 5) {
+						const isoAbbrevNode = articleNode.querySelector('ISOAbbreviation');
+						if (isoAbbrevNode && isoAbbrevNode.textContent) {
+							journal = isoAbbrevNode.textContent;
+						}
+					}
+
+					// Publication Date
+					const yearNode = articleNode.querySelector('PubDate Year');
+					const monthNode = articleNode.querySelector('PubDate Month');
+					const dayNode = articleNode.querySelector('PubDate Day');
+					
+					const year = yearNode ? yearNode.textContent : '';
+					const month = monthNode ? monthNode.textContent : '';
+					const day = dayNode ? dayNode.textContent : '';
+					
+					let pubdate = '';
+					if (year && month && day) {
+						pubdate = `${month} ${day}, ${year}`;
+					} else if (year && month) {
+						pubdate = `${month} ${year}`;
+					} else if (year) {
+						pubdate = year;
+					}
+
+					// Authors
+					const authorNodes = articleNode.querySelectorAll('Author');
+					const authors = [];
+					const rochesterAuthors = [];
+
+					authorNodes.forEach(authorNode => {
+						const lastNameNode = authorNode.querySelector('LastName');
+						const foreNameNode = authorNode.querySelector('ForeName');
+						
+						const lastName = lastNameNode ? lastNameNode.textContent : '';
+						const foreName = foreNameNode ? foreNameNode.textContent : '';
+						
+						let authorName = '';
+						if (lastName && foreName) {
+							const initials = foreName.split(' ').map(n => n[0]).join('');
+							authorName = `${lastName} ${initials}`;
+						} else if (lastName) {
+							authorName = lastName;
+						}
+
+						// Check if Rochester author
+						const affiliationNodes = authorNode.querySelectorAll('Affiliation');
+						let isRochester = false;
+						affiliationNodes.forEach(affNode => {
+							const affText = affNode.textContent.toLowerCase();
+							if (affText.includes('rochester') && (affText.includes('mn') || affText.includes('minnesota'))) {
+								isRochester = true;
+							}
+						});
+
+						if (authorName) {
+							authors.push(authorName);
+							if (isRochester) {
+								rochesterAuthors.push(authorName);
+							}
+						}
+					});
+
+					// Format authors
+					let authorsDisplay = authors.join(', ');
+					if (authors.length > 15) {
+						authorsDisplay = authors.slice(0, 14).join(', ') + ', et al.';
+					}
+
+					articles.push({
+						pmid,
+						title,
+						abstract: abstract || 'No abstract available.',
+						journal,
+						pubdate,
+						year,
+						month,
+						day,
+						authors: authorsDisplay,
+						rochesterAuthors,
+						url: `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`
+					});
+
+				} catch (error) {
+					console.error('Error parsing article:', error);
+				}
+			});
+
+			return articles;
+		}
+
 		async function performHeroSearch(query) {
 			if (query.length < 2) return;
 			
@@ -1287,12 +1533,13 @@
 			// Hero Search Bar Handler
 			const heroSearchBar = document.getElementById('heroSearchBar');
 			if (heroSearchBar) {
-				heroSearchBar.addEventListener('input', function(e) {
-					const query = e.target.value.trim();
-					if (query.length >= 2) {
-						performHeroSearch(query);
-					} else if (query.length === 0) {
-						showEmptyState();
+				heroSearchBar.addEventListener('keypress', function(e) {
+					if (e.key === 'Enter') {
+						e.preventDefault();
+						const query = e.target.value.trim();
+						if (query.length >= 2) {
+							performPubMedSearch(query);
+						}
 					}
 				});
 			}
@@ -1381,9 +1628,31 @@
 			const endIdx = Math.min(startIdx + resultsPerPage, currentResults.length);
 			const pageResults = currentResults.slice(startIdx, endIdx);
 
+			// Get current date for NEW badge logic (last month)
+			const now = new Date();
+			const oneMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+
 			// Display results
 			let resultsHTML = '';
 			pageResults.forEach((article, index) => {
+				// Parse article date
+				let articleDate = null;
+				const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+				if (article.year && article.month && article.day) {
+					const monthNum = monthNames.indexOf(article.month);
+					if (monthNum > 0) {
+						articleDate = new Date(article.year, monthNum - 1, article.day);
+					}
+				} else if (article.year && article.month) {
+					const monthNum = monthNames.indexOf(article.month);
+					if (monthNum > 0) {
+						articleDate = new Date(article.year, monthNum - 1, 1);
+					}
+				}
+				
+				// Determine if article is NEW (within last month)
+				const isNew = articleDate && articleDate >= oneMonthAgo;
+
 				// Make Rochester authors clickable links
 				let authorsHTML = article.authors;
 				if (article.rochesterAuthors && article.rochesterAuthors.length > 0) {
@@ -1401,6 +1670,7 @@
 
 				resultsHTML += `
 					<div class="result-item ${isSelected ? 'selected' : ''}">
+						${isNew ? '<div class="new-badge">NEW</div>' : ''}
 						<div class="result-number">#${resultNumber}</div>
 						<div class="result-checkbox">
 							<input type="checkbox" class="article-checkbox" data-pmid="${article.pmid}" 
