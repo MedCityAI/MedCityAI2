@@ -369,9 +369,15 @@
 			color: #0056a3;
 			text-decoration: none;
 			margin-bottom: 10px;
-			display: block;
+			display: inline;
 			line-height: 1.5;
 			transition: color 0.2s ease;
+		}
+		.result-title::before {
+			content: attr(data-number) ". ";
+			color: #2c3e50;
+			font-weight: 700;
+			margin-right: 8px;
 		}
 		.result-title:hover {
 			color: #3498db;
@@ -1572,11 +1578,13 @@
 			});
 		}
 
-		const resultNumber = startIdx + index + 1;				resultsHTML += `
-				<div class="result-item">
-					<div class="result-number">#${resultNumber}</div>
-					<div class="result-content">
-						<a href="${article.url}" target="_blank" class="result-title">${article.title}</a>							<div class="result-meta">
+		const resultNumber = startIdx + index + 1;
+
+		resultsHTML += `
+			<div class="result-item">
+				<div class="result-content">
+					<a href="${article.url}" target="_blank" class="result-title" data-number="${resultNumber}">${article.title}</a>
+					<div class="result-meta">
 								<div class="result-meta-item">
 									<i class="fas fa-calendar"></i>
 									${article.pubdate}
