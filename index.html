@@ -1621,7 +1621,7 @@
 			
 			// Get current date for NEW badge logic
 			const now = new Date();
-			const twoDaysAgo = new Date(now.getTime() - (2 * 24 * 60 * 60 * 1000));
+			const threeDaysAgo = new Date(now.getTime() - (3 * 24 * 60 * 60 * 1000));
 			
 			// Build results HTML from CSV data
 			let resultsHTML = '';
@@ -1654,8 +1654,8 @@
 					}
 				}
 				
-				// Determine if article is NEW (within last 2 days)
-				const isNew = articleDate && articleDate >= twoDaysAgo;
+				// Determine if article is NEW (within last 3 days)
+				const isNew = articleDate && articleDate >= threeDaysAgo;
 				
 				// Parse authors (pipe-separated in CSV)
 				const authorsList = article.authors ? article.authors.split('|') : [];
@@ -1891,7 +1891,7 @@
 			
 			// Get current date for NEW badge logic
 			const now = new Date();
-			const twoDaysAgo = new Date(now.getTime() - (2 * 24 * 60 * 60 * 1000));
+			const threeDaysAgo = new Date(now.getTime() - (3 * 24 * 60 * 60 * 1000));
 			
 			// Build results HTML from CSV data
 			let resultsHTML = '';
@@ -1924,8 +1924,8 @@
 					}
 				}
 				
-				// Determine if article is NEW (within last 2 days)
-				const isNew = articleDate && articleDate >= twoDaysAgo;
+				// Determine if article is NEW (within last 3 days)
+				const isNew = articleDate && articleDate >= threeDaysAgo;
 				
 				// Parse authors (pipe-separated in CSV)
 				const authorsList = article.authors ? article.authors.split('|') : [];
