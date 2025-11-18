@@ -1072,6 +1072,15 @@
 						<div class="results-count">
 							Found <span id="resultCount">0</span> results
 						</div>
+						<div class="results-actions">
+							<div class="select-all-container">
+								<input type="checkbox" id="selectAll" />
+								<label for="selectAll">Select All</label>
+							</div>
+							<button id="exportBtn" class="export-btn" onclick="exportToCSV()" disabled>
+								<i class="fas fa-download"></i> Export CSV
+							</button>
+						</div>
 					</div>
 					
 					<div class="results-list" id="resultsContent"></div>
@@ -1148,7 +1157,7 @@
 		<script src="assets/js/main.js"></script>
 
 		<script>
-		// Application State
+		// Initialize on page load
 		let currentResults = [];
 		let currentPage = 1;
 		const resultsPerPage = 20;
@@ -1156,25 +1165,6 @@
 		let selectedArticles = new Set();
 		let currentCitationArticle = null;
 		let currentCitationStyle = 'mla';
-
-		// Initialize on page load
-		document.addEventListener('DOMContentLoaded', function() {
-			// Show empty state initially
-			showEmptyState();
-			
-			// Hero Search Bar Handler
-			const heroSearchBar = document.getElementById('heroSearchBar');
-			if (heroSearchBar) {
-				heroSearchBar.addEventListener('input', function(e) {
-					const query = e.target.value.trim();
-					if (query.length >= 2) {
-						performHeroSearch(query);
-					} else if (query.length === 0) {
-						showEmptyState();
-					}
-				});
-			}
-		});
 
 		async function performHeroSearch(query) {
 			if (query.length < 2) return;
@@ -1289,34 +1279,50 @@
 			`;
 		}
 
-		// Search Form Handler (keep existing form functionality)
-		document.getElementById('searchForm')?.addEventListener('submit', async function(e) {
-			e.preventDefault();
-			currentPage = 1;
-			selectedArticles.clear();
-			await performSearch();
-		});
-
 		// Select All Handler
-		document.getElementById('selectAll').addEventListener('change', function(e) {
-			const checkboxes = document.querySelectorAll('.article-checkbox');
-			checkboxes.forEach(cb => {
-				cb.checked = e.target.checked;
-				const pmid = cb.dataset.pmid;
-				if (e.target.checked) {
-					selectedArticles.add(pmid);
-					cb.closest('.result-item').classList.add('selected');
-				} else {
-					selectedArticles.delete(pmid);
-					cb.closest('.result-item').classList.remove('selected');
-				}
-			});
-			updateExportButton();
+		document.addEventListener('DOMContentLoaded', function() {
+			// Show empty state initially
+			showEmptyState();
+			
+			// Hero Search Bar Handler
+			const heroSearchBar = document.getElementById('heroSearchBar');
+			if (heroSearchBar) {
+				heroSearchBar.addEventListener('input', function(e) {
+					const query = e.target.value.trim();
+					if (query.length >= 2) {
+						performHeroSearch(query);
+					} else if (query.length === 0) {
+						showEmptyState();
+					}
+				});
+			}
+			
+			// Select All Handler
+			const selectAllCheckbox = document.getElementById('selectAll');
+			if (selectAllCheckbox) {
+				selectAllCheckbox.addEventListener('change', function(e) {
+					const checkboxes = document.querySelectorAll('.article-checkbox');
+					checkboxes.forEach(cb => {
+						cb.checked = e.target.checked;
+						const pmid = cb.dataset.pmid;
+						if (e.target.checked) {
+							selectedArticles.add(pmid);
+							cb.closest('.result-item').classList.add('selected');
+						} else {
+							selectedArticles.delete(pmid);
+							cb.closest('.result-item').classList.remove('selected');
+						}
+					});
+					updateExportButton();
+				});
+			}
 		});
 
 		// Update Export Button State
 		function updateExportButton() {
 			const exportBtn = document.getElementById('exportBtn');
+			if (!exportBtn) return;
+			
 			exportBtn.disabled = selectedArticles.size === 0;
 			if (selectedArticles.size > 0) {
 				exportBtn.innerHTML = `<i class="fas fa-download"></i> Export CSV (${selectedArticles.size})`;
@@ -1339,12 +1345,12 @@
 			selectedData.forEach(article => {
 				const row = [
 					article.pmid,
-					`"${article.title.replace(/"/g, '""')}"`,
-					`"${article.authors.replace(/"/g, '""')}"`,
-					`"${article.journal.replace(/"/g, '""')}"`,
-					article.pubdate,
-					`"${article.abstract.replace(/"/g, '""')}"`,
-					article.url
+					`"${(article.title || '').replace(/"/g, '""')}"`,
+					`"${(article.authors || '').replace(/"/g, '""')}"`,
+					`"${(article.journal || '').replace(/"/g, '""')}"`,
+					article.pubdate || '',
+					`"${(article.abstract || '').replace(/"/g, '""')}"`,
+					article.url || ''
 				];
 				csvContent += row.join(',') + '\n';
 			});
@@ -1361,246 +1367,13 @@
 			document.body.removeChild(link);
 		}
 
-		async function performSearch() {
-			const searchQuery = document.getElementById('searchQuery').value.trim();
-			const authorName = document.getElementById('authorName').value.trim();
-			const department = document.getElementById('department').value.trim();
-
-			// Show loading state
-			document.getElementById('emptyState').style.display = 'none';
-			document.getElementById('resultsContainer').style.display = 'none';
-			document.getElementById('loadingState').style.display = 'block';
-
-			try {
-				// Build PubMed query
-				let queryParts = [];
-				
-				// Base location filter - ALWAYS included
-				queryParts.push('(Rochester[AD] AND (Minnesota[AD] OR MN[AD]))');
-
-				// Add main search query
-				if (searchQuery) {
-					queryParts.push(`(${searchQuery})`);
-				}
-
-				// Add author filter
-				if (authorName) {
-					queryParts.push(`(${authorName}[Author])`);
-				}
-
-				// Add department filter
-				if (department) {
-					queryParts.push(`(${department}[Affiliation])`);
-				}
-
-				const fullQuery = queryParts.join(' AND ');
-
-				// First, get total count to check if we need to narrow
-				let countUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(fullQuery)}&retmode=json&retmax=0&sort=pub+date`;
-				
-				const countResponse = await fetch(countUrl);
-				const countData = await countResponse.json();
-				totalResults = parseInt(countData.esearchresult.count);
-
-				let esearchUrl;
-				let showNarrowNotice = false;
-
-				// If more than 1000 results, limit to most recent 1000
-				if (totalResults > 1000) {
-					showNarrowNotice = true;
-					// Fetch only the 1000 most recent
-					esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(fullQuery)}&retmode=json&retmax=1000&sort=pub+date`;
-				} else {
-					esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(fullQuery)}&retmode=json&retmax=500&sort=pub+date`;
-				}
-
-				console.log('Search URL:', esearchUrl);
-
-				// Fetch article IDs
-				const searchResponse = await fetch(esearchUrl);
-				const searchData = await searchResponse.json();
-				
-				const articleIds = searchData.esearchresult.idlist;
-				const displayCount = articleIds.length;
-
-				if (articleIds.length === 0) {
-					showEmptyResults();
-					return;
-				}
-
-				// Fetch article details
-				const efetchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${articleIds.join(',')}&retmode=xml`;
-				const fetchResponse = await fetch(efetchUrl);
-				const xmlText = await fetchResponse.text();
-
-				// Parse XML
-				const parser = new DOMParser();
-				const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-				
-				currentResults = parseArticles(xmlDoc);
-				displayResults();
-
-				// Show narrowed notice if needed
-				if (showNarrowNotice) {
-					showNarrowedSearchNotice(totalResults, displayCount);
-				}
-
-			} catch (error) {
-				console.error('Search error:', error);
-				document.getElementById('loadingState').style.display = 'none';
-				alert('An error occurred while searching. Please try again.');
-			}
-		}
-
-		function showNarrowedSearchNotice(actualTotal, displayed) {
-			const resultsContainer = document.getElementById('resultsContainer');
-			const existingNotice = document.getElementById('narrowedNotice');
-			if (existingNotice) {
-				existingNotice.remove();
-			}
-
-			const notice = document.createElement('div');
-			notice.id = 'narrowedNotice';
-			notice.style.cssText = 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px 24px; border-radius: 12px; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3); display: flex; align-items: center; gap: 14px; font-size: 15px;';
-			notice.innerHTML = `
-				<i class="fas fa-info-circle" style="font-size: 1.8em; flex-shrink: 0;"></i>
-				<div>
-					<strong style="font-size: 16px;">Search Too Broad</strong><br>
-					<span style="opacity: 0.95;">Found ${actualTotal.toLocaleString()} total results. Displaying the ${displayed.toLocaleString()} most recent publications. Please narrow your search criteria (e.g., add author, department, or more specific keywords) for more targeted results.</span>
-				</div>
-			`;
-			
-			const resultsContent = document.getElementById('resultsContent');
-			resultsContainer.insertBefore(notice, resultsContent);
-		}
-
-		function parseArticles(xmlDoc) {
-			const articles = [];
-			const articleNodes = xmlDoc.querySelectorAll('PubmedArticle');
-
-			articleNodes.forEach(articleNode => {
-				try {
-					// PMID
-					const pmidNode = articleNode.querySelector('PMID');
-					const pmid = pmidNode ? pmidNode.textContent : '';
-
-					// Title
-					const titleNode = articleNode.querySelector('ArticleTitle');
-					const title = titleNode ? titleNode.textContent : 'No title';
-
-					// Abstract
-					const abstractNode = articleNode.querySelector('Abstract');
-					let abstract = '';
-					if (abstractNode) {
-						const abstractTexts = abstractNode.querySelectorAll('AbstractText');
-						abstract = Array.from(abstractTexts).map(node => node.textContent).join(' ');
-					}
-
-					// Journal
-					const journalNode = articleNode.querySelector('Journal Title');
-					let journal = journalNode ? journalNode.textContent : '';
-					
-					// Abbreviate journal if more than 5 words
-					if (journal) {
-						const journalWords = journal.split(/\s+/);
-						if (journalWords.length > 5) {
-							// Try to get abbreviated journal name
-							const isoAbbrevNode = articleNode.querySelector('ISOAbbreviation');
-							if (isoAbbrevNode && isoAbbrevNode.textContent) {
-								journal = isoAbbrevNode.textContent;
-							}
-						}
-					}
-
-					// Publication Date
-					const yearNode = articleNode.querySelector('PubDate Year');
-					const monthNode = articleNode.querySelector('PubDate Month');
-					const dayNode = articleNode.querySelector('PubDate Day');
-					
-					const year = yearNode ? yearNode.textContent : '';
-					const month = monthNode ? monthNode.textContent : '';
-					const day = dayNode ? dayNode.textContent : '';
-					
-					let pubdate = '';
-					if (year && month && day) {
-						pubdate = `${month} ${day}, ${year}`;
-					} else if (year && month) {
-						pubdate = `${month} ${year}`;
-					} else if (year) {
-						pubdate = year;
-					}
-
-					// Authors
-					const authorNodes = articleNode.querySelectorAll('Author');
-					const authors = [];
-					const rochesterAuthors = [];
-
-					authorNodes.forEach(authorNode => {
-						const lastNameNode = authorNode.querySelector('LastName');
-						const foreNameNode = authorNode.querySelector('ForeName');
-						
-						const lastName = lastNameNode ? lastNameNode.textContent : '';
-						const foreName = foreNameNode ? foreNameNode.textContent : '';
-						
-						let authorName = '';
-						if (foreName) {
-							const initials = foreName.split(' ').map(n => n[0]).join(' ');
-							authorName = `${lastName} ${initials}`;
-						} else {
-							authorName = lastName;
-						}
-
-						// Check if Rochester author
-						const affiliationNodes = authorNode.querySelectorAll('Affiliation');
-						let isRochester = false;
-						affiliationNodes.forEach(affNode => {
-							const affText = affNode.textContent.toLowerCase();
-							if (affText.includes('rochester') || affText.includes('mayo')) {
-								isRochester = true;
-							}
-						});
-
-						if (authorName) {
-							authors.push(authorName);
-							if (isRochester) {
-								rochesterAuthors.push(authorName);
-							}
-						}
-					});
-
-					// Format authors
-					let authorsDisplay = authors.join(', ');
-					if (authors.length > 15) {
-						authorsDisplay = authors.slice(0, 14).join(', ') + ', ' + authors[authors.length - 1] + ', et al.';
-					}
-
-					articles.push({
-						pmid,
-						title,
-						abstract: abstract || 'No abstract available.',
-						journal,
-						pubdate,
-						year,
-						authors: authorsDisplay,
-						rochesterAuthors,
-						url: `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`
-					});
-
-				} catch (error) {
-					console.error('Error parsing article:', error);
-				}
-			});
-
-			return articles;
-		}
-
 		function displayResults() {
 			document.getElementById('loadingState').style.display = 'none';
 			document.getElementById('resultsContainer').style.display = 'block';
 			document.getElementById('emptyState').style.display = 'none';
 
 			// Update result count
-			document.getElementById('resultCount').textContent = totalResults.toLocaleString();
+			document.getElementById('resultCount').textContent = currentResults.length.toLocaleString();
 
 			// Calculate pagination
 			const totalPages = Math.ceil(currentResults.length / resultsPerPage);
@@ -1613,13 +1386,15 @@
 			pageResults.forEach((article, index) => {
 				// Make Rochester authors clickable links
 				let authorsHTML = article.authors;
-				article.rochesterAuthors.forEach(rochAuthor => {
-					const escapedAuthor = rochAuthor.replace(/'/g, "\\'");
-					authorsHTML = authorsHTML.replace(
-						rochAuthor, 
-						`<span class="roch-author" onclick="showAuthorBibliography('${escapedAuthor}')">${rochAuthor}</span>`
-					);
-				});
+				if (article.rochesterAuthors && article.rochesterAuthors.length > 0) {
+					article.rochesterAuthors.forEach(rochAuthor => {
+						const escapedAuthor = rochAuthor.replace(/'/g, "\\'");
+						const regex = new RegExp(rochAuthor.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+						authorsHTML = authorsHTML.replace(regex, 
+							`<span class="roch-author" onclick="showAuthorBibliography('${escapedAuthor}')" tabindex="0" role="button">${rochAuthor}</span>`
+						);
+					});
+				}
 
 				const isSelected = selectedArticles.has(article.pmid);
 				const resultNumber = startIdx + index + 1;
@@ -1697,6 +1472,8 @@
 		function updateSelectAllCheckbox() {
 			const checkboxes = document.querySelectorAll('.article-checkbox');
 			const selectAllCheckbox = document.getElementById('selectAll');
+			if (!selectAllCheckbox) return;
+			
 			const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
 			
 			selectAllCheckbox.checked = checkboxes.length > 0 && checkedCount === checkboxes.length;
