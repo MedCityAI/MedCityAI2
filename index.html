@@ -1100,6 +1100,57 @@
 			white-space: nowrap;
 			border-width: 0;
 		}
+		
+		/* Like button styling */
+		.like-btn {
+			position: absolute;
+			bottom: 12px;
+			right: 12px;
+			background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+			color: white;
+			border: none;
+			border-radius: 25px;
+			padding: 8px 16px;
+			font-size: 14px;
+			font-weight: 600;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+			transition: all 0.3s ease;
+			z-index: 10;
+		}
+		
+		.like-btn:hover {
+			background: linear-gradient(135deg, #ff5252 0%, #e63946 100%);
+			transform: translateY(-2px);
+			box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+		}
+		
+		.like-btn:active {
+			transform: translateY(0);
+			box-shadow: 0 2px 6px rgba(255, 107, 107, 0.3);
+		}
+		
+		.like-btn.liked {
+			background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+			box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+		}
+		
+		.like-btn.liked:hover {
+			background: linear-gradient(135deg, #43a047 0%, #388e3c 100%);
+			box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+		}
+		
+		.like-count {
+			font-weight: 700;
+			font-size: 13px;
+		}
+		
+		.result-item {
+			position: relative;
+		}
 		</style>
 	</head>
 	<body class="landing is-preload">
@@ -1296,6 +1347,8 @@
 		<script src="assets/js/breakpoints.min.js"></script>
 		<script src="assets/js/util.js"></script>
 		<script src="assets/js/main.js"></script>
+		<!-- Confetti library for Like button animation -->
+		<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 		<script>
 		// Application state
@@ -1502,6 +1555,72 @@
 
 		// Populate department filter dropdown - NO LONGER NEEDED (using links instead)
 		// function populateDepartmentFilter() { ... }
+
+		
+		// Like button functionality
+		function getLikeCount(pmid) {
+			const likes = JSON.parse(localStorage.getItem('articleLikes') || '{}');
+			return likes[pmid] || 0;
+		}
+		
+		function setLikeCount(pmid, count) {
+			const likes = JSON.parse(localStorage.getItem('articleLikes') || '{}');
+			likes[pmid] = count;
+			localStorage.setItem('articleLikes', JSON.stringify(likes));
+		}
+		
+		function likeArticle(pmid, button) {
+			// Increment like count
+			const currentCount = getLikeCount(pmid);
+			const newCount = currentCount + 1;
+			setLikeCount(pmid, newCount);
+			
+			// Update display
+			const countSpan = button.querySelector('.like-count');
+			if (countSpan) {
+				countSpan.textContent = newCount;
+			}
+			
+			// Add liked class for visual feedback
+			button.classList.add('liked');
+			
+			// Trigger confetti animation
+			if (typeof confetti !== 'undefined') {
+				const rect = button.getBoundingClientRect();
+				const x = (rect.left + rect.width / 2) / window.innerWidth;
+				const y = (rect.top + rect.height / 2) / window.innerHeight;
+				
+				confetti({
+					particleCount: 50,
+					spread: 60,
+					origin: { x, y },
+					colors: ['#ff6b6b', '#ee5a6f', '#ff8787', '#ffa8a8'],
+					ticks: 200,
+					gravity: 1.2,
+					scalar: 0.8
+				});
+			}
+			
+			// Optional: Save to CSV via backend (if implemented)
+			// You can add an API call here to persist to database/featured/likes.csv
+			// Example: fetch('/api/like', { method: 'POST', body: JSON.stringify({ pmid }) });
+		}
+		
+		function loadLikeCounts() {
+			// Load like counts for all displayed articles
+			const likes = JSON.parse(localStorage.getItem('articleLikes') || '{}');
+			Object.keys(likes).forEach(pmid => {
+				const countElement = document.getElementById(`like-count-${pmid}`);
+				if (countElement) {
+					countElement.textContent = likes[pmid];
+				}
+				// Add liked class to buttons that have been liked
+				const button = document.querySelector(`button[data-pmid="${pmid}"]`);
+				if (button && likes[pmid] > 0) {
+					button.classList.add('liked');
+				}
+			});
+		}
 
 
 		// Parse CSV line handling quoted fields
@@ -1767,6 +1886,7 @@
 										<i class="icon brands fa-linkedin" aria-hidden="true"></i> 
 									</a>
 								</div>
+							<button class="like-btn" onclick="event.stopPropagation(); likeArticle('${pmid}', this);" aria-label="Like this article" data-pmid="${pmid}"> <span class="like-count" id="like-count-${pmid}">0</span></button>
 							</div>
 							
 							<!-- Back of card (AI Summary) -->
@@ -1801,6 +1921,12 @@
 			});
 
 			document.getElementById("pubmed-results").innerHTML = `<div class="results">${resultsHTML}</div>`;
+			
+			// Load like counts after rendering
+			
+			loadLikeCounts();
+			
+			
 			
 			// Scroll to top of results after page change
 			if (page > 1) {
@@ -2037,6 +2163,7 @@
 										<i class="icon brands fa-linkedin" aria-hidden="true"></i> 
 									</a>
 								</div>
+							<button class="like-btn" onclick="event.stopPropagation(); likeArticle('${pmid}', this);" aria-label="Like this article" data-pmid="${pmid}"> <span class="like-count" id="like-count-${pmid}">0</span></button>
 							</div>
 							
 							<!-- Back of card (AI Summary) -->
@@ -2071,6 +2198,12 @@
 			});
 
 			document.getElementById("pubmed-results").innerHTML = `<div class="results">${resultsHTML}</div>`;
+			
+			// Load like counts after rendering
+			
+			loadLikeCounts();
+			
+			
 			
 			// Scroll to top of results after page change
 			if (page > 1) {
