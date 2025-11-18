@@ -588,11 +588,10 @@
 			left: 0;
 			right: 0;
 			bottom: 0;
-			background: rgba(0, 0, 0, 0.6);
+			background: transparent;
 			z-index: 2000;
 			justify-content: center;
 			align-items: center;
-			backdrop-filter: blur(4px);
 		}
 		.author-modal-content {
 			background: white;
@@ -999,7 +998,7 @@
 						<a href="contact.html" role="menuitem">Contact</a>
 					</div>
 					<div style="display: flex; align-items: center; gap: 15px;">
-						<a href="#subscribe" class="cta-button">Subscribe</a>
+						<a href="contact.html" class="cta-button">Contact</a>
 						<button class="menu-icon" aria-label="Toggle mobile menu" aria-expanded="false" aria-controls="mobile-menu">
 							<span class="sr-only">Menu</span>
 							<div aria-hidden="true"></div>
@@ -1557,31 +1556,9 @@
 			const endIdx = Math.min(startIdx + resultsPerPage, currentResults.length);
 			const pageResults = currentResults.slice(startIdx, endIdx);
 
-			// Get current date for NEW badge logic (last month)
-			const now = new Date();
-			const oneMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
-
 			// Display results
 			let resultsHTML = '';
 			pageResults.forEach((article, index) => {
-				// Parse article date
-				let articleDate = null;
-				const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-				if (article.year && article.month && article.day) {
-					const monthNum = monthNames.indexOf(article.month);
-					if (monthNum > 0) {
-						articleDate = new Date(article.year, monthNum - 1, article.day);
-					}
-				} else if (article.year && article.month) {
-					const monthNum = monthNames.indexOf(article.month);
-					if (monthNum > 0) {
-						articleDate = new Date(article.year, monthNum - 1, 1);
-					}
-				}
-				
-				// Determine if article is NEW (within last month)
-				const isNew = articleDate && articleDate >= oneMonthAgo;
-
 				// Make Rochester authors clickable links
 				let authorsHTML = article.authors;
 				if (article.rochesterAuthors && article.rochesterAuthors.length > 0) {
@@ -1590,18 +1567,15 @@
 						const regex = new RegExp(rochAuthor.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
 						authorsHTML = authorsHTML.replace(regex, 
 							`<span class="roch-author" onclick="showAuthorBibliography('${escapedAuthor}')" tabindex="0" role="button">${rochAuthor}</span>`
-						);
-				});
-			}
+					);
+			});
+		}
 
-			const resultNumber = startIdx + index + 1;				resultsHTML += `
-					<div class="result-item">
-						${isNew ? '<div class="new-badge">NEW</div>' : ''}
-						<div class="result-number">#${resultNumber}</div>
-						<div class="result-content">
-							<a href="${article.url}" target="_blank" class="result-title">${article.title}</a>
-							
-							<div class="result-meta">
+		const resultNumber = startIdx + index + 1;				resultsHTML += `
+				<div class="result-item">
+					<div class="result-number">#${resultNumber}</div>
+					<div class="result-content">
+						<a href="${article.url}" target="_blank" class="result-title">${article.title}</a>							<div class="result-meta">
 								<div class="result-meta-item">
 									<i class="fas fa-calendar"></i>
 									${article.pubdate}
