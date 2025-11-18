@@ -1122,7 +1122,13 @@
 			<div id="authorModal" class="author-modal author-modal-bg" role="dialog" aria-modal="true" aria-labelledby="authorModalTitle" aria-hidden="true">
 				<div class="author-modal-content" role="document">
 					<div class="author-modal-header">
-						<h3 id="authorModalTitle">Author Publications</h3>
+						<div style="flex: 1;">
+							<h3 id="authorModalTitle">Author Publications</h3>
+							<div id="authorMetadata" style="font-size: 0.9em; color: #607d8b; display: none;">
+								<span id="authorPubCount" style="margin-right: 20px;"><strong>Total:</strong> 0</span>
+								<span id="authorDepartment"><strong>Department:</strong> </span>
+							</div>
+						</div>
 						<button class="author-modal-close" onclick="closeAuthorModal()" aria-label="Close author publications modal">&times;</button>
 					</div>
 					<div id="authorStats" class="author-stats" style="display: none;">
