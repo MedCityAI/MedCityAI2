@@ -636,6 +636,9 @@
 			font-size: 1.4em;
 			font-weight: 600;
 		}
+		#authorFullName {
+			display: none;
+		}
 		.author-stats-grid {
 			display: grid;
 			grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -1854,30 +1857,29 @@
 			const bibliography = document.getElementById('authorBibliography');
 			const statsDiv = document.getElementById('authorStats');
 			
-			// Show modal and loading state
-			modal.style.display = 'flex';
-			title.textContent = authorName;
-			loading.style.display = 'block';
-			bibliography.innerHTML = '';
-			statsDiv.style.display = 'none';
+		// Show modal and loading state
+		modal.style.display = 'flex';
+		title.textContent = '';
+		loading.style.display = 'block';
+		bibliography.innerHTML = '';
+		statsDiv.style.display = 'none';
+		
+		try {
+			// Build query for this author + Rochester affiliation
+			const query = `(${authorName}[Author]) AND (Rochester[AD] AND (Minnesota[AD] OR MN[AD]))`;
 			
-			try {
-				// Build query for this author + Rochester affiliation
-				const query = `(${authorName}[Author]) AND (Rochester[AD] AND (Minnesota[AD] OR MN[AD]))`;
-				
-				// First, get total count
-				const countUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmode=json&retmax=0`;
-				const countResponse = await fetch(countUrl);
-				const countData = await countResponse.json();
-				const totalCount = parseInt(countData.esearchresult.count);
-				
-				if (totalCount === 0) {
-					bibliography.innerHTML = '<li style="color: #7f8c8d; text-align: center; padding: 40px;">No publications found for this author.</li>';
-					loading.style.display = 'none';
-					return;
-				}
-				
-				// Search PubMed for most recent 100
+			// First, get total count
+			const countUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmode=json&retmax=0`;
+			const countResponse = await fetch(countUrl);
+			const countData = await countResponse.json();
+			const totalCount = parseInt(countData.esearchresult.count);
+			
+			if (totalCount === 0) {
+				title.textContent = authorName;
+				bibliography.innerHTML = '<li style="color: #7f8c8d; text-align: center; padding: 40px;">No publications found for this author.</li>';
+				loading.style.display = 'none';
+				return;
+			}				// Search PubMed for most recent 100
 				const searchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmax=100&retmode=json&sort=pub+date`;
 				const searchResponse = await fetch(searchUrl);
 				const searchData = await searchResponse.json();
@@ -2000,25 +2002,23 @@
 					if (count > maxCount) {
 						maxCount = count;
 						primaryDepartment = dept;
-					}
-				}
-				
-				// Display stats with actual total count
-				document.getElementById('authorFullName').textContent = fullName;
-				document.getElementById('authorPubCount').textContent = totalCount.toLocaleString();
-				document.getElementById('authorDepartment').textContent = primaryDepartment;
-				
-				// Update bibliography header
-				const bibHeader = document.getElementById('authorBibHeader');
-				if (articles.length < totalCount) {
-					bibHeader.textContent = `Recent Publications (showing ${articles.length} of ${totalCount})`;
-				} else {
-					bibHeader.textContent = `Recent Publications`;
-				}
-				
-				statsDiv.style.display = 'block';
-				
-				// Display bibliography with numbering
+			}
+		}
+		
+		// Display stats with actual total count
+		title.textContent = fullName;
+		document.getElementById('authorPubCount').textContent = totalCount.toLocaleString();
+		document.getElementById('authorDepartment').textContent = primaryDepartment;
+		
+		// Update bibliography header
+		const bibHeader = document.getElementById('authorBibHeader');
+		if (articles.length < totalCount) {
+			bibHeader.textContent = `Recent Publications (showing ${articles.length} of ${totalCount})`;
+		} else {
+			bibHeader.textContent = `Recent Publications`;
+		}
+		
+		statsDiv.style.display = 'block';				// Display bibliography with numbering
 				let bibliographyHTML = '';
 				articles.forEach((article, index) => {
 					const citation = generateMLACitation(article);
