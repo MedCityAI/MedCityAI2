@@ -691,20 +691,20 @@
 		.author-stats {
 			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 			color: white;
-			padding: 20px 24px;
-			border-radius: 12px;
-			margin-bottom: 24px;
+			padding: 24px;
+			border-radius: 12px 12px 0 0;
 			box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
 		}
 		.author-stats h4 {
 			margin: 0 0 16px 0;
-			font-size: 1.3em;
+			font-size: 1.4em;
 			font-weight: 600;
 		}
 		.author-stats-grid {
 			display: grid;
 			grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 			gap: 16px;
+			margin-bottom: 20px;
 		}
 		.author-stat-item {
 			background: rgba(255, 255, 255, 0.15);
@@ -720,6 +720,14 @@
 		.author-stat-value {
 			font-size: 1.5em;
 			font-weight: 700;
+		}
+		.author-stats-header {
+			font-size: 15px;
+			font-weight: 600;
+			opacity: 0.95;
+			margin-top: 16px;
+			padding-top: 16px;
+			border-top: 1px solid rgba(255, 255, 255, 0.3);
 		}
 		.author-modal-close {
 			background: none;
@@ -747,9 +755,12 @@
 			list-style: none;
 			padding: 0;
 			margin: 0;
+			background: white;
+			border-radius: 0 0 12px 12px;
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 		}
 		.author-bibliography li {
-			padding: 16px 0;
+			padding: 16px 24px;
 			border-bottom: 1px solid #e0e0e0;
 			font-size: 14px;
 			line-height: 1.7;
@@ -757,6 +768,7 @@
 		}
 		.author-bibliography li:last-child {
 			border-bottom: none;
+			border-radius: 0 0 12px 12px;
 		}
 		.author-bibliography .pub-title {
 			font-weight: 600;
@@ -928,6 +940,12 @@
 		}
 		
 		/* ===== ACCESSIBILITY IMPROVEMENTS ===== */
+		
+		/* Page background */
+		body {
+			background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%);
+			min-height: 100vh;
+		}
 		
 		/* Skip to main content link */
 		.skip-link {
@@ -1188,6 +1206,7 @@
 								<div class="author-stat-value" id="authorDepartment" style="font-size: 1.1em;">—</div>
 							</div>
 						</div>
+						<div class="author-stats-header" id="authorBibHeader">Recent Publications</div>
 					</div>
 					<div id="authorModalLoading" class="author-modal-loading" style="display: none;" role="status" aria-live="polite">
 						<div class="spinner" aria-hidden="true"></div>
@@ -2119,6 +2138,16 @@
 						const yearNode = articleNode.querySelector('PubDate Year');
 						const year = yearNode ? yearNode.textContent : '';
 						
+						const monthNode = articleNode.querySelector('PubDate Month');
+						const month = monthNode ? monthNode.textContent : '';
+						
+						let pubdate = '';
+						if (year && month) {
+							pubdate = `${month} ${year}`;
+						} else if (year) {
+							pubdate = year;
+						}
+						
 						const authorNodesAll = articleNode.querySelectorAll('Author');
 						const authorsArray = [];
 						authorNodesAll.forEach(an => {
@@ -2139,6 +2168,7 @@
 							title,
 							journal,
 							year,
+							pubdate,
 							authors: authorsDisplay,
 							url: `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`
 						});
@@ -2169,13 +2199,19 @@
 				document.getElementById('authorFullName').textContent = fullName;
 				document.getElementById('authorPubCount').textContent = totalCount;
 				document.getElementById('authorDepartment').textContent = primaryDepartment;
+				
+				// Update bibliography header
+				const bibHeader = document.getElementById('authorBibHeader');
+				if (articles.length < totalCount) {
+					bibHeader.textContent = `Recent Publications (showing ${articles.length} of ${totalCount})`;
+				} else {
+					bibHeader.textContent = `All Publications (${totalCount})`;
+				}
+				
 				statsDiv.style.display = 'block';
 				
 				// Display bibliography with numbering
 				let bibliographyHTML = '';
-				if (articles.length < totalCount) {
-					bibliographyHTML = `<li style="color: #7f8c8d; font-style: italic; padding: 12px; background: #f8f9fa; border-radius: 8px; margin-bottom: 16px;">Showing ${articles.length} most recent of ${totalCount} total publications</li>`;
-				}
 				articles.forEach((article, index) => {
 					const citation = generateMLACitation(article);
 					bibliographyHTML += `<li><strong style="color: #3498db; margin-right: 8px;">${index + 1}.</strong>${citation}</li>`;
@@ -2192,8 +2228,9 @@
 		}
 		
 		function generateMLACitation(article) {
-			// Format: Authors. "Title." Journal, Year.
-			return `${article.authors}. "${article.title}" <span class="pub-journal">${article.journal}</span>, <span class="pub-year">${article.year}</span>. <a href="${article.url}" target="_blank" style="color: #3498db;">PubMed</a>`;
+			// Format: Authors. "Title." Journal, Month Year.
+			const dateStr = article.pubdate || article.year || 'n.d.';
+			return `${article.authors}. "${article.title}" <span class="pub-journal">${article.journal}</span>, <span class="pub-year">${dateStr}</span>. <a href="${article.url}" target="_blank" style="color: #3498db;">PubMed</a>`;
 		}
 		
 		function closeAuthorModal() {
