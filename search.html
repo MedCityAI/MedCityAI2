@@ -658,11 +658,9 @@
 			left: 0;
 			right: 0;
 			bottom: 0;
-			background: rgba(0, 0, 0, 0.6);
 			z-index: 2000;
 			justify-content: center;
 			align-items: center;
-			backdrop-filter: blur(4px);
 		}
 		.author-modal-content {
 			background: white;
@@ -730,21 +728,29 @@
 			border-top: 1px solid rgba(255, 255, 255, 0.3);
 		}
 		.author-modal-close {
-			background: none;
+			position: fixed;
+			top: 20px;
+			right: 20px;
+			background: white;
 			border: none;
 			font-size: 28px;
 			color: #95a5a6;
 			cursor: pointer;
-			transition: color 0.2s ease;
+			transition: all 0.2s ease;
 			padding: 0;
-			width: 32px;
-			height: 32px;
+			width: 44px;
+			height: 44px;
 			display: flex;
 			align-items: center;
 			justify-content: center;
+			z-index: 2001;
+			border-radius: 50%;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 		}
 		.author-modal-close:hover {
 			color: #2c3e50;
+			box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+			transform: scale(1.05);
 		}
 		.author-modal-loading {
 			text-align: center;
@@ -1189,11 +1195,8 @@
 
 			<!-- Author Bibliography Modal -->
 			<div id="authorModal" class="author-modal author-modal-bg" role="dialog" aria-modal="true" aria-labelledby="authorModalTitle" aria-hidden="true">
+				<button class="author-modal-close" onclick="closeAuthorModal()" aria-label="Close author publications modal">&times;</button>
 				<div class="author-modal-content" role="document">
-					<div class="author-modal-header">
-						<h3 id="authorModalTitle">Author Publications</h3>
-						<button class="author-modal-close" onclick="closeAuthorModal()" aria-label="Close author publications modal">&times;</button>
-					</div>
 					<div id="authorStats" class="author-stats" style="display: none;">
 						<h4 id="authorFullName"></h4>
 						<div class="author-stats-grid">
