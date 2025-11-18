@@ -686,6 +686,39 @@
 			color: #2c3e50;
 			font-size: 1.6em;
 		}
+		.author-stats {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			color: white;
+			padding: 20px 24px;
+			border-radius: 12px;
+			margin-bottom: 24px;
+			box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+		}
+		.author-stats h4 {
+			margin: 0 0 16px 0;
+			font-size: 1.3em;
+			font-weight: 600;
+		}
+		.author-stats-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+			gap: 16px;
+		}
+		.author-stat-item {
+			background: rgba(255, 255, 255, 0.15);
+			padding: 12px 16px;
+			border-radius: 8px;
+			backdrop-filter: blur(10px);
+		}
+		.author-stat-label {
+			font-size: 13px;
+			opacity: 0.9;
+			margin-bottom: 4px;
+		}
+		.author-stat-value {
+			font-size: 1.5em;
+			font-weight: 700;
+		}
 		.author-modal-close {
 			background: none;
 			border: none;
@@ -1140,6 +1173,19 @@
 					<div class="author-modal-header">
 						<h3 id="authorModalTitle">Author Publications</h3>
 						<button class="author-modal-close" onclick="closeAuthorModal()" aria-label="Close author publications modal">&times;</button>
+					</div>
+					<div id="authorStats" class="author-stats" style="display: none;">
+						<h4 id="authorFullName"></h4>
+						<div class="author-stats-grid">
+							<div class="author-stat-item">
+								<div class="author-stat-label">Total Publications</div>
+								<div class="author-stat-value" id="authorPubCount">0</div>
+							</div>
+							<div class="author-stat-item">
+								<div class="author-stat-label">Primary Department</div>
+								<div class="author-stat-value" id="authorDepartment" style="font-size: 1.1em;">—</div>
+							</div>
+						</div>
 					</div>
 					<div id="authorModalLoading" class="author-modal-loading" style="display: none;" role="status" aria-live="polite">
 						<div class="spinner" aria-hidden="true"></div>
@@ -1977,19 +2023,21 @@
 			const title = document.getElementById('authorModalTitle');
 			const loading = document.getElementById('authorModalLoading');
 			const bibliography = document.getElementById('authorBibliography');
+			const statsDiv = document.getElementById('authorStats');
 			
 			// Show modal and loading state
 			modal.style.display = 'flex';
 			title.textContent = `Publications by ${authorName}`;
 			loading.style.display = 'block';
 			bibliography.innerHTML = '';
+			statsDiv.style.display = 'none';
 			
 			try {
 				// Build query for this author + Rochester affiliation
 				const query = `(${authorName}[Author]) AND (Rochester[AD] AND (Minnesota[AD] OR MN[AD]))`;
 				
 				// Search PubMed
-				const searchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmax=100&retmode=json&sort=pub+date`;
+				const searchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmax=200&retmode=json&sort=pub+date`;
 				const searchResponse = await fetch(searchUrl);
 				const searchData = await searchResponse.json();
 				
@@ -2009,7 +2057,88 @@
 				// Parse XML
 				const parser = new DOMParser();
 				const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-				const articles = parseArticles(xmlDoc);
+				const articleNodes = xmlDoc.querySelectorAll('PubmedArticle');
+				
+				// Extract full name and departments
+				let fullName = authorName;
+				const departments = {};
+				const articles = [];
+				
+				articleNodes.forEach(articleNode => {
+					try {
+						// Find the author and get full name
+						const authorNodes = articleNode.querySelectorAll('Author');
+						authorNodes.forEach(authorNode => {
+							const lastNameNode = authorNode.querySelector('LastName');
+							const foreNameNode = authorNode.querySelector('ForeName');
+							const lastName = lastNameNode ? lastNameNode.textContent : '';
+							const foreName = foreNameNode ? foreNameNode.textContent : '';
+							
+							// Check if this matches our author
+							if (lastName && foreName && authorName.includes(lastName)) {
+								fullName = `${foreName} ${lastName}`;
+								
+								// Extract department from affiliation
+								const affiliationNodes = authorNode.querySelectorAll('Affiliation');
+								affiliationNodes.forEach(affNode => {
+									const affText = affNode.textContent;
+									if (affText.toLowerCase().includes('rochester')) {
+										// Try to extract department name
+										const deptMatch = affText.match(/Department of ([^,;.]+)/i);
+										if (deptMatch) {
+											const dept = deptMatch[1].trim();
+											departments[dept] = (departments[dept] || 0) + 1;
+										}
+									}
+								});
+							}
+						});
+						
+						// Parse article details
+						const pmidNode = articleNode.querySelector('PMID');
+						const pmid = pmidNode ? pmidNode.textContent : '';
+						
+						const titleNode = articleNode.querySelector('ArticleTitle');
+						const title = titleNode ? titleNode.textContent : 'No title';
+						
+						const journalNode = articleNode.querySelector('Journal Title');
+						let journal = journalNode ? journalNode.textContent : '';
+						if (!journal || journal.split(/\s+/).length > 5) {
+							const isoAbbrevNode = articleNode.querySelector('ISOAbbreviation');
+							if (isoAbbrevNode) journal = isoAbbrevNode.textContent;
+						}
+						
+						const yearNode = articleNode.querySelector('PubDate Year');
+						const year = yearNode ? yearNode.textContent : '';
+						
+						const authorNodesAll = articleNode.querySelectorAll('Author');
+						const authorsArray = [];
+						authorNodesAll.forEach(an => {
+							const ln = an.querySelector('LastName');
+							const fn = an.querySelector('ForeName');
+							if (ln && fn) {
+								const initials = fn.textContent.split(' ').map(n => n[0]).join('');
+								authorsArray.push(`${ln.textContent} ${initials}`);
+							}
+						});
+						let authorsDisplay = authorsArray.join(', ');
+						if (authorsArray.length > 15) {
+							authorsDisplay = authorsArray.slice(0, 14).join(', ') + ', et al.';
+						}
+						
+						articles.push({
+							pmid,
+							title,
+							journal,
+							year,
+							authors: authorsDisplay,
+							url: `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`
+						});
+						
+					} catch (error) {
+						console.error('Error parsing article:', error);
+					}
+				});
 				
 				// Sort by year (most recent first)
 				articles.sort((a, b) => {
@@ -2018,7 +2147,23 @@
 					return yearB - yearA;
 				});
 				
-				// Display bibliography in MLA format
+				// Find most common department
+				let primaryDepartment = '—';
+				let maxCount = 0;
+				for (const [dept, count] of Object.entries(departments)) {
+					if (count > maxCount) {
+						maxCount = count;
+						primaryDepartment = dept;
+					}
+				}
+				
+				// Display stats
+				document.getElementById('authorFullName').textContent = fullName;
+				document.getElementById('authorPubCount').textContent = articles.length;
+				document.getElementById('authorDepartment').textContent = primaryDepartment;
+				statsDiv.style.display = 'block';
+				
+				// Display bibliography
 				let bibliographyHTML = '';
 				articles.forEach((article, index) => {
 					const citation = generateMLACitation(article);
