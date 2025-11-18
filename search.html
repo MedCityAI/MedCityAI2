@@ -299,47 +299,6 @@
 			gap: 16px;
 		}
 		.select-all-container {
-			display: flex;
-			align-items: center;
-			gap: 8px;
-		}
-		.select-all-container label {
-			font-weight: 500;
-			color: #2c3e50;
-			cursor: pointer;
-			user-select: none;
-		}
-		.select-all-container input[type="checkbox"] {
-			width: 18px;
-			height: 18px;
-			cursor: pointer;
-		}
-		.export-btn {
-			background: linear-gradient(135deg, #27ae60, #229954);
-			color: white;
-			border: none;
-			padding: 10px 20px;
-			border-radius: 8px;
-			font-size: 14px;
-			font-weight: 600;
-			cursor: pointer;
-			transition: all 0.3s ease;
-			display: flex;
-			align-items: center;
-			gap: 8px;
-		}
-		.export-btn:hover {
-			transform: translateY(-2px);
-			box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
-		}
-		.export-btn:disabled {
-			background: #bdc3c7;
-			cursor: not-allowed;
-			transform: none;
-		}
-
-		/* Result Item - Sleek Sequential Design */
-		.results-list {
 			background: #fff;
 			border-radius: 12px;
 			overflow: hidden;
@@ -359,9 +318,6 @@
 		}
 		.result-item:hover {
 			background: #f8fbff;
-		}
-		.result-item.selected {
-			background: #e3f2fd;
 		}
 		.new-badge {
 			position: absolute;
@@ -389,49 +345,9 @@
 			border-radius: 4px;
 			border: 1px solid #e0e0e0;
 		}
-		.result-checkbox {
-			flex-shrink: 0;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			gap: 8px;
-			min-width: 50px;
-		}
-		.result-checkbox input[type="checkbox"] {
-			width: 24px;
-			height: 24px;
-			cursor: pointer;
-			appearance: none;
-			-webkit-appearance: none;
-			-moz-appearance: none;
-			border: 2px solid #3498db;
-			border-radius: 4px;
-			background: white;
-			position: relative;
-			transition: all 0.2s ease;
-		}
-		.result-checkbox input[type="checkbox"]:hover {
-			border-color: #2980b9;
-			box-shadow: 0 0 8px rgba(52, 152, 219, 0.3);
-		}
-		.result-checkbox input[type="checkbox"]:checked {
-			background: #3498db;
-			border-color: #3498db;
-		}
-		.result-checkbox input[type="checkbox"]:checked::after {
-			content: '✓';
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%, -50%);
-			color: white;
-			font-size: 16px;
-			font-weight: bold;
-		}
 		.result-content {
 			flex: 1;
 			min-width: 0;
-			padding-left: 40px;
 		}
 		.result-title {
 			font-size: 1.25em;
@@ -1139,15 +1055,6 @@
 						<div class="results-count">
 							Found <span id="resultCount">0</span> results
 						</div>
-						<div class="results-actions">
-							<div class="select-all-container">
-								<input type="checkbox" id="selectAll" />
-								<label for="selectAll">Select All</label>
-							</div>
-							<button id="exportBtn" class="export-btn" onclick="exportToCSV()" disabled>
-								<i class="fas fa-download"></i> Export CSV
-							</button>
-						</div>
 					</div>
 					
 					<div class="results-list" id="resultsContent"></div>
@@ -1242,8 +1149,6 @@
 		let currentResults = [];
 		let currentPage = 1;
 		const resultsPerPage = 20;
-		let totalResults = 0;
-		let selectedArticles = new Set();
 		let currentCitationArticle = null;
 		let currentCitationStyle = 'mla';
 
@@ -1610,76 +1515,7 @@
 					}
 				});
 			}
-			
-			// Select All Handler
-			const selectAllCheckbox = document.getElementById('selectAll');
-			if (selectAllCheckbox) {
-				selectAllCheckbox.addEventListener('change', function(e) {
-					const checkboxes = document.querySelectorAll('.article-checkbox');
-					checkboxes.forEach(cb => {
-						cb.checked = e.target.checked;
-						const pmid = cb.dataset.pmid;
-						if (e.target.checked) {
-							selectedArticles.add(pmid);
-							cb.closest('.result-item').classList.add('selected');
-						} else {
-							selectedArticles.delete(pmid);
-							cb.closest('.result-item').classList.remove('selected');
-						}
-					});
-					updateExportButton();
-				});
-			}
 		});
-
-		// Update Export Button State
-		function updateExportButton() {
-			const exportBtn = document.getElementById('exportBtn');
-			if (!exportBtn) return;
-			
-			exportBtn.disabled = selectedArticles.size === 0;
-			if (selectedArticles.size > 0) {
-				exportBtn.innerHTML = `<i class="fas fa-download"></i> Export CSV (${selectedArticles.size})`;
-			} else {
-				exportBtn.innerHTML = `<i class="fas fa-download"></i> Export CSV`;
-			}
-		}
-
-		// Export to CSV
-		function exportToCSV() {
-			if (selectedArticles.size === 0) return;
-
-			// Get selected articles
-			const selectedData = currentResults.filter(article => selectedArticles.has(article.pmid));
-
-			// Build CSV content
-			const headers = ['PMID', 'Title', 'Authors', 'Journal', 'Publication Date', 'Abstract', 'URL'];
-			let csvContent = headers.join(',') + '\n';
-
-			selectedData.forEach(article => {
-				const row = [
-					article.pmid,
-					`"${(article.title || '').replace(/"/g, '""')}"`,
-					`"${(article.authors || '').replace(/"/g, '""')}"`,
-					`"${(article.journal || '').replace(/"/g, '""')}"`,
-					article.pubdate || '',
-					`"${(article.abstract || '').replace(/"/g, '""')}"`,
-					article.url || ''
-				];
-				csvContent += row.join(',') + '\n';
-			});
-
-			// Create download
-			const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-			const link = document.createElement('a');
-			const url = URL.createObjectURL(blob);
-			link.setAttribute('href', url);
-			link.setAttribute('download', `pubmed_search_results_${new Date().toISOString().split('T')[0]}.csv`);
-			link.style.visibility = 'hidden';
-			document.body.appendChild(link);
-			link.click();
-			document.body.removeChild(link);
-		}
 
 		function displayResults() {
 			document.getElementById('loadingState').style.display = 'none';
@@ -1729,21 +1565,13 @@
 						authorsHTML = authorsHTML.replace(regex, 
 							`<span class="roch-author" onclick="showAuthorBibliography('${escapedAuthor}')" tabindex="0" role="button">${rochAuthor}</span>`
 						);
-					});
-				}
+				});
+			}
 
-				const isSelected = selectedArticles.has(article.pmid);
-				const resultNumber = startIdx + index + 1;
-
-				resultsHTML += `
-					<div class="result-item ${isSelected ? 'selected' : ''}">
+			const resultNumber = startIdx + index + 1;				resultsHTML += `
+					<div class="result-item">
 						${isNew ? '<div class="new-badge">NEW</div>' : ''}
 						<div class="result-number">#${resultNumber}</div>
-						<div class="result-checkbox">
-							<input type="checkbox" class="article-checkbox" data-pmid="${article.pmid}" 
-								${isSelected ? 'checked' : ''} 
-								onchange="toggleArticleSelection('${article.pmid}', this)">
-						</div>
 						<div class="result-content">
 							<a href="${article.url}" target="_blank" class="result-title">${article.title}</a>
 							
@@ -1781,40 +1609,11 @@
 
 			document.getElementById('resultsContent').innerHTML = resultsHTML;
 
-			// Update select all checkbox state
-			updateSelectAllCheckbox();
-
 			// Display pagination
 			displayPagination(totalPages);
 
 			// Scroll to results
 			document.getElementById('resultsContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
-		}
-
-		// Toggle individual article selection
-		function toggleArticleSelection(pmid, checkbox) {
-			const resultItem = checkbox.closest('.result-item');
-			if (checkbox.checked) {
-				selectedArticles.add(pmid);
-				resultItem.classList.add('selected');
-			} else {
-				selectedArticles.delete(pmid);
-				resultItem.classList.remove('selected');
-			}
-			updateSelectAllCheckbox();
-			updateExportButton();
-		}
-
-		// Update select all checkbox state
-		function updateSelectAllCheckbox() {
-			const checkboxes = document.querySelectorAll('.article-checkbox');
-			const selectAllCheckbox = document.getElementById('selectAll');
-			if (!selectAllCheckbox) return;
-			
-			const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
-			
-			selectAllCheckbox.checked = checkboxes.length > 0 && checkedCount === checkboxes.length;
-			selectAllCheckbox.indeterminate = checkedCount > 0 && checkedCount < checkboxes.length;
 		}
 
 		function displayPagination(totalPages) {
