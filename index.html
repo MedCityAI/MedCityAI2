@@ -1381,7 +1381,7 @@
 				<div class="author-modal-content" role="document">
 					<div class="author-modal-header">
 						<h3 id="authorModalTitle">Author Publications</h3>
-						<button class="author-modal-close" onclick="closeAuthorModal()" aria-label="Close author publications modal">&times;</button>
+						<button class="author-modal-close" id="authorModalCloseBtn" aria-label="Close author publications modal">&times;</button>
 					</div>
 					<div id="authorStats" class="author-stats" style="display: none;">
 					<h4 id="authorFullName" style="font-size: 1.5em; margin-bottom: 20px; color: #2c3e50;"></h4>
@@ -2325,9 +2325,8 @@
 		}
 
 		// Initialize application
-		document.addEventListener('DOMContentLoaded', function() {
-			// New popover logic with arrow & viewport flip
-		async function showAuthorBibliography(authorName) {
+		// Move to global scope so event delegation works
+	async function showAuthorBibliography(authorName) {
 			const modal = document.getElementById('authorModal');
 			const title = document.getElementById('authorModalTitle');
 			const loading = document.getElementById('authorModalLoading');
@@ -2521,8 +2520,16 @@
 			document.getElementById('authorModal').style.display = 'none';
 		}
 
-		// Event delegation for Rochester author clicks
-		document.addEventListener('click', function(e) {
+		// Set up event listeners after DOM is loaded
+		document.addEventListener('DOMContentLoaded', function() {
+			// Close button for author modal
+			const authorModalCloseBtn = document.getElementById('authorModalCloseBtn');
+			if (authorModalCloseBtn) {
+				authorModalCloseBtn.addEventListener('click', closeAuthorModal);
+			}
+
+			// Event delegation for Rochester author clicks
+			document.addEventListener('click', function(e) {
 			const trigger = e.target.closest('.roch-author');
 			if (trigger) {
 				const name = (trigger.getAttribute('data-author') || trigger.textContent || '').trim();
