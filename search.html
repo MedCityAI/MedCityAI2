@@ -1865,8 +1865,8 @@
 		statsDiv.style.display = 'none';
 		
 		try {
-			// Build query for this author + Rochester affiliation
-			const query = `(${authorName}[Author]) AND (Rochester[AD] AND (Minnesota[AD] OR MN[AD]))`;
+			// Build query for this author (all publications)
+			const query = `${authorName}[Author]`;
 			
 			// First, get total count
 			const countUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmode=json&retmax=0`;
