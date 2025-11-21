@@ -1237,11 +1237,163 @@
 			color: #7f8c8d;
 			font-weight: 500;
 		}
+		
+		/* Firebase Interaction Tracking Styles */
+		.card-interactions {
+			display: flex;
+			gap: 15px;
+			align-items: center;
+			margin-top: 10px;
+			padding-top: 10px;
+			border-top: 1px solid #e0e0e0;
+			font-size: 13px;
+		}
+		.interaction-item {
+			display: flex;
+			align-items: center;
+			gap: 5px;
+			color: #546e7a;
+		}
+		.like-button {
+			background: none;
+			border: none;
+			cursor: pointer;
+			color: #e74c3c;
+			font-size: 16px;
+			padding: 5px;
+			transition: transform 0.2s ease, color 0.2s ease;
+			display: flex;
+			align-items: center;
+			gap: 4px;
+		}
+		.like-button:hover {
+			transform: scale(1.15);
+		}
+		.like-button.liked {
+			color: #c0392b;
+			animation: heartBeat 0.3s ease;
+		}
+		.view-count {
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			color: #7f8c8d;
+		}
+		@keyframes heartBeat {
+			0%, 100% { transform: scale(1); }
+			25% { transform: scale(1.3); }
+			50% { transform: scale(1.1); }
+		}
 		</style>
+		
+		<!-- Firebase SDK -->
+		<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+		<!-- Firebase Configuration (loaded from external file not committed to GitHub) -->
+		<script src="firebase-config.js"></script>
 	</head>
 	<body class="landing is-preload">
 		<!-- Skip to main content link for keyboard users -->
 		<a href="#main-content" class="skip-link">Skip to main content</a>
+		
+		<!-- Firebase Initialization -->
+		<script>
+			// Firebase config is loaded from firebase-config.js (not committed to GitHub)
+			// Initialize Firebase
+			firebase.initializeApp(firebaseConfig);
+			const db = firebase.firestore();
+			
+			// Track which PMIDs the user has liked (stored locally)
+			const likedPMIDs = new Set(JSON.parse(localStorage.getItem('likedPMIDs') || '[]'));
+			
+			// Function to track a like
+			async function toggleLike(pmid, button) {
+				try {
+					const docRef = db.collection('publications').doc(pmid);
+					const isLiked = likedPMIDs.has(pmid);
+					
+					if (isLiked) {
+						// Unlike
+						await docRef.update({
+							likes: firebase.firestore.FieldValue.increment(-1)
+						});
+						likedPMIDs.delete(pmid);
+						button.classList.remove('liked');
+						button.innerHTML = '♡ <span class="like-count">' + (parseInt(button.querySelector('.like-count').textContent) - 1) + '</span>';
+					} else {
+						// Like
+						await docRef.set({
+							likes: firebase.firestore.FieldValue.increment(1),
+							pmid: pmid,
+							lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+						}, { merge: true });
+						likedPMIDs.add(pmid);
+						button.classList.add('liked');
+						button.innerHTML = '♥ <span class="like-count">' + (parseInt(button.querySelector('.like-count').textContent) + 1) + '</span>';
+					}
+					
+					// Save to localStorage
+					localStorage.setItem('likedPMIDs', JSON.stringify([...likedPMIDs]));
+				} catch (error) {
+					console.error('Error toggling like:', error);
+				}
+			}
+			
+			// Function to track a click/view
+			async function trackView(pmid) {
+				try {
+					const docRef = db.collection('publications').doc(pmid);
+					await docRef.set({
+						views: firebase.firestore.FieldValue.increment(1),
+						pmid: pmid,
+						lastViewed: firebase.firestore.FieldValue.serverTimestamp()
+					}, { merge: true });
+				} catch (error) {
+					console.error('Error tracking view:', error);
+				}
+			}
+			
+			// Function to get like and view counts
+			async function getInteractionCounts(pmid) {
+				try {
+					const docRef = db.collection('publications').doc(pmid);
+					const doc = await docRef.get();
+					if (doc.exists) {
+						const data = doc.data();
+						return {
+							likes: data.likes || 0,
+							views: data.views || 0
+						};
+					}
+					return { likes: 0, views: 0 };
+				} catch (error) {
+					console.error('Error getting counts:', error);
+					return { likes: 0, views: 0 };
+				}
+			}
+			
+			// Function to load interaction counts for all cards
+			async function loadInteractionCounts() {
+				const cards = document.querySelectorAll('[data-pmid]');
+				for (const card of cards) {
+					const pmid = card.dataset.pmid;
+					if (pmid) {
+						const counts = await getInteractionCounts(pmid);
+						const likeButton = card.querySelector('.like-button');
+						const viewCount = card.querySelector('.view-count span');
+						
+						if (likeButton) {
+							const isLiked = likedPMIDs.has(pmid);
+							likeButton.innerHTML = `${isLiked ? '♥' : '♡'} <span class="like-count">${counts.likes}</span>`;
+							if (isLiked) likeButton.classList.add('liked');
+						}
+						if (viewCount) {
+							viewCount.textContent = counts.views;
+						}
+					}
+				}
+			}
+		</script>
 		
 		<!-- Page Wrapper -->
 		<div id="page-wrapper">
