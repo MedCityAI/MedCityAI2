@@ -324,77 +324,10 @@
 			color: #ccc;
 		}
 		
-		/* Sidebar Filter */
-		.sidebar-filter {
-			width: 160px;
-			background: white;
-			border: 1px solid #ddd;
-			border-radius: 8px;
-			padding: 16px 12px;
-			box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-		}
-		
-		.sidebar-filter .sidebar-header h3 {
-			font-size: 14px !important;
-			margin: 0 0 10px 0 !important;
-		}
-		
-		.sidebar-content {
-			display: flex;
-			flex-direction: column;
-			gap: 6px;
-		}
-		
-		.filter-checkbox {
-			display: flex;
-			align-items: center;
-			gap: 8px;
-			cursor: pointer;
-			padding: 4px 6px;
-			border-radius: 4px;
-			transition: background 0.2s;
-			font-size: 13px;
-		}
-		
-		.filter-checkbox:hover {
-			background: #f5f5f5;
-		}
-		
-		.filter-checkbox input[type="checkbox"] {
-			cursor: pointer;
-			width: 18px;
-			height: 18px;
-		}
-		
-		.filter-checkbox span {
-			font-size: 14px;
-			color: #2c3e50;
-			user-select: none;
-		}
-		
-		/* Main content layout with sidebar */
+		/* Main content layout */
 		#main-content {
 			width: 100%;
 			padding: 0;
-		}
-		
-		.content-with-sidebar {
-			max-width: 1200px;
-			margin: 0 auto;
-			padding: 40px 20px;
-		}
-		
-		#one {
-			max-width: 1200px;
-			margin: 0 auto;
-			padding: 0 20px;
-		}
-		
-		/* Hide sidebar on smaller screens */
-		@media (max-width: 1023px) {
-			.sidebar-filter {
-				display: none;
-			}
 		}
 		
 		.result-title {
@@ -436,60 +369,6 @@
 			font-size: 13px; 
 			margin-bottom: 10px; 
 		}
-
-		/* New author popover styles */
-		.author-popover {
-			position: fixed;
-			display: none;
-			z-index: 999999; /* Elevated above all app layers */
-			max-width: 400px;
-			background: #fff;
-			border: 1px solid #d9e2ec;
-			border-radius: 10px;
-			box-shadow: 0 12px 32px -6px rgba(0,0,0,0.28), 0 0 0 1px rgba(0,0,0,0.04);
-			font-size: 14px;
-			line-height: 1.5;
-			animation: fadeInScale 0.18s ease;
-		}
-		.author-popover.visible { display: block; }
-		.author-popover-arrow {
-			position: absolute;
-			z-index: 999998; /* Just beneath popover for stacking sanity */
-			width: 14px;
-			height: 14px;
-			background: #fff;
-			border-left: 1px solid #d9e2ec;
-			border-top: 1px solid #d9e2ec;
-			transform: rotate(45deg);
-			box-shadow: -3px -3px 6px rgba(0,0,0,0.05);
-		}
-		.author-popover-content { overflow: hidden; border-radius: 10px; }
-		.author-popover-header {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			padding: 10px 14px 8px;
-			background: linear-gradient(120deg,#f7fafe,#eef5fb);
-			border-bottom: 1px solid #e3edf5;
-		}
-		.author-popover-title { font-weight: 600; font-size: 13px; letter-spacing: .5px; text-transform: uppercase; color:#385a7c; }
-		.author-popover-close {
-			background: none; border: none; font-size: 22px; line-height: 1; cursor: pointer; color:#6b7c89; padding: 0 4px;
-			border-radius: 4px; transition: background .15s, color .15s;
-		}
-		.author-popover-close:hover { background:#dde7ef; color:#1d364d; }
-		.author-popover-body { max-height: 340px; overflow-y: auto; padding: 10px 14px 14px; }
-		.author-popover-body::-webkit-scrollbar { width: 8px; }
-		.author-popover-body::-webkit-scrollbar-track { background: #f2f6fa; }
-		.author-popover-body::-webkit-scrollbar-thumb { background: #b9c9d6; border-radius: 4px; }
-		.author-popover-body::-webkit-scrollbar-thumb:hover { background: #94a8b9; }
-		.author-popover-item { margin-bottom: 10px; }
-		.author-popover-item a { color:#1d6bb3; text-decoration:none; font-weight:500; }
-		.author-popover-item a:hover { text-decoration:underline; }
-		.author-popover-loading { text-align:center; padding: 30px 10px; color:#607587; font-size:13px; }
-		.author-popover-error { color:#c0392b; font-weight:600; padding: 16px 10px; }
-		.author-popover-empty { color:#607587; padding: 18px 10px; text-align:center; }
-		@keyframes fadeInScale { from { opacity:0; transform: scale(.96);} to { opacity:1; transform: scale(1);} }
 
 		/* Share buttons */
 		.share-buttons { 
@@ -632,13 +511,6 @@
 		}
 		.hero-right {
 			position: relative;
-		}
-		.chart-container {
-			position: relative;
-			aspect-ratio: 1;
-			display: flex;
-			align-items: center;
-			justify-content: center;
 		}
 
 		/* Featured Carousel Styles */
@@ -853,75 +725,6 @@
 			box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
 		}
 
-		/* Stats card */
-		.stats-card {
-			background: #ffffff;
-			border-radius: 15px;
-			padding: 30px 24px;
-			box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-			border: 1px solid #e8f4f8;
-			position: relative;
-		}
-		.stats-card::before {
-			content: '';
-			position: absolute;
-			top: 0;
-			left: 0;
-			right: 0;
-			height: 4px;
-			background: linear-gradient(90deg, #3498db, #2980b9, #3498db);
-			border-radius: 20px 20px 0 0;
-			animation: shimmer 3s ease-in-out infinite;
-		}
-		@keyframes shimmer {
-			0%, 100% { opacity: 0.6; }
-			50% { opacity: 1; }
-		}
-		.daily-count {
-			display: flex;
-			align-items: center;
-			margin-bottom: 20px;
-			padding-bottom: 16px;
-			border-bottom: 1px solid #eee;
-		}
-		.daily-count h3 {
-			margin: 0;
-			font-size: 1.1em;
-			color: #2c3e50;
-			font-weight: 600;
-		}
-		.count-number {
-			font-size: 2.4em;
-			font-weight: 800;
-			color: #3498db;
-			margin-left: 12px;
-		}
-		.ai-summary h4 {
-			margin: 0 0 12px 0;
-			color: #2c3e50;
-			font-size: 1.1em;
-			font-weight: 600;
-			display: flex;
-			align-items: center;
-		}
-		.ai-summary h4::before {
-			content: '🤖';
-			margin-right: 8px;
-		}
-		.summary-text {
-			color: #34495e;
-			line-height: 1.6;
-			font-size: 14px;
-		}
-		.update-time {
-			margin-top: 16px;
-			padding-top: 12px;
-			border-top: 1px solid #eee;
-			font-size: 12px;
-			color: #7f8c8d;
-			text-align: center;
-		}
-
 		/* Responsive design */
 		@media (max-width: 900px) {
 			.results { 
@@ -932,9 +735,6 @@
 				grid-template-columns: 1fr;
 				gap: 40px;
 				text-align: center;
-			}
-			.chart-container {
-				display: none;
 			}
 			.featured-carousel {
 				display: none;
@@ -974,14 +774,6 @@
 				-ms-overflow-style: none;
 				scrollbar-width: none;
 			}
-			.chart-container {
-				display: none;
-			}
-
-			.stats-card {
-				padding: 24px 18px;
-			}
-			.count-number { font-size: 2em; }
 		}
 		
 		/* Loading spinner */
@@ -1338,87 +1130,60 @@
 			</section>
 
 			<!-- Results Section -->
-			<div class="filter-bar">
-				<div class="filter-bar-content">
-					<!-- Results Grid -->
-					<div id="pubmed-results" role="region" aria-live="polite" aria-atomic="false" aria-label="Publication results"></div>
-					
-					<!-- Pagination Controls -->
-					<nav id="pagination-controls" style="display:none; text-align:center; margin: 30px 0; padding: 20px;" role="navigation" aria-label="Pagination">
-						<button id="prevPage" aria-label="Go to previous page" style="padding:12px 24px; margin:0 10px; border-radius:25px; border:1px solid #3498db; background:white; color:#3498db; cursor:pointer; font-weight:600;">← Previous</button>
-						<span id="pageInfo" role="status" aria-live="polite" style="margin:0 20px; font-size:16px; color:#2c3e50; font-weight:500;">Page 1</span>
-						<button id="nextPage" aria-label="Go to next page" style="padding:12px 24px; margin:0 10px; border-radius:25px; border:1px solid #3498db; background:white; color:#3498db; cursor:pointer; font-weight:600;">Next →</button>
-					</nav>
+			<main id="main-content" role="main">
+				<div class="filter-bar">
+					<div class="filter-bar-content">
+						<!-- Results Grid -->
+						<div id="pubmed-results" role="region" aria-live="polite" aria-atomic="false" aria-label="Publication results"></div>
+						
+						<!-- Pagination Controls -->
+						<nav id="pagination-controls" style="display:none; text-align:center; margin: 30px 0; padding: 20px;" role="navigation" aria-label="Pagination">
+							<button id="prevPage" aria-label="Go to previous page" style="padding:12px 24px; margin:0 10px; border-radius:25px; border:1px solid #3498db; background:white; color:#3498db; cursor:pointer; font-weight:600;">← Previous</button>
+							<span id="pageInfo" role="status" aria-live="polite" style="margin:0 20px; font-size:16px; color:#2c3e50; font-weight:500;">Page 1</span>
+							<button id="nextPage" aria-label="Go to next page" style="padding:12px 24px; margin:0 10px; border-radius:25px; border:1px solid #3498db; background:white; color:#3498db; cursor:pointer; font-weight:600;">Next →</button>
+						</nav>
+					</div>
 				</div>
-			</div>
 
-			<!-- Main Content Section (Hidden) -->
-			<main id="main-content" role="main" style="display: none;">
-				<div class="content-with-sidebar">
-				
-				<section id="one" class="wrapper style1 special" style="padding: 40px 0;">
-					<!-- Results Grid -->
-					<div id="pubmed-results" role="region" aria-live="polite" aria-atomic="false" aria-label="Publication results" style="margin-top:40px;"></div>
-					
-					<!-- Pagination Controls -->
-					<nav id="pagination-controls" style="display:none; text-align:center; margin: 30px 0; padding: 20px;" role="navigation" aria-label="Pagination">
-						<button id="prevPage" aria-label="Go to previous page" style="padding:12px 24px; margin:0 10px; border-radius:25px; border:1px solid #3498db; background:white; color:#3498db; cursor:pointer; font-weight:600;">← Previous</button>
-						<span id="pageInfo" role="status" aria-live="polite" style="margin:0 20px; font-size:16px; color:#2c3e50; font-weight:500;">Page 1</span>
-						<button id="nextPage" aria-label="Go to next page" style="padding:12px 24px; margin:0 10px; border-radius:25px; border:1px solid #3498db; background:white; color:#3498db; cursor:pointer; font-weight:600;">Next →</button>
-					</nav>
-
-					<!-- Modal for abstracts -->
-					<div id="modalBg" class="modal-bg" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
-						<div class="modal-content" role="document">
-							<button class="modal-close" id="modalClose" aria-label="Close modal">&times;</button>
-							<h3 id="modalTitle"></h3>
-							<div class="modal-abstract" id="modalAbstract"></div>
-						</div>
-					</div>
-					
-					<!-- Author Bibliography Modal -->
-			<div id="authorModal" class="author-modal author-modal-bg" role="dialog" aria-modal="true" aria-labelledby="authorModalTitle" aria-hidden="true">
-				<div class="author-modal-content" role="document">
-					<div class="author-modal-header">
-						<h3 id="authorModalTitle">Author Publications</h3>
-						<button class="author-modal-close" id="authorModalCloseBtn" aria-label="Close author publications modal">&times;</button>
-					</div>
-					<div id="authorStats" class="author-stats" style="display: none;">
-					<h4 id="authorFullName" style="font-size: 1.5em; margin-bottom: 20px; color: #2c3e50;"></h4>
-						<div class="author-stats-grid">
-							<div class="author-stat-item">
-								<div class="author-stat-label">Total Publications</div>
-								<div class="author-stat-value" id="authorPubCount">0</div>
-							</div>
-							<div class="author-stat-item">
-								<div class="author-stat-label">Primary Department</div>
-								<div class="author-stat-value" id="authorDepartment" style="font-size: 1.1em;">—</div>
+						<!-- Modal for abstracts -->
+						<div id="modalBg" class="modal-bg" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
+							<div class="modal-content" role="document">
+								<button class="modal-close" id="modalClose" aria-label="Close modal">&times;</button>
+								<h3 id="modalTitle"></h3>
+								<div class="modal-abstract" id="modalAbstract"></div>
 							</div>
 						</div>
-						<div class="author-stats-header" id="authorBibHeader" style="margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.2); font-size: 1.1em;">Recent Publications</div>
-					</div>
-					<div id="authorModalLoading" class="author-modal-loading" style="display: none;" role="status" aria-live="polite">
-						<div class="spinner" aria-hidden="true"></div>
-						<p>Loading publications...</p>
-					</div>
-					<ol id="authorBibliography" class="author-bibliography" aria-label="List of author publications"></ol>
-				</div>
-			</div>
-					
-								<!-- Anchored Author Popover (new structured popover) -->
-								<div id="authorPopover" class="author-popover" role="dialog" aria-modal="false" aria-hidden="true">
-									<div class="author-popover-arrow" aria-hidden="true"></div>
-									<div class="author-popover-content" role="document">
-										<div class="author-popover-header">
-											<div class="author-popover-title" id="authorPopoverTitle">Author Publications</div>
-											<button type="button" class="author-popover-close" id="authorPopoverClose" aria-label="Close popover">&times;</button>
-										</div>
-										<div class="author-popover-body" id="authorPopoverBody"></div>
-									</div>
+						
+						<!-- Author Bibliography Modal -->
+						<div id="authorModal" class="author-modal author-modal-bg" role="dialog" aria-modal="true" aria-labelledby="authorModalTitle" aria-hidden="true">
+							<div class="author-modal-content" role="document">
+								<div class="author-modal-header">
+									<h3 id="authorModalTitle">Author Publications</h3>
+									<button class="author-modal-close" id="authorModalCloseBtn" aria-label="Close author publications modal">&times;</button>
 								</div>
-				</section>
-			</div>
-		</main>
+								<div id="authorStats" class="author-stats" style="display: none;">
+									<h4 id="authorFullName" style="font-size: 1.5em; margin-bottom: 20px; color: #2c3e50;"></h4>
+									<div class="author-stats-grid">
+										<div class="author-stat-item">
+											<div class="author-stat-label">Total Publications</div>
+											<div class="author-stat-value" id="authorPubCount">0</div>
+										</div>
+										<div class="author-stat-item">
+											<div class="author-stat-label">Primary Department</div>
+											<div class="author-stat-value" id="authorDepartment" style="font-size: 1.1em;">—</div>
+										</div>
+									</div>
+									<div class="author-stats-header" id="authorBibHeader" style="margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.2); font-size: 1.1em;">Recent Publications</div>
+								</div>
+								<div id="authorModalLoading" class="author-modal-loading" style="display: none;" role="status" aria-live="polite">
+									<div class="spinner" aria-hidden="true"></div>
+									<p>Loading publications...</p>
+								</div>
+								<ol id="authorBibliography" class="author-bibliography" aria-label="List of author publications"></ol>
+							</div>
+						</div>
+				</div>
+			</main>
 
 		<!-- Footer -->
 			<footer id="footer">
@@ -1521,28 +1286,9 @@
 			}
 		}
 		
-		// Update showAbstractModal to handle focus and ARIA
-		const originalShowAbstractModal = showAbstractModal;
-		showAbstractModal = function(link) {
-			// Store the element that triggered the modal
-			window.lastFocusedElement = document.activeElement;
-			
-			// Call original function
-			originalShowAbstractModal(link);
-			
-			// Update ARIA and focus
-			const modalBg = document.getElementById('modalBg');
-			const modalClose = document.getElementById('modalClose');
-			modalBg.setAttribute('aria-hidden', 'false');
-			
-			// Set up focus trap
-			trapFocus(modalBg);
-			
-			// Focus the close button
-			setTimeout(() => modalClose.focus(), 100);
-		};
 
-		// Statistics loading
+
+		// Statistics loading (Note: currently not displayed in UI, but kept for potential future use)
 		async function loadStatistics() {
 			try {
 				const response = await fetch('./database/summary_stats.txt');
@@ -1563,15 +1309,6 @@
 						}
 					}
 				});
-
-				// Update UI
-				document.getElementById("VarTot").textContent = VarTot;
-				document.getElementById("VarDay").textContent = VarDay;
-				document.getElementById("VarWeek").textContent = VarWeek;
-				document.getElementById("VarMonth").textContent = VarMonth;
-				
-				// Update live count in hero banner
-				document.getElementById("live-count").textContent = VarDay;
 			} catch (err) {
 				console.error('Error loading statistics:', err);
 			}
@@ -1647,8 +1384,7 @@
 			}
 		}
 
-		// Populate department filter dropdown - NO LONGER NEEDED (using links instead)
-		// function populateDepartmentFilter() { ... }
+
 
 
 		// Parse CSV line handling quoted fields
@@ -1674,12 +1410,7 @@
 			return result;
 		}
 
-		// Escape HTML for data attributes
-		function escapeHtml(text) {
-			const div = document.createElement('div');
-			div.textContent = text;
-			return div.innerHTML;
-		}
+
 
 		// PubMed data display with search and pagination (now using CSV data)
 		async function fetchPubMedResults(searchQuery = '', page = 1, departmentFilter = '') {
@@ -1744,276 +1475,6 @@
 			// Check if we have results
 			if (filteredArticlesData.length === 0) {
 				document.getElementById("pubmed-results").innerHTML = "<p style='text-align:center; padding:40px; color:#666;'>No results found. Try a different search term.</p>";
-				document.getElementById("pagination-controls").style.display = 'none';
-				return;
-			}
-			
-			// Calculate pagination
-			const totalPages = Math.ceil(filteredArticlesData.length / resultsPerPage);
-			const startIdx = (page - 1) * resultsPerPage;
-			const endIdx = Math.min(startIdx + resultsPerPage, filteredArticlesData.length);
-			const pageArticles = filteredArticlesData.slice(startIdx, endIdx);
-			
-			// Show/hide pagination controls
-			if (filteredArticlesData.length > resultsPerPage) {
-				document.getElementById("pagination-controls").style.display = 'block';
-				document.getElementById("pageInfo").textContent = `Page ${page} of ${totalPages} (${filteredArticlesData.length} results)`;
-				document.getElementById("prevPage").disabled = page === 1;
-				document.getElementById("nextPage").disabled = page === totalPages;
-				document.getElementById("prevPage").style.opacity = page === 1 ? '0.5' : '1';
-				document.getElementById("nextPage").style.opacity = page === totalPages ? '0.5' : '1';
-			} else {
-				document.getElementById("pagination-controls").style.display = 'none';
-			}
-			
-			// Get current date for NEW badge logic
-			const now = new Date();
-			const threeDaysAgo = new Date(now.getTime() - (3 * 24 * 60 * 60 * 1000));
-			
-			// Build results HTML from CSV data
-			let resultsHTML = '';
-			
-			pageArticles.forEach(article => {
-				const pmid = article.pmid;
-				const title = article.title;
-				const abstract = article.abstract;
-				const journal = article.journal;
-				const pubdate = article.pubdate;
-				const url = article.url;
-				const llmSummary = article.llm_summary || '';
-				
-				// Parse publication date to check if NEW
-				const year = article.year;
-				const month = article.month;
-				const day = article.day;
-				
-				let articleDate = null;
-				const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-				if (year && month && day) {
-					const monthNum = monthNames.indexOf(month);
-					if (monthNum > 0) {
-						articleDate = new Date(year, monthNum - 1, day);
-					}
-				} else if (year && month) {
-					const monthNum = monthNames.indexOf(month);
-					if (monthNum > 0) {
-						articleDate = new Date(year, monthNum - 1, 1);
-					}
-				}
-				
-				// Determine if article is NEW (within last 3 days)
-				const isNew = articleDate && articleDate >= threeDaysAgo;
-				
-				// Parse authors (pipe-separated in CSV)
-				const authorsList = article.authors ? article.authors.split('|') : [];
-				const rochesterAuthorsList = article.rochester_authors ? article.rochester_authors.split('|') : [];
-				
-				// Format authors for display
-				let authorsHtml = "";
-				if (article.authors_display) {
-					authorsHtml = article.authors_display;
-						// Make Rochester authors clickable
-						rochesterAuthorsList.forEach(rochAuthor => {
-							if (rochAuthor) {
-								const escapedAuthor = rochAuthor.replace(/'/g, "\\'");
-								authorsHtml = authorsHtml.replace(
-									rochAuthor,
-									`<span class="roch-author" data-author="${escapedAuthor}" tabindex="0" role="button" aria-label="View publications by ${escapedAuthor}">${rochAuthor}</span>`
-								);
-							}
-						});
-
-					// Fallback: if replacement didn't inject any clickable spans, rebuild from raw authors list
-					if (!authorsHtml.includes('roch-author') && authorsList.length) {
-						const rebuilt = authorsList.map(raw => {
-							const t = (raw || '').trim();
-							if (!t) return t;
-							if (rochesterAuthorsList.includes(t)) {
-								const esc = t.replace(/'/g, "\\'");
-								return `<span class="roch-author" data-author="${esc}" tabindex="0" role="button" aria-label="View publications by ${esc}">${t}</span>`;
-							}
-							return t;
-						}).join(', ');
-						if (rebuilt) {
-							authorsHtml = rebuilt;
-						}
-					}
-				}
-				
-				// Parse affiliations (pipe-separated in CSV)
-				const affiliationsList = article.affiliations ? article.affiliations.split('|') : [];
-				
-				// Extract department/division - prioritize first Rochester author's department
-				let departmentText = '';
-				
-				// First, try to get department from first Rochester author
-				if (rochesterAuthorsList.length > 0 && affiliationsList.length > 0) {
-					const firstRochAuthor = rochesterAuthorsList[0];
-					const authorIndex = authorsList.indexOf(firstRochAuthor);
-					
-					if (authorIndex >= 0 && authorIndex < affiliationsList.length) {
-						const affiliation = affiliationsList[authorIndex];
-						const deptMatch = affiliation.match(/(?:Department|Division|Center|Institute|Clinic|Unit|Section)\s+of\s+([^,\.]+)/i);
-						if (deptMatch) {
-							departmentText = deptMatch[1].trim();
-						}
-					}
-				}
-				
-				// If no department found from first Rochester author, check all affiliations
-				if (!departmentText && affiliationsList.length > 0) {
-					for (let i = 0; i < affiliationsList.length; i++) {
-						const affiliation = affiliationsList[i];
-						const deptMatch = affiliation.match(/(?:Department|Division|Center|Institute|Clinic|Unit|Section)\s+of\s+([^,\.]+)/i);
-						if (deptMatch) {
-							departmentText = deptMatch[1].trim();
-							break; // Use the first match found
-						}
-					}
-				}
-				
-				// Default to "Medicine" if no department found
-				if (!departmentText) {
-					departmentText = 'Medicine';
-				}
-				
-				const citation = `${journal}. ${pubdate}.`;
-
-				// Build card with flip effect
-				const hasSummary = llmSummary && llmSummary.trim() !== '' && llmSummary !== 'No abstract available.';
-				
-				resultsHTML += `
-					<div class="result-item">
-						<div class="card-flip-container" role="group" aria-label="${title.substring(0, 100)}...">
-							<!-- Front of card -->
-							<div class="card-face card-front" onclick="flipCard(this.closest('.card-flip-container'), event);" style="cursor: pointer;">
-								${isNew ? '<div class="new-tab">NEW</div>' : ''}
-								${departmentText ? `<div class="department-badge">${departmentText}</div>` : ''}
-								<br>
-								<a href="#" class="result-title" 
-								   onclick="event.preventDefault(); event.stopPropagation(); flipCard(this.closest('.card-flip-container'), event);" 
-								   onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flipCard(this.closest('.card-flip-container'), event);}"
-								   tabindex="0"
-								   role="button"
-								   aria-label="Click to view AI summary of: ${title}">${title}</a>
-								<div class="result-authors" onclick="event.stopPropagation();">${authorsHtml}</div>
-								<div class="result-citation"><em>${citation}</em></div>
-								<div style="margin-top: 8px; margin-bottom: 10px;">
-									<a href="${url}" target="_blank" onclick="event.stopPropagation();" style="color: #0056a3; text-decoration: none; font-size: 14px; font-weight: 500;">
-										View on PubMed →
-									</a>
-								</div>
-								<div class="share-buttons" role="group" aria-label="Share on social media" onclick="event.stopPropagation();">
-									<a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" class="facebook" target="_blank" aria-label="Share on Facebook">
-										<i class="icon brands fa-facebook-f" aria-hidden="true"></i> 
-									</a>
-									<a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}" class="twitter" target="_blank" aria-label="Share on Twitter">
-										<i class="icon brands fa-twitter" aria-hidden="true"></i> 
-									</a>
-									<a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}" class="linkedin" target="_blank" aria-label="Share on LinkedIn">
-										<i class="icon brands fa-linkedin" aria-hidden="true"></i> 
-									</a>
-								</div>
-							</div>
-							
-							<!-- Back of card (AI Summary) -->
-							${hasSummary ? `
-							<div class="card-face card-back" onclick="flipCard(this.closest('.card-flip-container'), event);" style="cursor: pointer;">
-								<div class="card-back-header">
-									<h4 style="color: #1565c0; margin: 0; font-size: 16px; font-weight: 700; cursor: pointer;"
-									    onclick="event.stopPropagation(); flipCard(this.closest('.card-flip-container'), event);"
-									    onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flipCard(this.closest('.card-flip-container'), event);}"
-									    tabindex="0"
-									    role="button"
-									    aria-label="Click to return to article details">
-										AI SUMMARY <span style="font-size: 14px;">↩</span>
-									</h4>
-								</div>
-								<div class="card-back-content">
-									<div class="card-back-summary">${llmSummary}</div>
-									<div class="card-back-disclaimer">
-										<p style="margin: 0 0 10px 0; font-size: 11px; color: #546e7a; font-style: italic; line-height: 1.4;">
-											This summary was generated by AI and may contain inaccuracies. Refer to the full publication for accurate information.
-										</p>
-										<a href="${url}" target="_blank" onclick="event.stopPropagation();" style="color: #0056a3; text-decoration: none; font-size: 14px; font-weight: 500;">
-											View on PubMed →
-										</a>
-									</div>
-								</div>
-							</div>
-							` : ''}
-						</div>
-					</div>
-				`;
-			});
-
-			document.getElementById("pubmed-results").innerHTML = `<div class="results">${resultsHTML}</div>`;
-			
-			// Scroll to top of results after page change
-			if (page > 1) {
-				document.getElementById("pubmed-results").scrollIntoView({ behavior: 'smooth', block: 'start' });
-			}
-		}
-
-		// Function to handle multiple department selections from sidebar
-		async function fetchPubMedResultsMultiple(searchQuery = '', page = 1, departmentFilters = []) {
-			currentSearchQuery = searchQuery;
-			currentPage = page;
-			
-			// Ensure data is loaded
-			if (allArticlesData.length === 0) {
-				await loadCSVData();
-			}
-			
-			// Start with all articles
-			filteredArticlesData = [...allArticlesData];
-			
-			// Apply multiple department filters if selected
-			if (departmentFilters.length > 0) {
-				const categoryKeywords = {
-					'Surgery': ['surgery', 'surgical', 'cardiovascular surgery', 'cardiac surgery', 'thoracic surgery', 'neurosurgery', 'orthopedic surgery', 'plastic surgery', 'vascular surgery', 'transplant surgery'],
-					'Cardiology': ['cardiology', 'cardiovascular', 'cardiac', 'heart'],
-					'Neurology': ['neurology', 'neurological', 'neuroscience', 'neuroimaging', 'brain'],
-					'Oncology': ['oncology', 'cancer', 'hematology', 'medical oncology', 'leukemia', 'lymphoma'],
-					'Radiation Oncology': ['radiation oncology', 'radiation', 'radiotherapy'],
-					'Radiology': ['radiology', 'imaging', 'diagnostic radiology', 'interventional radiology'],
-					'Pediatrics': ['pediatrics', 'pediatric', 'child', 'children', 'neonatal'],
-					'Internal Medicine': ['internal medicine', 'medicine', 'general medicine'],
-					'Psychiatry': ['psychiatry', 'psychiatric', 'mental health', 'psychology'],
-					'AI/ML/DL & Generative AI': [
-						'artificial intelligence', 'machine learning', 'deep learning', 'neural network', 'ai', 'ml', 'dl', 'data science',
-						'generative ai', 'large language model', 'llm', 'chatgpt', 'gpt', 'generative', 'gen ai'
-					]
-				};
-				
-				filteredArticlesData = filteredArticlesData.filter(article => {
-					const affiliationsList = article.affiliations ? article.affiliations.split('|') : [];
-					
-					// Check if article matches ANY of the selected departments
-					return departmentFilters.some(selectedDept => {
-						return affiliationsList.some(affiliation => {
-							const deptMatch = affiliation.match(/(?:Department|Division|Center|Institute|Clinic|Unit|Section)\s+of\s+([^,\.]+)/i);
-							if (deptMatch) {
-								const deptName = deptMatch[1].trim().toLowerCase();
-								
-								const keywords = categoryKeywords[selectedDept] || [];
-								return keywords.some(keyword => deptName.includes(keyword));
-							}
-							return false;
-						});
-					});
-				});
-			}
-			
-			// Display results (reuse same pagination/display logic)
-			displayFilteredResults(page);
-		}
-
-		// Shared function to display filtered results with pagination
-		function displayFilteredResults(page) {
-			// Check if we have results
-			if (filteredArticlesData.length === 0) {
-				document.getElementById("pubmed-results").innerHTML = "<p style='text-align:center; padding:40px; color:#666;'>No results found. Try a different filter.</p>";
 				document.getElementById("pagination-controls").style.display = 'none';
 				return;
 			}
