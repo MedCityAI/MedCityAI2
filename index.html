@@ -106,6 +106,49 @@
 		overflow: hidden;
 	}
 	
+	.like-button {
+		position: absolute;
+		bottom: 15px;
+		right: 15px;
+		width: 40px;
+		height: 40px;
+		border-radius: 50%;
+		background: white;
+		border: 2px solid #e0e0e0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		z-index: 10;
+		box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+	}
+	
+	.like-button:hover {
+		background: #ffe0e0;
+		border-color: #ff6b6b;
+		transform: scale(1.1);
+	}
+	
+	.like-button i {
+		color: #95a5a6;
+		font-size: 18px;
+		transition: color 0.3s ease;
+	}
+	
+	.like-button:hover i {
+		color: #e74c3c;
+	}
+	
+	.like-button.liked {
+		background: #ffe0e0;
+		border-color: #e74c3c;
+	}
+	
+	.like-button.liked i {
+		color: #e74c3c;
+	}
+	
 	.card-back {
 		position: absolute;
 		top: 0;
