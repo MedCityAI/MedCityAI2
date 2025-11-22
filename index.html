@@ -402,23 +402,31 @@
 			border: none;
 			cursor: pointer;
 			transition: all 0.3s ease;
+			outline: none;
 		}
 		.like-button:hover {
 			color: #e74c3c;
 			transform: scale(1.15);
 			background: transparent;
+			outline: none;
+		}
+		.like-button:focus {
+			outline: none;
 		}
 		.like-button.liked {
 			color: #e74c3c;
 			animation: heartBeat 0.3s ease;
+			outline: none;
 		}
 		.like-button.liked i {
 			font-weight: 900;
+			outline: none;
 		}
 		.like-button.liked i::before {
 			content: "\f004" !important;
 			font-family: "Font Awesome 5 Free" !important;
 			font-weight: 900 !important;
+			outline: none;
 		}
 		@keyframes heartBeat {
 			0%, 100% { transform: scale(1); }
