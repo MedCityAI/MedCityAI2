@@ -1036,101 +1036,6 @@
 			background: #f8f9fa;
 		}
 
-		/* Welcome Modal */
-		.welcome-modal {
-			display: none;
-			position: fixed;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background: rgba(0, 0, 0, 0.7);
-			z-index: 10000;
-			justify-content: center;
-			align-items: center;
-		}
-		.welcome-modal.active {
-			display: flex;
-		}
-		.welcome-content {
-			background: white;
-			padding: 40px;
-			border-radius: 12px;
-			max-width: 700px;
-			width: 90%;
-			max-height: 80vh;
-			overflow-y: auto;
-			box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-		}
-		.welcome-content h2 {
-			color: #2c3e50;
-			margin-bottom: 10px;
-			font-size: 28px;
-		}
-		.welcome-content .subheader {
-			color: #666;
-			margin-bottom: 30px;
-			font-size: 16px;
-		}
-		.topics-grid {
-			display: grid;
-			grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-			gap: 12px;
-			margin-bottom: 30px;
-		}
-		.topic-button {
-			padding: 15px 20px;
-			background: #f8f9fa;
-			border: 2px solid #e0e0e0;
-			border-radius: 8px;
-			cursor: pointer;
-			transition: all 0.3s ease;
-			text-align: center;
-			font-size: 14px;
-			font-weight: 500;
-			color: #2c3e50;
-		}
-		.topic-button:hover {
-			background: #e8f4f8;
-			border-color: #3498db;
-			transform: translateY(-2px);
-		}
-		.topic-button.selected {
-			background: linear-gradient(135deg, #3498db, #2980b9);
-			border-color: #2980b9;
-			color: white;
-		}
-		.welcome-actions {
-			display: flex;
-			justify-content: center;
-			gap: 15px;
-		}
-		.welcome-button {
-			padding: 12px 30px;
-			border-radius: 25px;
-			font-weight: 600;
-			cursor: pointer;
-			transition: all 0.3s ease;
-			font-size: 15px;
-		}
-		.welcome-button.primary {
-			background: linear-gradient(135deg, #3498db, #2980b9);
-			color: white;
-			border: none;
-		}
-		.welcome-button.primary:hover {
-			transform: translateY(-1px);
-			box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
-		}
-		.welcome-button.secondary {
-			background: transparent;
-			color: #666;
-			border: 2px solid #ddd;
-		}
-		.welcome-button.secondary:hover {
-			background: #f8f9fa;
-		}
-
 		/* Author Modal Styles */
 		.author-modal {
 			display: none;
@@ -1442,29 +1347,37 @@
 		<div class="welcome-modal" id="welcomeModal">
 			<div class="welcome-content">
 				<h2>Welcome to MedCityAI!</h2>
-				<p class="subheader">Select a few topics to get started</p>
+				<p class="subheader">Select a few topics that interest you</p>
 				<div class="topics-grid" id="topicsGrid">
-					<div class="topic-button" data-topic="Radiology">Radiology</div>
-					<div class="topic-button" data-topic="Surgery">Surgery</div>
-					<div class="topic-button" data-topic="Internal Medicine">Internal Medicine</div>
-					<div class="topic-button" data-topic="Cardiology">Cardiology</div>
-					<div class="topic-button" data-topic="Oncology">Oncology</div>
-					<div class="topic-button" data-topic="Neurology">Neurology</div>
-					<div class="topic-button" data-topic="Pediatrics">Pediatrics</div>
-					<div class="topic-button" data-topic="Psychiatry">Psychiatry</div>
-					<div class="topic-button" data-topic="Dermatology">Dermatology</div>
-					<div class="topic-button" data-topic="Orthopedics">Orthopedics</div>
-					<div class="topic-button" data-topic="Anesthesiology">Anesthesiology</div>
-					<div class="topic-button" data-topic="Pathology">Pathology</div>
-					<div class="topic-button" data-topic="Emergency Medicine">Emergency Medicine</div>
-					<div class="topic-button" data-topic="Ophthalmology">Ophthalmology</div>
-					<div class="topic-button" data-topic="Generative AI">Generative AI</div>
-					<div class="topic-button" data-topic="Informatics">Informatics</div>
-					<div class="topic-button" data-topic="Genomics">Genomics</div>
+					<div class="topic-button" data-topic="Radiology" style="top: 20px; left: 50px;">Radiology</div>
+					<div class="topic-button" data-topic="Surgery" style="top: 15px; left: 200px;">Surgery</div>
+					<div class="topic-button" data-topic="Internal Medicine" style="top: 25px; left: 350px;">Internal Medicine</div>
+					<div class="topic-button" data-topic="Cardiology" style="top: 10px; left: 550px;">Cardiology</div>
+					<div class="topic-button" data-topic="Oncology" style="top: 80px; left: 30px;">Oncology</div>
+					<div class="topic-button" data-topic="Neurology" style="top: 75px; left: 180px;">Neurology</div>
+					<div class="topic-button" data-topic="Pediatrics" style="top: 85px; left: 330px;">Pediatrics</div>
+					<div class="topic-button" data-topic="Psychiatry" style="top: 70px; left: 480px;">Psychiatry</div>
+					<div class="topic-button" data-topic="Dermatology" style="top: 80px; left: 630px;">Dermatology</div>
+					<div class="topic-button" data-topic="Orthopedics" style="top: 140px; left: 60px;">Orthopedics</div>
+					<div class="topic-button" data-topic="Anesthesiology" style="top: 145px; left: 220px;">Anesthesiology</div>
+					<div class="topic-button" data-topic="Pathology" style="top: 135px; left: 410px;">Pathology</div>
+					<div class="topic-button" data-topic="Emergency Medicine" style="top: 150px; left: 560px;">Emergency Medicine</div>
+					<div class="topic-button" data-topic="Ophthalmology" style="top: 205px; left: 40px;">Ophthalmology</div>
+					<div class="topic-button" data-topic="Urology" style="top: 200px; left: 210px;">Urology</div>
+					<div class="topic-button" data-topic="Gastroenterology" style="top: 210px; left: 330px;">Gastroenterology</div>
+					<div class="topic-button" data-topic="Endocrinology" style="top: 195px; left: 520px;">Endocrinology</div>
+					<div class="topic-button" data-topic="Nephrology" style="top: 205px; left: 670px;">Nephrology</div>
+					<div class="topic-button" data-topic="Pulmonology" style="top: 265px; left: 70px;">Pulmonology</div>
+					<div class="topic-button" data-topic="Rheumatology" style="top: 270px; left: 230px;">Rheumatology</div>
+					<div class="topic-button" data-topic="Hematology" style="top: 260px; left: 400px;">Hematology</div>
+					<div class="topic-button" data-topic="Infectious Disease" style="top: 275px; left: 550px;">Infectious Disease</div>
+					<div class="topic-button" data-topic="Generative AI" style="top: 330px; left: 50px;">Generative AI</div>
+					<div class="topic-button" data-topic="Informatics" style="top: 325px; left: 240px;">Informatics</div>
+					<div class="topic-button" data-topic="Genomics" style="top: 335px; left: 410px;">Genomics</div>
 				</div>
 				<div class="welcome-actions">
 					<button class="welcome-button secondary" onclick="skipWelcome()">Skip for now</button>
-					<button class="welcome-button primary" onclick="saveTopics()">Continue</button>
+					<button class="welcome-button primary" onclick="saveTopics()">Let's Go! →</button>
 				</div>
 			</div>
 		</div>
