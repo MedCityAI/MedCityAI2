@@ -390,20 +390,17 @@
 			opacity: 0.85; 
 		}
 		.like-button {
-			position: absolute;
-			top: 10px;
-			right: 10px;
-			display: flex;
+			display: inline-flex;
 			align-items: center;
 			justify-content: center;
 			font-size: 28px;
 			color: #999;
-			padding: 0;
+			padding: 6px 10px;
+			margin-left: 10px;
 			background: transparent;
 			border: none;
 			cursor: pointer;
 			transition: all 0.3s ease;
-			z-index: 15;
 		}
 		.like-button:hover {
 			color: #e74c3c;
@@ -1682,9 +1679,6 @@
 							<div class="card-face card-front" onclick="flipCard(this.closest('.card-flip-container'), event);" style="cursor: pointer;">
 								${isNew ? '<div class="new-tab">NEW</div>' : ''}
 								${departmentText ? `<div class="department-badge">${departmentText}</div>` : ''}
-								<button class="like-button" data-pmid="${pmid}" onclick="toggleLike(event, '${pmid}')" aria-label="Like this article" title="Like">
-									<i class="icon far fa-heart" aria-hidden="true"></i>
-								</button>
 								<br>
 								<a href="#" class="result-title" 
 								   onclick="event.preventDefault(); event.stopPropagation(); flipCard(this.closest('.card-flip-container'), event);" 
@@ -1709,6 +1703,9 @@
 									<a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}" class="linkedin" target="_blank" aria-label="Share on LinkedIn">
 										<i class="icon brands fa-linkedin" aria-hidden="true"></i> 
 									</a>
+									<button class="like-button" data-pmid="${pmid}" onclick="toggleLike(event, '${pmid}')" aria-label="Like this article" title="Like">
+										<i class="icon far fa-heart" aria-hidden="true"></i>
+									</button>
 								</div>
 							</div>
 							
