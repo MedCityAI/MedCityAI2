@@ -1364,7 +1364,7 @@
 		try {
 			console.log('Sending to Google Apps Script:', { action, pmid });
 			
-			const url = `https://script.google.com/macros/s/AKfycbwZALQWvOYQQXKT3RdOxmtjBpT3kBTayxP2d9N3Y4nmuPBTKRq18ko1WcMsJmywattK/exec?action=${encodeURIComponent(action)}&pmid=${encodeURIComponent(pmid)}&timestamp=${encodeURIComponent(new Date().toISOString())}`;
+			const url = `https://script.google.com/macros/s/AKfycbwMW3zleX5xrP3SurPnkeyeiP7ruxBbw4cKoCT5r4e99bRLu78CDKbHBLXc-3Jxlj47/exec?action=${encodeURIComponent(action)}&pmid=${encodeURIComponent(pmid)}&timestamp=${encodeURIComponent(new Date().toISOString())}`;
 			
 			const response = await fetch(url, {
 				method: "GET",
@@ -1383,15 +1383,14 @@
 			const button = event.currentTarget;
 			const isLiked = button.classList.contains('liked');
 			
+			// Only allow liking, not unliking
 			if (isLiked) {
-				button.classList.remove('liked');
-				localStorage.removeItem(`liked_${pmid}`);
-				sendClick(pmid, 'unliked');
-			} else {
-				button.classList.add('liked');
-				localStorage.setItem(`liked_${pmid}`, 'true');
-				sendClick(pmid, 'liked');
+				return; // Do nothing if already liked
 			}
+			
+			button.classList.add('liked');
+			localStorage.setItem(`liked_${pmid}`, 'true');
+			sendClick(pmid, 'liked');
 		}
 		
 		// Initialize like buttons from local storage
@@ -1431,8 +1430,6 @@
 				const frontHeight = cardFront.offsetHeight;
 				cardBack.style.height = frontHeight + 'px';
 				currentlyFlippedCard = container;
-				// Send flip event to Google Apps Script
-				if (pmid) sendClick(pmid, 'flipped');
 			} else {
 				currentlyFlippedCard = null;
 			}
