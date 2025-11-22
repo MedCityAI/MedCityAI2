@@ -404,6 +404,12 @@
 			transition: all 0.3s ease;
 			outline: none;
 		}
+		.like-count {
+			font-size: 14px;
+			color: #999;
+			margin-left: 5px;
+			font-weight: 500;
+		}
 		.like-button:hover {
 			color: #e74c3c;
 			transform: scale(1.15);
@@ -1364,7 +1370,7 @@
 		try {
 			console.log('Sending to Google Apps Script:', { action, pmid });
 			
-			const url = `https://script.google.com/macros/s/AKfycbwMW3zleX5xrP3SurPnkeyeiP7ruxBbw4cKoCT5r4e99bRLu78CDKbHBLXc-3Jxlj47/exec?action=${encodeURIComponent(action)}&pmid=${encodeURIComponent(pmid)}&timestamp=${encodeURIComponent(new Date().toISOString())}`;
+			const url = `https://script.google.com/macros/s/AKfycbw2g5z_1ALbqWjcdY7YsCkwpOpztGJhjOgfRxhGhB8dDA1nwtvySoB5nivNpCnaxIz4/exec?action=${encodeURIComponent(action)}&pmid=${encodeURIComponent(pmid)}&timestamp=${encodeURIComponent(new Date().toISOString())}`;
 			
 			const response = await fetch(url, {
 				method: "GET",
@@ -1372,8 +1378,60 @@
 			});
 			
 			console.log('Data sent successfully');
+			
+			// Update count display after sending
+			if (action === 'liked') {
+				const button = document.querySelector(`.like-button[data-pmid="${pmid}"]`);
+				if (button) {
+					const countSpan = button.querySelector('.like-count');
+					if (countSpan) {
+						const currentCount = parseInt(countSpan.textContent) || 0;
+						countSpan.textContent = currentCount + 1;
+					}
+				}
+			}
 		} catch (error) {
 			console.error('Error sending click data:', error);
+		}
+	}
+	
+	// Fetch all counts from Google Sheet
+	async function fetchLikeCounts() {
+		try {
+			console.log('Fetching like counts from Google Sheet...');
+			const url = 'https://script.google.com/macros/s/AKfycbw2g5z_1ALbqWjcdY7YsCkwpOpztGJhjOgfRxhGhB8dDA1nwtvySoB5nivNpCnaxIz4/exec?action=getCounts';
+			
+			const response = await fetch(url);
+			const data = await response.json();
+			
+			console.log('Received counts:', data);
+			
+			// Update all like buttons with counts
+			document.querySelectorAll('.like-button').forEach(button => {
+				const pmid = button.getAttribute('data-pmid');
+				const count = data[pmid] || 0;
+				
+				// Add or update count span
+				let countSpan = button.querySelector('.like-count');
+				if (!countSpan) {
+					countSpan = document.createElement('span');
+					countSpan.className = 'like-count';
+					button.appendChild(countSpan);
+				}
+				countSpan.textContent = count;
+			});
+		} catch (error) {
+			console.error('Error fetching like counts:', error);
+			// Set all counts to 0 on error
+			document.querySelectorAll('.like-button').forEach(button => {
+				let countSpan = button.querySelector('.like-count');
+				if (!countSpan) {
+					countSpan = document.createElement('span');
+					countSpan.className = 'like-count';
+					button.appendChild(countSpan);
+				}
+				countSpan.textContent = '0';
+			});
 		}
 	}		// Like button functionality
 		function toggleLike(event, pmid) {
@@ -1401,6 +1459,9 @@
 					button.classList.add('liked');
 				}
 			});
+			
+			// Fetch and display counts from Google Sheet
+			fetchLikeCounts();
 		}
 
 		// Function to flip card and match heights (with keyboard support)
