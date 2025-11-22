@@ -1359,6 +1359,24 @@
 		let filteredArticlesData = [];
 		let currentlyFlippedCard = null;
 
+		// Send interaction data to Google Apps Script
+		async function sendClick(pmid, action) {
+			try {
+				fetch("https://script.google.com/macros/s/AKfycbzkidggfmNj6KShqKN3Issk_IOkaecjFQBrtf0BOvlGg-VILVj7z3Y44Up008hv8AeV/exec", {
+					method: "POST",
+					mode: "no-cors",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ 
+						action: action,
+						pmid: pmid,
+						timestamp: new Date().toISOString()
+					})
+				});
+			} catch (error) {
+				console.error('Error sending click data:', error);
+			}
+		}
+
 		// Like button functionality
 		function toggleLike(event, pmid) {
 			event.stopPropagation();
@@ -1370,9 +1388,11 @@
 			if (isLiked) {
 				button.classList.remove('liked');
 				localStorage.removeItem(`liked_${pmid}`);
+				sendClick(pmid, 'unliked');
 			} else {
 				button.classList.add('liked');
 				localStorage.setItem(`liked_${pmid}`, 'true');
+				sendClick(pmid, 'liked');
 			}
 		}
 		
@@ -1399,6 +1419,10 @@
 			const cardFront = container.querySelector('.card-front');
 			const cardBack = container.querySelector('.card-back');
 			
+			// Get PMID from like button if available
+			const likeButton = container.querySelector('.like-button');
+			const pmid = likeButton ? likeButton.getAttribute('data-pmid') : null;
+			
 			// If there's a currently flipped card and it's not this one, flip it back
 			if (currentlyFlippedCard && currentlyFlippedCard !== container && currentlyFlippedCard.classList.contains('flipped')) {
 				currentlyFlippedCard.classList.remove('flipped');
@@ -1409,6 +1433,8 @@
 				const frontHeight = cardFront.offsetHeight;
 				cardBack.style.height = frontHeight + 'px';
 				currentlyFlippedCard = container;
+				// Send flip event to Google Apps Script
+				if (pmid) sendClick(pmid, 'flipped');
 			} else {
 				currentlyFlippedCard = null;
 			}
