@@ -406,9 +406,9 @@
 		}
 		.like-count {
 			font-size: 14px;
-			color: #999;
+			color: #494949;
 			margin-left: 5px;
-			font-weight: 500;
+			font-weight: 700;
 		}
 		.like-button:hover {
 			color: #e74c3c;
@@ -939,6 +939,196 @@
 			border-width: 0;
 		}
 
+		/* Welcome Modal */
+		.welcome-modal {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.7);
+			z-index: 10000;
+			justify-content: center;
+			align-items: center;
+		}
+		.welcome-modal.active {
+			display: flex;
+		}
+		.welcome-content {
+			background: white;
+			padding: 40px;
+			border-radius: 12px;
+			max-width: 700px;
+			width: 90%;
+			max-height: 80vh;
+			overflow-y: auto;
+			box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+		}
+		.welcome-content h2 {
+			color: #2c3e50;
+			margin-bottom: 10px;
+			font-size: 28px;
+		}
+		.welcome-content .subheader {
+			color: #666;
+			margin-bottom: 30px;
+			font-size: 16px;
+		}
+		.topics-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+			gap: 12px;
+			margin-bottom: 30px;
+		}
+		.topic-button {
+			padding: 15px 20px;
+			background: #f8f9fa;
+			border: 2px solid #e0e0e0;
+			border-radius: 8px;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			text-align: center;
+			font-size: 14px;
+			font-weight: 500;
+			color: #2c3e50;
+		}
+		.topic-button:hover {
+			background: #e8f4f8;
+			border-color: #3498db;
+			transform: translateY(-2px);
+		}
+		.topic-button.selected {
+			background: linear-gradient(135deg, #3498db, #2980b9);
+			border-color: #2980b9;
+			color: white;
+		}
+		.welcome-actions {
+			display: flex;
+			justify-content: center;
+			gap: 15px;
+		}
+		.welcome-button {
+			padding: 12px 30px;
+			border-radius: 25px;
+			font-weight: 600;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			font-size: 15px;
+		}
+		.welcome-button.primary {
+			background: linear-gradient(135deg, #3498db, #2980b9);
+			color: white;
+			border: none;
+		}
+		.welcome-button.primary:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+		}
+		.welcome-button.secondary {
+			background: transparent;
+			color: #666;
+			border: 2px solid #ddd;
+		}
+		.welcome-button.secondary:hover {
+			background: #f8f9fa;
+		}
+
+		/* Welcome Modal */
+		.welcome-modal {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.7);
+			z-index: 10000;
+			justify-content: center;
+			align-items: center;
+		}
+		.welcome-modal.active {
+			display: flex;
+		}
+		.welcome-content {
+			background: white;
+			padding: 40px;
+			border-radius: 12px;
+			max-width: 700px;
+			width: 90%;
+			max-height: 80vh;
+			overflow-y: auto;
+			box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+		}
+		.welcome-content h2 {
+			color: #2c3e50;
+			margin-bottom: 10px;
+			font-size: 28px;
+		}
+		.welcome-content .subheader {
+			color: #666;
+			margin-bottom: 30px;
+			font-size: 16px;
+		}
+		.topics-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+			gap: 12px;
+			margin-bottom: 30px;
+		}
+		.topic-button {
+			padding: 15px 20px;
+			background: #f8f9fa;
+			border: 2px solid #e0e0e0;
+			border-radius: 8px;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			text-align: center;
+			font-size: 14px;
+			font-weight: 500;
+			color: #2c3e50;
+		}
+		.topic-button:hover {
+			background: #e8f4f8;
+			border-color: #3498db;
+			transform: translateY(-2px);
+		}
+		.topic-button.selected {
+			background: linear-gradient(135deg, #3498db, #2980b9);
+			border-color: #2980b9;
+			color: white;
+		}
+		.welcome-actions {
+			display: flex;
+			justify-content: center;
+			gap: 15px;
+		}
+		.welcome-button {
+			padding: 12px 30px;
+			border-radius: 25px;
+			font-weight: 600;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			font-size: 15px;
+		}
+		.welcome-button.primary {
+			background: linear-gradient(135deg, #3498db, #2980b9);
+			color: white;
+			border: none;
+		}
+		.welcome-button.primary:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+		}
+		.welcome-button.secondary {
+			background: transparent;
+			color: #666;
+			border: 2px solid #ddd;
+		}
+		.welcome-button.secondary:hover {
+			background: #f8f9fa;
+		}
+
 		/* Author Modal Styles */
 		.author-modal {
 			display: none;
@@ -1246,6 +1436,37 @@
 			</footer>
 		</div>
 
+		<!-- Welcome Modal -->
+		<div class="welcome-modal" id="welcomeModal">
+			<div class="welcome-content">
+				<h2>Welcome to MedCityAI!</h2>
+				<p class="subheader">Select a few topics to get started</p>
+				<div class="topics-grid" id="topicsGrid">
+					<div class="topic-button" data-topic="Radiology">Radiology</div>
+					<div class="topic-button" data-topic="Surgery">Surgery</div>
+					<div class="topic-button" data-topic="Internal Medicine">Internal Medicine</div>
+					<div class="topic-button" data-topic="Cardiology">Cardiology</div>
+					<div class="topic-button" data-topic="Oncology">Oncology</div>
+					<div class="topic-button" data-topic="Neurology">Neurology</div>
+					<div class="topic-button" data-topic="Pediatrics">Pediatrics</div>
+					<div class="topic-button" data-topic="Psychiatry">Psychiatry</div>
+					<div class="topic-button" data-topic="Dermatology">Dermatology</div>
+					<div class="topic-button" data-topic="Orthopedics">Orthopedics</div>
+					<div class="topic-button" data-topic="Anesthesiology">Anesthesiology</div>
+					<div class="topic-button" data-topic="Pathology">Pathology</div>
+					<div class="topic-button" data-topic="Emergency Medicine">Emergency Medicine</div>
+					<div class="topic-button" data-topic="Ophthalmology">Ophthalmology</div>
+					<div class="topic-button" data-topic="Generative AI">Generative AI</div>
+					<div class="topic-button" data-topic="Informatics">Informatics</div>
+					<div class="topic-button" data-topic="Genomics">Genomics</div>
+				</div>
+				<div class="welcome-actions">
+					<button class="welcome-button secondary" onclick="skipWelcome()">Skip for now</button>
+					<button class="welcome-button primary" onclick="saveTopics()">Continue</button>
+				</div>
+			</div>
+		</div>
+
 		<!-- Scripts -->
 		<script src="assets/js/jquery.min.js"></script>
 		<script src="assets/js/jquery.scrollex.min.js"></script>
@@ -1261,6 +1482,50 @@
 		let currentPage = 1;
 		let currentSearchQuery = '';
 		const resultsPerPage = 50;
+		let selectedTopics = [];
+
+		// Welcome Modal Functions
+		function checkFirstVisit() {
+			const hasKeywords = localStorage.getItem('medcity_keywords');
+			if (!hasKeywords) {
+				document.getElementById('welcomeModal').classList.add('active');
+			}
+		}
+
+		function skipWelcome() {
+			localStorage.setItem('medcity_keywords', JSON.stringify([]));
+			document.getElementById('welcomeModal').classList.remove('active');
+		}
+
+		function saveTopics() {
+			if (selectedTopics.length === 0) {
+				alert('Please select at least one topic to continue');
+				return;
+			}
+			localStorage.setItem('medcity_keywords', JSON.stringify(selectedTopics));
+			document.getElementById('welcomeModal').classList.remove('active');
+			console.log('Saved topics:', selectedTopics);
+		}
+
+		// Topic button click handlers
+		document.addEventListener('DOMContentLoaded', function() {
+			// Check for first visit
+			checkFirstVisit();
+
+			// Topic selection
+			document.querySelectorAll('.topic-button').forEach(button => {
+				button.addEventListener('click', function() {
+					const topic = this.getAttribute('data-topic');
+					if (this.classList.contains('selected')) {
+						this.classList.remove('selected');
+						selectedTopics = selectedTopics.filter(t => t !== topic);
+					} else {
+						this.classList.add('selected');
+						selectedTopics.push(topic);
+					}
+				});
+			});
+		});
 
 		// Modal functions
 		function showAbstractModal(link) {
@@ -1364,6 +1629,49 @@
 		let allArticlesData = [];
 		let filteredArticlesData = [];
 		let currentlyFlippedCard = null;
+
+	// Welcome Modal Functions
+	function checkFirstVisit() {
+		const hasKeywords = localStorage.getItem('medcity_keywords');
+		if (!hasKeywords) {
+			document.getElementById('welcomeModal').classList.add('active');
+		}
+	}
+
+	function skipWelcome() {
+		localStorage.setItem('medcity_keywords', JSON.stringify([]));
+		document.getElementById('welcomeModal').classList.remove('active');
+	}
+
+	function saveTopics() {
+		if (selectedTopics.length === 0) {
+			alert('Please select at least one topic to continue');
+			return;
+		}
+		localStorage.setItem('medcity_keywords', JSON.stringify(selectedTopics));
+		document.getElementById('welcomeModal').classList.remove('active');
+		console.log('Saved topics:', selectedTopics);
+	}
+
+	// Topic selection
+	document.addEventListener('DOMContentLoaded', function() {
+		// Check for first visit
+		checkFirstVisit();
+
+		// Topic button click handlers
+		document.querySelectorAll('.topic-button').forEach(button => {
+			button.addEventListener('click', function() {
+				const topic = this.getAttribute('data-topic');
+				if (this.classList.contains('selected')) {
+					this.classList.remove('selected');
+					selectedTopics = selectedTopics.filter(t => t !== topic);
+				} else {
+					this.classList.add('selected');
+					selectedTopics.push(topic);
+				}
+			});
+		});
+	});
 
 	// Send interaction data to Google Apps Script
 	async function sendClick(pmid, action) {
