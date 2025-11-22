@@ -978,22 +978,28 @@
 			font-size: 16px;
 		}
 		.topics-grid {
-			display: grid;
-			grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-			gap: 12px;
-			margin-bottom: 30px;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px;
+			margin-bottom: 40px;
+			padding: 10px;
+			justify-content: center;
+			align-items: flex-start;
 		}
 		.topic-button {
-			padding: 15px 20px;
-			background: #f8f9fa;
-			border: 2px solid #e0e0e0;
-			border-radius: 8px;
+			padding: 10px 16px;
+			background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+			border: 2px solid #dee2e6;
+			border-radius: 25px;
 			cursor: pointer;
-			transition: all 0.3s ease;
+			transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 			text-align: center;
-			font-size: 14px;
-			font-weight: 500;
+			font-size: 13px;
+			font-weight: 600;
 			color: #2c3e50;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+			white-space: nowrap;
+			flex-shrink: 0;
 		}
 		.topic-button:hover {
 			background: #e8f4f8;
@@ -1353,31 +1359,31 @@
 				<h2>Welcome to MedCityAI!</h2>
 				<p class="subheader">Select a few topics that interest you</p>
 				<div class="topics-grid" id="topicsGrid">
-					<div class="topic-button" data-topic="Radiology" style="top: 20px; left: 50px;">Radiology</div>
-					<div class="topic-button" data-topic="Surgery" style="top: 15px; left: 200px;">Surgery</div>
-					<div class="topic-button" data-topic="Internal Medicine" style="top: 25px; left: 350px;">Internal Medicine</div>
-					<div class="topic-button" data-topic="Cardiology" style="top: 10px; left: 550px;">Cardiology</div>
-					<div class="topic-button" data-topic="Oncology" style="top: 80px; left: 30px;">Oncology</div>
-					<div class="topic-button" data-topic="Neurology" style="top: 75px; left: 180px;">Neurology</div>
-					<div class="topic-button" data-topic="Pediatrics" style="top: 85px; left: 330px;">Pediatrics</div>
-					<div class="topic-button" data-topic="Psychiatry" style="top: 70px; left: 480px;">Psychiatry</div>
-					<div class="topic-button" data-topic="Dermatology" style="top: 80px; left: 630px;">Dermatology</div>
-					<div class="topic-button" data-topic="Orthopedics" style="top: 140px; left: 60px;">Orthopedics</div>
-					<div class="topic-button" data-topic="Anesthesiology" style="top: 145px; left: 220px;">Anesthesiology</div>
-					<div class="topic-button" data-topic="Pathology" style="top: 135px; left: 410px;">Pathology</div>
-					<div class="topic-button" data-topic="Emergency Medicine" style="top: 150px; left: 560px;">Emergency Medicine</div>
-					<div class="topic-button" data-topic="Ophthalmology" style="top: 205px; left: 40px;">Ophthalmology</div>
-					<div class="topic-button" data-topic="Urology" style="top: 200px; left: 210px;">Urology</div>
-					<div class="topic-button" data-topic="Gastroenterology" style="top: 210px; left: 330px;">Gastroenterology</div>
-					<div class="topic-button" data-topic="Endocrinology" style="top: 195px; left: 520px;">Endocrinology</div>
-					<div class="topic-button" data-topic="Nephrology" style="top: 205px; left: 670px;">Nephrology</div>
-					<div class="topic-button" data-topic="Pulmonology" style="top: 265px; left: 70px;">Pulmonology</div>
-					<div class="topic-button" data-topic="Rheumatology" style="top: 270px; left: 230px;">Rheumatology</div>
-					<div class="topic-button" data-topic="Hematology" style="top: 260px; left: 400px;">Hematology</div>
-					<div class="topic-button" data-topic="Infectious Disease" style="top: 275px; left: 550px;">Infectious Disease</div>
-					<div class="topic-button" data-topic="Generative AI" style="top: 330px; left: 50px;">Generative AI</div>
-					<div class="topic-button" data-topic="Informatics" style="top: 325px; left: 240px;">Informatics</div>
-					<div class="topic-button" data-topic="Genomics" style="top: 335px; left: 410px;">Genomics</div>
+					<div class="topic-button" data-topic="Radiology">Radiology</div>
+					<div class="topic-button" data-topic="Surgery">Surgery</div>
+					<div class="topic-button" data-topic="Internal Medicine">Internal Medicine</div>
+					<div class="topic-button" data-topic="Cardiology">Cardiology</div>
+					<div class="topic-button" data-topic="Oncology">Oncology</div>
+					<div class="topic-button" data-topic="Neurology">Neurology</div>
+					<div class="topic-button" data-topic="Pediatrics">Pediatrics</div>
+					<div class="topic-button" data-topic="Psychiatry">Psychiatry</div>
+					<div class="topic-button" data-topic="Dermatology">Dermatology</div>
+					<div class="topic-button" data-topic="Orthopedics">Orthopedics</div>
+					<div class="topic-button" data-topic="Anesthesiology">Anesthesiology</div>
+					<div class="topic-button" data-topic="Pathology">Pathology</div>
+					<div class="topic-button" data-topic="Emergency Medicine">Emergency Medicine</div>
+					<div class="topic-button" data-topic="Ophthalmology">Ophthalmology</div>
+					<div class="topic-button" data-topic="Urology">Urology</div>
+					<div class="topic-button" data-topic="Gastroenterology">Gastroenterology</div>
+					<div class="topic-button" data-topic="Endocrinology">Endocrinology</div>
+					<div class="topic-button" data-topic="Nephrology">Nephrology</div>
+					<div class="topic-button" data-topic="Pulmonology">Pulmonology</div>
+					<div class="topic-button" data-topic="Rheumatology">Rheumatology</div>
+					<div class="topic-button" data-topic="Hematology">Hematology</div>
+					<div class="topic-button" data-topic="Infectious Disease">Infectious Disease</div>
+					<div class="topic-button" data-topic="Generative AI">Generative AI</div>
+					<div class="topic-button" data-topic="Informatics">Informatics</div>
+					<div class="topic-button" data-topic="Genomics">Genomics</div>
 				</div>
 				<div class="welcome-actions">
 					<button class="welcome-button secondary" onclick="skipWelcome()">Skip for now</button>
@@ -1590,24 +1596,28 @@
 		document.getElementById('welcomeModal').classList.add('active');
 	}
 
+	// Topic button click handler using event delegation
+	function handleTopicClick(event) {
+		const button = event.target.closest('.topic-button');
+		if (!button) return;
+		
+		const topic = button.getAttribute('data-topic');
+		if (button.classList.contains('selected')) {
+			button.classList.remove('selected');
+			selectedTopics = selectedTopics.filter(t => t !== topic);
+		} else {
+			button.classList.add('selected');
+			selectedTopics.push(topic);
+		}
+	}
+
 	// Topic selection
 	document.addEventListener('DOMContentLoaded', function() {
 		// Check for first visit
 		checkFirstVisit();
 
-		// Topic button click handlers
-		document.querySelectorAll('.topic-button').forEach(button => {
-			button.addEventListener('click', function() {
-				const topic = this.getAttribute('data-topic');
-				if (this.classList.contains('selected')) {
-					this.classList.remove('selected');
-					selectedTopics = selectedTopics.filter(t => t !== topic);
-				} else {
-					this.classList.add('selected');
-					selectedTopics.push(topic);
-				}
-			});
-		});
+		// Add event delegation for topic buttons
+		document.getElementById('topicsGrid').addEventListener('click', handleTopicClick);
 	});
 
 	// Send interaction data to Google Apps Script
