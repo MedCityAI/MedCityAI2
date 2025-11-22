@@ -412,7 +412,7 @@
 		}
 		.like-button:hover {
 			color: #e74c3c;
-			transform: scale(1.15);
+			transform: scale(1);
 			background: transparent;
 			outline: none;
 		}
@@ -1377,25 +1377,11 @@
 				mode: "no-cors"
 			});
 			
-			console.log('Data sent successfully');
-			
-			// Update count display after sending
-			if (action === 'liked') {
-				const button = document.querySelector(`.like-button[data-pmid="${pmid}"]`);
-				if (button) {
-					const countSpan = button.querySelector('.like-count');
-					if (countSpan) {
-						const currentCount = parseInt(countSpan.textContent) || 0;
-						countSpan.textContent = currentCount + 1;
-					}
-				}
-			}
-		} catch (error) {
-			console.error('Error sending click data:', error);
-		}
+		console.log('Data sent successfully');
+	} catch (error) {
+		console.error('Error sending click data:', error);
 	}
-	
-	// Fetch all counts from Google Sheet
+}	// Fetch all counts from Google Sheet
 	async function fetchLikeCounts() {
 		try {
 			console.log('Fetching like counts from Google Sheet...');
@@ -1448,6 +1434,14 @@
 			
 			button.classList.add('liked');
 			localStorage.setItem(`liked_${pmid}`, 'true');
+			
+			// Immediately update count display
+			const countSpan = button.querySelector('.like-count');
+			if (countSpan) {
+				const currentCount = parseInt(countSpan.textContent) || 0;
+				countSpan.textContent = currentCount + 1;
+			}
+			
 			sendClick(pmid, 'liked');
 		}
 		
