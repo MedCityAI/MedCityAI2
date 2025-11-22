@@ -1129,7 +1129,7 @@
 					<h4 id="authorFullName" style="font-size: 1.5em; margin-bottom: 20px; color: #2c3e50;"></h4>
 						<div class="author-stats-grid">
 							<div class="author-stat-item">
-								<div class="author-stat-label">Total Publications</div>
+								<div class="author-stat-label">Total Rochester Publications</div>
 								<div class="author-stat-value" id="authorPubCount">0</div>
 							</div>
 							<div class="author-stat-item">
@@ -1865,8 +1865,8 @@
 		statsDiv.style.display = 'none';
 		
 		try {
-			// Build query for this author (all publications)
-			const query = `${authorName}[Author]`;
+			// Build query for this author (all publications with Rochester affiliation)
+			const query = `${authorName}[Author] AND Rochester[Affiliation]`;
 			
 			// First, get total count
 			const countUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmode=json&retmax=0`;
