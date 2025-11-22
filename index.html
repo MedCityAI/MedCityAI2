@@ -375,6 +375,7 @@
 			margin-top: 10px;
 			display: flex;
 			align-items: center;
+			justify-content: space-between;
 			gap: 10px;
 		}
 		.share-buttons a {
@@ -396,7 +397,7 @@
 			font-size: 28px;
 			color: #999;
 			padding: 6px 10px;
-			margin-left: 10px;
+			margin-left: auto;
 			background: transparent;
 			border: none;
 			cursor: pointer;
@@ -405,13 +406,19 @@
 		.like-button:hover {
 			color: #e74c3c;
 			transform: scale(1.15);
+			background: transparent;
 		}
 		.like-button.liked {
 			color: #e74c3c;
 			animation: heartBeat 0.3s ease;
 		}
+		.like-button.liked i {
+			font-weight: 900;
+		}
 		.like-button.liked i::before {
-			content: "\f004"; /* Solid heart icon */
+			content: "\f004" !important;
+			font-family: "Font Awesome 5 Free" !important;
+			font-weight: 900 !important;
 		}
 		@keyframes heartBeat {
 			0%, 100% { transform: scale(1); }
