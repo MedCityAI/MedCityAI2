@@ -1359,25 +1359,29 @@
 		let filteredArticlesData = [];
 		let currentlyFlippedCard = null;
 
-		// Send interaction data to Google Apps Script
-		async function sendClick(pmid, action) {
-			try {
-				fetch("https://script.google.com/macros/s/AKfycbzkidggfmNj6KShqKN3Issk_IOkaecjFQBrtf0BOvlGg-VILVj7z3Y44Up008hv8AeV/exec", {
-					method: "POST",
-					mode: "no-cors",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({ 
-						action: action,
-						pmid: pmid,
-						timestamp: new Date().toISOString()
-					})
-				});
-			} catch (error) {
-				console.error('Error sending click data:', error);
-			}
+	// Send interaction data to Google Apps Script
+	async function sendClick(pmid, action) {
+		try {
+			console.log('Sending to Google Apps Script:', { action, pmid });
+			
+			const response = await fetch("https://script.google.com/macros/s/AKfycbzkidggfmNj6KShqKN3Issk_IOkaecjFQBrtf0BOvlGg-VILVj7z3Y44Up008hv8AeV/exec", {
+				method: "POST",
+				mode: "no-cors",
+				headers: { 
+					"Content-Type": "application/x-www-form-urlencoded"
+				},
+				body: new URLSearchParams({
+					action: action,
+					pmid: pmid,
+					timestamp: new Date().toISOString()
+				})
+			});
+			
+			console.log('Data sent successfully');
+		} catch (error) {
+			console.error('Error sending click data:', error);
 		}
-
-		// Like button functionality
+	}		// Like button functionality
 		function toggleLike(event, pmid) {
 			event.stopPropagation();
 			event.preventDefault();
