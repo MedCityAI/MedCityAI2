@@ -1253,6 +1253,10 @@
 								<i class="fas fa-search"></i>
 								Search
 							</button>
+							<button class="hero-btn hero-btn-secondary" id="manageKeywordsBtn" onclick="openKeywordsModal()">
+								<i class="fas fa-tags"></i>
+								Keywords
+							</button>
 						</div>
 					</div>
 					<div class="hero-right">
@@ -1566,6 +1570,24 @@
 		localStorage.setItem('medcity_keywords', JSON.stringify(selectedTopics));
 		document.getElementById('welcomeModal').classList.remove('active');
 		console.log('Saved topics:', selectedTopics);
+	}
+
+	function openKeywordsModal() {
+		// Load existing topics
+		const existingTopics = JSON.parse(localStorage.getItem('medcity_keywords') || '[]');
+		selectedTopics = [...existingTopics];
+		
+		// Update UI to show selected topics
+		document.querySelectorAll('.topic-button').forEach(button => {
+			const topic = button.getAttribute('data-topic');
+			if (selectedTopics.includes(topic)) {
+				button.classList.add('selected');
+			} else {
+				button.classList.remove('selected');
+			}
+		});
+		
+		document.getElementById('welcomeModal').classList.add('active');
 	}
 
 	// Topic selection
