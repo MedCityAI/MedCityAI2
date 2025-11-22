@@ -415,7 +415,6 @@
 		}
 		.like-button.liked {
 			color: #e74c3c;
-			animation: heartBeat 1.5s ease;
 			outline: none;
 		}
 		.like-button.liked i {
@@ -427,12 +426,6 @@
 			font-family: "Font Awesome 5 Free" !important;
 			font-weight: 900 !important;
 			outline: none;
-		}
-		@keyframes heartBeat {
-			0%, 100% { transform: scale(1); }
-			25% { transform: scale(1.25); }
-			50% { transform: scale(1.15); }
-			75% { transform: scale(1.25) }
 		}
 
 		/* Top Navigation Bar */
@@ -1882,8 +1875,8 @@
 		statsDiv.style.display = 'none';
 		
 		try {
-			// Build query for this author (all publications with Rochester affiliation)
-			const query = `${authorName}[Author] AND Rochester[Affiliation]`;
+			// Build query for this author (all publications)
+			const query = `${authorName}[Author]`;
 			
 			// First, get total count
 			const countUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmode=json&retmax=0`;
