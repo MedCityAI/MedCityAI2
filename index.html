@@ -959,23 +959,25 @@
 		}
 		.welcome-content {
 			background: white;
-			padding: 40px;
-			border-radius: 12px;
-			max-width: 700px;
-			width: 90%;
-			max-height: 80vh;
+			padding: 50px;
+			border-radius: 16px;
+			max-width: 1000px;
+			width: 95%;
+			max-height: 90vh;
 			overflow-y: auto;
 			box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 		}
 		.welcome-content h2 {
 			color: #2c3e50;
 			margin-bottom: 10px;
-			font-size: 28px;
+			font-size: 32px;
+			text-align: center;
 		}
 		.welcome-content .subheader {
 			color: #666;
-			margin-bottom: 30px;
-			font-size: 16px;
+			margin-bottom: 35px;
+			font-size: 17px;
+			text-align: center;
 		}
 		.topics-grid {
 			display: flex;
@@ -1381,9 +1383,27 @@
 					<div class="topic-button" data-topic="Rheumatology">Rheumatology</div>
 					<div class="topic-button" data-topic="Hematology">Hematology</div>
 					<div class="topic-button" data-topic="Infectious Disease">Infectious Disease</div>
-					<div class="topic-button" data-topic="Generative AI">Generative AI</div>
-					<div class="topic-button" data-topic="Informatics">Informatics</div>
-					<div class="topic-button" data-topic="Genomics">Genomics</div>
+					<div class="topic-button" data-topic="Allergy & Immunology">Allergy & Immunology</div>
+					<div class="topic-button" data-topic="Critical Care">Critical Care</div>
+					<div class="topic-button" data-topic="Physical Medicine">Physical Medicine</div>
+					<div class="topic-button" data-topic="Preventive Medicine">Preventive Medicine</div>
+					<div class="topic-button" data-topic="Family Medicine">Family Medicine</div>
+					<div class="topic-button" data-topic="Geriatrics">Geriatrics</div>
+					<div class="topic-button" data-topic="Otolaryngology">Otolaryngology</div>
+					<div class="topic-button" data-topic="Plastic Surgery">Plastic Surgery</div>
+					<div class="topic-button" data-topic="Vascular Surgery">Vascular Surgery</div>
+					<div class="topic-button" data-topic="Neurosurgery">Neurosurgery</div>
+					<div class="topic-button" data-topic="Thoracic Surgery">Thoracic Surgery</div>
+					<div class="topic-button" data-topic="Obstetrics & Gynecology">Obstetrics & Gynecology</div>
+					<div class="topic-button" data-topic="Pain Medicine">Pain Medicine</div>
+					<div class="topic-button" data-topic="Sports Medicine">Sports Medicine</div>
+					<div class="topic-button" data-topic="Sleep Medicine">Sleep Medicine</div>
+					<div class="topic-button" data-topic="Palliative Care">Palliative Care</div>
+					<div class="topic-button" data-topic="Medical Genetics">Medical Genetics</div>
+					<div class="topic-button" data-topic="Nuclear Medicine">Nuclear Medicine</div>
+					<div class="topic-button" data-topic="Generative AI">🤖 Generative AI</div>
+					<div class="topic-button" data-topic="Informatics">💻 Informatics</div>
+					<div class="topic-button" data-topic="Genomics">🧬 Genomics</div>
 				</div>
 				<div class="welcome-actions">
 					<button class="welcome-button secondary" onclick="skipWelcome()">Skip for now</button>
@@ -1601,14 +1621,21 @@
 		const button = event.target.closest('.topic-button');
 		if (!button) return;
 		
+		event.preventDefault();
+		event.stopPropagation();
+		
 		const topic = button.getAttribute('data-topic');
 		if (button.classList.contains('selected')) {
 			button.classList.remove('selected');
 			selectedTopics = selectedTopics.filter(t => t !== topic);
 		} else {
 			button.classList.add('selected');
-			selectedTopics.push(topic);
+			if (!selectedTopics.includes(topic)) {
+				selectedTopics.push(topic);
+			}
 		}
+		
+		console.log('Selected topics:', selectedTopics);
 	}
 
 	// Topic selection
