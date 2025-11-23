@@ -1002,16 +1002,25 @@
 			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 			white-space: nowrap;
 			flex-shrink: 0;
+			user-select: none;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
 		}
 		.topic-button:hover {
 			background: #e8f4f8;
 			border-color: #3498db;
 			transform: translateY(-2px);
+			box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+		}
+		.topic-button:active {
+			transform: translateY(0px);
 		}
 		.topic-button.selected {
 			background: linear-gradient(135deg, #3498db, #2980b9);
 			border-color: #2980b9;
 			color: white;
+			box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
 		}
 		.welcome-actions {
 			display: flex;
@@ -1359,51 +1368,49 @@
 		<div class="welcome-modal" id="welcomeModal">
 			<div class="welcome-content">
 				<h2>Welcome to MedCityAI!</h2>
-				<p class="subheader">Select a few topics that interest you</p>
+				<p class="subheader">Select topics of interest to you</p>
 				<div class="topics-grid" id="topicsGrid">
-					<div class="topic-button" data-topic="Radiology">Radiology</div>
-					<div class="topic-button" data-topic="Surgery">Surgery</div>
-					<div class="topic-button" data-topic="Internal Medicine">Internal Medicine</div>
-					<div class="topic-button" data-topic="Cardiology">Cardiology</div>
-					<div class="topic-button" data-topic="Oncology">Oncology</div>
-					<div class="topic-button" data-topic="Neurology">Neurology</div>
-					<div class="topic-button" data-topic="Pediatrics">Pediatrics</div>
-					<div class="topic-button" data-topic="Psychiatry">Psychiatry</div>
-					<div class="topic-button" data-topic="Dermatology">Dermatology</div>
-					<div class="topic-button" data-topic="Orthopedics">Orthopedics</div>
-					<div class="topic-button" data-topic="Anesthesiology">Anesthesiology</div>
-					<div class="topic-button" data-topic="Pathology">Pathology</div>
-					<div class="topic-button" data-topic="Emergency Medicine">Emergency Medicine</div>
-					<div class="topic-button" data-topic="Ophthalmology">Ophthalmology</div>
-					<div class="topic-button" data-topic="Urology">Urology</div>
-					<div class="topic-button" data-topic="Gastroenterology">Gastroenterology</div>
-					<div class="topic-button" data-topic="Endocrinology">Endocrinology</div>
-					<div class="topic-button" data-topic="Nephrology">Nephrology</div>
-					<div class="topic-button" data-topic="Pulmonology">Pulmonology</div>
-					<div class="topic-button" data-topic="Rheumatology">Rheumatology</div>
-					<div class="topic-button" data-topic="Hematology">Hematology</div>
-					<div class="topic-button" data-topic="Infectious Disease">Infectious Disease</div>
-					<div class="topic-button" data-topic="Allergy & Immunology">Allergy & Immunology</div>
-					<div class="topic-button" data-topic="Critical Care">Critical Care</div>
-					<div class="topic-button" data-topic="Physical Medicine">Physical Medicine</div>
-					<div class="topic-button" data-topic="Preventive Medicine">Preventive Medicine</div>
-					<div class="topic-button" data-topic="Family Medicine">Family Medicine</div>
-					<div class="topic-button" data-topic="Geriatrics">Geriatrics</div>
-					<div class="topic-button" data-topic="Otolaryngology">Otolaryngology</div>
-					<div class="topic-button" data-topic="Plastic Surgery">Plastic Surgery</div>
-					<div class="topic-button" data-topic="Vascular Surgery">Vascular Surgery</div>
-					<div class="topic-button" data-topic="Neurosurgery">Neurosurgery</div>
-					<div class="topic-button" data-topic="Thoracic Surgery">Thoracic Surgery</div>
-					<div class="topic-button" data-topic="Obstetrics & Gynecology">Obstetrics & Gynecology</div>
-					<div class="topic-button" data-topic="Pain Medicine">Pain Medicine</div>
-					<div class="topic-button" data-topic="Sports Medicine">Sports Medicine</div>
-					<div class="topic-button" data-topic="Sleep Medicine">Sleep Medicine</div>
-					<div class="topic-button" data-topic="Palliative Care">Palliative Care</div>
-					<div class="topic-button" data-topic="Medical Genetics">Medical Genetics</div>
-					<div class="topic-button" data-topic="Nuclear Medicine">Nuclear Medicine</div>
-					<div class="topic-button" data-topic="Generative AI">🤖 Generative AI</div>
-					<div class="topic-button" data-topic="Informatics">💻 Informatics</div>
-					<div class="topic-button" data-topic="Genomics">🧬 Genomics</div>
+					<button class="topic-button" onclick="toggleTopic(this, 'Radiology')">Radiology</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Surgery')">Surgery</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Internal Medicine')">Internal Medicine</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Cardiology')">Cardiology</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Oncology')">Oncology</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Neurology')">Neurology</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Pediatrics')">Pediatrics</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Psychiatry')">Psychiatry</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Dermatology')">Dermatology</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Orthopedics')">Orthopedics</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Anesthesiology')">Anesthesiology</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Pathology')">Pathology</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Emergency Medicine')">Emergency Medicine</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Ophthalmology')">Ophthalmology</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Urology')">Urology</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Gastroenterology')">Gastroenterology</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Endocrinology')">Endocrinology</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Nephrology')">Nephrology</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Pulmonology')">Pulmonology</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Rheumatology')">Rheumatology</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Hematology')">Hematology</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Infectious Disease')">Infectious Disease</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Immunology')">Immunology</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Critical Care')">Critical Care</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Physical Medicine')">Physical Medicine</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Preventive Medicine')">Preventive Medicine</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Family Medicine')">Family Medicine</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Geriatrics')">Geriatrics</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Vascular Surgery')">Vascular Surgery</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Neurosurgery')">Neurosurgery</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Thoracic Surgery')">Thoracic Surgery</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Obstetrics & Gynecology')">Obstetrics & Gynecology</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Pain Medicine')">Pain Medicine</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Sports Medicine')">Sports Medicine</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Sleep Medicine')">Sleep Medicine</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Palliative Care')">Palliative Care</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Medical Genetics')">Medical Genetics</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Nuclear Medicine')">Nuclear Medicine</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Generative AI')">Generative AI</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Informatics')">Informatics</button>
+					<button class="topic-button" onclick="toggleTopic(this, 'Genomics')">Genomics</button>
 				</div>
 				<div class="welcome-actions">
 					<button class="welcome-button secondary" onclick="skipWelcome()">Skip for now</button>
@@ -1451,26 +1458,6 @@
 			document.getElementById('welcomeModal').classList.remove('active');
 			console.log('Saved topics:', selectedTopics);
 		}
-
-		// Topic button click handlers
-		document.addEventListener('DOMContentLoaded', function() {
-			// Check for first visit
-			checkFirstVisit();
-
-			// Topic selection
-			document.querySelectorAll('.topic-button').forEach(button => {
-				button.addEventListener('click', function() {
-					const topic = this.getAttribute('data-topic');
-					if (this.classList.contains('selected')) {
-						this.classList.remove('selected');
-						selectedTopics = selectedTopics.filter(t => t !== topic);
-					} else {
-						this.classList.add('selected');
-						selectedTopics.push(topic);
-					}
-				});
-			});
-		});
 
 		// Modal functions
 		function showAbstractModal(link) {
@@ -1599,14 +1586,14 @@
 	}
 
 	function openKeywordsModal() {
-		// Load existing topics
+		// Load existing topics from localStorage
 		const existingTopics = JSON.parse(localStorage.getItem('medcity_keywords') || '[]');
 		selectedTopics = [...existingTopics];
 		
 		// Update UI to show selected topics
 		document.querySelectorAll('.topic-button').forEach(button => {
-			const topic = button.getAttribute('data-topic');
-			if (selectedTopics.includes(topic)) {
+			const buttonText = button.textContent.trim();
+			if (selectedTopics.includes(buttonText)) {
 				button.classList.add('selected');
 			} else {
 				button.classList.remove('selected');
@@ -1616,35 +1603,34 @@
 		document.getElementById('welcomeModal').classList.add('active');
 	}
 
-	// Topic button click handler using event delegation
-	function handleTopicClick(event) {
-		const button = event.target.closest('.topic-button');
-		if (!button) return;
+	// Toggle topic button and update localStorage immediately
+	function toggleTopic(button, topic) {
+		console.log('Toggle topic clicked:', topic);
 		
-		event.preventDefault();
-		event.stopPropagation();
-		
-		const topic = button.getAttribute('data-topic');
+		// Toggle button visual state
 		if (button.classList.contains('selected')) {
 			button.classList.remove('selected');
+			// Remove from array
 			selectedTopics = selectedTopics.filter(t => t !== topic);
+			console.log('Removed:', topic);
 		} else {
 			button.classList.add('selected');
+			// Add to array if not already there
 			if (!selectedTopics.includes(topic)) {
 				selectedTopics.push(topic);
 			}
+			console.log('Added:', topic);
 		}
 		
-		console.log('Selected topics:', selectedTopics);
+		// Immediately save to localStorage
+		localStorage.setItem('medcity_keywords', JSON.stringify(selectedTopics));
+		console.log('Updated medcity_keywords in localStorage:', selectedTopics);
 	}
 
-	// Topic selection
+	// Initialize on page load
 	document.addEventListener('DOMContentLoaded', function() {
-		// Check for first visit
+		console.log('DOMContentLoaded - Initializing keywords modal');
 		checkFirstVisit();
-
-		// Add event delegation for topic buttons
-		document.getElementById('topicsGrid').addEventListener('click', handleTopicClick);
 	});
 
 	// Send interaction data to Google Apps Script
