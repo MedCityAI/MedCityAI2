@@ -2464,9 +2464,9 @@
 	let currentSlideIndex = 0;
 
 	async function getFeaturedArticles() {
-		// Get articles from one week prior (7 days ago)
-		const oneWeekAgo = new Date();
-		oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+		// Get articles from the last 7 days
+		const sevenDaysAgo = new Date();
+		sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 		
 		// Ensure CSV data is loaded
 		if (allArticlesData.length === 0) {
@@ -2480,26 +2480,26 @@
 		
 		const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 		
-		// Filter articles published on the exact date one week ago
-		const targetYear = oneWeekAgo.getFullYear();
-		const targetMonth = monthNames[oneWeekAgo.getMonth() + 1];
-		const targetDay = oneWeekAgo.getDate();
-		
-		const articlesFromOneWeekAgo = allArticlesData.filter(article => {
-			return article.year == targetYear && 
-				   article.month === targetMonth && 
-				   article.day == targetDay;
+		// Filter articles published within the last 7 days
+		const articlesFromLastWeek = allArticlesData.filter(article => {
+			if (!article.year || !article.month || !article.day) return false;
+			
+			const monthNum = monthNames.indexOf(article.month);
+			if (monthNum === -1) return false;
+			
+			const articleDate = new Date(article.year, monthNum - 1, article.day);
+			return articleDate >= sevenDaysAgo && articleDate <= new Date();
 		});
 		
 		// Sort by like count (highest first)
-		articlesFromOneWeekAgo.sort((a, b) => {
+		articlesFromLastWeek.sort((a, b) => {
 			const likesA = likeCountsForRanking[a.pmid] || 0;
 			const likesB = likeCountsForRanking[b.pmid] || 0;
 			return likesB - likesA;
 		});
 		
-		// Return top 5 (or 3 for carousel display)
-		return articlesFromOneWeekAgo.slice(0, 3);
+		// Return top 3 for carousel display
+		return articlesFromLastWeek.slice(0, 3);
 	}
 
 	function initializeFeaturedCarousel(articles) {
@@ -2824,12 +2824,12 @@
 		
 			
 		
-		// Load data and initialize featured carousel with top liked articles from one week ago
+		// Load data and initialize featured carousel with top 3 most-liked articles from last 7 days
 		getFeaturedArticles().then(articles => {
 			if (articles && articles.length > 0) {
 				initializeFeaturedCarousel(articles);
 			} else {
-				console.log('No featured articles found from one week ago');
+				console.log('No featured articles found from the last 7 days');
 			}
 		});			// Hero button event listeners
 			const newTodayBtn = document.getElementById('newTodayBtn');
