@@ -1380,8 +1380,9 @@
 		</div>
 
 		<!-- Welcome Modal -->
-		<div class="welcome-modal" id="welcomeModal">
+		<div class="welcome-modal" id="welcomeModal" onclick="closeModalOnOutsideClick(event)">
 			<div class="welcome-content">
+				<button class="modal-close-btn" onclick="closeKeywordsModal()" aria-label="Close">&times;</button>
 				<h2>Welcome to MedCityAI!</h2>
 				<p class="subheader">Select topics of interest to you</p>
 				<div class="topics-grid" id="topicsGrid">
@@ -1429,8 +1430,7 @@
 				</div>
 				<p class="privacy-disclaimer">Your preferences are saved in your browser using local storage. This data never leaves your device.</p>
 				<div class="welcome-actions">
-					<button class="welcome-button secondary" onclick="skipWelcome()">Skip for now</button>
-					<button class="welcome-button primary" onclick="saveTopics()">Let's Go! →</button>
+					<button class="welcome-button primary" onclick="closeKeywordsModal()">Continue →</button>
 				</div>
 			</div>
 		</div>
@@ -1583,6 +1583,20 @@
 		const hasKeywords = localStorage.getItem('medcity_keywords');
 		if (!hasKeywords) {
 			document.getElementById('welcomeModal').classList.add('active');
+		}
+	}
+
+	function closeKeywordsModal() {
+		document.getElementById('welcomeModal').classList.remove('active');
+		// Save current selections to localStorage
+		localStorage.setItem('medcity_keywords', JSON.stringify(selectedTopics));
+		console.log('Modal closed, saved topics:', selectedTopics);
+	}
+
+	function closeModalOnOutsideClick(event) {
+		// Close modal if clicking on the background (not the content)
+		if (event.target.id === 'welcomeModal') {
+			closeKeywordsModal();
 		}
 	}
 
