@@ -1118,21 +1118,39 @@
 		}
 		.add-keyword-button {
 			padding: 12px 24px;
-			background: linear-gradient(135deg, #3498db, #2980b9);
-			color: white;
-			border: none;
+			background: none;
+			color: #2c3e50;
+			border: 2px solid #dee2e6;
 			border-radius: 25px;
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 			font-size: 14px;
-			font-weight: 600;
+			font-weight: 500;
 			cursor: pointer;
 			transition: all 0.2s;
-			box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
 		}
 		.add-keyword-button:hover {
-			box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+			box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
 		}
 		.add-keyword-button:active {
 			transform: scale(0.98);
+		}
+		.selected-keywords-text {
+			margin-top: 15px;
+			text-align: center;
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+			font-size: 13px;
+			font-style: italic;
+			color: #999;
+			line-height: 1.6;
+		}
+		.selected-keywords-text .clear-all {
+			cursor: pointer;
+			color: #666;
+			text-decoration: underline;
+			margin-left: 5px;
+		}
+		.selected-keywords-text .clear-all:hover {
+			color: #333;
 		}
 		.privacy-disclaimer {
 			font-size: 12px;
@@ -1153,10 +1171,11 @@
 		.welcome-button {
 			padding: 12px 30px;
 			border-radius: 25px;
-			font-weight: 600;
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+			font-weight: 500;
 			cursor: pointer;
 			transition: all 0.3s ease;
-			font-size: 15px;
+			font-size: 14px;
 		}
 		.welcome-button.primary {
 			background: linear-gradient(135deg, #3498db, #2980b9);
@@ -1527,21 +1546,18 @@
 					<button class="topic-button" onclick="toggleTopic(this, 'Genomics')">Genomics</button>
 				</div>
 				
-				<!-- Selected Keywords Display -->
-				<div class="selected-keywords-section" id="selectedKeywordsSection" style="display: none;">
-					<h4>Selected Topics:</h4>
-					<div class="selected-keywords-list" id="selectedKeywordsList"></div>
-				</div>
-				
 				<!-- Custom Keyword Input -->
 				<div class="custom-keyword-section">
-					<input type="text" id="customKeywordInput" placeholder="Add custom keyword..." class="custom-keyword-input">
-					<button class="add-keyword-button" onclick="addCustomKeyword()">+ Add</button>
+					<input type="text" id="customKeywordInput" placeholder="Add custom keyword..." class="custom-keyword-input" onkeypress="if(event.key==='Enter') addCustomKeyword()">
+					<button class="add-keyword-button" onclick="addCustomKeyword()">Add</button>
 				</div>
 				
 				<div class="welcome-actions">
-					<button class="welcome-button primary" onclick="closeKeywordsModal()">Continue →</button>
+					<button class="welcome-button primary" onclick="closeKeywordsModal()">Continue</button>
 				</div>
+				
+				<!-- Selected Keywords Display -->
+				<div class="selected-keywords-text" id="selectedKeywordsText"></div>
 			</div>
 		</div>
 
@@ -1775,26 +1791,29 @@
 
 	// Update the selected keywords display section
 	function updateSelectedKeywordsDisplay() {
-		const section = document.getElementById('selectedKeywordsSection');
-		const list = document.getElementById('selectedKeywordsList');
+		const textDiv = document.getElementById('selectedKeywordsText');
 		
 		if (selectedTopics.length === 0) {
-			section.style.display = 'none';
+			textDiv.innerHTML = '';
 			return;
 		}
 		
-		section.style.display = 'block';
-		list.innerHTML = '';
+		const keywordsList = selectedTopics.join(', ');
+		textDiv.innerHTML = `Selected Keywords: ${keywordsList} <span class="clear-all" onclick="clearAllKeywords()">(clear all)</span>`;
+	}
+
+	// Clear all keywords
+	function clearAllKeywords() {
+		selectedTopics = [];
+		localStorage.setItem('medcity_keywords', JSON.stringify(selectedTopics));
 		
-		selectedTopics.forEach(topic => {
-			const tag = document.createElement('div');
-			tag.className = 'selected-keyword-tag';
-			tag.innerHTML = `
-				<span>${topic}</span>
-				<button class="remove-btn" onclick="removeKeyword('${topic.replace(/'/g, "\\'")}')">×</button>
-			`;
-			list.appendChild(tag);
+		// Deselect all buttons
+		document.querySelectorAll('.topic-button').forEach(button => {
+			button.classList.remove('selected');
 		});
+		
+		updateSelectedKeywordsDisplay();
+		console.log('Cleared all keywords');
 	}
 
 	// Remove a keyword from selected topics
