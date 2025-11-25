@@ -966,6 +966,28 @@
 			max-height: 90vh;
 			overflow-y: auto;
 			box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+			position: relative;
+		}
+		.modal-close-btn {
+			position: absolute;
+			top: 20px;
+			right: 20px;
+			background: none;
+			border: none;
+			font-size: 36px;
+			color: #999;
+			cursor: pointer;
+			line-height: 1;
+			padding: 0;
+			width: 40px;
+			height: 40px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			transition: color 0.2s;
+		}
+		.modal-close-btn:hover {
+			color: #333;
 		}
 		.welcome-content h2 {
 			color: #2c3e50;
@@ -1384,7 +1406,7 @@
 			<div class="welcome-content">
 				<button class="modal-close-btn" onclick="closeKeywordsModal()" aria-label="Close">&times;</button>
 				<h2>Welcome to MedCityAI!</h2>
-				<p class="subheader">Select topics of interest to you</p>
+				<p class="subheader">Select topics of interest to you. Your preferences are saved in your browser using local storage. This data never leaves your device.</p>
 				<div class="topics-grid" id="topicsGrid">
 					<button class="topic-button" onclick="toggleTopic(this, 'Radiology')">Radiology</button>
 					<button class="topic-button" onclick="toggleTopic(this, 'Surgery')">Surgery</button>
@@ -1428,7 +1450,6 @@
 					<button class="topic-button" onclick="toggleTopic(this, 'Informatics')">Informatics</button>
 					<button class="topic-button" onclick="toggleTopic(this, 'Genomics')">Genomics</button>
 				</div>
-				<p class="privacy-disclaimer">Your preferences are saved in your browser using local storage. This data never leaves your device.</p>
 				<div class="welcome-actions">
 					<button class="welcome-button primary" onclick="closeKeywordsModal()">Continue →</button>
 				</div>
