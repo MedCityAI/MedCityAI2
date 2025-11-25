@@ -1702,6 +1702,7 @@
 		let allArticlesData = [];
 		let filteredArticlesData = [];
 		let currentlyFlippedCard = null;
+		let likeCountsForRanking = {};
 
 	// Welcome Modal Functions
 	function checkFirstVisit() {
@@ -1892,6 +1893,9 @@
 			
 			console.log('Received counts:', data);
 			
+			// Store for ranking system
+			likeCountsForRanking = data;
+			
 			// Update all like buttons with counts
 			document.querySelectorAll('.like-button').forEach(button => {
 				const pmid = button.getAttribute('data-pmid');
@@ -2050,7 +2054,111 @@
 			}
 			result.push(current.trim());
 			
-			return result;
+		return result;
+	}
+
+	// Calculate article ranking score
+	function calculateArticleScore(article, likeCountsData = {}) {
+		let score = 0;
+		
+		// +1 if 51% of authors are from Rochester
+		const totalAuthors = article.authors ? article.authors.split('|').length : 0;
+		const rochesterAuthors = article.rochester_authors ? article.rochester_authors.split('|').length : 0;
+		if (totalAuthors > 0 && (rochesterAuthors / totalAuthors) > 0.5) {
+			score += 1;
+		}
+		
+		// Check recency (+2 if last 24 hours, +1 if last 48 hours)
+		const now = new Date();
+		const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+		if (article.year && article.month && article.day) {
+			const monthNum = monthNames.indexOf(article.month);
+			if (monthNum > 0) {
+				const articleDate = new Date(article.year, monthNum - 1, article.day);
+				const hoursSincePublished = (now - articleDate) / (1000 * 60 * 60);
+				
+				if (hoursSincePublished <= 24) {
+					score += 2;
+				} else if (hoursSincePublished <= 48) {
+					score += 1;
+				}
+			}
+		}
+		
+		// +1 per keyword matching localStorage (search in title and abstract)
+		const userKeywords = JSON.parse(localStorage.getItem('medcity_keywords') || '[]');
+		const searchText = `${article.title} ${article.abstract}`.toLowerCase();
+		userKeywords.forEach(keyword => {
+			if (searchText.includes(keyword.toLowerCase())) {
+				score += 1;
+			}
+		});
+		
+		// +2 if in the top 10% of liked articles
+		const allLikeCounts = Object.values(likeCountsData);
+		if (allLikeCounts.length > 0) {
+			allLikeCounts.sort((a, b) => b - a);
+			const top10PercentIndex = Math.floor(allLikeCounts.length * 0.1);
+			const top10PercentThreshold = allLikeCounts[top10PercentIndex] || 0;
+			
+			const articleLikes = likeCountsData[article.pmid] || 0;
+			if (articleLikes >= top10PercentThreshold && top10PercentThreshold > 0) {
+				score += 2;
+			}
+		}
+		
+		return score;
+	}		// Calculate article ranking score
+		function calculateArticleScore(article, likeCountsData = {}) {
+			let score = 0;
+			
+			// +1 if 51% of authors are from Rochester
+			const totalAuthors = article.authors ? article.authors.split('|').length : 0;
+			const rochesterAuthors = article.rochester_authors ? article.rochester_authors.split('|').length : 0;
+			if (totalAuthors > 0 && (rochesterAuthors / totalAuthors) > 0.5) {
+				score += 1;
+			}
+			
+			// Check recency (+2 if last 24 hours, +1 if last 48 hours)
+			const now = new Date();
+			const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+			if (article.year && article.month && article.day) {
+				const monthNum = monthNames.indexOf(article.month);
+				if (monthNum > 0) {
+					const articleDate = new Date(article.year, monthNum - 1, article.day);
+					const hoursSincePublished = (now - articleDate) / (1000 * 60 * 60);
+					
+					if (hoursSincePublished <= 24) {
+						score += 2;
+					} else if (hoursSincePublished <= 48) {
+						score += 1;
+					}
+				}
+			}
+			
+			// +1 per keyword matching localStorage (search in title and abstract)
+			const userKeywords = JSON.parse(localStorage.getItem('medcity_keywords') || '[]');
+			const searchText = `${article.title} ${article.abstract}`.toLowerCase();
+			userKeywords.forEach(keyword => {
+				if (searchText.includes(keyword.toLowerCase())) {
+					score += 1;
+				}
+			});
+			
+			// +2 if in the top 10% of liked articles
+			const allLikeCounts = Object.values(likeCountsData);
+			if (allLikeCounts.length > 0) {
+				allLikeCounts.sort((a, b) => b - a);
+				const top10PercentIndex = Math.floor(allLikeCounts.length * 0.1);
+				const top10PercentThreshold = allLikeCounts[top10PercentIndex] || 0;
+				
+				const articleLikes = likeCountsData[article.pmid] || 0;
+				if (articleLikes >= top10PercentThreshold && top10PercentThreshold > 0) {
+					score += 2;
+				}
+			}
+			
+			return score;
 		}
 
 
@@ -2114,6 +2222,22 @@
 					});
 				});
 			}
+			
+			// Apply ranking system and sort articles by score
+			filteredArticlesData.forEach(article => {
+				article.rankingScore = calculateArticleScore(article, likeCountsForRanking);
+			});
+			
+			// Sort by ranking score (highest first), then by date as secondary sort
+			filteredArticlesData.sort((a, b) => {
+				if (b.rankingScore !== a.rankingScore) {
+					return b.rankingScore - a.rankingScore;
+				}
+				// Secondary sort by date if scores are equal
+				const dateA = new Date(a.year || 0, 0, a.day || 1);
+				const dateB = new Date(b.year || 0, 0, b.day || 1);
+				return dateB - dateA;
+			});
 			
 			// Check if we have results
 			if (filteredArticlesData.length === 0) {
@@ -2335,38 +2459,75 @@
 			}
 		}
 
-		// Featured Carousel Functions
-		let carouselInterval;
-		let currentSlideIndex = 0;
+	// Featured Carousel Functions
+	let carouselInterval;
+	let currentSlideIndex = 0;
 
-		function initializeFeaturedCarousel(articles) {
-			if (!articles || articles.length === 0) return;
-
-			// Populate each slide
-			articles.forEach((article, index) => {
-				const slide = document.getElementById(`featuredSlide${index + 1}`);
-				if (slide) {
-					slide.innerHTML = createFeaturedCard(article);
-				}
-			});
-
-			// Show first slide
-			showSlide(0);
-
-			// Set up dot navigation
-			const dots = document.querySelectorAll('.carousel-dots .dot');
-			dots.forEach((dot, index) => {
-				dot.addEventListener('click', () => {
-					showSlide(index);
-					resetCarouselTimer();
-				});
-			});
-
-			// Start auto-rotation
-			startCarouselRotation();
+	async function getFeaturedArticles() {
+		// Get articles from one week prior (7 days ago)
+		const oneWeekAgo = new Date();
+		oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+		
+		// Ensure CSV data is loaded
+		if (allArticlesData.length === 0) {
+			await loadCSVData();
 		}
+		
+		// Wait for like counts to be loaded
+		if (Object.keys(likeCountsForRanking).length === 0) {
+			await fetchLikeCounts();
+		}
+		
+		const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+		
+		// Filter articles published on the exact date one week ago
+		const targetYear = oneWeekAgo.getFullYear();
+		const targetMonth = monthNames[oneWeekAgo.getMonth() + 1];
+		const targetDay = oneWeekAgo.getDate();
+		
+		const articlesFromOneWeekAgo = allArticlesData.filter(article => {
+			return article.year == targetYear && 
+				   article.month === targetMonth && 
+				   article.day == targetDay;
+		});
+		
+		// Sort by like count (highest first)
+		articlesFromOneWeekAgo.sort((a, b) => {
+			const likesA = likeCountsForRanking[a.pmid] || 0;
+			const likesB = likeCountsForRanking[b.pmid] || 0;
+			return likesB - likesA;
+		});
+		
+		// Return top 5 (or 3 for carousel display)
+		return articlesFromOneWeekAgo.slice(0, 3);
+	}
 
-		function createFeaturedCard(article) {
+	function initializeFeaturedCarousel(articles) {
+		if (!articles || articles.length === 0) return;
+
+		// Populate each slide
+		articles.forEach((article, index) => {
+			const slide = document.getElementById(`featuredSlide${index + 1}`);
+			if (slide) {
+				slide.innerHTML = createFeaturedCard(article);
+			}
+		});
+
+		// Show first slide
+		showSlide(0);
+
+		// Set up dot navigation
+		const dots = document.querySelectorAll('.carousel-dots .dot');
+		dots.forEach((dot, index) => {
+			dot.addEventListener('click', () => {
+				showSlide(index);
+				resetCarouselTimer();
+			});
+		});
+
+		// Start auto-rotation
+		startCarouselRotation();
+	}		function createFeaturedCard(article) {
 			const title = article.title || 'Untitled';
 			const authors = article.authors_display || article.authors?.replaceAll('|', ', ') || 'Authors unavailable';
 			const journal = article.journal || 'Journal pending';
@@ -2662,14 +2823,15 @@
 		});
 		
 			
-			// Load data and initialize featured carousel
-			loadCSVData().then(articles => {
-				if (articles && articles.length > 0) {
-					initializeFeaturedCarousel(articles.slice(0, 3));
-				}
-			});
-
-			// Hero button event listeners
+		
+		// Load data and initialize featured carousel with top liked articles from one week ago
+		getFeaturedArticles().then(articles => {
+			if (articles && articles.length > 0) {
+				initializeFeaturedCarousel(articles);
+			} else {
+				console.log('No featured articles found from one week ago');
+			}
+		});			// Hero button event listeners
 			const newTodayBtn = document.getElementById('newTodayBtn');
 			const featuredBtn = document.getElementById('featuredBtn');
 			const searchDatabaseBtn = document.getElementById('searchDatabaseBtn');
