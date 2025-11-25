@@ -1707,11 +1707,13 @@
 		const hasKeywords = localStorage.getItem('medcity_keywords');
 		if (!hasKeywords) {
 			document.getElementById('welcomeModal').classList.add('active');
+			document.body.style.overflow = 'hidden';
 		}
 	}
 
 	function closeKeywordsModal() {
 		document.getElementById('welcomeModal').classList.remove('active');
+		document.body.style.overflow = '';
 		// Save current selections to localStorage
 		localStorage.setItem('medcity_keywords', JSON.stringify(selectedTopics));
 		console.log('Modal closed, saved topics:', selectedTopics);
@@ -1727,6 +1729,7 @@
 	function skipWelcome() {
 		localStorage.setItem('medcity_keywords', JSON.stringify([]));
 		document.getElementById('welcomeModal').classList.remove('active');
+		document.body.style.overflow = '';
 	}
 
 	function saveTopics() {
@@ -1736,6 +1739,7 @@
 		}
 		localStorage.setItem('medcity_keywords', JSON.stringify(selectedTopics));
 		document.getElementById('welcomeModal').classList.remove('active');
+		document.body.style.overflow = '';
 		console.log('Saved topics:', selectedTopics);
 	}
 
@@ -1758,6 +1762,7 @@
 		updateSelectedKeywordsDisplay();
 		
 		document.getElementById('welcomeModal').classList.add('active');
+		document.body.style.overflow = 'hidden';
 	}
 
 	// Toggle topic button and update localStorage immediately
