@@ -1698,13 +1698,12 @@
 			}
 		}
 
-		// Global variables for CSV data
-		let allArticlesData = [];
-		let filteredArticlesData = [];
-		let currentlyFlippedCard = null;
-		let likeCountsForRanking = {};
-
-	// Welcome Modal Functions
+	// Global variables for CSV data
+	let allArticlesData = [];
+	let filteredArticlesData = [];
+	let currentlyFlippedCard = null;
+	let likeCountsForRanking = {};
+	let articlesDisplayed = 12;	// Welcome Modal Functions
 	function checkFirstVisit() {
 		const hasKeywords = localStorage.getItem('medcity_keywords');
 		if (!hasKeywords) {
@@ -2189,32 +2188,20 @@
 				return dateB - dateA;
 			});
 			
-			// Check if we have results
-			if (filteredArticlesData.length === 0) {
-				document.getElementById("pubmed-results").innerHTML = "<p style='text-align:center; padding:40px; color:#666;'>No results found. Try a different search term.</p>";
-				document.getElementById("pagination-controls").style.display = 'none';
-				return;
-			}
-			
-			// Calculate pagination
-			const totalPages = Math.ceil(filteredArticlesData.length / resultsPerPage);
-			const startIdx = (page - 1) * resultsPerPage;
-			const endIdx = Math.min(startIdx + resultsPerPage, filteredArticlesData.length);
-			const pageArticles = filteredArticlesData.slice(startIdx, endIdx);
-			
-			// Show/hide pagination controls
-			if (filteredArticlesData.length > resultsPerPage) {
-				document.getElementById("pagination-controls").style.display = 'block';
-				document.getElementById("pageInfo").textContent = `Page ${page} of ${totalPages} (${filteredArticlesData.length} results)`;
-				document.getElementById("prevPage").disabled = page === 1;
-				document.getElementById("nextPage").disabled = page === totalPages;
-				document.getElementById("prevPage").style.opacity = page === 1 ? '0.5' : '1';
-				document.getElementById("nextPage").style.opacity = page === totalPages ? '0.5' : '1';
-			} else {
-				document.getElementById("pagination-controls").style.display = 'none';
-			}
-			
-			// Get current date for NEW badge logic
+		// Check if we have results
+		if (filteredArticlesData.length === 0) {
+			document.getElementById("pubmed-results").innerHTML = "<p style='text-align:center; padding:40px; color:#666;'>No results found. Try a different search term.</p>";
+			document.getElementById("pagination-controls").style.display = 'none';
+			return;
+		}
+		
+		// Reset display count for new search
+		if (page === 1) {
+			articlesDisplayed = 12;
+		}
+		
+		// Get articles to display
+		const pageArticles = filteredArticlesData.slice(0, articlesDisplayed);			// Get current date for NEW badge logic
 			const now = new Date();
 			const threeDaysAgo = new Date(now.getTime() - (3 * 24 * 60 * 60 * 1000));
 			
@@ -2399,18 +2386,39 @@
 				`;
 			});
 
-			document.getElementById("pubmed-results").innerHTML = `<div class="results">${resultsHTML}</div>`;
-			
-			// Initialize like buttons
-			setTimeout(() => initializeLikes(), 100);
-			
-			// Scroll to top of results after page change
-			if (page > 1) {
-				document.getElementById("pubmed-results").scrollIntoView({ behavior: 'smooth', block: 'start' });
-			}
+		document.getElementById("pubmed-results").innerHTML = `<div class="results">${resultsHTML}</div>`;
+		
+		// Show/hide load more button
+		let loadMoreButton = document.getElementById('loadMoreBtn');
+		if (!loadMoreButton) {
+			loadMoreButton = document.createElement('button');
+			loadMoreButton.id = 'loadMoreBtn';
+			loadMoreButton.textContent = 'Load More';
+			loadMoreButton.style.cssText = 'display: block; margin: 30px auto; padding: 12px 40px; background: #0056a3; color: white; border: none; border-radius: 4px; font-size: 16px; font-weight: 500; cursor: pointer; transition: background 0.3s;';
+			loadMoreButton.onmouseover = () => loadMoreButton.style.background = '#004080';
+			loadMoreButton.onmouseout = () => loadMoreButton.style.background = '#0056a3';
+			loadMoreButton.onclick = loadMoreArticles;
+			document.getElementById('pubmed-results').appendChild(loadMoreButton);
 		}
-
-	// Featured Carousel Functions
+		
+		if (articlesDisplayed >= filteredArticlesData.length) {
+			loadMoreButton.style.display = 'none';
+		} else {
+			loadMoreButton.style.display = 'block';
+			loadMoreButton.textContent = `Load More (${filteredArticlesData.length - articlesDisplayed} remaining)`;
+		}
+		
+		// Hide pagination controls
+		document.getElementById("pagination-controls").style.display = 'none';
+		
+		// Initialize like buttons
+		setTimeout(() => initializeLikes(), 100);
+	}
+	
+	function loadMoreArticles() {
+		articlesDisplayed += 12;
+		fetchPubMedResults(currentSearchQuery, currentPage);
+	}	// Featured Carousel Functions
 	let carouselInterval;
 	let currentSlideIndex = 0;
 
