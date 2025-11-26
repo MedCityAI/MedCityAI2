@@ -2085,9 +2085,10 @@
 			}
 		}
 		
-		// +2 per keyword matching localStorage (search in title and abstract)
+		// +2 per keyword matching localStorage (search in all article fields)
 		const userKeywords = JSON.parse(localStorage.getItem('medcity_keywords') || '[]');
-		const searchText = `${article.title} ${article.abstract}`.toLowerCase();
+		// Combine all searchable fields from the article
+		const searchText = `${article.title || ''} ${article.abstract || ''} ${article.journal || ''} ${article.authors || ''} ${article.llm_summary || ''}`.toLowerCase();
 		userKeywords.forEach(keyword => {
 			if (searchText.includes(keyword.toLowerCase())) {
 				score += 2;
@@ -2376,7 +2377,7 @@
 				}
 				
 				const rankingScore = article.rankingScore || 0;
-				const citation = `${journal}. ${pubdate}. (Rank: ${rankingScore})`;
+				const citation = `${journal}. ${pubdate}. (${rankingScore})`;
 
 				// Build card with flip effect
 				const hasSummary = llmSummary && llmSummary.trim() !== '' && llmSummary !== 'No abstract available.';
