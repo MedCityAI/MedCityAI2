@@ -2087,8 +2087,8 @@
 		
 		// +2 per keyword matching localStorage (search in all article fields)
 		const userKeywords = JSON.parse(localStorage.getItem('medcity_keywords') || '[]');
-		// Combine all searchable fields from the article
-		const searchText = `${article.title || ''} ${article.abstract || ''} ${article.journal || ''} ${article.authors || ''} ${article.affiliations || ''} ${article.llm_summary || ''}`.toLowerCase();
+		// Combine all article data into searchable text
+		const searchText = Object.values(article).join(' ').toLowerCase();
 		userKeywords.forEach(keyword => {
 			if (searchText.includes(keyword.toLowerCase())) {
 				score += 2;
