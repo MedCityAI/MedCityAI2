@@ -2375,7 +2375,8 @@
 					departmentText = 'Medicine';
 				}
 				
-				const citation = `${journal}. ${pubdate}.`;
+				const rankingScore = article.rankingScore || 0;
+				const citation = `${journal}. ${pubdate}. (Rank: ${rankingScore})`;
 
 				// Build card with flip effect
 				const hasSummary = llmSummary && llmSummary.trim() !== '' && llmSummary !== 'No abstract available.';
