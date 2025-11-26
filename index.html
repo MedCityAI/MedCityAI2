@@ -2089,11 +2089,18 @@
 		const userKeywords = JSON.parse(localStorage.getItem('medcity_keywords') || '[]');
 		// Combine all article data into searchable text
 		const searchText = Object.values(article).join(' ').toLowerCase();
+		let keywordMatches = 0;
 		userKeywords.forEach(keyword => {
-			if (searchText.includes(keyword.toLowerCase())) {
+			const keywordLower = keyword.toLowerCase().trim();
+			if (keywordLower && searchText.includes(keywordLower)) {
 				score += 2;
+				keywordMatches++;
 			}
 		});
+		// Debug logging for first few articles
+		if (article.pmid && keywordMatches > 0) {
+			console.log(`PMID ${article.pmid}: ${keywordMatches} keyword matches, +${keywordMatches * 2} points`);
+		}
 		
 		// +2 if in the top 10% of liked articles
 		const allLikeCounts = Object.values(likeCountsData);
