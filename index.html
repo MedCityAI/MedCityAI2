@@ -2085,12 +2085,12 @@
 			}
 		}
 		
-		// +1 per keyword matching localStorage (search in title and abstract)
+		// +2 per keyword matching localStorage (search in title and abstract)
 		const userKeywords = JSON.parse(localStorage.getItem('medcity_keywords') || '[]');
 		const searchText = `${article.title} ${article.abstract}`.toLowerCase();
 		userKeywords.forEach(keyword => {
 			if (searchText.includes(keyword.toLowerCase())) {
-				score += 1;
+				score += 2;
 			}
 		});
 		
