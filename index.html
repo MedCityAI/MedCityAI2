@@ -2464,9 +2464,21 @@
 	let currentSlideIndex = 0;
 
 	async function getFeaturedArticles() {
-		// Get articles from the last 7 days
-		const sevenDaysAgo = new Date();
-		sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+		// Calculate the prior Sunday (start of last full week)
+		const today = new Date();
+		const currentDayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, etc.
+		
+		// Calculate days to subtract to get to last Sunday
+		// If today is Sunday (0), go back 7 days. Otherwise, go back (currentDayOfWeek + 7) days
+		const daysToLastSunday = currentDayOfWeek === 0 ? 7 : currentDayOfWeek + 7;
+		
+		const weekStart = new Date(today);
+		weekStart.setDate(today.getDate() - daysToLastSunday);
+		weekStart.setHours(0, 0, 0, 0);
+		
+		const weekEnd = new Date(weekStart);
+		weekEnd.setDate(weekStart.getDate() + 6); // Sunday + 6 days = Saturday
+		weekEnd.setHours(23, 59, 59, 999);
 		
 		// Ensure CSV data is loaded
 		if (allArticlesData.length === 0) {
@@ -2480,26 +2492,26 @@
 		
 		const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 		
-		// Filter articles published within the last 7 days
-		const articlesFromLastWeek = allArticlesData.filter(article => {
+		// Filter articles published within the prior week (Sunday-Saturday)
+		const articlesFromWeek = allArticlesData.filter(article => {
 			if (!article.year || !article.month || !article.day) return false;
 			
 			const monthNum = monthNames.indexOf(article.month);
 			if (monthNum === -1) return false;
 			
 			const articleDate = new Date(article.year, monthNum - 1, article.day);
-			return articleDate >= sevenDaysAgo && articleDate <= new Date();
+			return articleDate >= weekStart && articleDate <= weekEnd;
 		});
 		
 		// Sort by like count (highest first)
-		articlesFromLastWeek.sort((a, b) => {
+		articlesFromWeek.sort((a, b) => {
 			const likesA = likeCountsForRanking[a.pmid] || 0;
 			const likesB = likeCountsForRanking[b.pmid] || 0;
 			return likesB - likesA;
 		});
 		
 		// Return top 3 for carousel display
-		return articlesFromLastWeek.slice(0, 3);
+		return articlesFromWeek.slice(0, 3);
 	}
 
 	function initializeFeaturedCarousel(articles) {
@@ -2824,12 +2836,12 @@
 		
 			
 		
-		// Load data and initialize featured carousel with top 3 most-liked articles from last 7 days
+		// Load data and initialize featured carousel with top 3 most-liked articles from prior week (Sunday-Saturday)
 		getFeaturedArticles().then(articles => {
 			if (articles && articles.length > 0) {
 				initializeFeaturedCarousel(articles);
 			} else {
-				console.log('No featured articles found from the last 7 days');
+				console.log('No featured articles found from the prior week');
 			}
 		});			// Hero button event listeners
 			const newTodayBtn = document.getElementById('newTodayBtn');
