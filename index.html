@@ -2085,22 +2085,15 @@
 			}
 		}
 		
-		// +2 per keyword matching localStorage (search in all article fields)
+		// +2 per keyword matching localStorage (search in affiliations field)
 		const userKeywords = JSON.parse(localStorage.getItem('medcity_keywords') || '[]');
-		// Combine all article data into searchable text
-		const searchText = Object.values(article).join(' ').toLowerCase();
-		let keywordMatches = 0;
+		const affiliationsText = (article.affiliations || '').toLowerCase();
 		userKeywords.forEach(keyword => {
 			const keywordLower = keyword.toLowerCase().trim();
-			if (keywordLower && searchText.includes(keywordLower)) {
+			if (keywordLower && affiliationsText.includes(keywordLower)) {
 				score += 2;
-				keywordMatches++;
 			}
 		});
-		// Debug logging for first few articles
-		if (article.pmid && keywordMatches > 0) {
-			console.log(`PMID ${article.pmid}: ${keywordMatches} keyword matches, +${keywordMatches * 2} points`);
-		}
 		
 		// +2 if in the top 10% of liked articles
 		const allLikeCounts = Object.values(likeCountsData);
@@ -2116,58 +2109,7 @@
 		}
 		
 		return score;
-	}		// Calculate article ranking score
-		function calculateArticleScore(article, likeCountsData = {}) {
-			let score = 0;
-			
-			// +1 if 51% of authors are from Rochester
-			const totalAuthors = article.authors ? article.authors.split('|').length : 0;
-			const rochesterAuthors = article.rochester_authors ? article.rochester_authors.split('|').length : 0;
-			if (totalAuthors > 0 && (rochesterAuthors / totalAuthors) > 0.5) {
-				score += 1;
-			}
-			
-			// Check recency (+2 if last 24 hours, +1 if last 48 hours)
-			const now = new Date();
-			const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-			if (article.year && article.month && article.day) {
-				const monthNum = monthNames.indexOf(article.month);
-				if (monthNum > 0) {
-					const articleDate = new Date(article.year, monthNum - 1, article.day);
-					const hoursSincePublished = (now - articleDate) / (1000 * 60 * 60);
-					
-					if (hoursSincePublished <= 24) {
-						score += 2;
-					} else if (hoursSincePublished <= 48) {
-						score += 1;
-					}
-				}
-			}
-			
-			// +1 per keyword matching localStorage (search in title and abstract)
-			const userKeywords = JSON.parse(localStorage.getItem('medcity_keywords') || '[]');
-			const searchText = `${article.title} ${article.abstract}`.toLowerCase();
-			userKeywords.forEach(keyword => {
-				if (searchText.includes(keyword.toLowerCase())) {
-					score += 1;
-				}
-			});
-			
-			// +2 if in the top 10% of liked articles
-			const allLikeCounts = Object.values(likeCountsData);
-			if (allLikeCounts.length > 0) {
-				allLikeCounts.sort((a, b) => b - a);
-				const top10PercentIndex = Math.floor(allLikeCounts.length * 0.1);
-				const top10PercentThreshold = allLikeCounts[top10PercentIndex] || 0;
-				
-				const articleLikes = likeCountsData[article.pmid] || 0;
-				if (articleLikes >= top10PercentThreshold && top10PercentThreshold > 0) {
-					score += 2;
-				}
-			}
-			
-			return score;
-		}
+	}
 
 
 
