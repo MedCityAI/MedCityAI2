@@ -168,12 +168,6 @@
 				margin: 10px 0;
 				background: white;
 				border-radius: 8px;
-				transition: transform 0.2s ease, box-shadow 0.2s ease;
-			}
-			
-			.ranked-item:hover {
-				transform: translateX(5px);
-				box-shadow: 0 3px 10px rgba(0,0,0,0.1);
 			}
 			
 			.ranked-item.top-3 {
@@ -850,8 +844,8 @@
 				<!-- Section 3: Global Perspectives -->
 				<div class="leaderboard-section">
 					<div class="section-header">
-						<h2><span class="emoji">🌍</span> Global Perspectives <span class="emoji">🌍</span></h2>
-						<p>Rochester's research impact across states and nations</p>
+						<h2>Collaboration Network</h2>
+						<p>Rochester's collaboration network across states and nations</p>
 					</div>
 					
 					<div class="two-column-grid">
@@ -1052,6 +1046,251 @@
 	<script src="assets/js/main.js"></script>
 
 	<script>
+	// Load and parse leaderboard data from CSV
+	async function loadLeaderboardData() {
+		try {
+			const response = await fetch('./database/leaderboard/leaderboard_analytics.csv');
+			const text = await response.text();
+			const lines = text.split('\n');
+			
+			const data = {
+				totalPapers: 0,
+				uniqueAuthors: 0,
+				prolificAuthors: [],
+				firstAuthors: [],
+				departments: [],
+				collaboration: [],
+				states: [],
+				countries: []
+			};
+			
+			let currentSection = '';
+			
+			for (let i = 0; i < lines.length; i++) {
+				const line = lines[i].trim();
+				
+				// Parse header info
+				if (line.startsWith('Total Papers Analyzed:')) {
+					data.totalPapers = parseInt(line.split(':')[1].trim());
+				} else if (line.startsWith('Unique Authors:')) {
+					data.uniqueAuthors = parseInt(line.split(':')[1].trim());
+				}
+				
+				// Detect sections
+				if (line.includes('TOP 10 MOST PROLIFIC AUTHORS')) {
+					currentSection = 'prolific';
+					i++; // Skip header row
+				} else if (line.includes('TOP 10 FIRST AUTHORS')) {
+					currentSection = 'first';
+					i++; // Skip header row
+				} else if (line.includes('TOP 10 DEPARTMENTS')) {
+					currentSection = 'departments';
+					i++; // Skip header row
+				} else if (line.includes('MULTIDISCIPLINARY COLLABORATION')) {
+					currentSection = 'collaboration';
+					i++; // Skip header row
+				} else if (line.includes('TOP 10 NON-MINNESOTA US STATES')) {
+					currentSection = 'states';
+					i++; // Skip header row
+				} else if (line.includes('TOP 10 NON-USA COUNTRIES')) {
+					currentSection = 'countries';
+					i++; // Skip header row
+				} else if (line && currentSection && !line.startsWith('Rank') && !line.startsWith('Number')) {
+					// Parse data rows
+					const parts = line.split(',');
+					if (parts.length >= 2) {
+						const rank = parts[0];
+						
+						if (currentSection === 'prolific' && parts.length >= 3) {
+							const author = parts[1].replace(/"/g, '').trim();
+							const count = parseInt(parts[2]);
+							data.prolificAuthors.push({ rank, author, count });
+						} else if (currentSection === 'first' && parts.length >= 3) {
+							const author = parts[1].replace(/"/g, '').trim();
+							const count = parseInt(parts[2]);
+							data.firstAuthors.push({ rank, author, count });
+						} else if (currentSection === 'departments' && parts.length >= 3) {
+							const department = parts[1].replace(/"/g, '').trim();
+							const count = parseInt(parts[2]);
+							data.departments.push({ rank, department, count });
+						} else if (currentSection === 'collaboration') {
+							const deptCount = parts[0].trim();
+							const pubCount = parseInt(parts[1]);
+							data.collaboration.push({ deptCount, pubCount });
+						} else if (currentSection === 'states' && parts.length >= 3) {
+							const state = parts[1].replace(/"/g, '').trim();
+							const count = parseInt(parts[2]);
+							data.states.push({ rank, state, count });
+						} else if (currentSection === 'countries' && parts.length >= 3) {
+							const country = parts[1].replace(/"/g, '').trim();
+							const count = parseInt(parts[2]);
+							data.countries.push({ rank, country, count });
+						}
+					}
+				}
+			}
+			
+			return data;
+		} catch (error) {
+			console.error('Error loading leaderboard data:', error);
+			return null;
+		}
+	}
+	
+	function getMedalEmoji(rank) {
+		if (rank === '1') return '🥇';
+		if (rank === '2') return '🥈';
+		if (rank === '3') return '🥉';
+		return rank;
+	}
+	
+	function formatNumber(num) {
+		return num.toLocaleString();
+	}
+	
+	function renderLeaderboardLists(data) {
+		// Update hero stats
+		const heroStats = document.querySelector('.hero-content .stats');
+		if (heroStats && data.uniqueAuthors && data.totalPapers) {
+			heroStats.innerHTML = `<strong>${formatNumber(data.uniqueAuthors)}</strong> unique authors | <strong>${formatNumber(data.totalPapers)}</strong> PubMed indexed papers`;
+		}
+		
+		// Render Most Prolific Authors
+		const prolificList = document.querySelector('.list-container:has(h3:contains("Most Prolific")) .ranked-list');
+		if (prolificList && data.prolificAuthors.length > 0) {
+			prolificList.innerHTML = data.prolificAuthors.map(item => {
+				const isTop3 = parseInt(item.rank) <= 3;
+				const rankDisplay = getMedalEmoji(item.rank);
+				const medalClass = parseInt(item.rank) <= 3 ? 'medal' : '';
+				return `
+					<li class="ranked-item ${isTop3 ? 'top-3' : ''}">
+						<span class="rank-number ${medalClass}">${rankDisplay}</span>
+						<span class="item-name">${item.author}</span>
+						<span class="item-count">${item.count}</span>
+					</li>
+				`;
+			}).join('');
+		}
+		
+		// Render First Authors
+		const firstAuthorsList = document.querySelector('.list-container:has(h3:contains("First Authors")) .ranked-list');
+		if (firstAuthorsList && data.firstAuthors.length > 0) {
+			firstAuthorsList.innerHTML = data.firstAuthors.map(item => {
+				const isTop3 = parseInt(item.rank) <= 3;
+				const rankDisplay = getMedalEmoji(item.rank);
+				const medalClass = parseInt(item.rank) <= 3 ? 'medal' : '';
+				return `
+					<li class="ranked-item ${isTop3 ? 'top-3' : ''}">
+						<span class="rank-number ${medalClass}">${rankDisplay}</span>
+						<span class="item-name">${item.author}</span>
+						<span class="item-count">${item.count}</span>
+					</li>
+				`;
+			}).join('');
+		}
+		
+		// Render Departments
+		const departmentsList = document.querySelectorAll('.list-container:has(h3:contains("Departments")) .ranked-list')[0];
+		if (departmentsList && data.departments.length > 0) {
+			departmentsList.innerHTML = data.departments.map(item => {
+				const isTop3 = parseInt(item.rank) <= 3;
+				const rankDisplay = getMedalEmoji(item.rank);
+				const medalClass = parseInt(item.rank) <= 3 ? 'medal' : '';
+				return `
+					<li class="ranked-item ${isTop3 ? 'top-3' : ''}">
+						<span class="rank-number ${medalClass}">${rankDisplay}</span>
+						<span class="item-name">${item.department}</span>
+						<span class="item-count">${formatNumber(item.count)}</span>
+					</li>
+				`;
+			}).join('');
+		}
+		
+		// Render Collaboration Chart
+		if (data.collaboration.length > 0) {
+			const maxPubs = Math.max(...data.collaboration.map(c => c.pubCount));
+			const chartContainer = document.querySelector('.bar-chart');
+			if (chartContainer) {
+				chartContainer.innerHTML = data.collaboration.map(item => {
+					const percentage = (item.pubCount / maxPubs * 100).toFixed(1);
+					return `
+						<div class="bar-item">
+							<div class="bar-label">
+								<span>${item.deptCount}</span>
+								<span>${formatNumber(item.pubCount)} publications</span>
+							</div>
+							<div class="bar-container">
+								<div class="bar-fill" style="width: ${percentage}%;"></div>
+							</div>
+						</div>
+					`;
+				}).join('');
+			}
+		}
+		
+		// Render States
+		const statesList = document.querySelector('.list-container:has(h3:contains("US States")) .ranked-list');
+		if (statesList && data.states.length > 0) {
+			statesList.innerHTML = data.states.map(item => {
+				const isTop3 = parseInt(item.rank) <= 3;
+				const rankDisplay = getMedalEmoji(item.rank);
+				const medalClass = parseInt(item.rank) <= 3 ? 'medal' : '';
+				return `
+					<li class="ranked-item ${isTop3 ? 'top-3' : ''}">
+						<span class="rank-number ${medalClass}">${rankDisplay}</span>
+						<span class="item-name">${item.state}</span>
+						<span class="item-count">${formatNumber(item.count)}</span>
+					</li>
+				`;
+			}).join('');
+		}
+		
+		// Render Countries
+		const countriesList = document.querySelector('.list-container:has(h3:contains("Countries")) .ranked-list');
+		if (countriesList && data.countries.length > 0) {
+			countriesList.innerHTML = data.countries.map(item => {
+				const isTop3 = parseInt(item.rank) <= 3;
+				const rankDisplay = getMedalEmoji(item.rank);
+				const medalClass = parseInt(item.rank) <= 3 ? 'medal' : '';
+				// Handle "UK" -> "United Kingdom" for display
+				const displayName = item.country === 'UK' ? 'United Kingdom' : item.country;
+				return `
+					<li class="ranked-item ${isTop3 ? 'top-3' : ''}">
+						<span class="rank-number ${medalClass}">${rankDisplay}</span>
+						<span class="item-name">${displayName}</span>
+						<span class="item-count">${formatNumber(item.count)}</span>
+					</li>
+				`;
+			}).join('');
+		}
+		
+		// Re-attach click handlers to new author names
+		attachAuthorClickHandlers();
+	}
+	
+	function attachAuthorClickHandlers() {
+		const authorNames = document.querySelectorAll('.item-name');
+		authorNames.forEach(authorElement => {
+			// Only make it clickable if it's in the author sections (not departments, states, countries)
+			const container = authorElement.closest('.list-container');
+			if (container) {
+				const heading = container.querySelector('h3');
+				if (heading && (heading.textContent.includes('Prolific') || heading.textContent.includes('First Authors'))) {
+					authorElement.style.cursor = 'pointer';
+					authorElement.addEventListener('click', function() {
+						const authorName = this.textContent.trim();
+						// Convert "Last, First" to "First Last" for PubMed search
+						const nameParts = authorName.split(',').map(p => p.trim());
+						const searchName = nameParts.length === 2 ? `${nameParts[1]} ${nameParts[0]}` : authorName;
+						if (searchName) {
+							showAuthorBibliography(searchName);
+						}
+					});
+				}
+			}
+		});
+	}
+	
 	// Author bibliography modal functions
 	async function showAuthorBibliography(authorName) {
 		const modal = document.getElementById('authorModal');
@@ -1253,7 +1492,13 @@
 	}
 
 	// Set up event listeners after DOM is loaded
-	document.addEventListener('DOMContentLoaded', function() {
+	document.addEventListener('DOMContentLoaded', async function() {
+		// Load and render leaderboard data from CSV
+		const data = await loadLeaderboardData();
+		if (data) {
+			renderLeaderboardLists(data);
+		}
+		
 		// Close button for author modal
 		const authorModalCloseBtn = document.getElementById('authorModalCloseBtn');
 		if (authorModalCloseBtn) {
@@ -1264,18 +1509,6 @@
 		const authorModal = document.getElementById('authorModal');
 		authorModal.addEventListener('click', function(e) {
 			if (e.target === authorModal) closeAuthorModal();
-		});
-
-		// Make author names clickable
-		const authorNames = document.querySelectorAll('.author-name, .author-cell');
-		authorNames.forEach(authorElement => {
-			authorElement.style.cursor = 'pointer';
-			authorElement.addEventListener('click', function() {
-				const authorName = this.textContent.trim();
-				if (authorName) {
-					showAuthorBibliography(authorName);
-				}
-			});
 		});
 	});
 	</script>
