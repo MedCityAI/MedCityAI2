@@ -1,0 +1,76 @@
+PubMed Leaderboard Analytics
+Total Papers Analyzed: 11097
+Unique Authors: 65622
+
+TOP 10 MOST PROLIFIC AUTHORS
+Rank,Author,Total Publications
+1,"Brinjikji, Waleed",92
+2,"Borlaug, Barry",91
+3,"Jack, Clifford",87
+4,"Ghozy, Sherief",87
+5,"Petersen, Ronald",82
+6,"Kallmes, David",80
+7,"Kumar, Shaji",77
+8,"Bydon, Mohamad",71
+9,"Deshmukh, Abhishek",69
+10,"Abdel, Matthew",68
+
+TOP 10 FIRST AUTHORS
+Rank,Author,First Author Publications
+1,"D'Souza, Ryan",23
+2,"Reddy, Yogesh",19
+3,"Rai, Pranjal",17
+4,"Sassun, Richard",16
+5,"Egbe, Alexander",15
+6,"Camilleri, Michael",14
+7,"Agarwal, Siddharth",14
+8,"Tran, Tung",13
+9,"Madhavan, Ajay",13
+10,"Hoffmann, Chelsey",13
+
+TOP 10 DEPARTMENTS (ROCHESTER)
+Rank,Department,Publications
+1,Radiology,2301
+2,Cardiovascular Medicine,2238
+3,Hematology,1824
+4,Neurology,1745
+5,Laboratory Medicine and Pathology,1633
+6,Orthopedic Surgery,1320
+7,Gastroenterology and Hepatology,1016
+8,Quantitative Health Sciences,1010
+9,Neurologic Surgery,707
+10,Radiation Oncology,640
+
+MULTIDISCIPLINARY COLLABORATION (ROCHESTER DEPARTMENTS)
+Number of Departments,Publications
+1 department,8353
+2 departments,1582
+3 departments,665
+4 departments,260
+5 or more departments,222
+
+TOP 10 NON-MINNESOTA US STATES IN AFFILIATIONS
+Rank,State,Publications
+1,California,1666
+2,Florida,1506
+3,New York,1439
+4,Massachusetts,1232
+5,Texas,1019
+6,Arizona,980
+7,Maryland,948
+8,Pennsylvania,920
+9,Washington,906
+10,Ohio,843
+
+TOP 10 NON-USA COUNTRIES IN AFFILIATIONS
+Rank,Country,Publications
+1,Canada,632
+2,Italy,483
+3,Germany,427
+4,UK,397
+5,France,337
+6,India,325
+7,Spain,290
+8,Australia,271
+9,Switzerland,219
+10,Belgium,206

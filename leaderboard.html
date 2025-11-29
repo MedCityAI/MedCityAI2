@@ -99,6 +99,164 @@
 				padding: 0 20px;
 			}
 			
+			/* Section Styles */
+			.leaderboard-section {
+				margin: 60px 0;
+				padding: 40px;
+				background: white;
+				border-radius: 15px;
+				box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+			}
+			
+			.section-header {
+				text-align: center;
+				margin-bottom: 40px;
+			}
+			
+			.section-header h2 {
+				font-size: 2.5em;
+				color: #2568BE;
+				margin-bottom: 10px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				gap: 15px;
+			}
+			
+			.section-header .emoji {
+				font-size: 1.2em;
+			}
+			
+			.section-header p {
+				color: #666;
+				font-size: 1.1em;
+			}
+			
+			.two-column-grid {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 30px;
+				margin-top: 30px;
+			}
+			
+			.list-container {
+				background: #f8f9fa;
+				border-radius: 12px;
+				padding: 25px;
+			}
+			
+			.list-container h3 {
+				color: #2568BE;
+				font-size: 1.5em;
+				margin-bottom: 20px;
+				text-align: center;
+				border-bottom: 3px solid #2568BE;
+				padding-bottom: 10px;
+			}
+			
+			.ranked-list {
+				list-style: none;
+				padding: 0;
+				margin: 0;
+			}
+			
+			.ranked-item {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				padding: 15px;
+				margin: 10px 0;
+				background: white;
+				border-radius: 8px;
+				transition: transform 0.2s ease, box-shadow 0.2s ease;
+			}
+			
+			.ranked-item:hover {
+				transform: translateX(5px);
+				box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+			}
+			
+			.ranked-item.top-3 {
+				background: linear-gradient(135deg, #fff5e6 0%, #ffe6cc 100%);
+				border-left: 4px solid #FFD700;
+			}
+			
+			.rank-number {
+				font-size: 1.4em;
+				font-weight: bold;
+				color: #2568BE;
+				min-width: 40px;
+			}
+			
+			.rank-number.medal {
+				font-size: 1.6em;
+			}
+			
+			.item-name {
+				flex: 1;
+				font-weight: 600;
+				color: #333;
+				margin: 0 15px;
+			}
+			
+			.item-count {
+				font-size: 1.2em;
+				font-weight: bold;
+				color: #667eea;
+				background: #f0f0f0;
+				padding: 5px 15px;
+				border-radius: 20px;
+			}
+			
+			/* Bar Chart Styles */
+			.bar-chart {
+				margin: 30px 0;
+			}
+			
+			.bar-item {
+				margin: 15px 0;
+			}
+			
+			.bar-label {
+				display: flex;
+				justify-content: space-between;
+				margin-bottom: 8px;
+				font-weight: 600;
+				color: #333;
+			}
+			
+			.bar-container {
+				width: 100%;
+				height: 30px;
+				background: #e9ecef;
+				border-radius: 15px;
+				overflow: hidden;
+				position: relative;
+			}
+			
+			.bar-fill {
+				height: 100%;
+				background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+				border-radius: 15px;
+				transition: width 1s ease;
+				display: flex;
+				align-items: center;
+				justify-content: flex-end;
+				padding-right: 10px;
+				color: white;
+				font-weight: bold;
+			}
+			
+			@media screen and (max-width: 968px) {
+				.two-column-grid {
+					grid-template-columns: 1fr;
+				}
+				
+				.section-header h2 {
+					font-size: 1.8em;
+				}
+			}
+			
 			/* Podium Section */
 			.podium {
 				display: flex;
@@ -444,413 +602,379 @@
 				</div>
 			</section>
 
-			<!-- Podium - Top 3 -->
+			<!-- New Three-Section Layout -->
 			<div class="leaderboard-container">
-				<div class="podium">
-							<!-- First Place -->
-							<div class="podium-place first">
-								<div class="podium-card">
-									<div class="trophy-badge"><i class="fas fa-trophy"></i></div>
-									<div class="author-name">Waleed Brinjikji</div>
-									<div class="department">Radiology</div>
-									<div class="paper-count">92</div>
-									<div class="paper-label">Papers</div>
-								</div>
-							</div>
-							
-							<!-- Second Place -->
-							<div class="podium-place second">
-								<div class="podium-card">
-									<div class="trophy-badge"><i class="fas fa-trophy"></i></div>
-									<div class="author-name">Barry Borlaug</div>
-									<div class="department">Cardiovascular Medicine</div>
-									<div class="paper-count">91</div>
-									<div class="paper-label">Papers</div>
-								</div>
-							</div>
-							
-						
-						<!-- Third Place - TIE -->
-						<div class="podium-place third">
-							<div class="podium-card">
-								<div class="trophy-badge"><i class="fas fa-trophy"></i></div>
-								<div style="font-size: 0.85em; color: #CD7F32; font-weight: 600; margin-bottom: 10px;">TIE</div>
-								<div class="author-name">Sherief Ghozy</div>
-								<div class="department">Radiology</div>
-								<div style="border-top: 2px solid #e0e0e0; margin: 15px 0; padding-top: 15px;">
-									<div class="author-name">Clifford Jack</div>
-									<div class="department">Radiology</div>
-								</div>
-								<div class="paper-count">87</div>
-								<div class="paper-label">Papers</div>
-							</div>
+				
+				<!-- Section 1: Leaderboard -->
+				<div class="leaderboard-section">
+					<div class="section-header">
+						<h2><span class="emoji">🏆</span> Leaderboard <span class="emoji">🏆</span></h2>
+						<p>Rochester's research champions making waves in 2025</p>
+					</div>
+					
+					<div class="two-column-grid">
+						<!-- Most Prolific Authors -->
+						<div class="list-container">
+							<h3>🌟 Top 10 Most Prolific</h3>
+							<ul class="ranked-list">
+								<li class="ranked-item top-3">
+									<span class="rank-number medal">🥇</span>
+									<span class="item-name">Waleed Brinjikji</span>
+									<span class="item-count">92</span>
+								</li>
+								<li class="ranked-item top-3">
+									<span class="rank-number medal">🥈</span>
+									<span class="item-name">Barry Borlaug</span>
+									<span class="item-count">91</span>
+								</li>
+								<li class="ranked-item top-3">
+									<span class="rank-number medal">🥉</span>
+									<span class="item-name">Clifford Jack</span>
+									<span class="item-count">87</span>
+								</li>
+								<li class="ranked-item">
+									<span class="rank-number">4</span>
+									<span class="item-name">Sherief Ghozy</span>
+									<span class="item-count">87</span>
+								</li>
+								<li class="ranked-item">
+									<span class="rank-number">5</span>
+									<span class="item-name">Ronald Petersen</span>
+									<span class="item-count">82</span>
+								</li>
+								<li class="ranked-item">
+									<span class="rank-number">6</span>
+									<span class="item-name">David Kallmes</span>
+									<span class="item-count">80</span>
+								</li>
+								<li class="ranked-item">
+									<span class="rank-number">7</span>
+									<span class="item-name">Shaji Kumar</span>
+									<span class="item-count">77</span>
+								</li>
+								<li class="ranked-item">
+									<span class="rank-number">8</span>
+									<span class="item-name">Mohamad Bydon</span>
+									<span class="item-count">71</span>
+								</li>
+								<li class="ranked-item">
+									<span class="rank-number">9</span>
+									<span class="item-name">Abhishek Deshmukh</span>
+									<span class="item-count">69</span>
+								</li>
+								<li class="ranked-item">
+									<span class="rank-number">10</span>
+									<span class="item-name">Matthew Abdel</span>
+									<span class="item-count">68</span>
+								</li>
+							</ul>
 						</div>
-					</div>						<!-- Rest of Top 50 -->
-						<div class="leaderboard-table">
-							<div class="table-header">
-								<div>Rank</div>
-								<div>Author</div>
-								<div>Department</div>
-								<div>Papers</div>
+						
+						<!-- First Authors -->
+						<div class="list-container">
+							<h3>✍️ Top 10 First Authors</h3>
+							<ul class="ranked-list">
+								<li class="ranked-item top-3">
+									<span class="rank-number medal">🥇</span>
+									<span class="item-name">Ryan D'Souza</span>
+									<span class="item-count">23</span>
+								</li>
+								<li class="ranked-item top-3">
+									<span class="rank-number medal">🥈</span>
+									<span class="item-name">Yogesh Reddy</span>
+									<span class="item-count">19</span>
+								</li>
+								<li class="ranked-item top-3">
+									<span class="rank-number medal">🥉</span>
+									<span class="item-name">Pranjal Rai</span>
+									<span class="item-count">17</span>
+								</li>
+								<li class="ranked-item">
+									<span class="rank-number">4</span>
+									<span class="item-name">Richard Sassun</span>
+									<span class="item-count">16</span>
+								</li>
+								<li class="ranked-item">
+									<span class="rank-number">5</span>
+									<span class="item-name">Alexander Egbe</span>
+									<span class="item-count">15</span>
+								</li>
+								<li class="ranked-item">
+									<span class="rank-number">6</span>
+									<span class="item-name">Michael Camilleri</span>
+									<span class="item-count">14</span>
+								</li>
+								<li class="ranked-item">
+									<span class="rank-number">7</span>
+									<span class="item-name">Siddharth Agarwal</span>
+									<span class="item-count">14</span>
+								</li>
+								<li class="ranked-item">
+									<span class="rank-number">8</span>
+									<span class="item-name">Tung Tran</span>
+									<span class="item-count">13</span>
+								</li>
+								<li class="ranked-item">
+									<span class="rank-number">9</span>
+									<span class="item-name">Ajay Madhavan</span>
+									<span class="item-count">13</span>
+								</li>
+								<li class="ranked-item">
+									<span class="rank-number">10</span>
+									<span class="item-name">Chelsey Hoffmann</span>
+									<span class="item-count">13</span>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				
+				<!-- Section 2: Specialties -->
+				<div class="leaderboard-section">
+					<div class="section-header">
+						<h2><span class="emoji">🔬</span> Specialties <span class="emoji">🔬</span></h2>
+						<p>Departments driving innovation and interdisciplinary excellence</p>
+					</div>
+					
+					<!-- Top Departments -->
+					<div class="list-container" style="margin-bottom: 40px;">
+						<h3>🏥 Top 10 Departments</h3>
+						<ul class="ranked-list">
+							<li class="ranked-item top-3">
+								<span class="rank-number medal">🥇</span>
+								<span class="item-name">Radiology</span>
+								<span class="item-count">2,301</span>
+							</li>
+							<li class="ranked-item top-3">
+								<span class="rank-number medal">🥈</span>
+								<span class="item-name">Cardiovascular Medicine</span>
+								<span class="item-count">2,238</span>
+							</li>
+							<li class="ranked-item top-3">
+								<span class="rank-number medal">🥉</span>
+								<span class="item-name">Hematology</span>
+								<span class="item-count">1,824</span>
+							</li>
+							<li class="ranked-item">
+								<span class="rank-number">4</span>
+								<span class="item-name">Neurology</span>
+								<span class="item-count">1,745</span>
+							</li>
+							<li class="ranked-item">
+								<span class="rank-number">5</span>
+								<span class="item-name">Laboratory Medicine and Pathology</span>
+								<span class="item-count">1,633</span>
+							</li>
+							<li class="ranked-item">
+								<span class="rank-number">6</span>
+								<span class="item-name">Orthopedic Surgery</span>
+								<span class="item-count">1,320</span>
+							</li>
+							<li class="ranked-item">
+								<span class="rank-number">7</span>
+								<span class="item-name">Gastroenterology and Hepatology</span>
+								<span class="item-count">1,016</span>
+							</li>
+							<li class="ranked-item">
+								<span class="rank-number">8</span>
+								<span class="item-name">Quantitative Health Sciences</span>
+								<span class="item-count">1,010</span>
+							</li>
+							<li class="ranked-item">
+								<span class="rank-number">9</span>
+								<span class="item-name">Neurologic Surgery</span>
+								<span class="item-count">707</span>
+							</li>
+							<li class="ranked-item">
+								<span class="rank-number">10</span>
+								<span class="item-name">Radiation Oncology</span>
+								<span class="item-count">640</span>
+							</li>
+						</ul>
+					</div>
+					
+					<!-- Multidisciplinary Collaboration -->
+					<div class="list-container">
+						<h3>🤝 Multidisciplinary Collaboration</h3>
+						<p style="text-align: center; color: #666; margin-bottom: 25px;">Breaking down silos: how many departments work together</p>
+						<div class="bar-chart">
+							<div class="bar-item">
+								<div class="bar-label">
+									<span>1 Department</span>
+									<span>8,353 publications</span>
+								</div>
+								<div class="bar-container">
+									<div class="bar-fill" style="width: 100%;"></div>
+								</div>
 							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell top-10">1</div>
-								<div class="author-cell">Waleed Brinjikji</div>
-								<div class="department-cell">Radiology</div>
-								<div class="count-cell">92</div>
+							<div class="bar-item">
+								<div class="bar-label">
+									<span>2 Departments</span>
+									<span>1,582 publications</span>
+								</div>
+								<div class="bar-container">
+									<div class="bar-fill" style="width: 19%;"></div>
+								</div>
 							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell top-10">2</div>
-								<div class="author-cell">Barry Borlaug</div>
-								<div class="department-cell">Cardiovascular Medicine</div>
-								<div class="count-cell">91</div>
+							<div class="bar-item">
+								<div class="bar-label">
+									<span>3 Departments</span>
+									<span>665 publications</span>
+								</div>
+								<div class="bar-container">
+									<div class="bar-fill" style="width: 8%;"></div>
+								</div>
 							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell top-10">3</div>
-								<div class="author-cell">Sherief Ghozy</div>
-								<div class="department-cell">Radiology</div>
-								<div class="count-cell">87</div>
+							<div class="bar-item">
+								<div class="bar-label">
+									<span>4 Departments</span>
+									<span>260 publications</span>
+								</div>
+								<div class="bar-container">
+									<div class="bar-fill" style="width: 3.1%;"></div>
+								</div>
 							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell top-10">4</div>
-								<div class="author-cell">Clifford Jack</div>
-								<div class="department-cell">Radiology</div>
-								<div class="count-cell">87</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell top-10">5</div>
-								<div class="author-cell">Ronald Petersen</div>
-								<div class="department-cell">Neurology</div>
-								<div class="count-cell">82</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell top-10">6</div>
-								<div class="author-cell">David Kallmes</div>
-								<div class="department-cell">Radiology</div>
-								<div class="count-cell">80</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell top-10">7</div>
-								<div class="author-cell">Shaji Kumar</div>
-								<div class="department-cell">Hematology</div>
-								<div class="count-cell">77</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell top-10">8</div>
-								<div class="author-cell">Mohamad Bydon</div>
-								<div class="department-cell">Neurologic Surgery</div>
-								<div class="count-cell">71</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell top-10">9</div>
-								<div class="author-cell">Abhishek Deshmukh</div>
-								<div class="department-cell">Cardiovascular Medicine</div>
-								<div class="count-cell">69</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell top-10">10</div>
-								<div class="author-cell">Matthew Abdel</div>
-								<div class="department-cell">Orthopedic Surgery</div>
-								<div class="count-cell">68</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">11</div>
-								<div class="author-cell">Naseema Gangat</div>
-								<div class="department-cell">Hematology</div>
-								<div class="count-cell">64</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">12</div>
-								<div class="author-cell">Aaron Krych</div>
-								<div class="department-cell">Orthopedic Surgery</div>
-								<div class="count-cell">63</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">13</div>
-								<div class="author-cell">Ayalew Tefferi</div>
-								<div class="department-cell">Hematology</div>
-								<div class="count-cell">63</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">14</div>
-								<div class="author-cell">Michael Camilleri</div>
-								<div class="department-cell">Gastroenterology and Hepatology</div>
-								<div class="count-cell">59</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">15</div>
-								<div class="author-cell">Ryan D'Souza</div>
-								<div class="department-cell">Anesthesiology and Perioperative Medicine</div>
-								<div class="count-cell">58</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">16</div>
-								<div class="author-cell">Jonathan Graff-Radford</div>
-								<div class="department-cell">Neurology</div>
-								<div class="count-cell">58</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">17</div>
-								<div class="author-cell">M Murad</div>
-								<div class="department-cell">Evidence-based Practice Center</div>
-								<div class="count-cell">58</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">18</div>
-								<div class="author-cell">Matthew Carlson</div>
-								<div class="department-cell">Otolaryngology-Head and Neck Surgery</div>
-								<div class="count-cell">57</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">19</div>
-								<div class="author-cell">Mario Hevesi</div>
-								<div class="department-cell">Orthopedic Surgery</div>
-								<div class="count-cell">57</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">20</div>
-								<div class="author-cell">Paul Friedman</div>
-								<div class="department-cell">Cardiovascular Medicine</div>
-								<div class="count-cell">56</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">21</div>
-								<div class="author-cell">Mrinal Patnaik</div>
-								<div class="department-cell">Hematology</div>
-								<div class="count-cell">56</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">22</div>
-								<div class="author-cell">Yogesh Reddy</div>
-								<div class="department-cell">Cardiovascular Medicine</div>
-								<div class="count-cell">56</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">23</div>
-								<div class="author-cell">Mohamad Alkhouli</div>
-								<div class="department-cell">Cardiovascular Medicine</div>
-								<div class="count-cell">55</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">24</div>
-								<div class="author-cell">Angela Dispenzieri</div>
-								<div class="department-cell">Hematology</div>
-								<div class="count-cell">55</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">25</div>
-								<div class="author-cell">Robert Spinner</div>
-								<div class="department-cell">Neurosurgery</div>
-								<div class="count-cell">55</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">26</div>
-								<div class="author-cell">Mark Frye</div>
-								<div class="department-cell">Psychiatry and Psychology</div>
-								<div class="count-cell">54</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">27</div>
-								<div class="author-cell">Kathryn Ruddy</div>
-								<div class="department-cell">Oncology</div>
-								<div class="count-cell">54</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">28</div>
-								<div class="author-cell">Wisit Cheungpasitporn</div>
-								<div class="department-cell">Nephrology and Hypertension</div>
-								<div class="count-cell">53</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">29</div>
-								<div class="author-cell">Eoin Flanagan</div>
-								<div class="department-cell">Neurology</div>
-								<div class="count-cell">53</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">30</div>
-								<div class="author-cell">Morie Gertz</div>
-								<div class="department-cell">Hematology</div>
-								<div class="count-cell">53</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">31</div>
-								<div class="author-cell">Charles Hannon</div>
-								<div class="department-cell">Orthopedic Surgery</div>
-								<div class="count-cell">53</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">32</div>
-								<div class="author-cell">John Chen</div>
-								<div class="department-cell">Ophthalmology</div>
-								<div class="count-cell">52</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">33</div>
-								<div class="author-cell">Dennis Dickson</div>
-								<div class="department-cell">Neuroscience</div>
-								<div class="count-cell">52</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">34</div>
-								<div class="author-cell">Mark Litzow</div>
-								<div class="department-cell">Hematology</div>
-								<div class="count-cell">52</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">35</div>
-								<div class="author-cell">Jamie Van Gompel</div>
-								<div class="department-cell">Neurologic Surgery</div>
-								<div class="count-cell">52</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">36</div>
-								<div class="author-cell">Daniel Berry</div>
-								<div class="department-cell">Orthopedic Surgery</div>
-								<div class="count-cell">51</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">37</div>
-								<div class="author-cell">Ramanathan Kadirvel</div>
-								<div class="department-cell">Neurologic Surgery</div>
-								<div class="count-cell">51</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">38</div>
-								<div class="author-cell">Yi Lin</div>
-								<div class="department-cell">Hematology</div>
-								<div class="count-cell">51</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">39</div>
-								<div class="author-cell">Alexander Egbe</div>
-								<div class="department-cell">Cardiovascular Medicine</div>
-								<div class="count-cell">50</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">40</div>
-								<div class="author-cell">David Knopman</div>
-								<div class="department-cell">Neurology</div>
-								<div class="count-cell">50</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">41</div>
-								<div class="author-cell">Val Lowe</div>
-								<div class="department-cell">Radiology</div>
-								<div class="count-cell">50</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">42</div>
-								<div class="author-cell">Patricia Pellikka</div>
-								<div class="department-cell">Cardiovascular Medicine</div>
-								<div class="count-cell">50</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">43</div>
-								<div class="author-cell">Konstantinos Siontis</div>
-								<div class="department-cell">Cardiovascular Medicine</div>
-								<div class="count-cell">50</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">44</div>
-								<div class="author-cell">Surendra Dasari</div>
-								<div class="department-cell">Quantitative Health Sciences</div>
-								<div class="count-cell">49</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">45</div>
-								<div class="author-cell">Keith Josephs</div>
-								<div class="department-cell">Neurology</div>
-								<div class="count-cell">49</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">46</div>
-								<div class="author-cell">Nicholas Bedard</div>
-								<div class="department-cell">Orthopedic Surgery</div>
-								<div class="count-cell">48</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">47</div>
-								<div class="author-cell">Pascal Jabbour</div>
-								<div class="department-cell">Neurosurgery</div>
-								<div class="count-cell">48</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">48</div>
-								<div class="author-cell">Nelson Leung</div>
-								<div class="department-cell">Hematology</div>
-								<div class="count-cell">48</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">49</div>
-								<div class="author-cell">Zach Pennington</div>
-								<div class="department-cell">Neurologic Surgery</div>
-								<div class="count-cell">47</div>
-							</div>
-							
-							<div class="table-row">
-								<div class="rank-cell">50</div>
-								<div class="author-cell">Judy Boughey</div>
-								<div class="department-cell">Breast and Melanoma Surgical Oncology</div>
-								<div class="count-cell">46</div>
+							<div class="bar-item">
+								<div class="bar-label">
+									<span>5+ Departments</span>
+									<span>222 publications</span>
+								</div>
+								<div class="bar-container">
+									<div class="bar-fill" style="width: 2.7%;"></div>
+								</div>
 							</div>
 						</div>
 					</div>
-
+				</div>
+				
+				<!-- Section 3: Global Perspectives -->
+				<div class="leaderboard-section">
+					<div class="section-header">
+						<h2><span class="emoji">🌍</span> Global Perspectives <span class="emoji">🌍</span></h2>
+						<p>Rochester's research impact across states and nations</p>
+					</div>
+					
+					<div class="two-column-grid">
+						<!-- Top States -->
+						<div class="list-container">
+							<h3>🗺️ Top 10 US States</h3>
+							<p style="text-align: center; color: #666; margin-bottom: 20px; font-size: 0.9em;">(Non-Minnesota collaborations)</p>
+							<ul class="ranked-list">
+								<li class="ranked-item top-3">
+									<span class="rank-number medal">🥇</span>
+									<span class="item-name">California</span>
+									<span class="item-count">1,666</span>
+								</li>
+								<li class="ranked-item top-3">
+									<span class="rank-number medal">🥈</span>
+									<span class="item-name">Florida</span>
+									<span class="item-count">1,506</span>
+								</li>
+								<li class="ranked-item top-3">
+									<span class="rank-number medal">🥉</span>
+									<span class="item-name">New York</span>
+									<span class="item-count">1,439</span>
+								</li>
+								<li class="ranked-item">
+									<span class="rank-number">4</span>
+									<span class="item-name">Massachusetts</span>
+									<span class="item-count">1,232</span>
+								</li>
+								<li class="ranked-item">
+									<span class="rank-number">5</span>
+									<span class="item-name">Texas</span>
+									<span class="item-count">1,019</span>
+								</li>
+								<li class="ranked-item">
+									<span class="rank-number">6</span>
+									<span class="item-name">Arizona</span>
+									<span class="item-count">980</span>
+								</li>
+								<li class="ranked-item">
+									<span class="rank-number">7</span>
+									<span class="item-name">Maryland</span>
+									<span class="item-count">948</span>
+								</li>
+								<li class="ranked-item">
+									<span class="rank-number">8</span>
+									<span class="item-name">Pennsylvania</span>
+									<span class="item-count">920</span>
+								</li>
+								<li class="ranked-item">
+									<span class="rank-number">9</span>
+									<span class="item-name">Washington</span>
+									<span class="item-count">906</span>
+								</li>
+								<li class="ranked-item">
+									<span class="rank-number">10</span>
+									<span class="item-name">Ohio</span>
+									<span class="item-count">843</span>
+								</li>
+							</ul>
+						</div>
+						
+						<!-- Top Countries -->
+						<div class="list-container">
+							<h3>🌐 Top 10 Countries</h3>
+							<p style="text-align: center; color: #666; margin-bottom: 20px; font-size: 0.9em;">(International collaborations)</p>
+							<ul class="ranked-list">
+								<li class="ranked-item top-3">
+									<span class="rank-number medal">🥇</span>
+									<span class="item-name">Canada</span>
+									<span class="item-count">632</span>
+								</li>
+								<li class="ranked-item top-3">
+									<span class="rank-number medal">🥈</span>
+									<span class="item-name">Italy</span>
+									<span class="item-count">483</span>
+								</li>
+								<li class="ranked-item top-3">
+									<span class="rank-number medal">🥉</span>
+									<span class="item-name">Germany</span>
+									<span class="item-count">427</span>
+								</li>
+								<li class="ranked-item">
+									<span class="rank-number">4</span>
+									<span class="item-name">United Kingdom</span>
+									<span class="item-count">397</span>
+								</li>
+								<li class="ranked-item">
+									<span class="rank-number">5</span>
+									<span class="item-name">France</span>
+									<span class="item-count">337</span>
+								</li>
+								<li class="ranked-item">
+									<span class="rank-number">6</span>
+									<span class="item-name">India</span>
+									<span class="item-count">325</span>
+								</li>
+								<li class="ranked-item">
+									<span class="rank-number">7</span>
+									<span class="item-name">Spain</span>
+									<span class="item-count">290</span>
+								</li>
+								<li class="ranked-item">
+									<span class="rank-number">8</span>
+									<span class="item-name">Australia</span>
+									<span class="item-count">271</span>
+								</li>
+								<li class="ranked-item">
+									<span class="rank-number">9</span>
+									<span class="item-name">Switzerland</span>
+									<span class="item-count">219</span>
+								</li>
+								<li class="ranked-item">
+									<span class="rank-number">10</span>
+									<span class="item-name">Belgium</span>
+									<span class="item-count">206</span>
+								</li>
+							</ul>
+						</div>
+					</div>
 				</div>
 
 			</div>
 
-			<!-- Author Modal -->
 			<div id="authorModal" class="author-modal author-modal-bg" role="dialog" aria-modal="true" aria-labelledby="authorModalTitle" aria-hidden="true">
 				<div class="author-modal-content" role="document">
 					<div class="author-modal-header">
