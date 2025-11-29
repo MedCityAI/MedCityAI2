@@ -164,41 +164,37 @@
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
-				padding: 15px;
-				margin: 10px 0;
+				padding: 10px 12px;
+				margin: 6px 0;
 				background: white;
 				border-radius: 8px;
 			}
 			
-			.ranked-item.top-3 {
-				background: linear-gradient(135deg, #fff5e6 0%, #ffe6cc 100%);
-				border-left: 4px solid #FFD700;
-			}
-			
 			.rank-number {
-				font-size: 1.4em;
+				font-size: 1.2em;
 				font-weight: bold;
 				color: #2568BE;
-				min-width: 40px;
+				min-width: 35px;
 			}
 			
 			.rank-number.medal {
-				font-size: 1.6em;
+				font-size: 1.3em;
 			}
 			
 			.item-name {
 				flex: 1;
 				font-weight: 600;
 				color: #333;
-				margin: 0 15px;
+				margin: 0 12px;
+				font-size: 0.95em;
 			}
 			
 			.item-count {
-				font-size: 1.2em;
+				font-size: 1.1em;
 				font-weight: bold;
 				color: #667eea;
 				background: #f0f0f0;
-				padding: 5px 15px;
+				padding: 4px 12px;
 				border-radius: 20px;
 			}
 			
@@ -1138,9 +1134,6 @@
 	}
 	
 	function getMedalEmoji(rank) {
-		if (rank === '1') return '🥇';
-		if (rank === '2') return '🥈';
-		if (rank === '3') return '🥉';
 		return rank;
 	}
 	
