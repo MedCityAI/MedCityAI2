@@ -10,10 +10,10 @@
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 		<style>
-			/* Hero Section - matching index.html */
+			/* Hero Section - Compact version */
 			.hero-section {
 				background: linear-gradient(120deg, #2568BE 0%, #1B4C7D 100%);
-				min-height: 340px;
+				min-height: 200px;
 				display: flex;
 				align-items: center;
 				position: relative;
@@ -37,7 +37,7 @@
 			.hero-content {
 				max-width: 1200px;
 				margin: 0 auto;
-				padding: 36px 20px;
+				padding: 20px;
 				position: relative;
 				z-index: 2;
 				text-align: center;
@@ -45,21 +45,21 @@
 			
 			.hero-content h1 {
 				color: #fff;
-				font-size: 3.5em;
-				margin-bottom: 15px;
+				font-size: 2.5em;
+				margin-bottom: 8px;
 				text-shadow: 0 4px 18px rgba(0,0,0,0.28);
 			}
 			
 			.hero-content .subtitle {
 				color: #e0e0e0;
-				font-size: 1.3em;
-				margin-bottom: 10px;
+				font-size: 1em;
+				margin-bottom: 8px;
 			}
 			
 			.hero-content .stats {
 				color: #e0e0e0;
-				font-size: 1.1em;
-				margin-top: 20px;
+				font-size: 0.95em;
+				margin-top: 10px;
 			}
 			
 			.trophy-icons {
@@ -95,351 +95,296 @@
 			/* Leaderboard Container */
 			.leaderboard-container {
 				max-width: 1200px;
-				margin: 40px auto;
+				margin: 20px auto;
 				padding: 0 20px;
 			}
 			
-			/* Section Styles */
-			.leaderboard-section {
-				margin: 60px 0;
-				padding: 40px;
+			/* Tab Navigation */
+			.tab-navigation {
+				display: flex;
+				gap: 0;
 				background: white;
-				border-radius: 15px;
+				border-radius: 12px 12px 0 0;
+				box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+				margin-bottom: 0;
+				overflow: hidden;
+			}
+			
+			.tab-button {
+				flex: 1;
+				padding: 18px 20px;
+				background: #f8f9fa;
+				border: none;
+				border-bottom: 3px solid transparent;
+				cursor: pointer;
+				font-size: 1.1em;
+				font-weight: 600;
+				color: #666;
+				transition: all 0.3s ease;
+				text-align: center;
+			}
+			
+			.tab-button:hover {
+				background: #e9ecef;
+				color: #2568BE;
+			}
+			
+			.tab-button.active {
+				background: white;
+				color: #2568BE;
+				border-bottom-color: #2568BE;
+			}
+			
+			.tab-content {
+				display: none;
+				background: white;
+				border-radius: 0 0 12px 12px;
+				padding: 30px;
 				box-shadow: 0 5px 20px rgba(0,0,0,0.08);
 			}
 			
-			.section-header {
-				text-align: center;
-				margin-bottom: 40px;
+			.tab-content.active {
+				display: block;
 			}
 			
-			.section-header h2 {
-				font-size: 2.5em;
-				color: #2568BE;
-				margin-bottom: 10px;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				gap: 15px;
-			}
-			
-			.section-header .emoji {
-				font-size: 1.2em;
-			}
-			
-			.section-header p {
-				color: #666;
-				font-size: 1.1em;
-			}
-			
-			.two-column-grid {
+			/* Stats Bar */
+			.stats-bar {
 				display: grid;
-				grid-template-columns: 1fr 1fr;
-				gap: 30px;
-				margin-top: 30px;
-			}
-			
-			.list-container {
-				background: #f8f9fa;
+				grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+				gap: 15px;
+				margin-bottom: 30px;
+				padding: 20px;
+				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 				border-radius: 12px;
-				padding: 25px;
-			}
-			
-			.list-container h3 {
-				color: #2568BE;
-				font-size: 1.5em;
-				margin-bottom: 20px;
-				text-align: center;
-				border-bottom: 3px solid #2568BE;
-				padding-bottom: 10px;
-			}
-			
-			.ranked-list {
-				list-style: none;
-				padding: 0;
-				margin: 0;
-			}
-			
-			.ranked-item {
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-				padding: 10px 12px;
-				margin: 6px 0;
-				background: white;
-				border-radius: 8px;
-			}
-			
-			.rank-number {
-				font-size: 1.2em;
-				font-weight: bold;
-				color: #2568BE;
-				min-width: 35px;
-			}
-			
-			.rank-number.medal {
-				font-size: 1.3em;
-			}
-			
-			.item-name {
-				flex: 1;
-				font-weight: 600;
-				color: #333;
-				margin: 0 12px;
-				font-size: 0.95em;
-			}
-			
-			.item-count {
-				font-size: 1.1em;
-				font-weight: bold;
-				color: #667eea;
-				background: #f0f0f0;
-				padding: 4px 12px;
-				border-radius: 20px;
-			}
-			
-			/* Bar Chart Styles */
-			.bar-chart {
-				margin: 30px 0;
-			}
-			
-			.bar-item {
-				margin: 15px 0;
-			}
-			
-			.bar-label {
-				display: flex;
-				justify-content: space-between;
-				margin-bottom: 8px;
-				font-weight: 600;
-				color: #333;
-			}
-			
-			.bar-container {
-				width: 100%;
-				height: 30px;
-				background: #e9ecef;
-				border-radius: 15px;
-				overflow: hidden;
-				position: relative;
-			}
-			
-			.bar-fill {
-				height: 100%;
-				background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-				border-radius: 15px;
-				transition: width 1s ease;
-				display: flex;
-				align-items: center;
-				justify-content: flex-end;
-				padding-right: 10px;
 				color: white;
-				font-weight: bold;
 			}
 			
-			@media screen and (max-width: 968px) {
-				.two-column-grid {
-					grid-template-columns: 1fr;
-				}
-				
-				.section-header h2 {
-					font-size: 1.8em;
-				}
-			}
-			
-			/* Podium Section */
-			.podium {
-				display: flex;
-				justify-content: center;
-				align-items: stretch;
-				margin: 40px 0 60px;
-				gap: 20px;
-			}
-			
-			.podium-place {
-				flex: 1;
-				max-width: 280px;
+			.stat-item {
 				text-align: center;
-				position: relative;
 			}
 			
-			.podium-card {
-				background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
-				border-radius: 20px;
-				padding: 30px 20px;
-				box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-				position: relative;
-				transition: transform 0.3s ease;
-				min-height: 320px;
-				display: flex;
-				flex-direction: column;
-				justify-content: center;
-			}
-			
-			.podium-card:hover {
-				transform: translateY(-10px);
-			}
-			
-			.podium-place.first .podium-card {
-				background: linear-gradient(135deg, #fff9e6 0%, #fffbf0 100%);
-				border: 3px solid #FFD700;
-				box-shadow: 0 15px 40px rgba(255, 215, 0, 0.3);
-			}
-			
-			.podium-place.second .podium-card {
-				background: linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%);
-				border: 3px solid #C0C0C0;
-			}
-			
-			.podium-place.third .podium-card {
-				background: linear-gradient(135deg, #fff5f0 0%, #fff8f5 100%);
-				border: 3px solid #CD7F32;
-			}
-			
-			.trophy-badge {
-				font-size: 3.5em;
-				margin: 0 auto 15px;
-			}
-			
-			.podium-place.first .trophy-badge {
-				color: #FFD700;
-			}
-			
-			.podium-place.second .trophy-badge {
-				color: #C0C0C0;
-			}
-			
-			.podium-place.third .trophy-badge {
-				color: #CD7F32;
-			}
-			
-			.author-name {
-				font-size: 1.4em;
+			.stat-value {
+				font-size: 2em;
 				font-weight: bold;
-				color: #333;
-				margin-bottom: 8px;
-			}
-			
-			.department {
-				font-size: 0.95em;
-				color: #666;
-				margin-bottom: 15px;
-				min-height: 40px;
-			}
-			
-			.paper-count {
-				font-size: 2.5em;
-				font-weight: bold;
-				color: #667eea;
+				display: block;
 				margin-bottom: 5px;
 			}
 			
-			.paper-label {
+			.stat-label {
 				font-size: 0.9em;
-				color: #888;
-				text-transform: uppercase;
-				letter-spacing: 1px;
+				opacity: 0.9;
 			}
 			
-			/* Leaderboard Table */
-			.leaderboard-table {
-				background: #fff;
-				border-radius: 15px;
-				overflow: hidden;
-				box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+			/* Data Tables */
+			.data-table {
+				width: 100%;
+				border-collapse: collapse;
+				margin: 20px 0;
 			}
 			
-			.table-header {
-				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-				color: #fff;
-				padding: 20px;
-				display: grid;
-				grid-template-columns: 80px 1fr 2fr 150px;
-				gap: 15px;
+			.data-table thead {
+				background: #f8f9fa;
+				border-bottom: 2px solid #2568BE;
+			}
+			
+			.data-table th {
+				padding: 12px 15px;
+				text-align: left;
+				font-weight: 600;
+				color: #2568BE;
+				font-size: 0.95em;
+			}
+			
+			.data-table th.center {
+				text-align: center;
+			}
+			
+			.data-table tbody tr {
+				border-bottom: 1px solid #e9ecef;
+				transition: background 0.2s ease;
+			}
+			
+			.data-table tbody tr:hover {
+				background: #f8f9fa;
+			}
+			
+			.data-table td {
+				padding: 10px 15px;
+				color: #333;
+			}
+			
+			.rank-col {
+				width: 60px;
+				text-align: center;
 				font-weight: bold;
 				font-size: 1.1em;
 			}
 			
-			.table-row {
-				display: grid;
-				grid-template-columns: 80px 1fr 2fr 150px;
-				gap: 15px;
-				padding: 20px;
-				border-bottom: 1px solid #e9ecef;
-				align-items: center;
-				transition: background 0.2s ease;
-			}
-			
-			.table-row:hover {
-				background: #f8f9fa;
-			}
-			
-			.table-row:last-child {
-				border-bottom: none;
-			}
-			
-			.rank-cell {
+			.rank-col.top-3 {
 				font-size: 1.3em;
+			}
+			
+			.count-col {
+				width: 100px;
+				text-align: center;
 				font-weight: bold;
 				color: #667eea;
-				text-align: center;
-			}
-			
-			.rank-cell.top-10 {
-				color: #764ba2;
-			}
-			
-			.author-cell {
-				font-weight: 600;
-				color: #333;
 				font-size: 1.05em;
 			}
 			
-			.department-cell {
+			.name-col {
+				font-weight: 600;
+			}
+			
+			.name-col.clickable {
+				color: #2568BE;
+				cursor: pointer;
+				transition: color 0.2s;
+			}
+			
+			.name-col.clickable:hover {
+				color: #667eea;
+				text-decoration: underline;
+			}
+			
+			/* Search/Filter Box */
+			.filter-box {
+				margin-bottom: 20px;
+				display: flex;
+				gap: 15px;
+				align-items: center;
+			}
+			
+			.filter-box input {
+				flex: 1;
+				padding: 10px 15px;
+				border: 2px solid #e9ecef;
+				border-radius: 8px;
+				font-size: 1em;
+				transition: border-color 0.3s;
+			}
+			
+			.filter-box input:focus {
+				outline: none;
+				border-color: #2568BE;
+			}
+			
+			.toggle-view {
+				display: flex;
+				gap: 10px;
+			}
+			
+			.toggle-btn {
+				padding: 8px 16px;
+				background: #f8f9fa;
+				border: 2px solid #e9ecef;
+				border-radius: 6px;
+				cursor: pointer;
+				font-size: 0.9em;
+				font-weight: 600;
 				color: #666;
+				transition: all 0.3s;
+			}
+			
+			.toggle-btn.active {
+				background: #2568BE;
+				color: white;
+				border-color: #2568BE;
+			}
+			
+			/* Compact visualization */
+			.compact-chart {
+				margin: 20px 0;
+			}
+			
+			.chart-row {
+				display: flex;
+				align-items: center;
+				gap: 15px;
+				margin: 8px 0;
+			}
+			
+			.chart-label {
+				min-width: 150px;
+				font-weight: 600;
+				color: #333;
 				font-size: 0.95em;
 			}
 			
-			.count-cell {
-				text-align: center;
-				font-size: 1.2em;
+			.chart-bar {
+				flex: 1;
+				height: 24px;
+				background: #e9ecef;
+				border-radius: 12px;
+				position: relative;
+				overflow: hidden;
+			}
+			
+			.chart-fill {
+				height: 100%;
+				background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+				border-radius: 12px;
+				display: flex;
+				align-items: center;
+				justify-content: flex-end;
+				padding-right: 8px;
+				color: white;
+				font-size: 0.85em;
+				font-weight: bold;
+				transition: width 0.8s ease;
+			}
+			
+			.chart-value {
+				min-width: 80px;
+				text-align: right;
 				font-weight: bold;
 				color: #667eea;
 			}
 			
-			/* Celebration elements */
-			.celebration-badge {
-				display: inline-block;
-				margin-left: 8px;
-				font-size: 0.9em;
+			/* Section Styles - Remove old styles */
+			.section-title {
+				font-size: 1.8em;
+				color: #2568BE;
+				margin-bottom: 20px;
+				font-weight: bold;
 			}
 			
 			/* Responsive */
 			@media screen and (max-width: 968px) {
-				.podium {
-					flex-direction: column;
-					align-items: center;
+				.hero-content h1 {
+					font-size: 1.8em;
 				}
 				
-				.podium-place {
-					max-width: 100%;
-					width: 100%;
-				}
-				
-				.table-header,
-				.table-row {
-					grid-template-columns: 60px 1fr 120px;
-					gap: 10px;
+				.tab-button {
 					font-size: 0.9em;
-					padding: 15px;
+					padding: 12px 10px;
 				}
 				
-				.department-cell {
-					display: none;
+				.stats-bar {
+					grid-template-columns: 1fr;
+					gap: 10px;
 				}
 				
-				.hero-leaderboard h1 {
-					font-size: 2.2em;
+				.stat-value {
+					font-size: 1.5em;
+				}
+				
+				.data-table {
+					font-size: 0.9em;
+				}
+				
+				.data-table th,
+				.data-table td {
+					padding: 8px 10px;
+				}
+				
+				.filter-box {
+					flex-direction: column;
+				}
+				
+				.toggle-view {
+					width: 100%;
+					justify-content: center;
 				}
 			}
 			
@@ -551,8 +496,7 @@
 
 			<!-- Hero Section -->
 			<section class="hero-section" aria-label="Hero banner">
-				<!-- Animated SVG background blobs -->
-				<svg class="hero-bg-blobs" width="100%" height="500" viewBox="0 0 1440 500" aria-hidden="true" role="presentation">
+				<svg class="hero-bg-blobs" width="100%" height="200" viewBox="0 0 1440 200" aria-hidden="true" role="presentation">
 					<defs>
 						<linearGradient id="blobGradient1" x1="0" y1="0" x2="1" y2="1">
 							<stop offset="0%" stop-color="#3498db" stop-opacity="0.18"/>
@@ -564,396 +508,152 @@
 						</linearGradient>
 					</defs>
 					<g>
-						<circle id="blob1" cx="330" cy="150" r="280" fill="url(#blobGradient1)">
-							<animate attributeName="cx" values="330;1110;330" dur="15s" repeatCount="indefinite"/>
-							<animate attributeName="cy" values="150;350;150" dur="13.125s" repeatCount="indefinite"/>
+						<circle id="blob1" cx="200" cy="100" r="150" fill="url(#blobGradient1)">
+							<animate attributeName="cx" values="200;1240;200" dur="15s" repeatCount="indefinite"/>
 						</circle>
-						<circle id="blob2" cx="270" cy="120" r="220" fill="url(#blobGradient2)">
-							<animate attributeName="cx" values="270;1170;270" dur="16.875s" repeatCount="indefinite"/>
-							<animate attributeName="cy" values="120;380;120" dur="11.25s" repeatCount="indefinite"/>
-						</circle>
-						<circle id="blob3" cx="450" cy="250" r="350" fill="url(#blobGradient1)" opacity="0.7">
-							<animate attributeName="cx" values="450;990;450" dur="18.75s" repeatCount="indefinite"/>
-							<animate attributeName="cy" values="250;450;250" dur="15s" repeatCount="indefinite"/>
+						<circle id="blob2" cx="1200" cy="80" r="120" fill="url(#blobGradient2)">
+							<animate attributeName="cx" values="1200;200;1200" dur="16s" repeatCount="indefinite"/>
 						</circle>
 					</g>
 				</svg>
 				<div class="hero-content">
 					<h1>2025 Leaderboard</h1>
-					<p class="subtitle">Celebrating Rochester's Most Prolific Researchers. Year to Date Counter, Updated Monthly.</p>
+					<p class="subtitle">Rochester's Research Leaders - Updated Monthly</p>
 					<div class="stats">
-						<strong>65,676</strong> unique authors | <strong>11,097</strong> PubMed indexed papers
+						<strong>65,676</strong> authors | <strong>11,097</strong> publications
 					</div>
 				</div>
 			</section>
 
-			<!-- New Three-Section Layout -->
+			<!-- Tabbed Leaderboard -->
 			<div class="leaderboard-container">
 				
-				<!-- Section 1: Leaderboard -->
-				<div class="leaderboard-section">
-					<div class="section-header">
-						<h2>Leaderboard</h2>
-						<p>Rochester's research champions making waves in 2025</p>
-					</div>
+				<!-- Tab Navigation -->
+				<div class="tab-navigation">
+					<button class="tab-button active" onclick="switchTab('authors')">📊 Authors</button>
+					<button class="tab-button" onclick="switchTab('departments')">🏥 Departments</button>
+					<button class="tab-button" onclick="switchTab('geography')">🌎 Geography</button>
+				</div>
+
+				<!-- Authors Tab -->
+				<div id="authors-tab" class="tab-content active">
 					
-					<div class="two-column-grid">
-						<!-- Most Prolific Authors -->
-						<div class="list-container">
-							<h3>Top 10 Most Prolific</h3>
-							<ul class="ranked-list">
-								<li class="ranked-item top-3">
-									<span class="rank-number medal">🥇</span>
-									<span class="item-name">Waleed Brinjikji</span>
-									<span class="item-count">92</span>
-								</li>
-								<li class="ranked-item top-3">
-									<span class="rank-number medal">🥈</span>
-									<span class="item-name">Barry Borlaug</span>
-									<span class="item-count">91</span>
-								</li>
-								<li class="ranked-item top-3">
-									<span class="rank-number medal">🥉</span>
-									<span class="item-name">Clifford Jack</span>
-									<span class="item-count">87</span>
-								</li>
-								<li class="ranked-item">
-									<span class="rank-number">4</span>
-									<span class="item-name">Sherief Ghozy</span>
-									<span class="item-count">87</span>
-								</li>
-								<li class="ranked-item">
-									<span class="rank-number">5</span>
-									<span class="item-name">Ronald Petersen</span>
-									<span class="item-count">82</span>
-								</li>
-								<li class="ranked-item">
-									<span class="rank-number">6</span>
-									<span class="item-name">David Kallmes</span>
-									<span class="item-count">80</span>
-								</li>
-								<li class="ranked-item">
-									<span class="rank-number">7</span>
-									<span class="item-name">Shaji Kumar</span>
-									<span class="item-count">77</span>
-								</li>
-								<li class="ranked-item">
-									<span class="rank-number">8</span>
-									<span class="item-name">Mohamad Bydon</span>
-									<span class="item-count">71</span>
-								</li>
-								<li class="ranked-item">
-									<span class="rank-number">9</span>
-									<span class="item-name">Abhishek Deshmukh</span>
-									<span class="item-count">69</span>
-								</li>
-								<li class="ranked-item">
-									<span class="rank-number">10</span>
-									<span class="item-name">Matthew Abdel</span>
-									<span class="item-count">68</span>
-								</li>
-							</ul>
+					<div class="filter-box">
+						<input type="text" id="authorSearch" placeholder="🔍 Search authors..." onkeyup="filterTable('authorSearch', 'prolificTable')">
+						<div class="toggle-view">
+							<button class="toggle-btn active" onclick="toggleAuthorView('prolific')">Most Prolific</button>
+							<button class="toggle-btn" onclick="toggleAuthorView('first')">First Authors</button>
 						</div>
-						
-						<!-- First Authors -->
-						<div class="list-container">
-							<h3>Top 10 First Authors</h3>
-							<ul class="ranked-list">
-								<li class="ranked-item top-3">
-									<span class="rank-number medal">🥇</span>
-									<span class="item-name">Ryan D'Souza</span>
-									<span class="item-count">23</span>
-								</li>
-								<li class="ranked-item top-3">
-									<span class="rank-number medal">🥈</span>
-									<span class="item-name">Yogesh Reddy</span>
-									<span class="item-count">19</span>
-								</li>
-								<li class="ranked-item top-3">
-									<span class="rank-number medal">🥉</span>
-									<span class="item-name">Pranjal Rai</span>
-									<span class="item-count">17</span>
-								</li>
-								<li class="ranked-item">
-									<span class="rank-number">4</span>
-									<span class="item-name">Richard Sassun</span>
-									<span class="item-count">16</span>
-								</li>
-								<li class="ranked-item">
-									<span class="rank-number">5</span>
-									<span class="item-name">Alexander Egbe</span>
-									<span class="item-count">15</span>
-								</li>
-								<li class="ranked-item">
-									<span class="rank-number">6</span>
-									<span class="item-name">Michael Camilleri</span>
-									<span class="item-count">14</span>
-								</li>
-								<li class="ranked-item">
-									<span class="rank-number">7</span>
-									<span class="item-name">Siddharth Agarwal</span>
-									<span class="item-count">14</span>
-								</li>
-								<li class="ranked-item">
-									<span class="rank-number">8</span>
-									<span class="item-name">Tung Tran</span>
-									<span class="item-count">13</span>
-								</li>
-								<li class="ranked-item">
-									<span class="rank-number">9</span>
-									<span class="item-name">Ajay Madhavan</span>
-									<span class="item-count">13</span>
-								</li>
-								<li class="ranked-item">
-									<span class="rank-number">10</span>
-									<span class="item-name">Chelsey Hoffmann</span>
-									<span class="item-count">13</span>
-								</li>
-							</ul>
-						</div>
+					</div>
+
+					<!-- Most Prolific Authors Table -->
+					<div id="prolific-view">
+						<h2 class="section-title">Most Prolific Authors (Top 20)</h2>
+						<table class="data-table" id="prolificTable">
+							<thead>
+								<tr>
+									<th class="center">Rank</th>
+									<th>Author Name</th>
+									<th class="center">Publications</th>
+								</tr>
+							</thead>
+							<tbody>
+								<!-- Will be populated by JavaScript -->
+							</tbody>
+						</table>
+					</div>
+
+					<!-- First Authors Table -->
+					<div id="first-view" style="display: none;">
+						<h2 class="section-title">Top First Authors (Top 20)</h2>
+						<table class="data-table" id="firstTable">
+							<thead>
+								<tr>
+									<th class="center">Rank</th>
+									<th>Author Name</th>
+									<th class="center">First Author Pubs</th>
+								</tr>
+							</thead>
+							<tbody>
+								<!-- Will be populated by JavaScript -->
+							</tbody>
+						</table>
 					</div>
 				</div>
-				
-				<!-- Section 2: Specialties -->
-				<div class="leaderboard-section">
-					<div class="section-header">
-						<h2>Specialties</h2>
-						<p>Departments driving innovation and interdisciplinary excellence</p>
-					</div>
+
+				<!-- Departments Tab -->
+				<div id="departments-tab" class="tab-content">
 					
-					<!-- Top Departments -->
-					<div class="list-container" style="margin-bottom: 40px;">
-						<h3>Top 10 Departments</h3>
-						<ul class="ranked-list">
-							<li class="ranked-item top-3">
-								<span class="rank-number medal">🥇</span>
-								<span class="item-name">Radiology</span>
-								<span class="item-count">2,301</span>
-							</li>
-							<li class="ranked-item top-3">
-								<span class="rank-number medal">🥈</span>
-								<span class="item-name">Cardiovascular Medicine</span>
-								<span class="item-count">2,238</span>
-							</li>
-							<li class="ranked-item top-3">
-								<span class="rank-number medal">🥉</span>
-								<span class="item-name">Hematology</span>
-								<span class="item-count">1,824</span>
-							</li>
-							<li class="ranked-item">
-								<span class="rank-number">4</span>
-								<span class="item-name">Neurology</span>
-								<span class="item-count">1,745</span>
-							</li>
-							<li class="ranked-item">
-								<span class="rank-number">5</span>
-								<span class="item-name">Laboratory Medicine and Pathology</span>
-								<span class="item-count">1,633</span>
-							</li>
-							<li class="ranked-item">
-								<span class="rank-number">6</span>
-								<span class="item-name">Orthopedic Surgery</span>
-								<span class="item-count">1,320</span>
-							</li>
-							<li class="ranked-item">
-								<span class="rank-number">7</span>
-								<span class="item-name">Gastroenterology and Hepatology</span>
-								<span class="item-count">1,016</span>
-							</li>
-							<li class="ranked-item">
-								<span class="rank-number">8</span>
-								<span class="item-name">Quantitative Health Sciences</span>
-								<span class="item-count">1,010</span>
-							</li>
-							<li class="ranked-item">
-								<span class="rank-number">9</span>
-								<span class="item-name">Neurologic Surgery</span>
-								<span class="item-count">707</span>
-							</li>
-							<li class="ranked-item">
-								<span class="rank-number">10</span>
-								<span class="item-name">Radiation Oncology</span>
-								<span class="item-count">640</span>
-							</li>
-						</ul>
+					<div class="filter-box">
+						<input type="text" id="deptSearch" placeholder="🔍 Search departments..." onkeyup="filterTable('deptSearch', 'departmentsTable')">
 					</div>
-					
-					<!-- Multidisciplinary Collaboration -->
-					<div class="list-container">
-						<h3>Multidisciplinary Collaboration</h3>
-						<p style="text-align: center; color: #666; margin-bottom: 25px;">Breaking down silos: how many departments work together</p>
-						<div class="bar-chart">
-							<div class="bar-item">
-								<div class="bar-label">
-									<span>1 Department</span>
-									<span>8,353 publications</span>
-								</div>
-								<div class="bar-container">
-									<div class="bar-fill" style="width: 100%;"></div>
-								</div>
-							</div>
-							<div class="bar-item">
-								<div class="bar-label">
-									<span>2 Departments</span>
-									<span>1,582 publications</span>
-								</div>
-								<div class="bar-container">
-									<div class="bar-fill" style="width: 19%;"></div>
-								</div>
-							</div>
-							<div class="bar-item">
-								<div class="bar-label">
-									<span>3 Departments</span>
-									<span>665 publications</span>
-								</div>
-								<div class="bar-container">
-									<div class="bar-fill" style="width: 8%;"></div>
-								</div>
-							</div>
-							<div class="bar-item">
-								<div class="bar-label">
-									<span>4 Departments</span>
-									<span>260 publications</span>
-								</div>
-								<div class="bar-container">
-									<div class="bar-fill" style="width: 3.1%;"></div>
-								</div>
-							</div>
-							<div class="bar-item">
-								<div class="bar-label">
-									<span>5+ Departments</span>
-									<span>222 publications</span>
-								</div>
-								<div class="bar-container">
-									<div class="bar-fill" style="width: 2.7%;"></div>
-								</div>
-							</div>
-						</div>
+
+					<h2 class="section-title">Top Departments by Publication Count</h2>
+					<table class="data-table" id="departmentsTable">
+						<thead>
+							<tr>
+								<th class="center">Rank</th>
+								<th>Department</th>
+								<th class="center">Publications</th>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- Will be populated by JavaScript -->
+						</tbody>
+					</table>
+
+					<h2 class="section-title" style="margin-top: 40px;">Multidisciplinary Collaboration</h2>
+					<p style="color: #666; margin-bottom: 20px;">Publications by number of departments involved</p>
+					<div class="compact-chart" id="collaborationChart">
+						<!-- Will be populated by JavaScript -->
 					</div>
 				</div>
-				
-				<!-- Section 3: Global Perspectives -->
-				<div class="leaderboard-section">
-					<div class="section-header">
-						<h2>Collaboration Network</h2>
-						<p>Rochester's collaboration network across states and nations</p>
-					</div>
+
+				<!-- Geography Tab -->
+				<div id="geography-tab" class="tab-content">
 					
-					<div class="two-column-grid">
-						<!-- Top States -->
-						<div class="list-container">
-							<h3>Top 10 US States</h3>
-							<p style="text-align: center; color: #666; margin-bottom: 20px; font-size: 0.9em;">(Non-Minnesota collaborations)</p>
-							<ul class="ranked-list">
-								<li class="ranked-item top-3">
-									<span class="rank-number medal">🥇</span>
-									<span class="item-name">California</span>
-									<span class="item-count">1,666</span>
-								</li>
-								<li class="ranked-item top-3">
-									<span class="rank-number medal">🥈</span>
-									<span class="item-name">Florida</span>
-									<span class="item-count">1,506</span>
-								</li>
-								<li class="ranked-item top-3">
-									<span class="rank-number medal">🥉</span>
-									<span class="item-name">New York</span>
-									<span class="item-count">1,439</span>
-								</li>
-								<li class="ranked-item">
-									<span class="rank-number">4</span>
-									<span class="item-name">Massachusetts</span>
-									<span class="item-count">1,232</span>
-								</li>
-								<li class="ranked-item">
-									<span class="rank-number">5</span>
-									<span class="item-name">Texas</span>
-									<span class="item-count">1,019</span>
-								</li>
-								<li class="ranked-item">
-									<span class="rank-number">6</span>
-									<span class="item-name">Arizona</span>
-									<span class="item-count">980</span>
-								</li>
-								<li class="ranked-item">
-									<span class="rank-number">7</span>
-									<span class="item-name">Maryland</span>
-									<span class="item-count">948</span>
-								</li>
-								<li class="ranked-item">
-									<span class="rank-number">8</span>
-									<span class="item-name">Pennsylvania</span>
-									<span class="item-count">920</span>
-								</li>
-								<li class="ranked-item">
-									<span class="rank-number">9</span>
-									<span class="item-name">Washington</span>
-									<span class="item-count">906</span>
-								</li>
-								<li class="ranked-item">
-									<span class="rank-number">10</span>
-									<span class="item-name">Ohio</span>
-									<span class="item-count">843</span>
-								</li>
-							</ul>
-						</div>
+					<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 20px;">
 						
-						<!-- Top Countries -->
-						<div class="list-container">
-							<h3>Top 10 Countries</h3>
-							<p style="text-align: center; color: #666; margin-bottom: 20px; font-size: 0.9em;">(International collaborations)</p>
-							<ul class="ranked-list">
-								<li class="ranked-item top-3">
-									<span class="rank-number medal">🥇</span>
-									<span class="item-name">Canada</span>
-									<span class="item-count">632</span>
-								</li>
-								<li class="ranked-item top-3">
-									<span class="rank-number medal">🥈</span>
-									<span class="item-name">Italy</span>
-									<span class="item-count">483</span>
-								</li>
-								<li class="ranked-item top-3">
-									<span class="rank-number medal">🥉</span>
-									<span class="item-name">Germany</span>
-									<span class="item-count">427</span>
-								</li>
-								<li class="ranked-item">
-									<span class="rank-number">4</span>
-									<span class="item-name">United Kingdom</span>
-									<span class="item-count">397</span>
-								</li>
-								<li class="ranked-item">
-									<span class="rank-number">5</span>
-									<span class="item-name">France</span>
-									<span class="item-count">337</span>
-								</li>
-								<li class="ranked-item">
-									<span class="rank-number">6</span>
-									<span class="item-name">India</span>
-									<span class="item-count">325</span>
-								</li>
-								<li class="ranked-item">
-									<span class="rank-number">7</span>
-									<span class="item-name">Spain</span>
-									<span class="item-count">290</span>
-								</li>
-								<li class="ranked-item">
-									<span class="rank-number">8</span>
-									<span class="item-name">Australia</span>
-									<span class="item-count">271</span>
-								</li>
-								<li class="ranked-item">
-									<span class="rank-number">9</span>
-									<span class="item-name">Switzerland</span>
-									<span class="item-count">219</span>
-								</li>
-								<li class="ranked-item">
-									<span class="rank-number">10</span>
-									<span class="item-name">Belgium</span>
-									<span class="item-count">206</span>
-								</li>
-							</ul>
+						<!-- US States -->
+						<div>
+							<div class="filter-box">
+								<input type="text" id="stateSearch" placeholder="🔍 Search states..." onkeyup="filterTable('stateSearch', 'statesTable')">
+							</div>
+							<h2 class="section-title">Top US States</h2>
+							<p style="color: #666; margin-bottom: 15px; font-size: 0.9em;">Non-Minnesota collaborations</p>
+							<table class="data-table" id="statesTable">
+								<thead>
+									<tr>
+										<th class="center">Rank</th>
+										<th>State</th>
+										<th class="center">Collaborations</th>
+									</tr>
+								</thead>
+								<tbody>
+									<!-- Will be populated by JavaScript -->
+								</tbody>
+							</table>
+						</div>
+
+						<!-- Countries -->
+						<div>
+							<div class="filter-box">
+								<input type="text" id="countrySearch" placeholder="🔍 Search countries..." onkeyup="filterTable('countrySearch', 'countriesTable')">
+							</div>
+							<h2 class="section-title">Top Countries</h2>
+							<p style="color: #666; margin-bottom: 15px; font-size: 0.9em;">International collaborations</p>
+							<table class="data-table" id="countriesTable">
+								<thead>
+									<tr>
+										<th class="center">Rank</th>
+										<th>Country</th>
+										<th class="center">Collaborations</th>
+									</tr>
+								</thead>
+								<tbody>
+									<!-- Will be populated by JavaScript -->
+								</tbody>
+							</table>
 						</div>
 					</div>
 				</div>
@@ -1037,6 +737,67 @@
 	<script src="assets/js/main.js"></script>
 
 	<script>
+	// Tab switching
+	function switchTab(tabName) {
+		// Hide all tabs
+		document.querySelectorAll('.tab-content').forEach(tab => {
+			tab.classList.remove('active');
+		});
+		
+		// Remove active class from all buttons
+		document.querySelectorAll('.tab-button').forEach(btn => {
+			btn.classList.remove('active');
+		});
+		
+		// Show selected tab
+		document.getElementById(tabName + '-tab').classList.add('active');
+		event.target.classList.add('active');
+	}
+	
+	// Toggle author view
+	function toggleAuthorView(view) {
+		const prolificView = document.getElementById('prolific-view');
+		const firstView = document.getElementById('first-view');
+		const toggleBtns = document.querySelectorAll('.toggle-btn');
+		
+		if (view === 'prolific') {
+			prolificView.style.display = 'block';
+			firstView.style.display = 'none';
+			toggleBtns[0].classList.add('active');
+			toggleBtns[1].classList.remove('active');
+		} else {
+			prolificView.style.display = 'none';
+			firstView.style.display = 'block';
+			toggleBtns[0].classList.remove('active');
+			toggleBtns[1].classList.add('active');
+		}
+	}
+	
+	// Filter table rows
+	function filterTable(inputId, tableId) {
+		const input = document.getElementById(inputId);
+		const filter = input.value.toUpperCase();
+		const table = document.getElementById(tableId);
+		const tr = table.getElementsByTagName('tr');
+		
+		for (let i = 1; i < tr.length; i++) {
+			const td = tr[i].getElementsByTagName('td');
+			let found = false;
+			
+			for (let j = 0; j < td.length; j++) {
+				if (td[j]) {
+					const txtValue = td[j].textContent || td[j].innerText;
+					if (txtValue.toUpperCase().indexOf(filter) > -1) {
+						found = true;
+						break;
+					}
+				}
+			}
+			
+			tr[i].style.display = found ? '' : 'none';
+		}
+	}
+	
 	// Load and parse leaderboard data from CSV
 	async function loadLeaderboardData() {
 		try {
@@ -1140,50 +901,56 @@
 		// Update hero stats
 		const heroStats = document.querySelector('.hero-content .stats');
 		if (heroStats && data.uniqueAuthors && data.totalPapers) {
-			heroStats.innerHTML = `<strong>${formatNumber(data.uniqueAuthors)}</strong> unique authors | <strong>${formatNumber(data.totalPapers)}</strong> PubMed indexed papers`;
+			heroStats.innerHTML = `<strong>${formatNumber(data.uniqueAuthors)}</strong> authors | <strong>${formatNumber(data.totalPapers)}</strong> publications`;
 		}
 		
-		// Render Most Prolific Authors
-		const prolificList = document.querySelector('.list-container:has(h3:contains("Most Prolific")) .ranked-list');
-		if (prolificList && data.prolificAuthors.length > 0) {
-			prolificList.innerHTML = data.prolificAuthors.map(item => {
-				const rankDisplay = getMedalEmoji(item.rank);
+		// Render Most Prolific Authors Table (expand to top 20)
+		const prolificTableBody = document.querySelector('#prolificTable tbody');
+		if (prolificTableBody && data.prolificAuthors.length > 0) {
+			prolificTableBody.innerHTML = data.prolificAuthors.slice(0, 20).map((item, index) => {
+				const rank = parseInt(item.rank);
+				const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
+				const rankClass = rank <= 3 ? 'top-3' : '';
 				return `
-					<li class="ranked-item">
-						<span class="rank-number">${rankDisplay}</span>
-						<span class="item-name">${item.author}</span>
-						<span class="item-count">${item.count}</span>
-					</li>
+					<tr>
+						<td class="rank-col ${rankClass}">${medal}</td>
+						<td class="name-col clickable" onclick="handleAuthorClick('${item.author}')">${item.author}</td>
+						<td class="count-col">${item.count}</td>
+					</tr>
 				`;
 			}).join('');
 		}
 		
-		// Render First Authors
-		const firstAuthorsList = document.querySelector('.list-container:has(h3:contains("First Authors")) .ranked-list');
-		if (firstAuthorsList && data.firstAuthors.length > 0) {
-			firstAuthorsList.innerHTML = data.firstAuthors.map(item => {
-				const rankDisplay = getMedalEmoji(item.rank);
+		// Render First Authors Table (expand to top 20)
+		const firstTableBody = document.querySelector('#firstTable tbody');
+		if (firstTableBody && data.firstAuthors.length > 0) {
+			firstTableBody.innerHTML = data.firstAuthors.slice(0, 20).map((item, index) => {
+				const rank = parseInt(item.rank);
+				const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
+				const rankClass = rank <= 3 ? 'top-3' : '';
 				return `
-					<li class="ranked-item">
-						<span class="rank-number">${rankDisplay}</span>
-						<span class="item-name">${item.author}</span>
-						<span class="item-count">${item.count}</span>
-					</li>
+					<tr>
+						<td class="rank-col ${rankClass}">${medal}</td>
+						<td class="name-col clickable" onclick="handleAuthorClick('${item.author}')">${item.author}</td>
+						<td class="count-col">${item.count}</td>
+					</tr>
 				`;
 			}).join('');
 		}
 		
-		// Render Departments
-		const departmentsList = document.querySelectorAll('.list-container:has(h3:contains("Departments")) .ranked-list')[0];
-		if (departmentsList && data.departments.length > 0) {
-			departmentsList.innerHTML = data.departments.map(item => {
-				const rankDisplay = getMedalEmoji(item.rank);
+		// Render Departments Table (expand to top 20)
+		const departmentsTableBody = document.querySelector('#departmentsTable tbody');
+		if (departmentsTableBody && data.departments.length > 0) {
+			departmentsTableBody.innerHTML = data.departments.slice(0, 20).map((item, index) => {
+				const rank = parseInt(item.rank);
+				const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
+				const rankClass = rank <= 3 ? 'top-3' : '';
 				return `
-					<li class="ranked-item">
-						<span class="rank-number">${rankDisplay}</span>
-						<span class="item-name">${item.department}</span>
-						<span class="item-count">${formatNumber(item.count)}</span>
-					</li>
+					<tr>
+						<td class="rank-col ${rankClass}">${medal}</td>
+						<td class="name-col">${item.department}</td>
+						<td class="count-col">${formatNumber(item.count)}</td>
+					</tr>
 				`;
 			}).join('');
 		}
@@ -1191,82 +958,70 @@
 		// Render Collaboration Chart
 		if (data.collaboration.length > 0) {
 			const maxPubs = Math.max(...data.collaboration.map(c => c.pubCount));
-			const chartContainer = document.querySelector('.bar-chart');
+			const chartContainer = document.getElementById('collaborationChart');
 			if (chartContainer) {
 				chartContainer.innerHTML = data.collaboration.map(item => {
 					const percentage = (item.pubCount / maxPubs * 100).toFixed(1);
 					return `
-						<div class="bar-item">
-							<div class="bar-label">
-								<span>${item.deptCount}</span>
-								<span>${formatNumber(item.pubCount)} publications</span>
+						<div class="chart-row">
+							<div class="chart-label">${item.deptCount}</div>
+							<div class="chart-bar">
+								<div class="chart-fill" style="width: ${percentage}%;"></div>
 							</div>
-							<div class="bar-container">
-								<div class="bar-fill" style="width: ${percentage}%;"></div>
-							</div>
+							<div class="chart-value">${formatNumber(item.pubCount)}</div>
 						</div>
 					`;
 				}).join('');
 			}
 		}
 		
-		// Render States
-		const statesList = document.querySelector('.list-container:has(h3:contains("US States")) .ranked-list');
-		if (statesList && data.states.length > 0) {
-			statesList.innerHTML = data.states.map(item => {
-				const rankDisplay = getMedalEmoji(item.rank);
+		// Render States Table
+		const statesTableBody = document.querySelector('#statesTable tbody');
+		if (statesTableBody && data.states.length > 0) {
+			statesTableBody.innerHTML = data.states.map((item, index) => {
+				const rank = parseInt(item.rank);
+				const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
+				const rankClass = rank <= 3 ? 'top-3' : '';
 				return `
-					<li class="ranked-item">
-						<span class="rank-number">${rankDisplay}</span>
-						<span class="item-name">${item.state}</span>
-						<span class="item-count">${formatNumber(item.count)}</span>
-					</li>
+					<tr>
+						<td class="rank-col ${rankClass}">${medal}</td>
+						<td class="name-col">${item.state}</td>
+						<td class="count-col">${formatNumber(item.count)}</td>
+					</tr>
 				`;
 			}).join('');
 		}
 		
-		// Render Countries
-		const countriesList = document.querySelector('.list-container:has(h3:contains("Countries")) .ranked-list');
-		if (countriesList && data.countries.length > 0) {
-			countriesList.innerHTML = data.countries.map(item => {
-				const rankDisplay = getMedalEmoji(item.rank);
-				// Handle "UK" -> "United Kingdom" for display
+		// Render Countries Table
+		const countriesTableBody = document.querySelector('#countriesTable tbody');
+		if (countriesTableBody && data.countries.length > 0) {
+			countriesTableBody.innerHTML = data.countries.map((item, index) => {
+				const rank = parseInt(item.rank);
+				const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
+				const rankClass = rank <= 3 ? 'top-3' : '';
 				const displayName = item.country === 'UK' ? 'United Kingdom' : item.country;
 				return `
-					<li class="ranked-item">
-						<span class="rank-number">${rankDisplay}</span>
-						<span class="item-name">${displayName}</span>
-						<span class="item-count">${formatNumber(item.count)}</span>
-					</li>
+					<tr>
+						<td class="rank-col ${rankClass}">${medal}</td>
+						<td class="name-col">${displayName}</td>
+						<td class="count-col">${formatNumber(item.count)}</td>
+					</tr>
 				`;
 			}).join('');
 		}
-		
-		// Re-attach click handlers to new author names
-		attachAuthorClickHandlers();
+	}
+	
+	function handleAuthorClick(authorName) {
+		// Convert "Last, First" to "First Last" for PubMed search
+		const nameParts = authorName.split(',').map(p => p.trim());
+		const searchName = nameParts.length === 2 ? `${nameParts[1]} ${nameParts[0]}` : authorName;
+		if (searchName) {
+			showAuthorBibliography(searchName);
+		}
 	}
 	
 	function attachAuthorClickHandlers() {
-		const authorNames = document.querySelectorAll('.item-name');
-		authorNames.forEach(authorElement => {
-			// Only make it clickable if it's in the author sections (not departments, states, countries)
-			const container = authorElement.closest('.list-container');
-			if (container) {
-				const heading = container.querySelector('h3');
-				if (heading && (heading.textContent.includes('Prolific') || heading.textContent.includes('First Authors'))) {
-					authorElement.style.cursor = 'pointer';
-					authorElement.addEventListener('click', function() {
-						const authorName = this.textContent.trim();
-						// Convert "Last, First" to "First Last" for PubMed search
-						const nameParts = authorName.split(',').map(p => p.trim());
-						const searchName = nameParts.length === 2 ? `${nameParts[1]} ${nameParts[0]}` : authorName;
-						if (searchName) {
-							showAuthorBibliography(searchName);
-						}
-					});
-				}
-			}
-		});
+		// No longer needed - handled inline in table generation
 	}
 	
 	// Author bibliography modal functions
