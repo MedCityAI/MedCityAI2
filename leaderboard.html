@@ -530,9 +530,9 @@
 				
 				<!-- Tab Navigation -->
 				<div class="tab-navigation">
-					<button class="tab-button active" onclick="switchTab('authors')">📊 Authors</button>
-					<button class="tab-button" onclick="switchTab('departments')">🏥 Departments</button>
-					<button class="tab-button" onclick="switchTab('geography')">🌎 Geography</button>
+					<button class="tab-button active" onclick="switchTab('authors')">By Authors</button>
+					<button class="tab-button" onclick="switchTab('departments')">By Departments</button>
+					<button class="tab-button" onclick="switchTab('geography')">By Geography</button>
 				</div>
 
 				<!-- Authors Tab -->
@@ -548,7 +548,7 @@
 
 					<!-- Most Prolific Authors Table -->
 					<div id="prolific-view">
-						<h2 class="section-title">Most Prolific Authors (Top 20)</h2>
+						<h2 class="section-title">Most Prolific Authors of 2025</h2>
 						<table class="data-table" id="prolificTable">
 							<thead>
 								<tr>
@@ -565,13 +565,13 @@
 
 					<!-- First Authors Table -->
 					<div id="first-view" style="display: none;">
-						<h2 class="section-title">Top First Authors (Top 20)</h2>
+						<h2 class="section-title">Most First-Authored Papers of 2025</h2>
 						<table class="data-table" id="firstTable">
 							<thead>
 								<tr>
 									<th class="center">Rank</th>
 									<th>Author Name</th>
-									<th class="center">First Author Pubs</th>
+									<th class="center">Publications</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -583,12 +583,8 @@
 
 				<!-- Departments Tab -->
 				<div id="departments-tab" class="tab-content">
-					
-					<div class="filter-box">
-						<input type="text" id="deptSearch" placeholder="🔍 Search departments..." onkeyup="filterTable('deptSearch', 'departmentsTable')">
-					</div>
 
-					<h2 class="section-title">Top Departments by Publication Count</h2>
+					<h2 class="section-title">Most Publications by Specialty</h2>
 					<table class="data-table" id="departmentsTable">
 						<thead>
 							<tr>
