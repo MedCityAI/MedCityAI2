@@ -600,7 +600,7 @@
 					<div class="two-column-grid">
 						<!-- Most Prolific Authors -->
 						<div class="list-container">
-							<h3>🌟 Top 10 Most Prolific</h3>
+							<h3>Top 10 Most Prolific</h3>
 							<ul class="ranked-list">
 								<li class="ranked-item top-3">
 									<span class="rank-number medal">🥇</span>
@@ -1147,12 +1147,10 @@
 		const prolificList = document.querySelector('.list-container:has(h3:contains("Most Prolific")) .ranked-list');
 		if (prolificList && data.prolificAuthors.length > 0) {
 			prolificList.innerHTML = data.prolificAuthors.map(item => {
-				const isTop3 = parseInt(item.rank) <= 3;
 				const rankDisplay = getMedalEmoji(item.rank);
-				const medalClass = parseInt(item.rank) <= 3 ? 'medal' : '';
 				return `
-					<li class="ranked-item ${isTop3 ? 'top-3' : ''}">
-						<span class="rank-number ${medalClass}">${rankDisplay}</span>
+					<li class="ranked-item">
+						<span class="rank-number">${rankDisplay}</span>
 						<span class="item-name">${item.author}</span>
 						<span class="item-count">${item.count}</span>
 					</li>
@@ -1164,12 +1162,10 @@
 		const firstAuthorsList = document.querySelector('.list-container:has(h3:contains("First Authors")) .ranked-list');
 		if (firstAuthorsList && data.firstAuthors.length > 0) {
 			firstAuthorsList.innerHTML = data.firstAuthors.map(item => {
-				const isTop3 = parseInt(item.rank) <= 3;
 				const rankDisplay = getMedalEmoji(item.rank);
-				const medalClass = parseInt(item.rank) <= 3 ? 'medal' : '';
 				return `
-					<li class="ranked-item ${isTop3 ? 'top-3' : ''}">
-						<span class="rank-number ${medalClass}">${rankDisplay}</span>
+					<li class="ranked-item">
+						<span class="rank-number">${rankDisplay}</span>
 						<span class="item-name">${item.author}</span>
 						<span class="item-count">${item.count}</span>
 					</li>
@@ -1181,12 +1177,10 @@
 		const departmentsList = document.querySelectorAll('.list-container:has(h3:contains("Departments")) .ranked-list')[0];
 		if (departmentsList && data.departments.length > 0) {
 			departmentsList.innerHTML = data.departments.map(item => {
-				const isTop3 = parseInt(item.rank) <= 3;
 				const rankDisplay = getMedalEmoji(item.rank);
-				const medalClass = parseInt(item.rank) <= 3 ? 'medal' : '';
 				return `
-					<li class="ranked-item ${isTop3 ? 'top-3' : ''}">
-						<span class="rank-number ${medalClass}">${rankDisplay}</span>
+					<li class="ranked-item">
+						<span class="rank-number">${rankDisplay}</span>
 						<span class="item-name">${item.department}</span>
 						<span class="item-count">${formatNumber(item.count)}</span>
 					</li>
@@ -1220,12 +1214,10 @@
 		const statesList = document.querySelector('.list-container:has(h3:contains("US States")) .ranked-list');
 		if (statesList && data.states.length > 0) {
 			statesList.innerHTML = data.states.map(item => {
-				const isTop3 = parseInt(item.rank) <= 3;
 				const rankDisplay = getMedalEmoji(item.rank);
-				const medalClass = parseInt(item.rank) <= 3 ? 'medal' : '';
 				return `
-					<li class="ranked-item ${isTop3 ? 'top-3' : ''}">
-						<span class="rank-number ${medalClass}">${rankDisplay}</span>
+					<li class="ranked-item">
+						<span class="rank-number">${rankDisplay}</span>
 						<span class="item-name">${item.state}</span>
 						<span class="item-count">${formatNumber(item.count)}</span>
 					</li>
@@ -1237,14 +1229,12 @@
 		const countriesList = document.querySelector('.list-container:has(h3:contains("Countries")) .ranked-list');
 		if (countriesList && data.countries.length > 0) {
 			countriesList.innerHTML = data.countries.map(item => {
-				const isTop3 = parseInt(item.rank) <= 3;
 				const rankDisplay = getMedalEmoji(item.rank);
-				const medalClass = parseInt(item.rank) <= 3 ? 'medal' : '';
 				// Handle "UK" -> "United Kingdom" for display
 				const displayName = item.country === 'UK' ? 'United Kingdom' : item.country;
 				return `
-					<li class="ranked-item ${isTop3 ? 'top-3' : ''}">
-						<span class="rank-number ${medalClass}">${rankDisplay}</span>
+					<li class="ranked-item">
+						<span class="rank-number">${rankDisplay}</span>
 						<span class="item-name">${displayName}</span>
 						<span class="item-count">${formatNumber(item.count)}</span>
 					</li>
