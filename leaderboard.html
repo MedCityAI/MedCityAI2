@@ -236,62 +236,6 @@
 				font-weight: 600;
 			}
 			
-			.name-col.clickable {
-				color: #2568BE;
-				cursor: pointer;
-				transition: color 0.2s;
-			}
-			
-			.name-col.clickable:hover {
-				color: #667eea;
-				text-decoration: underline;
-			}
-			
-			/* Search/Filter Box */
-			.filter-box {
-				margin-bottom: 20px;
-				display: flex;
-				gap: 15px;
-				align-items: center;
-			}
-			
-			.filter-box input {
-				flex: 1;
-				padding: 10px 15px;
-				border: 2px solid #e9ecef;
-				border-radius: 8px;
-				font-size: 1em;
-				transition: border-color 0.3s;
-			}
-			
-			.filter-box input:focus {
-				outline: none;
-				border-color: #2568BE;
-			}
-			
-			.toggle-view {
-				display: flex;
-				gap: 10px;
-			}
-			
-			.toggle-btn {
-				padding: 8px 16px;
-				background: #f8f9fa;
-				border: 2px solid #e9ecef;
-				border-radius: 6px;
-				cursor: pointer;
-				font-size: 0.9em;
-				font-weight: 600;
-				color: #666;
-				transition: all 0.3s;
-			}
-			
-			.toggle-btn.active {
-				background: #2568BE;
-				color: white;
-				border-color: #2568BE;
-			}
-			
 			/* Compact visualization */
 			.compact-chart {
 				margin: 20px 0;
@@ -376,15 +320,6 @@
 				.data-table th,
 				.data-table td {
 					padding: 8px 10px;
-				}
-				
-				.filter-box {
-					flex-direction: column;
-				}
-				
-				.toggle-view {
-					width: 100%;
-					justify-content: center;
 				}
 			}
 			
@@ -535,26 +470,20 @@
 					<button class="tab-button" onclick="switchTab('geography')">By Geography</button>
 				</div>
 
-				<!-- Authors Tab -->
-				<div id="authors-tab" class="tab-content active">
+			<!-- Authors Tab -->
+			<div id="authors-tab" class="tab-content active">
+				
+				<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 20px;">
 					
-					<div class="filter-box">
-						<input type="text" id="authorSearch" placeholder="🔍 Search authors..." onkeyup="filterTable('authorSearch', 'prolificTable')">
-						<div class="toggle-view">
-							<button class="toggle-btn active" onclick="toggleAuthorView('prolific')">Most Prolific</button>
-							<button class="toggle-btn" onclick="toggleAuthorView('first')">First Authors</button>
-						</div>
-					</div>
-
-					<!-- Most Prolific Authors Table -->
-					<div id="prolific-view">
+					<!-- Most Prolific Authors -->
+					<div>
 						<h2 class="section-title">Most Prolific Authors of 2025</h2>
 						<table class="data-table" id="prolificTable">
 							<thead>
 								<tr>
 									<th class="center">Rank</th>
 									<th>Author Name</th>
-									<th class="center">Publications</th>
+									<th class="center">Pubs</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -563,15 +492,15 @@
 						</table>
 					</div>
 
-					<!-- First Authors Table -->
-					<div id="first-view" style="display: none;">
+					<!-- First Authors -->
+					<div>
 						<h2 class="section-title">Most First-Authored Papers of 2025</h2>
 						<table class="data-table" id="firstTable">
 							<thead>
 								<tr>
 									<th class="center">Rank</th>
 									<th>Author Name</th>
-									<th class="center">Publications</th>
+									<th class="center">Pubs</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -580,8 +509,7 @@
 						</table>
 					</div>
 				</div>
-
-				<!-- Departments Tab -->
+			</div>				<!-- Departments Tab -->
 				<div id="departments-tab" class="tab-content">
 
 					<h2 class="section-title">Most Publications by Specialty</h2>
@@ -612,9 +540,6 @@
 						
 						<!-- US States -->
 						<div>
-							<div class="filter-box">
-								<input type="text" id="stateSearch" placeholder="🔍 Search states..." onkeyup="filterTable('stateSearch', 'statesTable')">
-							</div>
 							<h2 class="section-title">Top US States</h2>
 							<p style="color: #666; margin-bottom: 15px; font-size: 0.9em;">Non-Minnesota collaborations</p>
 							<table class="data-table" id="statesTable">
@@ -633,9 +558,6 @@
 
 						<!-- Countries -->
 						<div>
-							<div class="filter-box">
-								<input type="text" id="countrySearch" placeholder="🔍 Search countries..." onkeyup="filterTable('countrySearch', 'countriesTable')">
-							</div>
 							<h2 class="section-title">Top Countries</h2>
 							<p style="color: #666; margin-bottom: 15px; font-size: 0.9em;">International collaborations</p>
 							<table class="data-table" id="countriesTable">
@@ -654,34 +576,6 @@
 					</div>
 				</div>
 
-			</div>
-
-			<div id="authorModal" class="author-modal author-modal-bg" role="dialog" aria-modal="true" aria-labelledby="authorModalTitle" aria-hidden="true">
-				<div class="author-modal-content" role="document">
-					<div class="author-modal-header">
-						<h3 id="authorModalTitle">Author Publications</h3>
-						<button class="author-modal-close" id="authorModalCloseBtn" aria-label="Close author publications modal">&times;</button>
-					</div>
-					<div id="authorStats" class="author-stats" style="display: none;">
-					<h4 id="authorFullName" style="font-size: 1.5em; margin-bottom: 20px; color: #2c3e50;"></h4>
-						<div class="author-stats-grid">
-							<div class="author-stat-item">
-								<div class="author-stat-label">Total Publications</div>
-								<div class="author-stat-value" id="authorPubCount">0</div>
-							</div>
-							<div class="author-stat-item">
-								<div class="author-stat-label">Primary Department</div>
-								<div class="author-stat-value" id="authorDepartment" style="font-size: 1.1em;">—</div>
-							</div>
-						</div>
-						<div class="author-stats-header" id="authorBibHeader" style="margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.2); font-size: 1.1em;">Recent Publications</div>
-					</div>
-					<div id="authorModalLoading" class="author-modal-loading" style="display: none;" role="status" aria-live="polite">
-						<div class="spinner" aria-hidden="true"></div>
-						<p>Loading publications...</p>
-					</div>
-					<ol id="authorBibliography" class="author-bibliography" aria-label="List of author publications"></ol>
-				</div>
 			</div>
 
 			<!-- Footer -->
@@ -748,50 +642,6 @@
 		// Show selected tab
 		document.getElementById(tabName + '-tab').classList.add('active');
 		event.target.classList.add('active');
-	}
-	
-	// Toggle author view
-	function toggleAuthorView(view) {
-		const prolificView = document.getElementById('prolific-view');
-		const firstView = document.getElementById('first-view');
-		const toggleBtns = document.querySelectorAll('.toggle-btn');
-		
-		if (view === 'prolific') {
-			prolificView.style.display = 'block';
-			firstView.style.display = 'none';
-			toggleBtns[0].classList.add('active');
-			toggleBtns[1].classList.remove('active');
-		} else {
-			prolificView.style.display = 'none';
-			firstView.style.display = 'block';
-			toggleBtns[0].classList.remove('active');
-			toggleBtns[1].classList.add('active');
-		}
-	}
-	
-	// Filter table rows
-	function filterTable(inputId, tableId) {
-		const input = document.getElementById(inputId);
-		const filter = input.value.toUpperCase();
-		const table = document.getElementById(tableId);
-		const tr = table.getElementsByTagName('tr');
-		
-		for (let i = 1; i < tr.length; i++) {
-			const td = tr[i].getElementsByTagName('td');
-			let found = false;
-			
-			for (let j = 0; j < td.length; j++) {
-				if (td[j]) {
-					const txtValue = td[j].textContent || td[j].innerText;
-					if (txtValue.toUpperCase().indexOf(filter) > -1) {
-						found = true;
-						break;
-					}
-				}
-			}
-			
-			tr[i].style.display = found ? '' : 'none';
-		}
 	}
 	
 	// Load and parse leaderboard data from CSV
@@ -900,41 +750,52 @@
 			heroStats.innerHTML = `<strong>${formatNumber(data.uniqueAuthors)}</strong> authors | <strong>${formatNumber(data.totalPapers)}</strong> publications`;
 		}
 		
-		// Render Most Prolific Authors Table (expand to top 20)
+		// Helper function to convert "Last, First" to "First Last"
+		function formatName(fullName) {
+			const parts = fullName.split(',').map(p => p.trim());
+			if (parts.length === 2) {
+				return `${parts[1]} ${parts[0]}`;
+			}
+			return fullName;
+		}
+		
+		// Render Most Prolific Authors Table (top 10 only)
 		const prolificTableBody = document.querySelector('#prolificTable tbody');
 		if (prolificTableBody && data.prolificAuthors.length > 0) {
-			prolificTableBody.innerHTML = data.prolificAuthors.slice(0, 20).map((item, index) => {
+			prolificTableBody.innerHTML = data.prolificAuthors.slice(0, 10).map((item, index) => {
 				const rank = parseInt(item.rank);
 				const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
 				const rankClass = rank <= 3 ? 'top-3' : '';
+				const displayName = formatName(item.author);
 				return `
 					<tr>
 						<td class="rank-col ${rankClass}">${medal}</td>
-						<td class="name-col clickable" onclick="handleAuthorClick('${item.author}')">${item.author}</td>
+						<td class="name-col">${displayName}</td>
 						<td class="count-col">${item.count}</td>
 					</tr>
 				`;
 			}).join('');
 		}
 		
-		// Render First Authors Table (expand to top 20)
+		// Render First Authors Table (top 10 only)
 		const firstTableBody = document.querySelector('#firstTable tbody');
 		if (firstTableBody && data.firstAuthors.length > 0) {
-			firstTableBody.innerHTML = data.firstAuthors.slice(0, 20).map((item, index) => {
+			firstTableBody.innerHTML = data.firstAuthors.slice(0, 10).map((item, index) => {
 				const rank = parseInt(item.rank);
 				const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
 				const rankClass = rank <= 3 ? 'top-3' : '';
+				const displayName = formatName(item.author);
 				return `
 					<tr>
 						<td class="rank-col ${rankClass}">${medal}</td>
-						<td class="name-col clickable" onclick="handleAuthorClick('${item.author}')">${item.author}</td>
+						<td class="name-col">${displayName}</td>
 						<td class="count-col">${item.count}</td>
 					</tr>
 				`;
 			}).join('');
 		}
 		
-		// Render Departments Table (expand to top 20)
+		// Render Departments Table
 		const departmentsTableBody = document.querySelector('#departmentsTable tbody');
 		if (departmentsTableBody && data.departments.length > 0) {
 			departmentsTableBody.innerHTML = data.departments.slice(0, 20).map((item, index) => {
@@ -1006,219 +867,6 @@
 			}).join('');
 		}
 	}
-	
-	function handleAuthorClick(authorName) {
-		// Convert "Last, First" to "First Last" for PubMed search
-		const nameParts = authorName.split(',').map(p => p.trim());
-		const searchName = nameParts.length === 2 ? `${nameParts[1]} ${nameParts[0]}` : authorName;
-		if (searchName) {
-			showAuthorBibliography(searchName);
-		}
-	}
-	
-	function attachAuthorClickHandlers() {
-		// No longer needed - handled inline in table generation
-	}
-	
-	// Author bibliography modal functions
-	async function showAuthorBibliography(authorName) {
-		const modal = document.getElementById('authorModal');
-		const title = document.getElementById('authorModalTitle');
-		const loading = document.getElementById('authorModalLoading');
-		const bibliography = document.getElementById('authorBibliography');
-		const statsDiv = document.getElementById('authorStats');
-		
-		// Show modal and loading state
-		modal.style.display = 'flex';
-		title.textContent = '';
-		loading.style.display = 'block';
-		bibliography.innerHTML = '';
-		statsDiv.style.display = 'none';
-		
-		try {
-			// Build query for this author (all publications)
-			const query = `${authorName}[Author]`;
-			
-			// First, get total count
-			const countUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmode=json&retmax=0`;
-			const countResponse = await fetch(countUrl);
-			const countData = await countResponse.json();
-			const totalCount = parseInt(countData.esearchresult.count);
-			
-			if (totalCount === 0) {
-				title.textContent = authorName;
-				bibliography.innerHTML = '<li style="color: #7f8c8d; text-align: center; padding: 40px;">No publications found for this author.</li>';
-				loading.style.display = 'none';
-				return;
-			}
-			
-			// Search PubMed for most recent 100
-			const searchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmax=100&retmode=json&sort=pub+date`;
-			const searchResponse = await fetch(searchUrl);
-			const searchData = await searchResponse.json();
-			
-			const articleIds = searchData.esearchresult.idlist;
-			
-			// Fetch article details
-			const fetchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${articleIds.join(',')}&retmode=xml`;
-			const fetchResponse = await fetch(fetchUrl);
-			const xmlText = await fetchResponse.text();
-			
-			// Parse XML
-			const parser = new DOMParser();
-			const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-			const articleNodes = xmlDoc.querySelectorAll('PubmedArticle');
-			
-			// Extract full name and departments
-			let fullName = authorName;
-			const departments = {};
-			const articles = [];
-			
-			articleNodes.forEach(articleNode => {
-				try {
-					// Find the author and get full name
-					const authorNodes = articleNode.querySelectorAll('Author');
-					authorNodes.forEach(authorNode => {
-						const lastNameNode = authorNode.querySelector('LastName');
-						const foreNameNode = authorNode.querySelector('ForeName');
-						const lastName = lastNameNode ? lastNameNode.textContent : '';
-						const foreName = foreNameNode ? foreNameNode.textContent : '';
-						
-						// Check if this matches our author
-						if (lastName && foreName && authorName.includes(lastName)) {
-							fullName = `${foreName} ${lastName}`;
-							
-							// Extract department from affiliation
-							const affiliationNodes = authorNode.querySelectorAll('Affiliation');
-							affiliationNodes.forEach(affNode => {
-								const affText = affNode.textContent;
-								if (affText.toLowerCase().includes('rochester')) {
-									// Try to extract department name
-									const deptMatch = affText.match(/Department of ([^,;.]+)/i);
-									if (deptMatch) {
-										const dept = deptMatch[1].trim();
-										departments[dept] = (departments[dept] || 0) + 1;
-									}
-								}
-							});
-						}
-					});
-					
-					// Parse article details
-					const pmidNode = articleNode.querySelector('PMID');
-					const pmid = pmidNode ? pmidNode.textContent : '';
-					
-					const titleNode = articleNode.querySelector('ArticleTitle');
-					const title = titleNode ? titleNode.textContent : 'No title';
-					
-					const journalNode = articleNode.querySelector('Journal Title');
-					let journal = journalNode ? journalNode.textContent : '';
-					if (!journal || journal.split(/\s+/).length > 5) {
-						const isoAbbrevNode = articleNode.querySelector('ISOAbbreviation');
-						if (isoAbbrevNode) journal = isoAbbrevNode.textContent;
-					}
-					
-					const yearNode = articleNode.querySelector('PubDate Year');
-					const year = yearNode ? yearNode.textContent : '';
-					
-					const monthNode = articleNode.querySelector('PubDate Month');
-					const month = monthNode ? monthNode.textContent : '';
-					
-					let pubdate = '';
-					if (year && month) {
-						pubdate = `${month} ${year}`;
-					} else if (year) {
-						pubdate = year;
-					}
-					
-					const authorNodesAll = articleNode.querySelectorAll('Author');
-					const authorsArray = [];
-					authorNodesAll.forEach(an => {
-						const ln = an.querySelector('LastName');
-						const fn = an.querySelector('ForeName');
-						if (ln && fn) {
-							const initials = fn.textContent.split(' ').map(n => n[0]).join('');
-							authorsArray.push(`${ln.textContent} ${initials}`);
-						}
-					});
-					let authorsDisplay = authorsArray.join(', ');
-					if (authorsArray.length > 15) {
-						authorsDisplay = authorsArray.slice(0, 14).join(', ') + ', et al.';
-					}
-					
-					articles.push({
-						pmid,
-						title,
-						journal,
-						year,
-						pubdate,
-						authors: authorsDisplay,
-						url: `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`
-					});
-					
-				} catch (error) {
-					console.error('Error parsing article:', error);
-				}
-			});
-			
-			// Sort by year (most recent first)
-			articles.sort((a, b) => {
-				const yearA = parseInt(a.year) || 0;
-				const yearB = parseInt(b.year) || 0;
-				return yearB - yearA;
-			});
-			
-			// Find most common department
-			let primaryDepartment = '—';
-			let maxCount = 0;
-			for (const [dept, count] of Object.entries(departments)) {
-				if (count > maxCount) {
-					maxCount = count;
-					primaryDepartment = dept;
-				}
-			}
-			
-			// Display stats with actual total count
-			title.textContent = fullName;
-			document.getElementById('authorPubCount').textContent = totalCount.toLocaleString();
-			document.getElementById('authorDepartment').textContent = primaryDepartment;
-			
-			// Update bibliography header
-			const bibHeader = document.getElementById('authorBibHeader');
-			if (articles.length < totalCount) {
-				bibHeader.textContent = `Recent Publications (showing ${articles.length} of ${totalCount})`;
-			} else {
-				bibHeader.textContent = `Recent Publications`;
-			}
-			
-			statsDiv.style.display = 'block';
-			
-			// Display bibliography with numbering
-			let bibliographyHTML = '';
-			articles.forEach((article, index) => {
-				const citation = generateMLACitation(article);
-				bibliographyHTML += `<li><strong style="color: #3498db; margin-right: 8px;">${index + 1}.</strong>${citation}</li>`;
-			});
-			
-			bibliography.innerHTML = bibliographyHTML;
-			loading.style.display = 'none';
-			
-		} catch (error) {
-			console.error('Error fetching author bibliography:', error);
-			bibliography.innerHTML = '<li style="color: #e74c3c; text-align: center; padding: 40px;">Error loading publications. Please try again.</li>';
-			loading.style.display = 'none';
-		}
-	}
-	
-	function generateMLACitation(article) {
-		// Format: Authors. "Title." Journal, Month Year.
-		const dateStr = article.pubdate || article.year || 'n.d.';
-		return `${article.authors}. "${article.title}" <span class="pub-journal">${article.journal}</span>, <span class="pub-year">${dateStr}</span>. <a href="${article.url}" target="_blank" style="color: #3498db;">PubMed</a>`;
-	}
-	
-	function closeAuthorModal() {
-		document.getElementById('authorModal').style.display = 'none';
-	}
 
 	// Set up event listeners after DOM is loaded
 	document.addEventListener('DOMContentLoaded', async function() {
@@ -1227,18 +875,6 @@
 		if (data) {
 			renderLeaderboardLists(data);
 		}
-		
-		// Close button for author modal
-		const authorModalCloseBtn = document.getElementById('authorModalCloseBtn');
-		if (authorModalCloseBtn) {
-			authorModalCloseBtn.addEventListener('click', closeAuthorModal);
-		}
-
-		// Close modal when clicking outside
-		const authorModal = document.getElementById('authorModal');
-		authorModal.addEventListener('click', function(e) {
-			if (e.target === authorModal) closeAuthorModal();
-		});
 	});
 	</script>
 
