@@ -477,7 +477,8 @@
 					
 					<!-- Most Prolific Authors -->
 					<div>
-						<h2 class="section-title">Most Prolific Authors of 2025</h2>
+						<h3 style="color: #2568BE; font-size: 1.3em; margin-bottom: 5px; font-weight: 600;">Most Prolific Authors</h3>
+						<p style="color: #666; font-size: 0.9em; margin-bottom: 15px;">Researchers with the highest total publication count in 2025</p>
 						<table class="data-table" id="prolificTable">
 							<thead>
 								<tr>
@@ -494,7 +495,8 @@
 
 					<!-- First Authors -->
 					<div>
-						<h2 class="section-title">Most First-Authored Papers of 2025</h2>
+						<h3 style="color: #2568BE; font-size: 1.3em; margin-bottom: 5px; font-weight: 600;">First Author Publications</h3>
+						<p style="color: #666; font-size: 0.9em; margin-bottom: 15px;">Researchers who led the most studies as primary/first author</p>
 						<table class="data-table" id="firstTable">
 							<thead>
 								<tr>
@@ -512,7 +514,8 @@
 			</div>				<!-- Departments Tab -->
 				<div id="departments-tab" class="tab-content">
 
-					<h2 class="section-title">Most Publications by Specialty</h2>
+					<h3 style="color: #2568BE; font-size: 1.3em; margin-bottom: 5px; font-weight: 600;">Top Departments by Publication Volume</h3>
+					<p style="color: #666; font-size: 0.9em; margin-bottom: 15px;">Medical specialties and departments ranked by research output</p>
 					<table class="data-table" id="departmentsTable">
 						<thead>
 							<tr>
@@ -526,8 +529,8 @@
 						</tbody>
 					</table>
 
-					<h2 class="section-title" style="margin-top: 40px;">Multidisciplinary Collaboration</h2>
-					<p style="color: #666; margin-bottom: 20px;">Publications by number of departments involved</p>
+					<h3 style="color: #2568BE; font-size: 1.3em; margin-bottom: 5px; font-weight: 600; margin-top: 40px;">Cross-Departmental Collaboration</h3>
+					<p style="color: #666; font-size: 0.9em; margin-bottom: 20px;">Distribution of publications by number of collaborating departments</p>
 					<div class="compact-chart" id="collaborationChart">
 						<!-- Will be populated by JavaScript -->
 					</div>
@@ -540,8 +543,8 @@
 						
 						<!-- US States -->
 						<div>
-							<h2 class="section-title">Top US States</h2>
-							<p style="color: #666; margin-bottom: 15px; font-size: 0.9em;">Non-Minnesota collaborations</p>
+							<h3 style="color: #2568BE; font-size: 1.3em; margin-bottom: 5px; font-weight: 600;">Leading US State Partners</h3>
+							<p style="color: #666; margin-bottom: 15px; font-size: 0.9em;">Most frequent state collaborations (excluding Minnesota)</p>
 							<table class="data-table" id="statesTable">
 								<thead>
 									<tr>
@@ -558,8 +561,8 @@
 
 						<!-- Countries -->
 						<div>
-							<h2 class="section-title">Top Countries</h2>
-							<p style="color: #666; margin-bottom: 15px; font-size: 0.9em;">International collaborations</p>
+							<h3 style="color: #2568BE; font-size: 1.3em; margin-bottom: 5px; font-weight: 600;">International Research Partners</h3>
+							<p style="color: #666; margin-bottom: 15px; font-size: 0.9em;">Countries with the most collaborative research publications</p>
 							<table class="data-table" id="countriesTable">
 								<thead>
 									<tr>
@@ -694,8 +697,28 @@
 					currentSection = 'countries';
 					i++; // Skip header row
 				} else if (line && currentSection && !line.startsWith('Rank') && !line.startsWith('Number')) {
-					// Parse data rows
-					const parts = line.split(',');
+					// Parse CSV row properly handling quoted fields
+					const parseCSVLine = (line) => {
+						const result = [];
+						let current = '';
+						let inQuotes = false;
+						
+						for (let i = 0; i < line.length; i++) {
+							const char = line[i];
+							if (char === '"') {
+								inQuotes = !inQuotes;
+							} else if (char === ',' && !inQuotes) {
+								result.push(current.trim());
+								current = '';
+							} else {
+								current += char;
+							}
+						}
+						result.push(current.trim());
+						return result;
+					};
+					
+					const parts = parseCSVLine(line);
 					if (parts.length >= 2) {
 						const rank = parts[0];
 						
@@ -800,11 +823,9 @@
 		if (departmentsTableBody && data.departments.length > 0) {
 			departmentsTableBody.innerHTML = data.departments.slice(0, 20).map((item, index) => {
 				const rank = parseInt(item.rank);
-				const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
-				const rankClass = rank <= 3 ? 'top-3' : '';
 				return `
 					<tr>
-						<td class="rank-col ${rankClass}">${medal}</td>
+						<td class="rank-col">${rank}</td>
 						<td class="name-col">${item.department}</td>
 						<td class="count-col">${formatNumber(item.count)}</td>
 					</tr>
@@ -814,10 +835,16 @@
 		
 		// Render Collaboration Chart
 		if (data.collaboration.length > 0) {
-			const maxPubs = Math.max(...data.collaboration.map(c => c.pubCount));
+			// Filter out single department entries only
+			const filteredCollaboration = data.collaboration.filter(item => {
+				const deptNum = parseInt(item.deptCount.replace(/[^\d]/g, ''));
+				return deptNum >= 2;
+			});
+			
+			const maxPubs = Math.max(...filteredCollaboration.map(c => c.pubCount));
 			const chartContainer = document.getElementById('collaborationChart');
 			if (chartContainer) {
-				chartContainer.innerHTML = data.collaboration.map(item => {
+				chartContainer.innerHTML = filteredCollaboration.map(item => {
 					const percentage = (item.pubCount / maxPubs * 100).toFixed(1);
 					return `
 						<div class="chart-row">
@@ -837,11 +864,9 @@
 		if (statesTableBody && data.states.length > 0) {
 			statesTableBody.innerHTML = data.states.map((item, index) => {
 				const rank = parseInt(item.rank);
-				const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
-				const rankClass = rank <= 3 ? 'top-3' : '';
 				return `
 					<tr>
-						<td class="rank-col ${rankClass}">${medal}</td>
+						<td class="rank-col">${rank}</td>
 						<td class="name-col">${item.state}</td>
 						<td class="count-col">${formatNumber(item.count)}</td>
 					</tr>
@@ -854,12 +879,10 @@
 		if (countriesTableBody && data.countries.length > 0) {
 			countriesTableBody.innerHTML = data.countries.map((item, index) => {
 				const rank = parseInt(item.rank);
-				const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
-				const rankClass = rank <= 3 ? 'top-3' : '';
 				const displayName = item.country === 'UK' ? 'United Kingdom' : item.country;
 				return `
 					<tr>
-						<td class="rank-col ${rankClass}">${medal}</td>
+						<td class="rank-col">${rank}</td>
 						<td class="name-col">${displayName}</td>
 						<td class="count-col">${formatNumber(item.count)}</td>
 					</tr>
