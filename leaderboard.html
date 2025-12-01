@@ -41,6 +41,10 @@
 				position: relative;
 				z-index: 2;
 				text-align: center;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
 			}
 			
 			.hero-content h1 {
@@ -122,17 +126,24 @@
 				color: #666;
 				transition: all 0.3s ease;
 				text-align: center;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				min-height: 60px;
 			}
 			
 			.tab-button:hover {
-				background: #e9ecef;
+				background: #e3e7eb;
 				color: #2568BE;
+				transform: translateY(-1px);
+				box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 			}
 			
 			.tab-button.active {
 				background: white;
 				color: #2568BE;
 				border-bottom-color: #2568BE;
+				box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
 			}
 			
 			.tab-content {
@@ -473,11 +484,11 @@
 			<!-- Authors Tab -->
 			<div id="authors-tab" class="tab-content active">
 				
-				<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 20px;">
+				<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 20px; max-width: 1400px; margin-left: auto; margin-right: auto;">
 					
 					<!-- Most Prolific Authors -->
 					<div>
-						<h3 style="color: #2568BE; font-size: 1.3em; margin-bottom: 5px; font-weight: 600;">Most Publications Overall</h3>
+						<h3 style="color: #2568BE; font-size: 1.3em; margin-bottom: 5px; font-weight: 600;">Overall Publications</h3>
 						<p style="color: #666; font-size: 0.9em; margin-bottom: 15px;">Researchers with the highest total publication count in 2025</p>
 						<table class="data-table" id="prolificTable">
 							<thead>
@@ -495,7 +506,7 @@
 
 					<!-- First Authors -->
 					<div>
-						<h3 style="color: #2568BE; font-size: 1.3em; margin-bottom: 5px; font-weight: 600;">Most First Author Publications</h3>
+						<h3 style="color: #2568BE; font-size: 1.3em; margin-bottom: 5px; font-weight: 600;">First Author Publications</h3>
 						<p style="color: #666; font-size: 0.9em; margin-bottom: 15px;">Researchers who led the most studies as primary/first author</p>
 						<table class="data-table" id="firstTable">
 							<thead>
@@ -514,6 +525,7 @@
 			</div>				<!-- Departments Tab -->
 				<div id="departments-tab" class="tab-content">
 
+					<div style="max-width: 1200px; margin-left: auto; margin-right: auto;">
 					<h3 style="color: #2568BE; font-size: 1.3em; margin-bottom: 5px; font-weight: 600;">Top Departments by Publication Volume</h3>
 					<p style="color: #666; font-size: 0.9em; margin-bottom: 15px;">Medical specialties and departments ranked by research output</p>
 					<table class="data-table" id="departmentsTable">
@@ -534,12 +546,13 @@
 					<div class="compact-chart" id="collaborationChart">
 						<!-- Will be populated by JavaScript -->
 					</div>
+					</div>
 				</div>
 
 				<!-- Geography Tab -->
 				<div id="geography-tab" class="tab-content">
 					
-					<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 20px;">
+					<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 20px; max-width: 1400px; margin-left: auto; margin-right: auto;">
 						
 						<!-- US States -->
 						<div>
