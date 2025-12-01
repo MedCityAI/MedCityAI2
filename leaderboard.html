@@ -782,13 +782,25 @@
 			return fullName;
 		}
 		
+		// Helper function to assign medals based on publication count (handles ties)
+		function getMedalByCount(count, sortedCounts) {
+			// Find the position of this count in the sorted unique counts
+			const position = sortedCounts.indexOf(count);
+			if (position === 0) return '🥇';
+			if (position === 1) return '🥈';
+			if (position === 2) return '🥉';
+			return position + 1; // Return numeric rank
+		}
+		
 		// Render Most Prolific Authors Table (top 10 only)
 		const prolificTableBody = document.querySelector('#prolificTable tbody');
 		if (prolificTableBody && data.prolificAuthors.length > 0) {
+			// Get unique sorted counts for medal assignment
+			const uniqueCounts = [...new Set(data.prolificAuthors.map(a => a.count))].sort((a, b) => b - a);
+			
 			prolificTableBody.innerHTML = data.prolificAuthors.slice(0, 10).map((item, index) => {
-				const rank = parseInt(item.rank);
-				const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
-				const rankClass = rank <= 3 ? 'top-3' : '';
+				const medal = getMedalByCount(item.count, uniqueCounts);
+				const rankClass = typeof medal === 'string' ? 'top-3' : '';
 				const displayName = formatName(item.author);
 				return `
 					<tr>
@@ -803,10 +815,12 @@
 		// Render First Authors Table (top 10 only)
 		const firstTableBody = document.querySelector('#firstTable tbody');
 		if (firstTableBody && data.firstAuthors.length > 0) {
+			// Get unique sorted counts for medal assignment
+			const uniqueCounts = [...new Set(data.firstAuthors.map(a => a.count))].sort((a, b) => b - a);
+			
 			firstTableBody.innerHTML = data.firstAuthors.slice(0, 10).map((item, index) => {
-				const rank = parseInt(item.rank);
-				const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
-				const rankClass = rank <= 3 ? 'top-3' : '';
+				const medal = getMedalByCount(item.count, uniqueCounts);
+				const rankClass = typeof medal === 'string' ? 'top-3' : '';
 				const displayName = formatName(item.author);
 				return `
 					<tr>
