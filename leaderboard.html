@@ -312,9 +312,63 @@
 					font-size: 1.8em;
 				}
 				
-				.tab-button {
-					font-size: 0.9em;
-					padding: 12px 10px;
+				/* Hide tab navigation on mobile */
+				.tab-navigation {
+					display: none;
+				}
+				
+				/* Show all tab content stacked on mobile */
+				.tab-content {
+					display: block !important;
+					margin-bottom: 30px;
+					border-radius: 12px;
+				}
+				
+				/* Add section headers for mobile */
+				#authors-tab::before {
+					content: "By Authors";
+					display: block;
+					font-size: 1.5em;
+					font-weight: bold;
+					color: #2568BE;
+					margin-bottom: 20px;
+					text-align: center;
+					padding: 15px;
+					background: #f8f9fa;
+					border-radius: 8px;
+				}
+				
+				#departments-tab::before {
+					content: "By Departments";
+					display: block;
+					font-size: 1.5em;
+					font-weight: bold;
+					color: #2568BE;
+					margin-bottom: 20px;
+					text-align: center;
+					padding: 15px;
+					background: #f8f9fa;
+					border-radius: 8px;
+				}
+				
+				#geography-tab::before {
+					content: "By Geography";
+					display: block;
+					font-size: 1.5em;
+					font-weight: bold;
+					color: #2568BE;
+					margin-bottom: 20px;
+					text-align: center;
+					padding: 15px;
+					background: #f8f9fa;
+					border-radius: 8px;
+				}
+				
+				/* Convert two-column grids to single column on mobile */
+				#authors-tab > div,
+				#geography-tab > div {
+					grid-template-columns: 1fr !important;
+					gap: 30px !important;
 				}
 				
 				.stats-bar {
