@@ -860,9 +860,11 @@
 			if (chartContainer) {
 				chartContainer.innerHTML = filteredCollaboration.map(item => {
 					const percentage = (item.pubCount / maxPubs * 100).toFixed(1);
+					// Replace "5 or more departments" with "5+ departments"
+					const displayLabel = item.deptCount.replace('5 or more departments', '5+ departments');
 					return `
 						<div class="chart-row">
-							<div class="chart-label">${item.deptCount}</div>
+							<div class="chart-label">${displayLabel}</div>
 							<div class="chart-bar">
 								<div class="chart-fill" style="width: ${percentage}%;"></div>
 							</div>
