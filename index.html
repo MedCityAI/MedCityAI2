@@ -765,41 +765,35 @@
 		/* Hero Buttons */
 		.hero-buttons {
 			display: flex;
-			align-items: center;
-			gap: 0;
+			gap: 8px;
+			flex-wrap: nowrap;
 			margin-top: 32px;
 			max-width: 600px;
 		}
 		.hero-btn {
 			display: inline-flex;
 			align-items: center;
-			gap: 8px;
-			padding: 12px 20px;
-			border-radius: 0;
+			gap: 6px;
+			padding: 10px 16px;
+			border-radius: 50px;
 			font-weight: 600;
-			font-size: 14px;
+			font-size: 13px;
 			border: none;
-			background: transparent;
-			color: white;
 			cursor: pointer;
 			transition: all 0.3s ease;
-			box-shadow: none;
-			border-right: 2px solid rgba(255, 255, 255, 0.3);
-		}
-		.hero-btn:last-child {
-			border-right: none;
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+			white-space: nowrap;
 		}
 		.hero-btn i {
-			font-size: 14px;
+			font-size: 13px;
 		}
 		.hero-btn-primary {
-			background: transparent;
+			background: linear-gradient(135deg, #3498db, #2980b9);
 			color: white;
 		}
 		.hero-btn-primary:hover {
-			background: rgba(255, 255, 255, 0.1);
-			transform: none;
-			box-shadow: none;
+			transform: translateY(-2px);
+			box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
 		}
 		.hero-btn-secondary {
 			background: rgba(255, 255, 255, 0.95);
