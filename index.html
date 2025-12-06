@@ -2903,25 +2903,12 @@
 				});
 			}
 
-			if (searchDatabaseBtn) {
-				searchDatabaseBtn.addEventListener('click', function() {
-					// Scroll to search/filter section
-					const searchSection = document.getElementById('pubmed-results');
-					if (searchSection) {
-						searchSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-						
-						// Focus on search input after scroll
-						setTimeout(() => {
-							const searchInput = document.getElementById('search-input');
-							if (searchInput) {
-								searchInput.focus();
-							}
-						}, 600);
-					}
-				});
-			}
-
-			const leaderboardBtn = document.getElementById('leaderboardBtn');
+		if (searchDatabaseBtn) {
+			searchDatabaseBtn.addEventListener('click', function() {
+				// Navigate to search page
+				window.location.href = 'search.html';
+			});
+		}			const leaderboardBtn = document.getElementById('leaderboardBtn');
 			if (leaderboardBtn) {
 				leaderboardBtn.addEventListener('click', function() {
 					// Navigate to leaderboard page
