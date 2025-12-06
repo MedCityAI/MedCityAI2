@@ -653,43 +653,25 @@
 						</div>
 					</div>
 
-					<!-- Contact Form -->
+					<!-- Contact Information -->
 					<div class="contact-form">
-						<h2>Send us a Message</h2>
+						<h2>Get in Touch</h2>
+						<p style="font-size: 1.1em; color: #555; margin-bottom: 30px;">Have questions or want to collaborate? We'd love to hear from you.</p>
 						
-						<div class="success-message" id="successMessage">
-							Thank you for your message! We'll get back to you soon.
+						<div style="background: #f8f9fa; padding: 30px; border-radius: 12px; text-align: center;">
+							<div style="font-size: 2.5em; margin-bottom: 15px;">📧</div>
+							<h3 style="color: #2c3e50; margin-bottom: 15px; font-size: 1.3em;">Email Us</h3>
+							<a href="mailto:medcityai@gmail.com" style="
+								color: #3498db; 
+								font-size: 1.2em; 
+								font-weight: 600; 
+								text-decoration: none; 
+								border-bottom: 2px solid #3498db;
+								padding-bottom: 3px;
+								transition: all 0.3s ease;
+							">medcityai@gmail.com</a>
+							<p style="color: #666; margin-top: 20px; font-size: 0.95em;">Click to open your email client</p>
 						</div>
-						
-						<form id="contactForm" onsubmit="handleSubmit(event)">
-							<div class="form-row">
-								<div class="form-group">
-									<label for="firstName">First Name *</label>
-									<input type="text" id="firstName" name="firstName" required>
-								</div>
-								<div class="form-group">
-									<label for="lastName">Last Name *</label>
-									<input type="text" id="lastName" name="lastName" required>
-								</div>
-							</div>
-							
-							<div class="form-group">
-								<label for="email">Email Address *</label>
-								<input type="email" id="email" name="email" required>
-							</div>
-							
-							<div class="form-group">
-								<label for="subject">Subject *</label>
-								<input type="text" id="subject" name="subject" required placeholder="What is your inquiry about?">
-							</div>
-							
-							<div class="form-group">
-								<label for="message">Message *</label>
-								<textarea id="message" name="message" required placeholder="Please share your questions, comments, or feedback. We're here to help and would love to hear from you!"></textarea>
-							</div>
-							
-							<button type="submit" class="submit-btn">Send Message</button>
-						</form>
 					</div>
 				</div>
 			</div>
@@ -798,45 +780,6 @@
 	<script src="assets/js/main.js"></script>
 
 	<script>
-	function handleSubmit(event) {
-		event.preventDefault();
-		
-		// Get form data
-		const formData = new FormData(event.target);
-		const data = {
-			firstName: formData.get('firstName'),
-			lastName: formData.get('lastName'),
-			email: formData.get('email'),
-			subject: formData.get('subject'),
-			message: formData.get('message')
-		};
-		
-		// Show success message
-		document.getElementById('successMessage').style.display = 'block';
-		
-		// Reset form
-		event.target.reset();
-		
-		// In a real implementation, you would send the data to your server
-		console.log('Form submission:', data);
-		
-		// Create mailto link as fallback
-		const mailtoLink = `mailto:medcityai@gmail.com?subject=${encodeURIComponent(data.subject)}&body=${encodeURIComponent(
-			`Name: ${data.firstName} ${data.lastName}\\n` +
-			`Email: ${data.email}\\n\\n` +
-			`Message:\\n${data.message}`
-		)}`;
-		
-		// Open email client after a brief delay
-		setTimeout(() => {
-			window.location.href = mailtoLink;
-		}, 1000);
-		
-		// Hide success message after 5 seconds
-		setTimeout(() => {
-			document.getElementById('successMessage').style.display = 'none';
-		}, 5000);
-	}
 	</script>
 	<script src="assets/js/navigation.js"></script>
 </body>
