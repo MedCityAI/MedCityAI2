@@ -2479,54 +2479,32 @@
 	let currentSlideIndex = 0;
 
 	async function getFeaturedArticles() {
-		// Calculate the prior Sunday (start of last full week)
-		const today = new Date();
-		const currentDayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, etc.
-		
-		// Calculate days to subtract to get to last Sunday
-		// If today is Sunday (0), go back 7 days. Otherwise, go back (currentDayOfWeek + 7) days
-		const daysToLastSunday = currentDayOfWeek === 0 ? 7 : currentDayOfWeek + 7;
-		
-		const weekStart = new Date(today);
-		weekStart.setDate(today.getDate() - daysToLastSunday);
-		weekStart.setHours(0, 0, 0, 0);
-		
-		const weekEnd = new Date(weekStart);
-		weekEnd.setDate(weekStart.getDate() + 6); // Sunday + 6 days = Saturday
-		weekEnd.setHours(23, 59, 59, 999);
-		
 		// Ensure CSV data is loaded
 		if (allArticlesData.length === 0) {
 			await loadCSVData();
 		}
 		
-		// Wait for like counts to be loaded
-		if (Object.keys(likeCountsForRanking).length === 0) {
-			await fetchLikeCounts();
-		}
-		
 		const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 		
-		// Filter articles published within the prior week (Sunday-Saturday)
-		const articlesFromWeek = allArticlesData.filter(article => {
-			if (!article.year || !article.month || !article.day) return false;
+		// Sort all articles by date (most recent first)
+		const sortedArticles = allArticlesData.slice().sort((a, b) => {
+			if (!a.year || !a.month || !a.day) return 1;
+			if (!b.year || !b.month || !b.day) return -1;
 			
-			const monthNum = monthNames.indexOf(article.month);
-			if (monthNum === -1) return false;
+			const monthNumA = monthNames.indexOf(a.month);
+			const monthNumB = monthNames.indexOf(b.month);
 			
-			const articleDate = new Date(article.year, monthNum - 1, article.day);
-			return articleDate >= weekStart && articleDate <= weekEnd;
+			if (monthNumA === -1) return 1;
+			if (monthNumB === -1) return -1;
+			
+			const dateA = new Date(a.year, monthNumA - 1, a.day);
+			const dateB = new Date(b.year, monthNumB - 1, b.day);
+			
+			return dateB - dateA; // Most recent first
 		});
 		
-		// Sort by like count (highest first)
-		articlesFromWeek.sort((a, b) => {
-			const likesA = likeCountsForRanking[a.pmid] || 0;
-			const likesB = likeCountsForRanking[b.pmid] || 0;
-			return likesB - likesA;
-		});
-		
-		// Return top 3 for carousel display
-		return articlesFromWeek.slice(0, 3);
+		// Return top 3 most recent articles
+		return sortedArticles.slice(0, 3);
 	}
 
 	function initializeFeaturedCarousel(articles) {
