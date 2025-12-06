@@ -159,27 +159,11 @@
 			align-items: center;
 			gap: 6px;
 		}
-		.featured-card .abstract {
-			color: #34495e;
-			font-size: 16px;
-			line-height: 1.8;
-			margin-bottom: 25px;
-		}
 		.featured-card .authors {
 			color: #7f8c8d;
 			font-size: 14px;
 			margin-bottom: 20px;
 			font-style: italic;
-		}
-		.featured-card .journal-info {
-			display: inline-block;
-			background: #ecf0f1;
-			color: #2c3e50;
-			padding: 6px 14px;
-			border-radius: 20px;
-			font-size: 13px;
-			font-weight: 600;
-			margin-bottom: 20px;
 		}
 
 		/* Action Buttons */
@@ -189,34 +173,33 @@
 			flex-wrap: wrap;
 		}
 		.btn {
-			padding: 12px 24px;
-			border-radius: 8px;
+			padding: 8px 16px;
+			border-radius: 6px;
 			text-decoration: none;
-			font-weight: 600;
-			font-size: 14px;
+			font-weight: 500;
+			font-size: 13px;
 			transition: all 0.3s ease;
 			display: inline-flex;
 			align-items: center;
-			gap: 8px;
+			gap: 6px;
 			border: none;
 			cursor: pointer;
+			color: #7f8c8d;
 		}
 		.btn-primary {
-			background: linear-gradient(135deg, #3498db, #2980b9);
-			color: white;
+			background: transparent;
+			color: #7f8c8d;
 		}
 		.btn-primary:hover {
-			transform: translateY(-2px);
-			box-shadow: 0 6px 16px rgba(52, 152, 219, 0.3);
+			color: #3498db;
 		}
 		.btn-secondary {
-			background: white;
-			color: #3498db;
-			border: 2px solid #3498db;
+			background: transparent;
+			color: #7f8c8d;
+			border: none;
 		}
 		.btn-secondary:hover {
-			background: #3498db;
-			color: white;
+			color: #3498db;
 		}
 
 		/* Loading State */
@@ -299,16 +282,11 @@
 					<a href="search.html" role="menuitem">Search</a>
 					<a href="featured.html" role="menuitem" aria-current="page">Featured</a>
 					<a href="leaderboard.html" role="menuitem">Leaderboard</a>
-					<a href="about.html" role="menuitem">About</a>
-					<a href="contact.html" role="menuitem">Contact</a>
-				</div>
-				<div style="display: flex; align-items: center; gap: 15px;">
-					<a href="#subscribe" class="cta-button">Subscribe</a>
-				</div>
+				<a href="about.html" role="menuitem">About</a>
+				<a href="contact.html" role="menuitem">Contact</a>
 			</div>
-		</nav>
-
-		<!-- Page Header -->
+		</div>
+	</nav>		<!-- Page Header -->
 		<div class="page-header">
 			<h1><i class="fas fa-star"></i> Featured Publications</h1>
 			<p>Highlighted research from Mayo Clinic and affiliated institutions</p>
@@ -423,6 +401,10 @@
 								<h2>${title}</h2>
 								<div class="meta">
 									<div class="meta-item">
+										<i class="fas fa-book"></i>
+										${journal}
+									</div>
+									<div class="meta-item">
 										<i class="fas fa-calendar-alt"></i>
 										${pubdate}
 									</div>
@@ -431,14 +413,8 @@
 										PMID: ${pmid}
 									</div>
 								</div>
-								<div class="journal-info">
-									<i class="fas fa-book"></i> ${journal}
-								</div>
 								<div class="authors">
 									<i class="fas fa-users"></i> ${authors}
-								</div>
-								<div class="abstract">
-									${abstract}
 								</div>
 								<div class="action-buttons">
 									<a href="${url}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">

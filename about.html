@@ -298,6 +298,185 @@
 		
 		.thanks-section {
 			padding: 60px 0;
+			background: #f8f9fa;
+			text-align: center;
+		}
+		.thanks-content h2 {
+			font-size: 2.5em;
+			color: #2c3e50;
+			margin-bottom: 20px;
+		}
+		.thanks-content p {
+			font-size: 1.1em;
+			color: #666;
+			max-width: 700px;
+			margin: 0 auto 30px;
+		}
+		.collider-logo {
+			font-size: 1.3em;
+			font-weight: 700;
+			color: #3498db;
+			text-decoration: none;
+		}
+		.collider-logo:hover {
+			color: #2980b9;
+		}
+		
+		/* Contributors Section */
+		.contributors-section {
+			background: white;
+			padding: 40px;
+			border-radius: 15px;
+			margin: 30px 0;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+		}
+		.contributors-section h3 {
+			font-size: 1.8em;
+			color: #2c3e50;
+			margin-bottom: 20px;
+			font-weight: 600;
+		}
+		.contributors-list {
+			list-style: none;
+			padding: 0;
+		}
+		.contributors-list li {
+			font-size: 1.1em;
+			color: #555;
+			margin-bottom: 12px;
+			padding-left: 25px;
+			position: relative;
+		}
+		.contributors-list li:before {
+			content: '•';
+			color: #3498db;
+			font-weight: bold;
+			position: absolute;
+			left: 0;
+		}
+		
+		/* Contact Section */
+		.contact-section {
+			padding: 60px 0;
+			background: #f8f9fa;
+		}
+		.contact-content {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 60px;
+			align-items: start;
+		}
+		.contact-info {
+			background: white;
+			border-radius: 15px;
+			padding: 40px;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+		}
+		.contact-info h2 {
+			color: #2c3e50;
+			font-size: 2em;
+			margin-bottom: 20px;
+			font-weight: 700;
+		}
+		.contact-info p {
+			color: #666;
+			font-size: 1.1em;
+			line-height: 1.6;
+			margin-bottom: 30px;
+		}
+		.contact-details {
+			margin-bottom: 30px;
+		}
+		.contact-item {
+			display: flex;
+			align-items: center;
+			margin-bottom: 20px;
+			font-size: 1.1em;
+		}
+		.contact-item i {
+			width: 40px;
+			font-size: 1.3em;
+			margin-right: 15px;
+			color: #3498db;
+		}
+		.contact-item span {
+			color: #2c3e50;
+			font-weight: 500;
+		}
+		.contact-form {
+			background: white;
+			border-radius: 15px;
+			padding: 40px;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+		}
+		.contact-form h2 {
+			color: #2c3e50;
+			font-size: 2em;
+			margin-bottom: 20px;
+			font-weight: 700;
+		}
+		.form-group {
+			margin-bottom: 25px;
+		}
+		.form-group label {
+			display: block;
+			color: #2c3e50;
+			font-weight: 600;
+			margin-bottom: 8px;
+			font-size: 1em;
+		}
+		.form-group input,
+		.form-group textarea {
+			width: 100%;
+			padding: 15px;
+			border: 2px solid #eee;
+			border-radius: 8px;
+			font-size: 1em;
+			transition: border-color 0.3s ease;
+			font-family: inherit;
+			box-sizing: border-box;
+		}
+		.form-group input:focus,
+		.form-group textarea:focus {
+			outline: none;
+			border-color: #3498db;
+		}
+		.form-group textarea {
+			resize: vertical;
+			min-height: 120px;
+		}
+		.form-row {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 20px;
+		}
+		.submit-btn {
+			background: linear-gradient(135deg, #3498db, #2980b9);
+			color: white;
+			padding: 15px 40px;
+			border: none;
+			border-radius: 8px;
+			font-size: 1.1em;
+			font-weight: 600;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			width: 100%;
+		}
+		.submit-btn:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+		}
+		.success-message {
+			background: #d4edda;
+			color: #155724;
+			padding: 15px;
+			border-radius: 8px;
+			margin-bottom: 20px;
+			display: none;
+			font-weight: 600;
+		}
+		
+		/* Responsive */
 			background: white;
 			text-align: center;
 		}
@@ -361,13 +540,12 @@
 					<div class="nav-links">
 						<a href="index.html">Research</a>
 						<a href="analytics.html">Analytics</a>
-						<a href="leaderboard.html">Leaderboard</a>
-						<a href="about.html">About</a>
-						<a href="contact.html">Contact</a>
-					</div>
-					<div style="display: flex; align-items: center; gap: 15px;">
-						<a href="#subscribe" class="cta-button">Subscribe</a>
-						<div class="menu-icon">
+					<a href="leaderboard.html">Leaderboard</a>
+					<a href="about.html">About</a>
+					<a href="contact.html">Contact</a>
+				</div>
+				<div style="display: flex; align-items: center; gap: 15px;">
+					<div class="menu-icon">
 							<div></div>
 							<div></div>
 							<div></div>
@@ -376,7 +554,167 @@
 				</div>
 			</div>
 
-			<!-- Vision Section -->
+		<!-- Vision Section -->
+		<section class="vision-section">
+			<div class="container">
+				<div class="vision-content">
+					<div class="vision-text">
+						<h2>Our Purpose</h2>
+						<p>MedCityAI was created to enhance visibility and accessibility of cutting-edge research emerging from Rochester, Minnesota's world-renowned medical institutions. By bringing together publications from Mayo Clinic, the University of Minnesota Rochester, and other leading research centers, we create a comprehensive view of the biomedical innovation happening in Med City.</p>
+						<p>Our platform leverages artificial intelligence to curate, analyze, and present research publications in an intuitive format. We transform the overwhelming volume of scientific literature into actionable insights, helping researchers, clinicians, and the community stay informed about the latest medical breakthroughs and discoveries.</p>
+						<p>Through real-time monitoring, intelligent categorization, and collaborative analytics, MedCityAI bridges the gap between research output and knowledge dissemination, fostering greater awareness of Rochester's significant contributions to global health and medicine.</p>
+					</div>
+					<div class="vision-graphic">
+						<div class="graphic-circle">
+							<div>
+								<div style="font-size: 2em; margin-bottom: 10px;">🧠</div>
+								<div>AI-Powered</div>
+								<div>Research Discovery</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Statistics Section -->
+		<section class="stats-section">
+			<div class="container">
+				<h2 class="section-title">Rochester Research Impact</h2>
+				<div class="stats-grid">
+					<div class="stat-card">
+						<span class="stat-number">160,000</span>
+						<div class="stat-label">Total Articles Indexed</div>
+						<div class="stat-description">Comprehensive coverage of Rochester's biomedical research output</div>
+					</div>
+					<div class="stat-card">
+						<span class="stat-number">9.38</span>
+						<div class="stat-label">Years to Double Publications</div>
+						<div class="stat-description">Rapid growth rate of research output from Rochester institutions</div>
+					</div>
+					<div class="stat-card">
+						<span class="stat-number">24/7</span>
+						<div class="stat-label">Real-Time Monitoring</div>
+						<div class="stat-description">Continuous tracking of new publications and research developments</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Team Section -->
+		<section class="team-section">
+			<div class="container">
+				<h2 class="section-title">About Me</h2>
+				
+				<!-- Founder Profile -->
+				<div class="founder-profile">
+					<div class="founder-content">
+						<div class="founder-avatar">
+							<img src="images/huber_profile.jpg" alt="Nathan Huber, PhD" />
+						</div>
+						<div class="founder-bio">
+							<h3>Nathan Huber, PhD</h3>
+							<div class="founder-title">Founder</div>
+							<p>Nathan has been part of the Rochester MedTech community for eight years. He earned his B.A. in physics and chemistry at Gustavus and his Ph.D. in biomedical engineering from Mayo Clinic Graduate School. His research interests include radiology, artificial intelligence, and interventional oncology.</p>
+						</div>
+					</div>
+				</div>
+				
+				<!-- Contributors Section -->
+				<div class="contributors-section">
+					<h3>Contributors</h3>
+					<ul class="contributors-list">
+						<li>Kevin Siegler</li>
+						<li>David Razidlo</li>
+						<li>Juliana Silva (Collider Team)</li>
+						<li>Sam Gill (Collider Team)</li>
+					</ul>
+				</div>
+			</div>
+		</section>
+
+		<!-- Thanks Section -->
+		<section class="thanks-section">
+			<div class="container">
+				<div class="thanks-content">
+					<h2>Special Thanks</h2>
+					<p>We extend our gratitude to <a href="https://www.collider.mn/" target="_blank" class="collider-logo" style="color: #3498db; text-decoration: none; font-weight: 600;">Collider.mn</a> for their support and belief in our mission to advance biomedical research accessibility in Rochester and beyond.</p>
+				</div>
+			</div>
+		</section>
+
+		<!-- Contact Section -->
+		<section class="contact-section">
+			<div class="container">
+				<div class="contact-content">
+					<!-- Contact Information -->
+					<div class="contact-info">
+						<h2>Contact Information</h2>
+						<p>Connect with our team to learn more about MedCityAI's research analytics platform and how we're advancing biomedical research in Rochester and beyond.</p>
+						
+						<div class="contact-details">
+							<div class="contact-item">
+								<i>✉</i>
+								<span>medcityai@gmail.com</span>
+							</div>
+							<div class="contact-item">
+								<i>📍</i>
+								<span>Rochester, Minnesota, USA</span>
+							</div>
+							<div class="contact-item">
+								<i>🌐</i>
+								<span>www.medcityai.com</span>
+							</div>
+							<div class="contact-item">
+								<i>📱</i>
+								<span>Follow us on LinkedIn</span>
+							</div>
+						</div>
+					</div>
+
+					<!-- Contact Form -->
+					<div class="contact-form">
+						<h2>Send us a Message</h2>
+						
+						<div class="success-message" id="successMessage">
+							Thank you for your message! We'll get back to you soon.
+						</div>
+						
+						<form id="contactForm" onsubmit="handleSubmit(event)">
+							<div class="form-row">
+								<div class="form-group">
+									<label for="firstName">First Name *</label>
+									<input type="text" id="firstName" name="firstName" required>
+								</div>
+								<div class="form-group">
+									<label for="lastName">Last Name *</label>
+									<input type="text" id="lastName" name="lastName" required>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label for="email">Email Address *</label>
+								<input type="email" id="email" name="email" required>
+							</div>
+							
+							<div class="form-group">
+								<label for="subject">Subject *</label>
+								<input type="text" id="subject" name="subject" required placeholder="What is your inquiry about?">
+							</div>
+							
+							<div class="form-group">
+								<label for="message">Message *</label>
+								<textarea id="message" name="message" required placeholder="Please share your questions, comments, or feedback. We're here to help and would love to hear from you!"></textarea>
+							</div>
+							
+							<button type="submit" class="submit-btn">Send Message</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Footer -->
 			<section class="vision-section">
 				<div class="container">
 					<div class="vision-content">
@@ -469,13 +807,55 @@
 			</footer>
 		</div>
 
-		<!-- Scripts -->
-		<script src="assets/js/jquery.min.js"></script>
-		<script src="assets/js/jquery.scrollex.min.js"></script>
-		<script src="assets/js/jquery.scrolly.min.js"></script>
-		<script src="assets/js/browser.min.js"></script>
-		<script src="assets/js/breakpoints.min.js"></script>
-		<script src="assets/js/util.js"></script>
-		<script src="assets/js/main.js"></script>
-	</body>
+	<!-- Scripts -->
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/jquery.scrollex.min.js"></script>
+	<script src="assets/js/jquery.scrolly.min.js"></script>
+	<script src="assets/js/browser.min.js"></script>
+	<script src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
+
+	<script>
+	function handleSubmit(event) {
+		event.preventDefault();
+		
+		// Get form data
+		const formData = new FormData(event.target);
+		const data = {
+			firstName: formData.get('firstName'),
+			lastName: formData.get('lastName'),
+			email: formData.get('email'),
+			subject: formData.get('subject'),
+			message: formData.get('message')
+		};
+		
+		// Show success message
+		document.getElementById('successMessage').style.display = 'block';
+		
+		// Reset form
+		event.target.reset();
+		
+		// In a real implementation, you would send the data to your server
+		console.log('Form submission:', data);
+		
+		// Create mailto link as fallback
+		const mailtoLink = `mailto:medcityai@gmail.com?subject=${encodeURIComponent(data.subject)}&body=${encodeURIComponent(
+			`Name: ${data.firstName} ${data.lastName}\\n` +
+			`Email: ${data.email}\\n\\n` +
+			`Message:\\n${data.message}`
+		)}`;
+		
+		// Open email client after a brief delay
+		setTimeout(() => {
+			window.location.href = mailtoLink;
+		}, 1000);
+		
+		// Hide success message after 5 seconds
+		setTimeout(() => {
+			document.getElementById('successMessage').style.display = 'none';
+		}, 5000);
+	}
+	</script>
+</body>
 </html>

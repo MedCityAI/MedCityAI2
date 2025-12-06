@@ -303,13 +303,12 @@
 					</div>
 					<div class="nav-links">
 						<a href="index.html">Research</a>
-						<a href="analytics.html">Analytics</a>
-						<a href="about.html">About</a>
-						<a href="contact.html">Contact</a>
-					</div>
-					<div style="display: flex; align-items: center; gap: 15px;">
-						<a href="#subscribe" class="cta-button">Subscribe</a>
-						<div class="menu-icon">
+					<a href="analytics.html">Analytics</a>
+					<a href="about.html">About</a>
+					<a href="contact.html">Contact</a>
+				</div>
+				<div style="display: flex; align-items: center; gap: 15px;">
+					<div class="menu-icon">
 							<div></div>
 							<div></div>
 							<div></div>
@@ -344,14 +343,14 @@
 									<i>📍</i>
 									<span>Rochester, Minnesota, USA</span>
 								</div>
-								<div class="contact-item">
-									<i>🌐</i>
-									<span>www.medcityai.org</span>
-								</div>
-								<div class="contact-item">
-									<i>📱</i>
-									<span>Follow us on social media</span>
-								</div>
+							<div class="contact-item">
+								<i>🌐</i>
+								<span>www.medcityai.com</span>
+							</div>
+							<div class="contact-item">
+								<i>📱</i>
+								<span>Follow us on LinkedIn</span>
+							</div>
 							</div>
 							
 							<div class="office-hours">
@@ -393,21 +392,15 @@
 										<label for="lastName">Last Name *</label>
 										<input type="text" id="lastName" name="lastName" required>
 									</div>
-								</div>
-								
-								<div class="form-row">
-									<div class="form-group">
-										<label for="email">Email Address *</label>
-										<input type="email" id="email" name="email" required>
-									</div>
-									<div class="form-group">
-										<label for="organization">Organization</label>
-										<input type="text" id="organization" name="organization">
-									</div>
-								</div>
-								
-								<div class="form-group">
-									<label for="subject">Subject *</label>
+							</div>
+							
+							<div class="form-group">
+								<label for="email">Email Address *</label>
+								<input type="email" id="email" name="email" required>
+							</div>
+							
+							<div class="form-group">
+								<label for="subject">Subject *</label>
 									<input type="text" id="subject" name="subject" required placeholder="What is your inquiry about?">
 								</div>
 								
@@ -418,38 +411,6 @@
 								
 								<button type="submit" class="submit-btn">Send Message</button>
 							</form>
-						</div>
-					</div>
-				</div>
-			</section>
-
-			<!-- FAQ Section -->
-			<section class="contact-section" style="background: #f8f9fa;">
-				<div class="container">
-					<div style="text-align: center; margin-bottom: 50px;">
-						<h2 style="font-size: 2.5em; color: #2c3e50; font-weight: 700;">Frequently Asked Questions</h2>
-						<p style="font-size: 1.2em; color: #666; max-width: 600px; margin: 0 auto;">Common questions about Med City AI and our research platform</p>
-					</div>
-					
-					<div style="max-width: 800px; margin: 0 auto;">
-						<div style="background: white; border-radius: 10px; padding: 30px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-							<h3 style="color: #2c3e50; margin-bottom: 10px;">How can I access the research database?</h3>
-							<p style="color: #666; margin-bottom: 0;">Our platform provides free access to analyzed biomedical research from Rochester. Simply browse our research dashboard or use our search functionality to find relevant studies.</p>
-						</div>
-						
-						<div style="background: white; border-radius: 10px; padding: 30px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-							<h3 style="color: #2c3e50; margin-bottom: 10px;">Can I collaborate with Med City AI?</h3>
-							<p style="color: #666; margin-bottom: 0;">We welcome collaborations with researchers, institutions, and organizations. Please reach out via email to discuss potential partnership opportunities.</p>
-						</div>
-						
-						<div style="background: white; border-radius: 10px; padding: 30px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-							<h3 style="color: #2c3e50; margin-bottom: 10px;">How often is the database updated?</h3>
-							<p style="color: #666; margin-bottom: 0;">Our database is continuously updated with the latest research publications. New studies are analyzed and added to our platform regularly to ensure current information.</p>
-						</div>
-						
-						<div style="background: white; border-radius: 10px; padding: 30px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-							<h3 style="color: #2c3e50; margin-bottom: 10px;">Do you provide API access?</h3>
-							<p style="color: #666; margin-bottom: 0;">We're working on API access for researchers and developers. Contact us to learn about early access opportunities and integration possibilities.</p>
 						</div>
 					</div>
 				</div>
@@ -489,7 +450,6 @@
 				firstName: formData.get('firstName'),
 				lastName: formData.get('lastName'),
 				email: formData.get('email'),
-				organization: formData.get('organization'),
 				subject: formData.get('subject'),
 				message: formData.get('message')
 			};
@@ -506,8 +466,7 @@
 			// Create mailto link as fallback
 			const mailtoLink = `mailto:medcityai@gmail.com?subject=${encodeURIComponent(data.subject)}&body=${encodeURIComponent(
 				`Name: ${data.firstName} ${data.lastName}\n` +
-				`Email: ${data.email}\n` +
-				`Organization: ${data.organization || 'Not specified'}\n\n` +
+				`Email: ${data.email}\n\n` +
 				`Message:\n${data.message}`
 			)}`;
 			
