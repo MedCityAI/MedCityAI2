@@ -1460,6 +1460,10 @@
 								<i class="fas fa-search"></i>
 								Search
 							</button>
+							<button class="hero-btn hero-btn-primary" id="leaderboardBtn">
+								<i class="fas fa-trophy"></i>
+								Leaderboard
+							</button>
 						</div>
 					</div>
 					<div class="hero-right">
@@ -2905,7 +2909,14 @@
 				});
 			}
 
-			// Set up modal event listeners
+			const leaderboardBtn = document.getElementById('leaderboardBtn');
+			if (leaderboardBtn) {
+				leaderboardBtn.addEventListener('click', function() {
+					// Navigate to leaderboard page
+					window.location.href = 'leaderboard.html';
+				});
+			}
+					// Set up modal event listeners
 			const modalBg = document.getElementById('modalBg');
 			const modalClose = document.getElementById('modalClose');
             
