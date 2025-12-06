@@ -478,36 +478,6 @@
 		}
 		
 		/* Responsive */
-			background: white;
-			text-align: center;
-		}
-		.thanks-content {
-			max-width: 600px;
-			margin: 0 auto;
-		}
-		.thanks-section h2 {
-			font-size: 2em;
-			color: #2c3e50;
-			margin-bottom: 20px;
-		}
-		.collider-logo {
-			display: inline-block;
-			padding: 15px 30px;
-			background: #f8f9fa;
-			border-radius: 10px;
-			font-size: 1.5em;
-			font-weight: 600;
-			color: #3498db;
-			text-decoration: none;
-			margin-top: 20px;
-			transition: all 0.3s ease;
-		}
-		.collider-logo:hover {
-			background: #3498db;
-			color: white;
-		}
-		
-		/* Responsive */
 		@media (max-width: 900px) {
 			.vision-content {
 				grid-template-columns: 1fr;
@@ -530,10 +500,18 @@
 		</style>
 	</head>
 	<body class="landing is-preload">
-		<!-- Page Wrapper -->
-		<div id="page-wrapper">
-			<!-- Modern Medical Navigation Header -->
-			<div id="navigation-placeholder" data-page="about"></div>
+	<!-- Page Wrapper -->
+	<div id="page-wrapper">
+		<!-- Modern Medical Navigation Header -->
+		<div id="navigation-placeholder" data-page="about"></div>
+
+		<!-- About Hero -->
+		<section class="about-hero">
+			<div class="container">
+				<h1>About MedCityAI</h1>
+				<p>Empowering biomedical research discovery through AI-driven analytics and collaboration</p>
+			</div>
+		</section>
 
 		<!-- Vision Section -->
 		<section class="vision-section">
@@ -558,71 +536,6 @@
 			</div>
 		</section>
 
-		<!-- Statistics Section -->
-		<section class="stats-section">
-			<div class="container">
-				<h2 class="section-title">Rochester Research Impact</h2>
-				<div class="stats-grid">
-					<div class="stat-card">
-						<span class="stat-number">160,000</span>
-						<div class="stat-label">Total Articles Indexed</div>
-						<div class="stat-description">Comprehensive coverage of Rochester's biomedical research output</div>
-					</div>
-					<div class="stat-card">
-						<span class="stat-number">9.38</span>
-						<div class="stat-label">Years to Double Publications</div>
-						<div class="stat-description">Rapid growth rate of research output from Rochester institutions</div>
-					</div>
-					<div class="stat-card">
-						<span class="stat-number">24/7</span>
-						<div class="stat-label">Real-Time Monitoring</div>
-						<div class="stat-description">Continuous tracking of new publications and research developments</div>
-					</div>
-				</div>
-			</div>
-		</section>
-
-		<!-- Team Section -->
-		<section class="team-section">
-			<div class="container">
-				<h2 class="section-title">About Me</h2>
-				
-				<!-- Founder Profile -->
-				<div class="founder-profile">
-					<div class="founder-content">
-						<div class="founder-avatar">
-							<img src="images/huber_profile.jpg" alt="Nathan Huber, PhD" />
-						</div>
-						<div class="founder-bio">
-							<h3>Nathan Huber, PhD</h3>
-							<div class="founder-title">Founder</div>
-							<p>Nathan has been part of the Rochester MedTech community for eight years. He earned his B.A. in physics and chemistry at Gustavus and his Ph.D. in biomedical engineering from Mayo Clinic Graduate School. His research interests include radiology, artificial intelligence, and interventional oncology.</p>
-						</div>
-					</div>
-				</div>
-				
-				<!-- Contributors Section -->
-				<div class="contributors-section">
-					<h3>Contributors</h3>
-					<ul class="contributors-list">
-						<li>Kevin Siegler</li>
-						<li>David Razidlo</li>
-						<li>Juliana Silva (Collider Team)</li>
-						<li>Sam Gill (Collider Team)</li>
-					</ul>
-				</div>
-			</div>
-		</section>
-
-		<!-- Thanks Section -->
-		<section class="thanks-section">
-			<div class="container">
-				<div class="thanks-content">
-					<h2>Special Thanks</h2>
-					<p>We extend our gratitude to <a href="https://www.collider.mn/" target="_blank" class="collider-logo" style="color: #3498db; text-decoration: none; font-weight: 600;">Collider.mn</a> for their support and belief in our mission to advance biomedical research accessibility in Rochester and beyond.</p>
-				</div>
-			</div>
-		</section>
 
 		<!-- Contact Section -->
 		<section class="contact-section">
@@ -677,77 +590,31 @@
 			</div>
 		</section>
 
+		<!-- Thanks Section -->
+		<section class="thanks-section">
+			<div class="container">
+				<div class="thanks-content">
+					<h2>Special Thanks</h2>
+					<p>We extend our gratitude to Collider.mn for their support and belief in our mission to advance biomedical research accessibility in Rochester and beyond.</p>
+					<a href="#" class="collider-logo">Collider.mn</a>
+				</div>
+			</div>
+		</section>
+
 		<!-- Footer -->
-			<section class="vision-section">
-				<div class="container">
-					<div class="vision-content">
-						<div class="vision-text">
-							<h2>Our Purpose</h2>
-							<p>To help gain visibility of research emerging from Rochester's world-class medical institutions.</p>
-							<p>Our platform leverages artificial intelligence to curate and present the most relevant research publications, making cutting-edge biomedical discoveries more accessible to the medical community.</p>
-						</div>
-						<div class="vision-graphic">
-							<div class="graphic-circle">
-								<div>
-									<div style="font-size: 2em; margin-bottom: 10px;">🧠</div>
-									<div>AI-Powered</div>
-									<div>Research Discovery</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
-
-			<!-- Statistics Section -->
-			<section class="stats-section">
-				<div class="container">
-					<h2 class="section-title">Rochester Research Impact</h2>
-					<div class="stats-grid">
-						<div class="stat-card">
-							<span class="stat-number">160,000</span>
-							<div class="stat-label">Total Articles Indexed</div>
-							<div class="stat-description">Comprehensive coverage of Rochester's biomedical research output</div>
-						</div>
-						<div class="stat-card">
-							<span class="stat-number">9.38</span>
-							<div class="stat-label">Years to Double Publications</div>
-							<div class="stat-description">Rapid growth rate of research output from Rochester institutions</div>
-						</div>
-						<div class="stat-card">
-							<span class="stat-number">24/7</span>
-							<div class="stat-label">Real-Time Monitoring</div>
-							<div class="stat-description">Continuous tracking of new publications and research developments</div>
-						</div>
-					</div>
-				</div>
-			</section>
-
-			<!-- Thanks Section -->
-			<section class="thanks-section">
-				<div class="container">
-					<div class="thanks-content">
-						<h2>Special Thanks</h2>
-						<p>We extend our gratitude to Collider.mn for their support and belief in our mission to advance biomedical research accessibility in Rochester and beyond.</p>
-						<a href="#" class="collider-logo">Collider.mn</a>
-					</div>
-				</div>
-			</section>
-
-			<!-- Footer -->
-			<footer id="footer">
-				<ul class="icons">
-					<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-					<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-					<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-					<li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
-					<li><a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
-				</ul>
-				<ul class="copyright">
-					<li>&copy; Med City AI</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-				</ul>
-			</footer>
-		</div>
+		<footer id="footer">
+			<ul class="icons">
+				<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+				<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+				<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+				<li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
+				<li><a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+			</ul>
+			<ul class="copyright">
+				<li>&copy; Med City AI</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+			</ul>
+		</footer>
+	</div>
 
 	<!-- Scripts -->
 	<script src="assets/js/jquery.min.js"></script>
