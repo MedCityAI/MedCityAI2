@@ -19,9 +19,6 @@
                     <a href="featured.html" role="menuitem" data-page="featured">Featured</a>
                     <a href="leaderboard.html" role="menuitem" data-page="leaderboard">Leaderboard</a>
                     <a href="about.html" role="menuitem" data-page="about">About</a>
-                    <a href="#" role="menuitem" onclick="openKeywordsModal(); return false;">
-                        Keywords
-                    </a>
                 </div>
                 <div style="display: flex; align-items: center; gap: 15px;">
                     <button class="menu-icon" aria-label="Toggle mobile menu" aria-expanded="false" aria-controls="mobile-menu">
@@ -41,7 +38,6 @@
             <a href="featured.html" data-page="featured">Featured</a>
             <a href="leaderboard.html" data-page="leaderboard">Leaderboard</a>
             <a href="about.html" data-page="about">About</a>
-            <a href="#" onclick="openKeywordsModal(); return false;">Keywords</a>
         </div>
     `;
     
