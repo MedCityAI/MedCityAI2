@@ -44,6 +44,7 @@
 		.logo {
 			display: flex;
 			align-items: center;
+			margin-right: auto;
 		}
 		.logo img {
 			height: 40px;
@@ -53,6 +54,7 @@
 			display: flex;
 			gap: 30px;
 			align-items: center;
+			margin-right: 15px;
 		}
 		.nav-links a {
 			color: #2c3e50;
@@ -78,6 +80,51 @@
 		.cta-button:hover {
 			transform: translateY(-1px);
 			box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+		}
+		
+		.menu-icon {
+			display: none;
+			flex-direction: column;
+			cursor: pointer;
+			background: none;
+			border: none;
+			padding: 8px;
+			margin-left: 15px;
+		}
+		.menu-icon div {
+			width: 25px;
+			height: 3px;
+			background: #2c3e50;
+			margin: 3px 0;
+			transition: 0.3s;
+		}
+		
+		/* Mobile menu dropdown */
+		.mobile-menu {
+			display: none;
+			position: absolute;
+			top: 70px;
+			right: 0;
+			width: 100%;
+			background: white;
+			box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+			z-index: 1000;
+		}
+		.mobile-menu.active {
+			display: block;
+		}
+		.mobile-menu a {
+			display: block;
+			padding: 15px 20px;
+			color: #2c3e50;
+			text-decoration: none;
+			font-weight: 500;
+			border-bottom: 1px solid #eee;
+			transition: background 0.3s ease;
+		}
+		.mobile-menu a:hover {
+			background: #f8f9fa;
+			color: #3498db;
 		}
 
 		/* Page Header */
@@ -264,29 +311,54 @@
 				width: fit-content;
 			}
 			.nav-links {
-				display: none;
+				display: none !important;
+			}
+			.menu-icon {
+				display: flex !important;
 			}
 		}
 		</style>
 	</head>
 	<body class="is-preload">
 
-		<!-- Navigation -->
-		<nav class="top-bar">
+	<!-- Navigation -->
+	<nav class="top-bar" role="navigation" aria-label="Main navigation">
 		<div class="top-bar-content">
 			<div class="logo">
-				<a href="index.html"><img src="images/medcityai_logo1.png" alt="Med City AI Logo" /></a>
+				<a href="index.html" style="text-decoration: none; border: none; outline: none;"><img src="images/medcityai_logo1.png" alt="MedCityAI Logo" style="height:48px; width:auto; display: block;" /></a>
 			</div>
 			<div class="nav-links" role="menubar">
-					<a href="index.html" role="menuitem">New Today</a>
-					<a href="search.html" role="menuitem">Search</a>
-					<a href="featured.html" role="menuitem" aria-current="page">Featured</a>
-					<a href="leaderboard.html" role="menuitem">Leaderboard</a>
+				<a href="index.html" role="menuitem">New Today</a>
+				<a href="search.html" role="menuitem">Search</a>
+				<a href="featured.html" role="menuitem" aria-current="page">Featured</a>
+				<a href="leaderboard.html" role="menuitem">Leaderboard</a>
 				<a href="about.html" role="menuitem">About</a>
-				<a href="contact.html" role="menuitem">Contact</a>
+				<a href="#" role="menuitem" onclick="openKeywordsModal(); return false;">
+					Keywords
+				</a>
+			</div>
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="menu-icon" aria-label="Toggle mobile menu" aria-expanded="false" aria-controls="mobile-menu">
+					<span class="sr-only">Menu</span>
+					<div aria-hidden="true"></div>
+					<div aria-hidden="true"></div>
+					<div aria-hidden="true"></div>
+				</button>
 			</div>
 		</div>
-	</nav>		<!-- Page Header -->
+	</nav>
+	
+	<!-- Mobile Menu -->
+	<div id="mobile-menu" class="mobile-menu" aria-hidden="true">
+		<a href="index.html">New Today</a>
+		<a href="search.html">Search</a>
+		<a href="featured.html">Featured</a>
+		<a href="leaderboard.html">Leaderboard</a>
+		<a href="about.html">About</a>
+		<a href="#" onclick="openKeywordsModal(); return false;">Keywords</a>
+	</div>
+	
+	<!-- Page Header -->
 		<div class="page-header">
 			<h1><i class="fas fa-star"></i> Featured Publications</h1>
 			<p>Highlighted research from Mayo Clinic and affiliated institutions</p>
@@ -306,6 +378,43 @@
 
 		<!-- Scripts -->
 		<script>
+			// Mobile menu toggle
+			document.addEventListener('DOMContentLoaded', function() {
+				const menuIcon = document.querySelector('.menu-icon');
+				const mobileMenu = document.getElementById('mobile-menu');
+				
+				if (menuIcon && mobileMenu) {
+					menuIcon.addEventListener('click', function(e) {
+						e.stopPropagation();
+						const isExpanded = this.getAttribute('aria-expanded') === 'true';
+						this.setAttribute('aria-expanded', !isExpanded);
+						mobileMenu.classList.toggle('active');
+						mobileMenu.setAttribute('aria-hidden', isExpanded);
+					});
+					
+					// Close mobile menu when clicking outside
+					document.addEventListener('click', function(event) {
+						if (!event.target.closest('.menu-icon') && !event.target.closest('.mobile-menu')) {
+							if (mobileMenu.classList.contains('active')) {
+								mobileMenu.classList.remove('active');
+								mobileMenu.setAttribute('aria-hidden', 'true');
+								menuIcon.setAttribute('aria-expanded', 'false');
+							}
+						}
+					});
+					
+					// Close mobile menu when clicking a link
+					const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+					mobileMenuLinks.forEach(link => {
+						link.addEventListener('click', function() {
+							mobileMenu.classList.remove('active');
+							mobileMenu.setAttribute('aria-hidden', 'true');
+							menuIcon.setAttribute('aria-expanded', 'false');
+						});
+					});
+				}
+			});
+			
 			// Parse CSV line handling quoted fields
 			function parseCSVLine(line) {
 				const result = [];
