@@ -2,9 +2,9 @@
 <!--
 	MedCityAI - Featured Publications
 -->
-<html>
+<html lang="en">
 	<head>
-		<title>Featured Publications - Med City AI</title>
+		<title>Featured Publications - MedCityAI</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
@@ -12,101 +12,115 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 		<style>
-		/* Body Styles */
-		body {
-			background: linear-gradient(135deg, #f5f7fa 0%, #e8ecef 100%);
-			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-			margin: 0;
-			padding: 0;
-		}
 
-		/* Page Header */
-		.page-header {
+		/* Hero Section */
+		.hero-section {
 			background: linear-gradient(120deg, #2568BE 0%, #1B4C7D 100%);
-			padding: 120px 20px 60px;
-			text-align: center;
-			color: white;
+			min-height: 280px;
+			display: flex;
+			align-items: center;
 			position: relative;
 			overflow: hidden;
+			z-index: 1;
 		}
-		.page-header h1 {
+		
+		.hero-content {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 60px 20px;
+			text-align: center;
+			position: relative;
+			z-index: 2;
+		}
+		
+		.hero-content h1 {
 			font-size: 3em;
-			margin: 0 0 15px 0;
 			font-weight: 800;
+			color: #fff;
+			margin: 0 0 15px 0;
 			text-shadow: 0 4px 18px rgba(0,0,0,0.28);
 		}
-		.page-header p {
-			font-size: 20px;
+		
+		.hero-content p {
+			font-size: 1.3em;
+			color: #e0e0e0;
 			margin: 0;
-			opacity: 0.95;
 		}
 
 		/* Featured Publications Container */
+		.wrapper {
+			background: linear-gradient(135deg, #e3eaf3 0%, #b6c7e0 100%);
+			padding: 60px 0;
+		}
+		
 		.featured-container {
 			max-width: 1200px;
-			margin: -40px auto 80px;
+			margin: 0 auto;
 			padding: 0 20px;
 		}
 
 		/* Featured Card */
 		.featured-card {
 			background: white;
-			border-radius: 16px;
-			box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-			padding: 40px;
-			margin-bottom: 30px;
+			border-radius: 12px;
+			box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+			padding: 35px;
+			margin-bottom: 25px;
 			transition: all 0.3s ease;
 			position: relative;
 			overflow: hidden;
+			border: 1px solid rgba(0,0,0,0.05);
 		}
 		.featured-card:hover {
-			transform: translateY(-5px);
-			box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+			transform: translateY(-3px);
+			box-shadow: 0 10px 30px rgba(0,0,0,0.12);
 		}
 
 		/* Featured Badge */
 		.featured-badge {
 			position: absolute;
-			top: 20px;
-			right: 20px;
+			top: 15px;
+			right: 15px;
 			background: linear-gradient(135deg, #e74c3c, #c0392b);
 			color: white;
-			padding: 8px 16px;
-			border-radius: 20px;
-			font-size: 12px;
+			padding: 6px 14px;
+			border-radius: 16px;
+			font-size: 11px;
 			font-weight: 700;
 			text-transform: uppercase;
 			display: flex;
 			align-items: center;
-			gap: 6px;
+			gap: 5px;
+			box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
 		}
 
 		/* Card Content */
 		.featured-card h2 {
 			color: #2c3e50;
-			font-size: 28px;
-			margin: 0 0 15px 0;
+			font-size: 24px;
+			margin: 0 0 12px 0;
 			line-height: 1.4;
-			padding-right: 120px;
+			padding-right: 100px;
+			font-weight: 600;
 		}
 		.featured-card .meta {
 			color: #7f8c8d;
-			font-size: 14px;
-			margin-bottom: 20px;
+			font-size: 13px;
+			margin-bottom: 15px;
 			display: flex;
 			flex-wrap: wrap;
-			gap: 15px;
+			gap: 12px;
 		}
 		.featured-card .meta-item {
 			display: flex;
 			align-items: center;
-			gap: 6px;
+			gap: 5px;
 		}
 		.featured-card .authors {
-			color: #7f8c8d;
+			color: #555;
 			font-size: 14px;
-			margin-bottom: 20px;
-			font-style: italic;
+			margin-bottom: 18px;
+			line-height: 1.5;
 		}
 
 		/* Action Buttons */
@@ -156,55 +170,73 @@
 		/* Empty State */
 		.empty-state {
 			text-align: center;
-			padding: 80px 20px;
+			padding: 60px 20px;
+			background: white;
+			border-radius: 12px;
+			box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 		}
 		.empty-state i {
-			font-size: 64px;
+			font-size: 48px;
 			color: #bdc3c7;
-			margin-bottom: 20px;
+			margin-bottom: 15px;
 		}
 		.empty-state h3 {
 			color: #2c3e50;
-			font-size: 24px;
-			margin-bottom: 10px;
+			font-size: 22px;
+			margin-bottom: 8px;
 		}
 		.empty-state p {
 			color: #7f8c8d;
-			font-size: 16px;
+			font-size: 15px;
 		}
 
 		/* Footer */
 		footer {
 			background: #2c3e50;
-			color: white;
+			color: #ecf0f1;
+			padding: 30px 0;
+			margin-top: 0;
+			position: relative;
+		}
+		footer .container {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 0 20px;
 			text-align: center;
-			padding: 30px 20px;
-			margin-top: 60px;
 		}
 		footer p {
-			margin: 0;
+			margin: 5px 0;
 			font-size: 14px;
+		}
+		footer a {
+			color: #3498db;
+			text-decoration: none;
+			transition: color 0.2s;
+		}
+		footer a:hover {
+			color: #5dade2;
 		}
 
 		/* Responsive */
 		@media (max-width: 768px) {
-			.page-header h1 {
-				font-size: 32px;
+			.hero-content h1 {
+				font-size: 2em;
 			}
-			.page-header p {
-				font-size: 16px;
+			.hero-content p {
+				font-size: 1.1em;
 			}
 			.featured-card {
 				padding: 25px;
 			}
 			.featured-card h2 {
-				font-size: 22px;
-				padding-right: 0;
+				font-size: 20px;
+				padding-right: 90px;
 			}
 			.featured-badge {
-				position: static;
-				margin-bottom: 15px;
-				width: fit-content;
+				top: 12px;
+				right: 12px;
+				padding: 5px 10px;
+				font-size: 10px;
 			}
 		}
 		</style>
@@ -214,43 +246,37 @@
 	<!-- Navigation -->
 	<div id="navigation-placeholder" data-page="featured"></div>
 	
-	<!-- Page Header -->
-		<div class="page-header">
-			<svg class="hero-bg-blobs" width="100%" height="100%" viewBox="0 0 1440 300" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;" aria-hidden="true" role="presentation">
-				<defs>
-					<linearGradient id="blobGradient1" x1="0" y1="0" x2="1" y2="1">
-						<stop offset="0%" stop-color="#3498db" stop-opacity="0.18"/>
-						<stop offset="100%" stop-color="#b6c7e0" stop-opacity="0.12"/>
-					</linearGradient>
-					<linearGradient id="blobGradient2" x1="0" y1="1" x2="1" y2="0">
-						<stop offset="0%" stop-color="#e3eaf3" stop-opacity="0.16"/>
-						<stop offset="100%" stop-color="#2980b9" stop-opacity="0.10"/>
-					</linearGradient>
-				</defs>
-				<g>
-					<circle id="blob1" cx="200" cy="150" r="150" fill="url(#blobGradient1)">
-						<animate attributeName="cx" values="200;1240;200" dur="15s" repeatCount="indefinite"/>
-					</circle>
-					<circle id="blob2" cx="1200" cy="120" r="120" fill="url(#blobGradient2)">
-						<animate attributeName="cx" values="1200;200;1200" dur="16s" repeatCount="indefinite"/>
-					</circle>
-				</g>
-			</svg>
-			<h1 style="position:relative;z-index:1;"><i class="fas fa-star"></i> Featured Publications</h1>
-			<p style="position:relative;z-index:1;">Highlighted research from Mayo Clinic and affiliated institutions</p>
+	<!-- Hero Section -->
+	<section class="hero-section">
+		<!-- Animated Background Blobs -->
+		<svg class="blob blob1" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+			<path fill="rgba(255,255,255,0.1)" d="M44.7,-76.4C58.8,-69.2,71.8,-59.1,79.6,-45.8C87.4,-32.6,90,-16.3,88.5,-0.9C87,14.6,81.4,29.1,73.1,42.8C64.8,56.4,53.8,69.1,39.7,76.4C25.6,83.7,8.5,85.6,-7.9,83.3C-24.3,81,-40,74.5,-53.2,65.3C-66.4,56.1,-77.1,44.2,-82.9,30.1C-88.7,16,-89.6,-0.3,-85.8,-15.3C-82,-30.3,-73.5,-43.9,-62.3,-52.8C-51.1,-61.7,-37.2,-65.9,-23.5,-73.3C-9.8,-80.7,3.7,-91.3,18.5,-94.2C33.3,-97.1,49.4,-92.3,44.7,-76.4Z" transform="translate(100 100)" />
+		</svg>
+		<svg class="blob blob2" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+			<path fill="rgba(255,255,255,0.08)" d="M39.5,-66.3C51.4,-58.5,61.4,-47.3,68.2,-34.2C75,-21.1,78.6,-6.1,77.8,8.5C77,23.1,71.8,37.3,63.2,49.2C54.6,61.1,42.6,70.7,28.8,76.8C15,82.9,-0.6,85.5,-15.8,82.6C-31,79.7,-45.8,71.3,-57.4,59.8C-69,48.3,-77.4,33.7,-80.7,17.9C-84,-1.9,-82.2,-22.9,-74.9,-40.3C-67.6,-57.7,-54.8,-71.5,-39.9,-77.8C-25,-84.1,-7.1,-82.9,5.4,-76.3C17.9,-69.7,27.6,-74.1,39.5,-66.3Z" transform="translate(100 100)" />
+		</svg>
+		<div class="hero-content">
+			<h1>Featured Publications</h1>
+			<p>Highlighting impactful research from Mayo Clinic</p>
 		</div>
+	</section>
 
+	<!-- Wrapper for Content Area -->
+	<div class="wrapper">
 		<!-- Featured Publications Container -->
 		<div class="featured-container" id="featured-container">
 			<div class="loading">
 				<i class="fas fa-spinner fa-spin"></i> Loading featured publications...
 			</div>
 		</div>
+	</div>
 
-		<!-- Footer -->
-		<footer>
-			<p>&copy; 2025 Med City AI. All rights reserved.</p>
-		</footer>
+	<!-- Footer -->
+	<footer>
+		<div class="container">
+			<p>&copy; 2025 MedCityAI. All rights reserved.</p>
+		</div>
+	</footer>
 
 		<!-- Scripts -->
 		<script>
