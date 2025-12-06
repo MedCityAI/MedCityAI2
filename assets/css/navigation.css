@@ -1,0 +1,142 @@
+/* MedCityAI Navigation Styles */
+/* Include this CSS file on every page for consistent navigation styling */
+
+/* Top Navigation Bar */
+.top-bar {
+	background: white;
+	color: #2c3e50;
+	padding: 15px 0;
+	font-size: 14px;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: 1001;
+	box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+	border-bottom: 1px solid #eee;
+}
+
+.top-bar-content {
+	max-width: 1200px;
+	margin: 0 auto;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0 20px;
+}
+
+.logo {
+	display: flex;
+	align-items: center;
+	margin-right: auto;
+}
+
+.logo img {
+	height: 40px;
+	width: auto;
+}
+
+.nav-links {
+	display: flex;
+	gap: 30px;
+	align-items: center;
+	margin-right: 15px;
+}
+
+.nav-links a {
+	color: #2c3e50;
+	text-decoration: none;
+	font-weight: 500;
+	font-size: 15px;
+	transition: color 0.3s ease;
+}
+
+.nav-links a:hover,
+.nav-links a[aria-current="page"] {
+	color: #3498db;
+}
+
+/* Mobile Menu Icon */
+.menu-icon {
+	display: none;
+	flex-direction: column;
+	cursor: pointer;
+	background: none;
+	border: none;
+	padding: 8px;
+	margin-left: 15px;
+}
+
+.menu-icon div {
+	width: 25px;
+	height: 3px;
+	background: #2c3e50;
+	margin: 3px 0;
+	transition: 0.3s;
+}
+
+.menu-icon:hover,
+.menu-icon:focus {
+	background: rgba(52, 152, 219, 0.1);
+	border-radius: 4px;
+}
+
+/* Screen reader only text */
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border-width: 0;
+}
+
+/* Mobile Menu Dropdown */
+.mobile-menu {
+	display: none;
+	position: absolute;
+	top: 70px;
+	right: 0;
+	width: 100%;
+	background: white;
+	box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+	z-index: 1000;
+}
+
+.mobile-menu.active {
+	display: block;
+}
+
+.mobile-menu a {
+	display: block;
+	padding: 15px 20px;
+	color: #2c3e50;
+	text-decoration: none;
+	font-weight: 500;
+	border-bottom: 1px solid #eee;
+	transition: background 0.3s ease;
+}
+
+.mobile-menu a:hover {
+	background: #f8f9fa;
+	color: #3498db;
+}
+
+/* Responsive Design - Mobile */
+@media (max-width: 900px) {
+	.nav-links {
+		display: none !important;
+	}
+	
+	.menu-icon {
+		display: flex !important;
+	}
+}
+
+/* Page content offset for fixed nav */
+body {
+	padding-top: 70px;
+}

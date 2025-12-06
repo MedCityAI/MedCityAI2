@@ -8,6 +8,7 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
+		<link rel="stylesheet" href="assets/css/navigation.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 		<style>
 			/* Hero Section - Compact version */
@@ -471,29 +472,7 @@
 		<!-- Page Wrapper -->
 		<div id="page-wrapper">
 			<!-- Modern Medical Navigation Header -->
-			<nav class="top-bar" role="navigation" aria-label="Main navigation">
-				<div class="top-bar-content">
-				<div class="logo">
-					<a href="index.html"><img src="images/medcityai_logo1.png" alt="MedCityAI Logo" style="height:48px; width:auto;" /></a>
-				</div>
-					<div class="nav-links" role="menubar">
-						<a href="index.html" role="menuitem">New Today</a>
-						<a href="search.html" role="menuitem">Search</a>
-						<a href="featured.html" role="menuitem">Featured</a>
-					<a href="leaderboard.html" role="menuitem" aria-current="page">Leaderboard</a>
-					<a href="about.html" role="menuitem">About</a>
-					<a href="contact.html" role="menuitem">Contact</a>
-				</div>
-				<div style="display: flex; align-items: center; gap: 15px;">
-					<button class="menu-icon" aria-label="Toggle mobile menu" aria-expanded="false" aria-controls="mobile-menu">
-							<span class="sr-only">Menu</span>
-							<div aria-hidden="true"></div>
-							<div aria-hidden="true"></div>
-							<div aria-hidden="true"></div>
-						</button>
-					</div>
-				</div>
-			</nav>
+			<div id="navigation-placeholder" data-page="leaderboard"></div>
 
 			<!-- Hero Section -->
 			<section class="hero-section" aria-label="Hero banner">
@@ -984,6 +963,7 @@
 		}
 	});
 	</script>
+	<script src="assets/js/navigation.js"></script>
 
 </body>
 </html>
