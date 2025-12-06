@@ -1389,7 +1389,7 @@
 						<a href="index.html" style="text-decoration: none; border: none; outline: none;"><img src="images/medcityai_logo1.png" alt="MedCityAI Logo" style="height:48px; width:auto; display: block;" /></a>
 					</div>
 					<div class="nav-links" role="menubar">
-						<a href="index.html" role="menuitem" aria-current="page">New Today</a>
+						<a href="#" role="menuitem" aria-current="page" id="newTodayNavLink">New Today</a>
 						<a href="search.html" role="menuitem">Search</a>
 						<a href="featured.html" role="menuitem">Featured</a>
 						<a href="leaderboard.html" role="menuitem">Leaderboard</a>
@@ -2845,6 +2845,34 @@
 
 			if (newTodayBtn) {
 				newTodayBtn.addEventListener('click', function() {
+					// Get today's date in YYYY-MM-DD format
+					const today = new Date().toISOString().split('T')[0];
+					
+					// Scroll to results section with header offset
+					const resultsSection = document.getElementById('pubmed-results');
+					if (resultsSection) {
+						const headerHeight = 70; // Fixed header height
+						const elementPosition = resultsSection.getBoundingClientRect().top;
+						const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
+						
+						window.scrollTo({
+							top: offsetPosition,
+							behavior: 'smooth'
+						});
+					}
+					
+					// Filter for today's publications
+					setTimeout(() => {
+						fetchPubMedResults('', 1, '', today);
+					}, 500);
+				});
+			}
+			
+			// New Today navigation link (same behavior as hero button)
+			const newTodayNavLink = document.getElementById('newTodayNavLink');
+			if (newTodayNavLink) {
+				newTodayNavLink.addEventListener('click', function(e) {
+					e.preventDefault();
 					// Get today's date in YYYY-MM-DD format
 					const today = new Date().toISOString().split('T')[0];
 					
