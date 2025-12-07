@@ -992,6 +992,9 @@
 			justify-content: center;
 			gap: 15px;
 			align-items: center;
+			position: relative;
+			min-height: 300px;
+			padding: 20px;
 		}
 		.search-bubble {
 			background: white;
@@ -1007,6 +1010,52 @@
 			align-items: center;
 			gap: 8px;
 			box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+			position: absolute;
+			animation: float 6s ease-in-out infinite;
+		}
+		.search-bubble:nth-child(1) {
+			animation: float 7s ease-in-out infinite;
+			animation-delay: 0s;
+			top: 20%;
+			left: 10%;
+		}
+		.search-bubble:nth-child(2) {
+			animation: float 8s ease-in-out infinite;
+			animation-delay: 1s;
+			top: 50%;
+			left: 70%;
+		}
+		.search-bubble:nth-child(3) {
+			animation: float 6.5s ease-in-out infinite;
+			animation-delay: 2s;
+			top: 70%;
+			left: 20%;
+		}
+		.search-bubble:nth-child(4) {
+			animation: float 7.5s ease-in-out infinite;
+			animation-delay: 3s;
+			top: 30%;
+			left: 60%;
+		}
+		.search-bubble:nth-child(5) {
+			animation: float 8.5s ease-in-out infinite;
+			animation-delay: 4s;
+			top: 80%;
+			left: 50%;
+		}
+		@keyframes float {
+			0%, 100% {
+				transform: translateY(0px) translateX(0px);
+			}
+			25% {
+				transform: translateY(-20px) translateX(10px);
+			}
+			50% {
+				transform: translateY(-10px) translateX(-10px);
+			}
+			75% {
+				transform: translateY(-25px) translateX(5px);
+			}
 		}
 		.search-bubble i {
 			color: #3498db;
@@ -1015,22 +1064,29 @@
 		.search-bubble:hover {
 			background: #3498db;
 			color: white;
-			transform: translateY(-2px);
-			box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+			transform: translateY(-5px) scale(1.05);
+			box-shadow: 0 6px 16px rgba(52, 152, 219, 0.4);
+			animation-play-state: paused;
+			z-index: 10;
 		}
 		.search-bubble:hover i {
 			color: white;
 		}
 		.search-bubble:active {
-			transform: translateY(0);
+			transform: translateY(-3px) scale(1.02);
 		}
 		@media (max-width: 768px) {
 			.bubble-cloud {
 				flex-direction: column;
-				align-items: stretch;
+				align-items: center;
+				min-height: auto;
+				position: static;
 			}
 			.search-bubble {
+				position: static;
+				animation: none;
 				justify-content: center;
+				margin: 10px 0;
 			}
 		}
 		</style>
