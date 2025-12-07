@@ -1654,12 +1654,10 @@
 				const currentMonth = now.getMonth() + 1; // 1-12
 				const currentYear = now.getFullYear();
 				const historicalYear = currentYear - 100;
-				const historicalMonthStart = `${historicalYear}/${String(currentMonth).padStart(2, '0')}/01`;
-				const historicalMonthEnd = `${historicalYear}/${String(currentMonth).padStart(2, '0')}/31`;
 				
 				switch(searchType) {
 					case 'historical':
-						searchQuery = `${historicalMonthStart}[Date - Publication] : ${historicalMonthEnd}[Date - Publication]`;
+						searchQuery = `${historicalYear}[Date - Publication]`;
 						break;
 					case 'mayo-brothers':
 						searchQuery = 'Mayo[Author] AND (1890:1940[Date - Publication])';
