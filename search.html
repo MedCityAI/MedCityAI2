@@ -1298,7 +1298,7 @@
 		let currentCitationArticle = null;
 		let currentCitationStyle = 'mla';
 
-		async function performPubMedSearch(searchQuery) {
+		async function performPubMedSearch(searchQuery, skipLocationFilter = false) {
 			if (searchQuery.length < 2) return;
 			
 			// Hide bubble cloud when search is performed
@@ -1313,9 +1313,14 @@
 			document.getElementById('emptyState').style.display = 'none';
 			
 			try {
-				// Build PubMed query - always include Rochester location
-				const locationFilter = '(Rochester[AD] AND (Minnesota[AD] OR MN[AD]))';
-				const fullQuery = `(${searchQuery}) AND ${locationFilter}`;
+				// Build PubMed query - optionally include Rochester location
+				let fullQuery;
+				if (skipLocationFilter) {
+					fullQuery = searchQuery;
+				} else {
+					const locationFilter = '(Rochester[AD] AND (Minnesota[AD] OR MN[AD]))';
+					fullQuery = `(${searchQuery}) AND ${locationFilter}`;
+				}
 
 				// First, get total count
 				let countUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(fullQuery)}&retmode=json&retmax=0&sort=pub+date`;
@@ -1686,6 +1691,7 @@
 			bubble.addEventListener('click', function() {
 				const searchType = this.getAttribute('data-search-type');
 				let searchQuery = '';
+				let skipLocationFilter = false;
 				
 				const now = new Date();
 				const currentMonth = now.getMonth() + 1; // 1-12
@@ -1698,6 +1704,7 @@
 						break;
 					case 'mayo-brothers':
 						searchQuery = '(William Mayo[Author] OR Charles Mayo[Author]) AND (1890:1940[Date - Publication])';
+						skipLocationFilter = true;
 						break;
 					case 'generative-ai':
 						searchQuery = '("Generative AI" OR "Large Language Model" OR "LLM" OR "ChatGPT")';
@@ -1707,12 +1714,13 @@
 						break;
 					case 'nobel-laureates':
 						searchQuery = '(Philip Hench[Author] OR Edward Kendall[Author] OR Luis Walter Alvarez[Author]) AND (1900:1970[Date - Publication])';
+						skipLocationFilter = true;
 						break;
 				}
 				
 				if (searchQuery && heroSearchBar) {
 					heroSearchBar.value = searchQuery;
-					performPubMedSearch(searchQuery);
+					performPubMedSearch(searchQuery, skipLocationFilter);
 					// Scroll to results
 					document.querySelector('#main-content').scrollIntoView({ behavior: 'smooth' });
 				}
