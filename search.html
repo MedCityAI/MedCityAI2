@@ -218,9 +218,109 @@
 		.results-section {
 			width: 100%;
 			margin: 0;
-			padding: 40px 0;
+			padding: 60px 20px 40px;
 			background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%);
 			border-radius: 0;
+		}
+		.suggestions-title {
+			font-size: 1.8em;
+			color: #2c3e50;
+			margin-bottom: 30px;
+			font-weight: 600;
+			text-align: center;
+		}
+		.bubble-cloud {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+			gap: 15px;
+			align-items: center;
+			position: relative;
+			min-height: 300px;
+			padding: 20px;
+			margin-bottom: 60px;
+			max-width: 1200px;
+			margin-left: auto;
+			margin-right: auto;
+		}
+		.search-bubble {
+			background: white;
+			border: 2px solid #3498db;
+			color: #2c3e50;
+			padding: 12px 24px;
+			border-radius: 50px;
+			font-size: 0.95em;
+			font-weight: 500;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+			position: absolute;
+			animation: float 6s ease-in-out infinite;
+		}
+		.search-bubble:nth-child(1) {
+			animation: float 7s ease-in-out infinite;
+			animation-delay: 0s;
+			top: 20%;
+			left: 10%;
+		}
+		.search-bubble:nth-child(2) {
+			animation: float 8s ease-in-out infinite;
+			animation-delay: 1s;
+			top: 50%;
+			left: 70%;
+		}
+		.search-bubble:nth-child(3) {
+			animation: float 6.5s ease-in-out infinite;
+			animation-delay: 2s;
+			top: 70%;
+			left: 20%;
+		}
+		.search-bubble:nth-child(4) {
+			animation: float 7.5s ease-in-out infinite;
+			animation-delay: 3s;
+			top: 30%;
+			left: 60%;
+		}
+		.search-bubble:nth-child(5) {
+			animation: float 8.5s ease-in-out infinite;
+			animation-delay: 4s;
+			top: 80%;
+			left: 50%;
+		}
+		@keyframes float {
+			0%, 100% {
+				transform: translateY(0px) translateX(0px);
+			}
+			25% {
+				transform: translateY(-20px) translateX(10px);
+			}
+			50% {
+				transform: translateY(-10px) translateX(-10px);
+			}
+			75% {
+				transform: translateY(-25px) translateX(5px);
+			}
+		}
+		.search-bubble i {
+			color: #3498db;
+			font-size: 1.1em;
+		}
+		.search-bubble:hover {
+			background: #3498db;
+			color: white;
+			transform: translateY(-5px) scale(1.05);
+			box-shadow: 0 6px 16px rgba(52, 152, 219, 0.4);
+			animation-play-state: paused;
+			z-index: 10;
+		}
+		.search-bubble:hover i {
+			color: white;
+		}
+		.search-bubble:active {
+			transform: translateY(-3px) scale(1.02);
 		}
 		.results-header {
 			max-width: 1000px;
@@ -970,125 +1070,6 @@
 			border-width: 0;
 		}
 
-		/* Suggested Searches Bubble Cloud */
-		.suggested-searches {
-			padding: 60px 20px;
-			background: #f8f9fa;
-			text-align: center;
-		}
-		.suggested-searches .container {
-			max-width: 1200px;
-			margin: 0 auto;
-		}
-		.suggestions-title {
-			font-size: 1.8em;
-			color: #2c3e50;
-			margin-bottom: 30px;
-			font-weight: 600;
-		}
-		.bubble-cloud {
-			display: flex;
-			flex-wrap: wrap;
-			justify-content: center;
-			gap: 15px;
-			align-items: center;
-			position: relative;
-			min-height: 300px;
-			padding: 20px;
-		}
-		.search-bubble {
-			background: white;
-			border: 2px solid #3498db;
-			color: #2c3e50;
-			padding: 12px 24px;
-			border-radius: 50px;
-			font-size: 0.95em;
-			font-weight: 500;
-			cursor: pointer;
-			transition: all 0.3s ease;
-			display: inline-flex;
-			align-items: center;
-			gap: 8px;
-			box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-			position: absolute;
-			animation: float 6s ease-in-out infinite;
-		}
-		.search-bubble:nth-child(1) {
-			animation: float 7s ease-in-out infinite;
-			animation-delay: 0s;
-			top: 20%;
-			left: 10%;
-		}
-		.search-bubble:nth-child(2) {
-			animation: float 8s ease-in-out infinite;
-			animation-delay: 1s;
-			top: 50%;
-			left: 70%;
-		}
-		.search-bubble:nth-child(3) {
-			animation: float 6.5s ease-in-out infinite;
-			animation-delay: 2s;
-			top: 70%;
-			left: 20%;
-		}
-		.search-bubble:nth-child(4) {
-			animation: float 7.5s ease-in-out infinite;
-			animation-delay: 3s;
-			top: 30%;
-			left: 60%;
-		}
-		.search-bubble:nth-child(5) {
-			animation: float 8.5s ease-in-out infinite;
-			animation-delay: 4s;
-			top: 80%;
-			left: 50%;
-		}
-		@keyframes float {
-			0%, 100% {
-				transform: translateY(0px) translateX(0px);
-			}
-			25% {
-				transform: translateY(-20px) translateX(10px);
-			}
-			50% {
-				transform: translateY(-10px) translateX(-10px);
-			}
-			75% {
-				transform: translateY(-25px) translateX(5px);
-			}
-		}
-		.search-bubble i {
-			color: #3498db;
-			font-size: 1.1em;
-		}
-		.search-bubble:hover {
-			background: #3498db;
-			color: white;
-			transform: translateY(-5px) scale(1.05);
-			box-shadow: 0 6px 16px rgba(52, 152, 219, 0.4);
-			animation-play-state: paused;
-			z-index: 10;
-		}
-		.search-bubble:hover i {
-			color: white;
-		}
-		.search-bubble:active {
-			transform: translateY(-3px) scale(1.02);
-		}
-		@media (max-width: 768px) {
-			.bubble-cloud {
-				flex-direction: column;
-				align-items: center;
-				min-height: auto;
-				position: static;
-			}
-			.search-bubble {
-				position: static;
-				animation: none;
-				justify-content: center;
-				margin: 10px 0;
-			}
-		}
 		</style>
 	</head>
 	<body class="landing is-preload">
@@ -1147,11 +1128,10 @@
 				</div>
 			</section>
 
-			<!-- Suggested Searches Bubble Cloud -->
-			<section class="suggested-searches">
-				<div class="container">
-					<h3 class="suggestions-title">Try these searches</h3>
-					<div class="bubble-cloud">
+			<!-- Results Section -->
+			<main id="main-content" role="main">
+				<section class="results-section">
+					<div class="bubble-cloud" id="bubbleCloud">
 						<button class="search-bubble" data-search-type="historical">
 							<i class="fas fa-history"></i>
 							Articles published 100 years ago this month
@@ -1170,15 +1150,10 @@
 						</button>
 						<button class="search-bubble" data-search-type="nobel-laureates">
 							<i class="fas fa-award"></i>
-							Nobel Laureates from Rochester, MN
+							Nobel Laureates from Rochester
 						</button>
 					</div>
-				</div>
-			</section>
-
-			<!-- Results Section -->
-			<main id="main-content" role="main">
-				<section class="results-section">
+					
 					<div id="loadingState" class="loading" style="display: none;" role="status" aria-live="polite">
 						<div class="spinner" aria-hidden="true"></div>
 						<p style="color: #7f8c8d; font-size: 16px;">Searching PubMed...</p>
@@ -1325,6 +1300,12 @@
 
 		async function performPubMedSearch(searchQuery) {
 			if (searchQuery.length < 2) return;
+			
+			// Hide bubble cloud when search is performed
+			const bubbleCloud = document.getElementById('bubbleCloud');
+			if (bubbleCloud) {
+				bubbleCloud.style.display = 'none';
+			}
 			
 			// Show loading state
 			document.getElementById('loadingState').style.display = 'block';
