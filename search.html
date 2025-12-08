@@ -1704,7 +1704,7 @@
 						searchQuery = `${historicalYear}[Date - Publication]`;
 						break;
 					case 'mayo-brothers':
-						searchQuery = '(William Mayo[Author] OR Charles Mayo[Author]) AND (1890:1940[Date - Publication])';
+						searchQuery = '("Mayo WJ" OR "Mayo CH" OR "W J Mayo" OR "C H Mayo") AND 1890:1940[dp]';
 						skipLocationFilter = true;
 						break;
 					case 'generative-ai':
@@ -1714,7 +1714,7 @@
 						searchQuery = '("Virtual Reality" OR "Augmented Reality")';
 						break;
 					case 'nobel-laureates':
-						searchQuery = '(Philip Hench[Author] OR Edward Kendall[Author] OR Luis Walter Alvarez[Author]) AND (1900:1970[Date - Publication])';
+						searchQuery = '("Philip Hench" OR "Edward Kendall" OR "Luis Walter Alvarez"]) AND (1900:1970[Date - Publication])';
 						skipLocationFilter = true;
 						break;
 				}
