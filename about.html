@@ -83,28 +83,85 @@
 			transition: 0.3s;
 		}
 
-		/* About page specific styles */
-		.about-hero {
-			background: linear-gradient(135deg, #3a4660 0%, #4e6a8a 60%, #233045 100%);
-			color: white;
-			padding: 120px 0 80px 0;
-			text-align: center;
+	/* About page specific styles */
+	.about-hero {
+		position: relative;
+		padding: 0;
+		text-align: center;
+		overflow: hidden;
+		height: 600px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	.about-hero:before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: url('images/pic01.jpg') center center / cover no-repeat;
+		z-index: 1;
+	}
+	.about-hero:after {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: linear-gradient(135deg, rgba(52, 152, 219, 0.85) 0%, rgba(44, 62, 80, 0.85) 100%);
+		z-index: 2;
+	}
+	.about-hero-content {
+		position: relative;
+		z-index: 3;
+		max-width: 900px;
+		padding: 0 30px;
+	}
+	.about-hero-logo {
+		width: 200px;
+		height: auto;
+		margin: 0 auto 30px;
+		filter: brightness(0) invert(1);
+		animation: fadeInDown 1s ease-out;
+	}
+	@keyframes fadeInDown {
+		from {
+			opacity: 0;
+			transform: translateY(-30px);
 		}
-		.about-hero h1 {
-			font-size: 3.5em;
-			font-weight: 800;
-			margin-bottom: 20px;
-			text-shadow: 0 4px 18px rgba(0,0,0,0.28);
+		to {
+			opacity: 1;
+			transform: translateY(0);
 		}
-		.about-hero p {
-			font-size: 1.3em;
-			max-width: 800px;
-			margin: 0 auto;
-			opacity: 0.9;
-			line-height: 1.6;
+	}
+	.about-hero h1 {
+		font-size: 3.5em;
+		font-weight: 800;
+		margin-bottom: 20px;
+		text-shadow: 0 4px 18px rgba(0,0,0,0.28);
+		color: white;
+		animation: fadeIn 1s ease-out 0.3s both;
+	}
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
 		}
-		
-		.container {
+		to {
+			opacity: 1;
+		}
+	}
+	.about-hero p {
+		font-size: 1.3em;
+		max-width: 800px;
+		margin: 0 auto;
+		opacity: 0.9;
+		line-height: 1.6;
+		color: rgba(255, 255, 255, 0.95);
+		animation: fadeIn 1s ease-out 0.6s both;
+	}		.container {
 			max-width: 1200px;
 			margin: 0 auto;
 			padding: 0 20px;
@@ -490,11 +547,38 @@
 			.about-hero h1 {
 				font-size: 2.5em;
 			}
+			.about-hero {
+				height: 500px;
+			}
+			.about-hero-logo {
+				width: 150px;
+				margin-bottom: 20px;
+			}
+			.about-hero p {
+				font-size: 1.1em;
+			}
 			.nav-links {
 				display: none;
 			}
 			.menu-icon {
 				display: flex;
+			}
+		}
+		
+		@media (max-width: 600px) {
+			.about-hero {
+				height: 450px;
+			}
+			.about-hero-logo {
+				width: 120px;
+				margin-bottom: 15px;
+			}
+			.about-hero h1 {
+				font-size: 2em;
+			}
+			.about-hero p {
+				font-size: 1em;
+				padding: 0 20px;
 			}
 		}
 		</style>
@@ -505,15 +589,14 @@
 		<!-- Modern Medical Navigation Header -->
 		<div id="navigation-placeholder" data-page="about"></div>
 
-		<!-- About Hero -->
-		<section class="about-hero">
-			<div class="container">
-				<h1>About MedCityAI</h1>
-				<p>Empowering biomedical research discovery through AI-driven analytics and collaboration</p>
-			</div>
-		</section>
-
-		<!-- Vision Section -->
+	<!-- About Hero -->
+	<section class="about-hero">
+		<div class="about-hero-content">
+			<img src="images/medcityai_simple1.png" alt="MedCityAI Logo" class="about-hero-logo">
+			<h1>About MedCityAI</h1>
+			<p>Empowering biomedical research discovery through AI-driven analytics and collaboration</p>
+		</div>
+	</section>		<!-- Vision Section -->
 		<section class="vision-section">
 			<div class="container">
 				<div class="vision-content">
