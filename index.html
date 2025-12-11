@@ -2448,23 +2448,21 @@
 		// Build HTML sections
 		let finalHTML = '';
 		
-		// Recommended section (only if there are matches and user has keywords)
-		if (hasUserKeywords && matchingArticles.length > 0) {
-			finalHTML += `
-				<div class="recommended-section">
-					<div class="section-header" style="max-width:1200px;margin:20px auto 15px;padding:15px 20px;background:#d6eaf8;border-left:4px solid #3498db;border-radius:4px;">
-						<h3 style="margin:0;color:#555;font-size:13px;font-weight:500;letter-spacing:0.3px;line-height:1.1;">Recommended For You <span style="color:#3498db;font-weight:600;">(${matchingArticles.length})</span></h3>
-					</div>
-					<div class="results">`;
-			
-			matchingArticles.forEach(article => {
-				finalHTML += renderArticle(article);
-			});
-			
-			finalHTML += `</div></div>`;
-		}
+	// Recommended section (only if there are matches and user has keywords)
+	if (hasUserKeywords && matchingArticles.length > 0) {
+		finalHTML += `
+			<div class="recommended-section" style="background:#f0f7fc;padding:20px 0;margin-bottom:30px;">
+				<div class="section-header" style="max-width:1200px;margin:20px auto 15px;padding:15px 20px;background:#d6eaf8;border-left:4px solid #3498db;border-radius:4px;">
+					<h3 style="margin:0;color:#555;font-size:13px;font-weight:500;letter-spacing:0.3px;line-height:1.1;">Recommended For You <span style="color:#3498db;font-weight:600;">(${matchingArticles.length})</span></h3>
+				</div>
+				<div class="results">`;
 		
-		// All publications section (no header if no matches or no keywords)
+		matchingArticles.forEach(article => {
+			finalHTML += renderArticle(article);
+		});
+		
+		finalHTML += `</div></div>`;
+	}		// All publications section (no header if no matches or no keywords)
 		if (otherArticles.length > 0) {
 			finalHTML += `<div class="all-publications-section"><div class="results">`;
 			
