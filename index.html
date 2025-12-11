@@ -1432,42 +1432,29 @@
 				<button class="modal-close-btn" onclick="closeKeywordsModal()" aria-label="Close">&times;</button>
 				<h2>Welcome to MedCityAI!</h2>
 				<p class="subheader">Select topics of interest to you. Your preferences are saved in your browser using local storage. This data never leaves your device.</p>
-				<div class="topics-grid" id="topicsGrid">
-					<button class="topic-button" onclick="toggleTopic(this, 'Generative AI')">Generative AI</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Radiology')">Radiology</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Surgery')">Surgery</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Internal Medicine')">Internal Medicine</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Cardiology')">Cardiology</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Oncology')">Oncology</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Neurology')">Neurology</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Pediatrics')">Pediatrics</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Psychiatry')">Psychiatry</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Dermatology')">Dermatology</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Orthopedics')">Orthopedics</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Anesthesiology')">Anesthesiology</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Pathology')">Pathology</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Emergency Medicine')">Emergency Medicine</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Ophthalmology')">Ophthalmology</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Urology')">Urology</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Gastroenterology')">Gastroenterology</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Endocrinology')">Endocrinology</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Nephrology')">Nephrology</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Pulmonology')">Pulmonology</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Rheumatology')">Rheumatology</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Hematology')">Hematology</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Immunology')">Immunology</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Geriatrics')">Geriatrics</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Vascular Surgery')">Vascular Surgery</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Neurosurgery')">Neurosurgery</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Obstetrics & Gynecology')">Obstetrics & Gynecology</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Pain Medicine')">Pain Medicine</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Sports Medicine')">Sports Medicine</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Nuclear Medicine')">Nuclear Medicine</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Informatics')">Informatics</button>
-					<button class="topic-button" onclick="toggleTopic(this, 'Genomics')">Genomics</button>
-				</div>
-				
-				<div class="welcome-actions">
+			<div class="topics-grid" id="topicsGrid">
+				<button class="topic-button" onclick="toggleTopic(this, 'Cardiology')">Cardiology</button>
+				<button class="topic-button" onclick="toggleTopic(this, 'Oncology')">Oncology</button>
+				<button class="topic-button" onclick="toggleTopic(this, 'Neurology')">Neurology</button>
+				<button class="topic-button" onclick="toggleTopic(this, 'Gastroenterology')">Gastroenterology</button>
+				<button class="topic-button" onclick="toggleTopic(this, 'Orthopedics')">Orthopedics</button>
+				<button class="topic-button" onclick="toggleTopic(this, 'Pulmonology')">Pulmonology</button>
+				<button class="topic-button" onclick="toggleTopic(this, 'Nephrology')">Nephrology</button>
+				<button class="topic-button" onclick="toggleTopic(this, 'Endocrinology')">Endocrinology</button>
+				<button class="topic-button" onclick="toggleTopic(this, 'Rheumatology')">Rheumatology</button>
+				<button class="topic-button" onclick="toggleTopic(this, 'Infectious Disease')">Infectious Disease</button>
+				<button class="topic-button" onclick="toggleTopic(this, 'Hematology')">Hematology</button>
+				<button class="topic-button" onclick="toggleTopic(this, 'Radiology')">Radiology</button>
+				<button class="topic-button" onclick="toggleTopic(this, 'Dermatology')">Dermatology</button>
+				<button class="topic-button" onclick="toggleTopic(this, 'Psychiatry')">Psychiatry</button>
+				<button class="topic-button" onclick="toggleTopic(this, 'Ophthalmology')">Ophthalmology</button>
+				<button class="topic-button" onclick="toggleTopic(this, 'AI/ML/DL')">AI/ML/DL</button>
+				<button class="topic-button" onclick="toggleTopic(this, 'Surgery')">Surgery</button>
+				<button class="topic-button" onclick="toggleTopic(this, 'Emergency Medicine')">Emergency Medicine</button>
+				<button class="topic-button" onclick="toggleTopic(this, 'Obstetrics & Gynecology')">Obstetrics & Gynecology</button>
+				<button class="topic-button" onclick="toggleTopic(this, 'Urology')">Urology</button>
+				<button class="topic-button" onclick="toggleTopic(this, 'Anesthesiology')">Anesthesiology</button>
+			</div>				<div class="welcome-actions">
 					<button class="welcome-button primary" onclick="closeKeywordsModal()">Continue</button>
 				</div>
 				
@@ -2030,8 +2017,8 @@
 		'Ophthalmology': {
 			keywords: ['ophthalm', 'eye', 'ocular', 'retina', 'vision', 'visual', 'glaucoma', 'cataract']
 		},
-		'Pediatrics': {
-			keywords: ['pediatric', 'child', 'infant', 'neonatal', 'adolescent', 'pediatr']
+		'AI/ML/DL': {
+			keywords: ['artificial intelligence', 'machine learning', 'llm', 'generative AI', 'deep learning', 'neural network', 'ai', 'ml', 'dl']
 		},
 		'Surgery': {
 			keywords: ['surgical', 'surgery', 'operative', 'postoperative', 'laparoscop', 'transplant']
