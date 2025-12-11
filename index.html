@@ -1073,6 +1073,114 @@
 		.add-keyword-button:active {
 			transform: scale(0.98);
 		}
+
+		/* Authors Section Styles */
+		.authors-section {
+			margin-top: 40px;
+			padding: 25px;
+			background: #f8f9fa;
+			border-radius: 12px;
+			border: 2px solid #e9ecef;
+		}
+		.authors-section .section-title {
+			margin: 0 0 8px 0;
+			color: #2c3e50;
+			font-size: 20px;
+			font-weight: 600;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+		.authors-section .section-description {
+			margin: 0 0 20px 0;
+			color: #666;
+			font-size: 14px;
+			line-height: 1.5;
+		}
+		.author-input-container {
+			display: flex;
+			gap: 10px;
+			margin-bottom: 20px;
+		}
+		.author-input {
+			flex: 1;
+			padding: 12px 18px;
+			border: 2px solid #dee2e6;
+			border-radius: 25px;
+			font-size: 14px;
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+			color: #2c3e50;
+			transition: border-color 0.2s;
+		}
+		.author-input:focus {
+			outline: none;
+			border-color: #3498db;
+			box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+		}
+		.add-author-btn {
+			padding: 12px 24px;
+			background: linear-gradient(135deg, #3498db, #2980b9);
+			color: white;
+			border: none;
+			border-radius: 25px;
+			font-size: 14px;
+			font-weight: 600;
+			cursor: pointer;
+			transition: all 0.3s;
+			box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+			white-space: nowrap;
+		}
+		.add-author-btn:hover {
+			box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+			transform: translateY(-1px);
+		}
+		.add-author-btn:active {
+			transform: translateY(0);
+		}
+		.favorite-authors-list {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+			min-height: 40px;
+		}
+		.favorite-authors-list:empty::before {
+			content: 'No favorite authors added yet';
+			color: #999;
+			font-size: 14px;
+			font-style: italic;
+		}
+		.author-tag {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			padding: 10px 16px;
+			background: linear-gradient(135deg, #f39c12, #e67e22);
+			color: white;
+			border-radius: 20px;
+			font-size: 14px;
+			font-weight: 500;
+			box-shadow: 0 2px 6px rgba(243, 156, 18, 0.3);
+		}
+		.author-tag .remove-author-btn {
+			cursor: pointer;
+			background: rgba(255, 255, 255, 0.2);
+			border: none;
+			color: white;
+			width: 20px;
+			height: 20px;
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 16px;
+			line-height: 1;
+			padding: 0;
+			transition: background 0.2s;
+		}
+		.author-tag .remove-author-btn:hover {
+			background: rgba(255, 255, 255, 0.35);
+		}
+
 		.selected-keywords-text {
 			margin-top: 15px;
 			text-align: center;
@@ -1452,13 +1560,34 @@
 				<button class="topic-button" onclick="toggleTopic(this, 'Surgery')">Surgery</button>
 				<button class="topic-button" onclick="toggleTopic(this, 'Emergency Medicine')">Emergency Medicine</button>
 				<button class="topic-button" onclick="toggleTopic(this, 'Obstetrics & Gynecology')">Obstetrics & Gynecology</button>
-				<button class="topic-button" onclick="toggleTopic(this, 'Urology')">Urology</button>
-				<button class="topic-button" onclick="toggleTopic(this, 'Anesthesiology')">Anesthesiology</button>
-			</div>				<div class="welcome-actions">
-					<button class="welcome-button primary" onclick="closeKeywordsModal()">Continue</button>
-				</div>
-				
-				<!-- Selected Keywords Display -->
+			<button class="topic-button" onclick="toggleTopic(this, 'Urology')">Urology</button>
+			<button class="topic-button" onclick="toggleTopic(this, 'Anesthesiology')">Anesthesiology</button>
+		</div>
+
+		<!-- Favorite Authors Section -->
+		<div class="authors-section">
+			<h3 class="section-title">⭐ Favorite Authors</h3>
+			<p class="section-description">Track specific authors to get notified when they publish new work.</p>
+			
+			<div class="author-input-container">
+				<input 
+					type="text" 
+					id="authorNameInput" 
+					class="author-input" 
+					placeholder="Enter author name (e.g., Smith J, Johnson M)" 
+					onkeypress="if(event.key === 'Enter') addFavoriteAuthor()"
+				/>
+				<button class="add-author-btn" onclick="addFavoriteAuthor()">Add Author</button>
+			</div>
+
+			<div class="favorite-authors-list" id="favoriteAuthorsList">
+				<!-- Authors will be dynamically inserted here -->
+			</div>
+		</div>
+
+		<div class="welcome-actions">
+				<button class="welcome-button primary" onclick="closeKeywordsModal()">Continue</button>
+			</div>				<!-- Selected Keywords Display -->
 				<div class="selected-keywords-text" id="selectedKeywordsText"></div>
 			</div>
 		</div>
@@ -1662,6 +1791,9 @@
 			}
 		});
 		
+		// Load favorite authors
+		loadFavoriteAuthors();
+		
 		// Update selected keywords display
 		updateSelectedKeywordsDisplay();
 		
@@ -1762,10 +1894,87 @@
 		console.log('Added custom keyword:', keyword);
 	}
 
+	// Favorite Authors Management
+	let favoriteAuthors = [];
+
+	function loadFavoriteAuthors() {
+		const stored = localStorage.getItem('medcity_favorite_authors');
+		favoriteAuthors = stored ? JSON.parse(stored) : [];
+		updateFavoriteAuthorsList();
+	}
+
+	function saveFavoriteAuthors() {
+		localStorage.setItem('medcity_favorite_authors', JSON.stringify(favoriteAuthors));
+		console.log('Saved favorite authors:', favoriteAuthors);
+	}
+
+	function addFavoriteAuthor() {
+		const input = document.getElementById('authorNameInput');
+		const authorName = input.value.trim();
+
+		if (!authorName) {
+			alert('Please enter an author name');
+			return;
+		}
+
+		// Check if already exists (case-insensitive)
+		const exists = favoriteAuthors.some(a => a.name.toLowerCase() === authorName.toLowerCase());
+		if (exists) {
+			alert('This author is already in your favorites');
+			return;
+		}
+
+		// Add author with metadata
+		const author = {
+			name: authorName,
+			addedDate: new Date().toISOString(),
+			notificationCount: 0
+		};
+
+		favoriteAuthors.push(author);
+		saveFavoriteAuthors();
+		updateFavoriteAuthorsList();
+		input.value = '';
+		console.log('Added favorite author:', authorName);
+	}
+
+	function removeFavoriteAuthor(authorName) {
+		favoriteAuthors = favoriteAuthors.filter(a => a.name !== authorName);
+		saveFavoriteAuthors();
+		updateFavoriteAuthorsList();
+		console.log('Removed favorite author:', authorName);
+	}
+
+	function updateFavoriteAuthorsList() {
+		const listDiv = document.getElementById('favoriteAuthorsList');
+		if (!listDiv) return;
+
+		if (favoriteAuthors.length === 0) {
+			listDiv.innerHTML = '';
+			return;
+		}
+
+		listDiv.innerHTML = favoriteAuthors.map(author => `
+			<div class="author-tag">
+				<span>${author.name}</span>
+				<button class="remove-author-btn" onclick="removeFavoriteAuthor('${author.name.replace(/'/g, "\\'")}')">&times;</button>
+			</div>
+		`).join('');
+	}
+
+	function isFavoriteAuthor(authorName) {
+		if (!authorName) return false;
+		return favoriteAuthors.some(a => 
+			authorName.toLowerCase().includes(a.name.toLowerCase()) ||
+			a.name.toLowerCase().includes(authorName.toLowerCase())
+		);
+	}
+
 	// Initialize on page load
 	document.addEventListener('DOMContentLoaded', function() {
 		console.log('DOMContentLoaded - Initializing keywords modal');
 		checkFirstVisit();
+		loadFavoriteAuthors();
 	});
 
 	// Send interaction data to Google Apps Script
