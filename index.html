@@ -1972,6 +1972,115 @@
 		return result;
 	}
 
+	// Specialty mapping configuration
+	const specialtyMapping = {
+		'Cardiology': {
+			keywords: ['cardio', 'heart', 'coronary', 'cardiac', 'cardiovascular', 'myocardial', 
+			          'aortic', 'valve', 'atrial', 'ventricular', 'arrhythmia', 'pericardial']
+		},
+		'Oncology': {
+			keywords: ['cancer', 'oncology', 'tumor', 'carcinoma', 'malignancy', 'neoplasm', 
+			          'chemotherapy', 'lymphoma', 'leukemia', 'metastatic', 'melanoma', 'sarcoma']
+		},
+		'Neurology': {
+			keywords: ['neuro', 'brain', 'stroke', 'seizure', 'epilep', 'alzheimer', 'parkinson', 
+			          'dementia', 'cerebral', 'cognitive', 'nervous system', 'spinal cord', 'multiple sclerosis']
+		},
+		'Gastroenterology': {
+			keywords: ['gastro', 'digestive', 'liver', 'colon', 'intestin', 'gi ', 'hepat', 'stomach', 
+			          'esophag', 'pancrea', 'bowel', 'crohn', 'ulcerative colitis']
+		},
+		'Orthopedics': {
+			keywords: ['orthop', 'bone', 'joint', 'fracture', 'musculoskeletal', 'arthroplasty', 'spine', 
+			          'skeletal', 'cartilage', 'ligament', 'tendon', 'arthritis']
+		},
+		'Pulmonology': {
+			keywords: ['pulmon', 'lung', 'respiratory', 'asthma', 'copd', 'pneumonia', 'bronch', 
+			          'thoracic', 'pleural', 'airway']
+		},
+		'Nephrology': {
+			keywords: ['renal', 'kidney', 'nephro', 'dialysis', 'glomerular', 'urinary', 'proteinuria']
+		},
+		'Endocrinology': {
+			keywords: ['endocrin', 'diabetes', 'thyroid', 'hormone', 'metabolic', 'insulin', 'glucose', 
+			          'pituitary', 'adrenal']
+		},
+		'Rheumatology': {
+			keywords: ['rheumat', 'arthritis', 'lupus', 'autoimmune', 'inflammatory', 'connective tissue']
+		},
+		'Infectious Disease': {
+			keywords: ['infection', 'infectious', 'viral', 'bacterial', 'antibio', 'sepsis', 'hiv', 
+			          'hepatitis', 'tuberculosis', 'pathogen']
+		},
+		'Hematology': {
+			keywords: ['blood', 'hematol', 'anemia', 'coagulation', 'thrombosis', 'platelet', 'hemoglobin', 
+			          'bone marrow', 'lymphocyte']
+		},
+		'Radiology': {
+			keywords: ['radiolog', 'imaging', 'ct scan', 'mri', 'ultrasound', 'x-ray', 'radiograph', 
+			          'tomography', 'fluoroscopy', 'interventional radiology', 'pet scan']
+		},
+		'Dermatology': {
+			keywords: ['dermatol', 'skin', 'cutaneous', 'dermal', 'psoriasis', 'eczema', 'rash']
+		},
+		'Psychiatry': {
+			keywords: ['psychiatr', 'mental health', 'depression', 'anxiety', 'psychosis', 'bipolar', 
+			          'schizophrenia', 'psychological']
+		},
+		'Ophthalmology': {
+			keywords: ['ophthalm', 'eye', 'ocular', 'retina', 'vision', 'visual', 'glaucoma', 'cataract']
+		},
+		'Pediatrics': {
+			keywords: ['pediatric', 'child', 'infant', 'neonatal', 'adolescent', 'pediatr']
+		},
+		'Surgery': {
+			keywords: ['surgical', 'surgery', 'operative', 'postoperative', 'laparoscop', 'transplant']
+		},
+		'Emergency Medicine': {
+			keywords: ['emergency', 'trauma', 'acute care', 'critical care', 'resuscitation']
+		},
+		'Obstetrics & Gynecology': {
+			keywords: ['obstetric', 'gynecolog', 'pregnancy', 'maternal', 'fetal', 'prenatal', 'ovarian', 
+			          'uterine', 'cervical']
+		},
+		'Urology': {
+			keywords: ['urolog', 'prostate', 'bladder', 'urinary tract', 'erectile']
+		},
+		'Anesthesiology': {
+			keywords: ['anesthes', 'analgesia', 'pain management', 'sedation']
+		}
+	};
+
+	// Classify specialty based on keywords in department, title, and abstract
+	function classifySpecialty(departmentText, title, abstract) {
+		const searchText = `${departmentText} ${title} ${abstract}`.toLowerCase();
+		
+		// Score each specialty based on keyword matches
+		const specialtyScores = {};
+		for (const [specialty, data] of Object.entries(specialtyMapping)) {
+			const matches = data.keywords.filter(keyword => 
+				searchText.includes(keyword.toLowerCase())
+			);
+			specialtyScores[specialty] = matches.length;
+		}
+		
+		// Find specialty with highest score
+		const entries = Object.entries(specialtyScores);
+		if (entries.length === 0) {
+			return 'General Medicine';
+		}
+		
+		const sorted = entries.sort((a, b) => b[1] - a[1]);
+		const bestMatch = sorted[0];
+		
+		// Return specialty if it has at least one match, otherwise default
+		if (bestMatch && bestMatch[1] > 0) {
+			return bestMatch[0];
+		}
+		
+		return 'General Medicine';
+	}
+
 	// Calculate article ranking score
 	function calculateArticleScore(article, likeCountsData = {}) {
 		let score = 0;
@@ -2186,44 +2295,44 @@
 					}
 				}
 				
-				// Parse affiliations (pipe-separated in CSV)
-				const affiliationsList = article.affiliations ? article.affiliations.split('|') : [];
+			// Parse affiliations (pipe-separated in CSV)
+			const affiliationsList = article.affiliations ? article.affiliations.split('|') : [];
+			
+			// Extract department/division from affiliations for classification
+			let rawDepartmentText = '';
+			
+			// First, try to get department from first Rochester author
+			if (rochesterAuthorsList.length > 0 && affiliationsList.length > 0) {
+				const firstRochAuthor = rochesterAuthorsList[0];
+				const authorIndex = authorsList.indexOf(firstRochAuthor);
 				
-				// Extract department/division - prioritize first Rochester author's department
-				let departmentText = '';
-				
-				// First, try to get department from first Rochester author
-				if (rochesterAuthorsList.length > 0 && affiliationsList.length > 0) {
-					const firstRochAuthor = rochesterAuthorsList[0];
-					const authorIndex = authorsList.indexOf(firstRochAuthor);
-					
-					if (authorIndex >= 0 && authorIndex < affiliationsList.length) {
-						const affiliation = affiliationsList[authorIndex];
-						const deptMatch = affiliation.match(/(?:Department|Division|Center|Institute|Clinic|Unit|Section)\s+of\s+([^,\.]+)/i);
-						if (deptMatch) {
-							departmentText = deptMatch[1].trim();
-						}
+				if (authorIndex >= 0 && authorIndex < affiliationsList.length) {
+					const affiliation = affiliationsList[authorIndex];
+					const deptMatch = affiliation.match(/(?:Department|Division|Center|Institute|Clinic|Unit|Section)\s+of\s+([^,\.]+)/i);
+					if (deptMatch) {
+						rawDepartmentText = deptMatch[1].trim();
 					}
 				}
-				
-				// If no department found from first Rochester author, check all affiliations
-				if (!departmentText && affiliationsList.length > 0) {
-					for (let i = 0; i < affiliationsList.length; i++) {
-						const affiliation = affiliationsList[i];
-						const deptMatch = affiliation.match(/(?:Department|Division|Center|Institute|Clinic|Unit|Section)\s+of\s+([^,\.]+)/i);
-						if (deptMatch) {
-							departmentText = deptMatch[1].trim();
-							break; // Use the first match found
-						}
+			}
+			
+			// If no department found from first Rochester author, check all affiliations
+			if (!rawDepartmentText && affiliationsList.length > 0) {
+				for (let i = 0; i < affiliationsList.length; i++) {
+					const affiliation = affiliationsList[i];
+					const deptMatch = affiliation.match(/(?:Department|Division|Center|Institute|Clinic|Unit|Section)\s+of\s+([^,\.]+)/i);
+					if (deptMatch) {
+						rawDepartmentText = deptMatch[1].trim();
+						break; // Use the first match found
 					}
 				}
-				
-				// Default to "Medicine" if no department found
-				if (!departmentText) {
-					departmentText = 'Medicine';
-				}
-				
-				const rankingScore = article.rankingScore || 0;
+			}
+			
+			// Classify specialty using keywords from department, title, and abstract
+			const departmentText = classifySpecialty(
+				rawDepartmentText, 
+				article.title || '', 
+				article.abstract || ''
+			);				const rankingScore = article.rankingScore || 0;
 				const citation = `${journal}. ${pubdate}. (${rankingScore})`;
 
 				// Build card with flip effect
