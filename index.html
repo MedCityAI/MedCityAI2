@@ -2207,15 +2207,69 @@
 			return;
 		}
 		
-		// Display all articles
-		const pageArticles = filteredArticlesData;			// Get current date for NEW badge logic
-			const now = new Date();
-			const threeDaysAgo = new Date(now.getTime() - (3 * 24 * 60 * 60 * 1000));
+		// Get user keywords for filtering
+		const userKeywords = JSON.parse(localStorage.getItem('medcity_keywords') || '[]');
+		const hasUserKeywords = userKeywords.length > 0;
+		
+		// Separate articles into matching and non-matching
+		const matchingArticles = [];
+		const otherArticles = [];
+		
+		// Get current date for NEW badge logic
+		const now = new Date();
+		const threeDaysAgo = new Date(now.getTime() - (3 * 24 * 60 * 60 * 1000));
+		
+		// First pass: classify and separate articles
+		filteredArticlesData.forEach(article => {
+			// Parse affiliations for classification
+			const authorsList = article.authors ? article.authors.split('|') : [];
+			const rochesterAuthorsList = article.rochester_authors ? article.rochester_authors.split('|') : [];
+			const affiliationsList = article.affiliations ? article.affiliations.split('|') : [];
 			
-			// Build results HTML from CSV data
-			let resultsHTML = '';
+			// Extract department text
+			let rawDepartmentText = '';
+			if (rochesterAuthorsList.length > 0 && affiliationsList.length > 0) {
+				const firstRochAuthor = rochesterAuthorsList[0];
+				const authorIndex = authorsList.indexOf(firstRochAuthor);
+				if (authorIndex >= 0 && authorIndex < affiliationsList.length) {
+					const affiliation = affiliationsList[authorIndex];
+					const deptMatch = affiliation.match(/(?:Department|Division|Center|Institute|Clinic|Unit|Section)\s+of\s+([^,\.]+)/i);
+					if (deptMatch) {
+						rawDepartmentText = deptMatch[1].trim();
+					}
+				}
+			}
+			if (!rawDepartmentText && affiliationsList.length > 0) {
+				for (let i = 0; i < affiliationsList.length; i++) {
+					const affiliation = affiliationsList[i];
+					const deptMatch = affiliation.match(/(?:Department|Division|Center|Institute|Clinic|Unit|Section)\s+of\s+([^,\.]+)/i);
+					if (deptMatch) {
+						rawDepartmentText = deptMatch[1].trim();
+						break;
+					}
+				}
+			}
 			
-			pageArticles.forEach(article => {
+			// Classify specialty
+			const specialty = classifySpecialty(
+				rawDepartmentText,
+				article.title || '',
+				article.abstract || ''
+			);
+			
+			// Store specialty with article for later use
+			article._specialty = specialty;
+			
+			// Check if specialty matches user keywords
+			if (hasUserKeywords && userKeywords.includes(specialty)) {
+				matchingArticles.push(article);
+			} else {
+				otherArticles.push(article);
+			}
+		});
+		
+		// Build results HTML - function to render a single article
+		const renderArticle = (article) => {
 				const pmid = article.pmid;
 				const title = article.title;
 				const abstract = article.abstract;
@@ -2314,18 +2368,16 @@
 				}
 			}
 			
-			// Classify specialty using keywords from department, title, and abstract
-			const departmentText = classifySpecialty(
-				rawDepartmentText, 
-				article.title || '', 
-				article.abstract || ''
-			);				const rankingScore = article.rankingScore || 0;
+			// Use pre-classified specialty from earlier pass
+			const departmentText = article._specialty || 'General Medicine';
+			
+			const rankingScore = article.rankingScore || 0;
 				const citation = `${journal}. ${pubdate}. (${rankingScore})`;
 
 				// Build card with flip effect
 				const hasSummary = llmSummary && llmSummary.trim() !== '' && llmSummary !== 'No abstract available.';
 				
-				resultsHTML += `
+				return `
 					<div class="result-item">
 						<div class="card-flip-container" role="group" aria-label="${title.substring(0, 100)}...">
 							<!-- Front of card -->
@@ -2387,15 +2439,43 @@
 									</div>
 								</div>
 							</div>
-							` : ''}
-						</div>
+					` : ''}
 					</div>
-				`;
-			});
-
-		document.getElementById("pubmed-results").innerHTML = `<div class="results">${resultsHTML}</div>`;
+				</div>
+			`;
+		};
 		
-		// Hide pagination controls
+		// Build HTML sections
+		let finalHTML = '';
+		
+		// Recommended section (only if there are matches and user has keywords)
+		if (hasUserKeywords && matchingArticles.length > 0) {
+			finalHTML += `
+				<div class="recommended-section">
+					<div class="section-header">
+						<h3>Recommended For You <span class="count">(${matchingArticles.length})</span></h3>
+					</div>
+					<div class="results">`;
+			
+			matchingArticles.forEach(article => {
+				finalHTML += renderArticle(article);
+			});
+			
+			finalHTML += `</div></div>`;
+		}
+		
+		// All publications section (no header if no matches or no keywords)
+		if (otherArticles.length > 0) {
+			finalHTML += `<div class="all-publications-section"><div class="results">`;
+			
+			otherArticles.forEach(article => {
+				finalHTML += renderArticle(article);
+			});
+			
+			finalHTML += `</div></div>`;
+		}
+
+	document.getElementById("pubmed-results").innerHTML = finalHTML;		// Hide pagination controls
 		document.getElementById("pagination-controls").style.display = 'none';
 		
 		// Initialize like buttons
