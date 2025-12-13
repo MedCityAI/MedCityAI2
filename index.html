@@ -2237,7 +2237,7 @@
 			          'bone marrow', 'lymphocyte']
 		},
 		'Radiology': {
-			keywords: ['radiolog', 'imaging', 'ct scan', 'mri', 'ultrasound', 'x-ray', 'radiograph', 
+			keywords: ['radiolog', 'imaging', 'ct', 'mri', 'ultrasound', 'x-ray', 'radiograph', 
 			          'tomography', 'fluoroscopy', 'interventional radiology', 'pet scan']
 		},
 		'Dermatology': {
@@ -2273,15 +2273,36 @@
 
 	// Classify specialty based on keywords in department, title, and abstract
 	function classifySpecialty(departmentText, title, abstract) {
-		const searchText = `${departmentText} ${title} ${abstract}`.toLowerCase();
+		const departmentLower = departmentText.toLowerCase();
+		const titleLower = title.toLowerCase();
+		const abstractLower = abstract.toLowerCase();
 		
 		// Score each specialty based on keyword matches
 		const specialtyScores = {};
 		for (const [specialty, data] of Object.entries(specialtyMapping)) {
-			const matches = data.keywords.filter(keyword => 
-				searchText.includes(keyword.toLowerCase())
-			);
-			specialtyScores[specialty] = matches.length;
+			let score = 0;
+			
+			// Check each keyword
+			data.keywords.forEach(keyword => {
+				const keywordLower = keyword.toLowerCase();
+				
+				// Department match: 3 points
+				if (departmentLower.includes(keywordLower)) {
+					score += 3;
+				}
+				
+				// Title match: 1 point
+				if (titleLower.includes(keywordLower)) {
+					score += 1;
+				}
+				
+				// Abstract match: 1 point
+				if (abstractLower.includes(keywordLower)) {
+					score += 1;
+				}
+			});
+			
+			specialtyScores[specialty] = score;
 		}
 		
 		// Sort specialties by score
