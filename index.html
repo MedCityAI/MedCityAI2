@@ -2395,67 +2395,29 @@
 
 
 
-		// PubMed data display with search and pagination (now using CSV data)
-		async function fetchPubMedResults(searchQuery = '', page = 1, departmentFilter = '') {
-			currentSearchQuery = searchQuery;
-			currentPage = page;
-			
-			// Ensure data is loaded
-			if (allArticlesData.length === 0) {
-				await loadCSVData();
-			}
-			
-			// Filter articles based on search query
-			if (searchQuery && searchQuery.trim() !== '') {
-				const query = searchQuery.trim().toLowerCase();
-				filteredArticlesData = allArticlesData.filter(article => {
-					return article.title.toLowerCase().includes(query) ||
-						   article.abstract.toLowerCase().includes(query) ||
-						   article.authors.toLowerCase().includes(query) ||
-						   article.journal.toLowerCase().includes(query);
-				});
-			} else {
-				// No search query, show all articles
-				filteredArticlesData = [...allArticlesData];
-			}
-			
-			// Apply department filter if selected
-			if (departmentFilter && departmentFilter.trim() !== '') {
-				// Define category mappings
-				const categoryKeywords = {
-					'Surgery': ['surgery', 'surgical', 'cardiovascular surgery', 'cardiac surgery', 'thoracic surgery', 'neurosurgery', 'orthopedic surgery', 'plastic surgery', 'vascular surgery', 'transplant surgery'],
-					'Cardiology': ['cardiology', 'cardiovascular', 'cardiac', 'heart'],
-					'Neurology': ['neurology', 'neurological', 'neuroscience', 'neuroimaging', 'brain'],
-					'Oncology': ['oncology', 'cancer', 'hematology', 'medical oncology', 'leukemia', 'lymphoma'],
-					'Radiation Oncology': ['radiation oncology', 'radiation', 'radiotherapy'],
-					'Radiology': ['radiology', 'imaging', 'diagnostic radiology', 'interventional radiology'],
-					'Pediatrics': ['pediatrics', 'pediatric', 'child', 'children', 'neonatal'],
-					'Internal Medicine': ['internal medicine', 'medicine', 'general medicine'],
-					'Psychiatry': ['psychiatry', 'psychiatric', 'mental health', 'psychology'],
-					'AI/ML/DL': ['artificial intelligence', 'machine learning', 'deep learning', 'neural network', 'ai', 'ml', 'dl',
-						'generative ai', 'large language model', 'llm', 'chatgpt', 'gpt', 'generative', 'gen ai'
-					]
-				};
-				
-				filteredArticlesData = filteredArticlesData.filter(article => {
-					const affiliationsList = article.affiliations ? article.affiliations.split('|') : [];
-					
-					// Check if any affiliation contains a department that matches the selected category
-					return affiliationsList.some(affiliation => {
-						const deptMatch = affiliation.match(/(?:Department|Division|Center|Institute|Clinic|Unit|Section)\s+of\s+([^,\.]+)/i);
-						if (deptMatch) {
-							const deptName = deptMatch[1].trim().toLowerCase();
-							
-							// Check if department name contains any keyword from the selected category
-							const keywords = categoryKeywords[departmentFilter] || [];
-							return keywords.some(keyword => deptName.includes(keyword));
-						}
-						return false;
-					});
-				});
-			}
-			
-			// Filter out articles where Rochester authors account for less than 1% of total authors
+	// PubMed data display with search and pagination (now using CSV data)
+	async function fetchPubMedResults(searchQuery = '', page = 1) {
+		currentSearchQuery = searchQuery;
+		currentPage = page;
+		
+		// Ensure data is loaded
+		if (allArticlesData.length === 0) {
+			await loadCSVData();
+		}
+		
+		// Filter articles based on search query
+		if (searchQuery && searchQuery.trim() !== '') {
+			const query = searchQuery.trim().toLowerCase();
+			filteredArticlesData = allArticlesData.filter(article => {
+				return article.title.toLowerCase().includes(query) ||
+					   article.abstract.toLowerCase().includes(query) ||
+					   article.authors.toLowerCase().includes(query) ||
+					   article.journal.toLowerCase().includes(query);
+			});
+		} else {
+			// No search query, show all articles
+			filteredArticlesData = [...allArticlesData];
+		}			// Filter out articles where Rochester authors account for less than 1% of total authors
 			filteredArticlesData = filteredArticlesData.filter(article => {
 				const authorsList = article.authors ? article.authors.split('|') : [];
 				const rochesterAuthorsList = article.rochester_authors ? article.rochester_authors.split('|') : [];
@@ -3208,7 +3170,7 @@
 					
 					// Filter for today's publications
 					setTimeout(() => {
-						fetchPubMedResults('', 1, '', today);
+						fetchPubMedResults('', 1);
 					}, 500);
 				});
 			}
