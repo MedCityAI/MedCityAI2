@@ -2298,11 +2298,11 @@
 		// Check for multidisciplinary (dual specialty) criteria:
 		// 1. First specialty must have at least 3 keyword matches
 		// 2. Second specialty must have at least 2 keyword matches
-		// 3. Second specialty must score >= 40% of first specialty
+		// 3. Second specialty must score >= 25% of first specialty
 		if (sorted.length >= 2 && firstScore >= 3) {
 			const [secondSpecialty, secondScore] = sorted[1];
 			
-			if (secondScore >= 2 && secondScore >= firstScore * 0.4) {
+			if (secondScore >= 2 && secondScore >= firstScore * 0.3) {
 				return [firstSpecialty, secondSpecialty];
 			}
 		}
@@ -2620,11 +2620,7 @@
 			if (specialties.length === 1) {
 				specialtyBadgesHtml = `<div class="department-badge">${specialties[0]}</div>`;
 			} else if (specialties.length === 2) {
-				specialtyBadgesHtml = `
-					<div class="specialty-badges">
-						<div class="department-badge primary">${specialties[0]}</div>
-						<div class="department-badge secondary">${specialties[1]}</div>
-					</div>`;
+				specialtyBadgesHtml = `<div class="department-badge">${specialties[0]} · ${specialties[1]}</div>`;
 			}
 			
 			const rankingScore = article.rankingScore || 0;
