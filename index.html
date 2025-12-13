@@ -221,6 +221,34 @@
 			pointer-events: none; /* Prevent blocking clicks */
 		}
 		
+		.this-week-tab {
+			position: absolute;
+			top: 0;
+			left: 0;
+			background: rgba(231, 76, 60, 0.5);
+			color: #fff;
+			font-size: 11px;
+			font-weight: 600;
+			padding: 4px 10px;
+			border-radius: 8px 0 8px 0;
+			z-index: 10;
+			pointer-events: none;
+		}
+		
+		.this-month-tab {
+			position: absolute;
+			top: 0;
+			left: 0;
+			background: rgba(231, 76, 60, 0.3);
+			color: #fff;
+			font-size: 10px;
+			font-weight: 500;
+			padding: 4px 10px;
+			border-radius: 8px 0 8px 0;
+			z-index: 10;
+			pointer-events: none;
+		}
+		
 		.department-badge {
 			position: absolute;
 			top: 8px;
@@ -2458,9 +2486,11 @@
 		const matchingArticles = [];
 		const otherArticles = [];
 		
-		// Get current date for NEW badge logic
+		// Get current date for recency badge logic
 		const now = new Date();
-		const threeDaysAgo = new Date(now.getTime() - (3 * 24 * 60 * 60 * 1000));
+		const twoDaysAgo = new Date(now.getTime() - (2 * 24 * 60 * 60 * 1000));
+		const sevenDaysAgo = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
+		const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
 		
 		// First pass: classify and separate articles
 		filteredArticlesData.forEach(article => {
@@ -2541,8 +2571,21 @@
 					}
 				}
 				
-				// Determine if article is NEW (within last 3 days)
-				const isNew = articleDate && articleDate >= threeDaysAgo;
+				// Determine recency badge (within last 48 hrs, 7 days, or 30 days)
+				let recencyBadge = '';
+				let recencyClass = '';
+				if (articleDate) {
+					if (articleDate >= twoDaysAgo) {
+						recencyBadge = 'NEW';
+						recencyClass = 'new-tab';
+					} else if (articleDate >= sevenDaysAgo) {
+						recencyBadge = 'THIS WEEK';
+						recencyClass = 'this-week-tab';
+					} else if (articleDate >= thirtyDaysAgo) {
+						recencyBadge = 'THIS MONTH';
+						recencyClass = 'this-month-tab';
+					}
+				}
 				
 				// Parse authors (pipe-separated in CSV)
 				const authorsList = article.authors ? article.authors.split('|') : [];
@@ -2638,7 +2681,7 @@
 						<div class="card-flip-container" role="group" aria-label="${title.substring(0, 100)}...">
 							<!-- Front of card -->
 							<div class="card-face card-front" onclick="flipCard(this.closest('.card-flip-container'), event);" style="cursor: pointer;">
-								${isNew ? '<div class="new-tab">NEW</div>' : ''}
+								${recencyBadge ? `<div class="${recencyClass}">${recencyBadge}</div>` : ''}
 								${specialtyBadgesHtml}
 								<br>
 								<a href="#" class="result-title" 
