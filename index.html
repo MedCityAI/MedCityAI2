@@ -239,6 +239,30 @@
 			pointer-events: none; /* Prevent blocking clicks */
 		}
 		
+		/* Multi-specialty badges container */
+		.specialty-badges {
+			position: absolute;
+			top: 8px;
+			right: 8px;
+			display: flex;
+			flex-direction: column;
+			gap: 4px;
+			align-items: flex-end;
+			z-index: 10;
+			pointer-events: none;
+		}
+		
+		.specialty-badges .department-badge {
+			position: relative;
+			top: auto;
+			right: auto;
+		}
+		
+		.specialty-badges .department-badge.secondary {
+			opacity: 0.75;
+			font-size: 10px;
+		}
+		
 		/* Department filter links */
 		.dept-filter-link {
 			display: inline-block;
@@ -2260,21 +2284,31 @@
 			specialtyScores[specialty] = matches.length;
 		}
 		
-		// Find specialty with highest score
-		const entries = Object.entries(specialtyScores);
-		if (entries.length === 0) {
-			return 'General Medicine';
+		// Sort specialties by score
+		const sorted = Object.entries(specialtyScores)
+			.filter(([_, score]) => score > 0)
+			.sort((a, b) => b[1] - a[1]);
+		
+		if (sorted.length === 0) {
+			return ['General Medicine'];
 		}
 		
-		const sorted = entries.sort((a, b) => b[1] - a[1]);
-		const bestMatch = sorted[0];
+		const [firstSpecialty, firstScore] = sorted[0];
 		
-		// Return specialty if it has at least one match, otherwise default
-		if (bestMatch && bestMatch[1] > 0) {
-			return bestMatch[0];
+		// Check for multidisciplinary (dual specialty) criteria:
+		// 1. First specialty must have at least 3 keyword matches
+		// 2. Second specialty must have at least 2 keyword matches
+		// 3. Second specialty must score >= 40% of first specialty
+		if (sorted.length >= 2 && firstScore >= 3) {
+			const [secondSpecialty, secondScore] = sorted[1];
+			
+			if (secondScore >= 2 && secondScore >= firstScore * 0.4) {
+				return [firstSpecialty, secondSpecialty];
+			}
 		}
 		
-		return 'General Medicine';
+		// Return single specialty
+		return [firstSpecialty];
 	}
 
 	// Calculate article ranking score
@@ -2459,18 +2493,19 @@
 				}
 			}
 			
-			// Classify specialty
-			const specialty = classifySpecialty(
+			// Classify specialty (returns array of 1 or 2 specialties)
+			const specialties = classifySpecialty(
 				rawDepartmentText,
 				article.title || '',
 				article.abstract || ''
 			);
 			
-			// Store specialty with article for later use
-			article._specialty = specialty;
+			// Store specialties with article for later use
+			article._specialties = specialties;
 			
-			// Check if specialty matches user keywords
-			if (hasUserKeywords && userKeywords.includes(specialty)) {
+			// Check if any specialty matches user keywords
+			const hasMatch = specialties.some(spec => userKeywords.includes(spec));
+			if (hasUserKeywords && hasMatch) {
 				matchingArticles.push(article);
 			} else {
 				otherArticles.push(article);
@@ -2577,8 +2612,20 @@
 				}
 			}
 			
-			// Use pre-classified specialty from earlier pass
-			const departmentText = article._specialty || 'General Medicine';
+			// Use pre-classified specialties from earlier pass
+			const specialties = article._specialties || ['General Medicine'];
+			
+			// Build specialty badges HTML
+			let specialtyBadgesHtml = '';
+			if (specialties.length === 1) {
+				specialtyBadgesHtml = `<div class="department-badge">${specialties[0]}</div>`;
+			} else if (specialties.length === 2) {
+				specialtyBadgesHtml = `
+					<div class="specialty-badges">
+						<div class="department-badge primary">${specialties[0]}</div>
+						<div class="department-badge secondary">${specialties[1]}</div>
+					</div>`;
+			}
 			
 			const rankingScore = article.rankingScore || 0;
 				const citation = `${journal}. ${pubdate}. (${rankingScore})`;
@@ -2592,7 +2639,7 @@
 							<!-- Front of card -->
 							<div class="card-face card-front" onclick="flipCard(this.closest('.card-flip-container'), event);" style="cursor: pointer;">
 								${isNew ? '<div class="new-tab">NEW</div>' : ''}
-								${departmentText ? `<div class="department-badge">${departmentText}</div>` : ''}
+								${specialtyBadgesHtml}
 								<br>
 								<a href="#" class="result-title" 
 								   onclick="event.preventDefault(); event.stopPropagation(); flipCard(this.closest('.card-flip-container'), event);" 
