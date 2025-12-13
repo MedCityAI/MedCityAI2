@@ -2455,6 +2455,21 @@
 				});
 			}
 			
+			// Filter out articles where Rochester authors account for less than 1% of total authors
+			filteredArticlesData = filteredArticlesData.filter(article => {
+				const authorsList = article.authors ? article.authors.split('|') : [];
+				const rochesterAuthorsList = article.rochester_authors ? article.rochester_authors.split('|') : [];
+				
+				// Skip articles with no authors
+				if (authorsList.length === 0) return false;
+				
+				// Calculate percentage of Rochester authors
+				const rochesterPercentage = (rochesterAuthorsList.length / authorsList.length) * 100;
+				
+				// Keep only if Rochester authors are >= 5%
+				return rochesterPercentage >= 5;
+			});
+			
 			// Apply ranking system and sort articles by score
 			filteredArticlesData.forEach(article => {
 				article.rankingScore = calculateArticleScore(article, likeCountsForRanking);
@@ -2591,38 +2606,61 @@
 				const authorsList = article.authors ? article.authors.split('|') : [];
 				const rochesterAuthorsList = article.rochester_authors ? article.rochester_authors.split('|') : [];
 				
-				// Format authors for display
+				// Format authors for display with et al. truncation
 				let authorsHtml = "";
 				if (article.authors_display) {
 					authorsHtml = article.authors_display;
-						// Make Rochester authors clickable
-						rochesterAuthorsList.forEach(rochAuthor => {
-							if (rochAuthor) {
-								const escapedAuthor = rochAuthor.replace(/'/g, "\\'");
-								authorsHtml = authorsHtml.replace(
-									rochAuthor,
-									`<span class="roch-author" data-author="${escapedAuthor}" tabindex="0" role="button" aria-label="View publications by ${escapedAuthor}">${rochAuthor}</span>`
-								);
-							}
-						});
-
-					// Fallback: if replacement didn't inject any clickable spans, rebuild from raw authors list
-					if (!authorsHtml.includes('roch-author') && authorsList.length) {
-						const rebuilt = authorsList.map(raw => {
-							const t = (raw || '').trim();
-							if (!t) return t;
-							if (rochesterAuthorsList.includes(t)) {
-								const esc = t.replace(/'/g, "\\'");
-								return `<span class="roch-author" data-author="${esc}" tabindex="0" role="button" aria-label="View publications by ${esc}">${t}</span>`;
-							}
-							return t;
-						}).join(', ');
-						if (rebuilt) {
-							authorsHtml = rebuilt;
-						}
-					}
+				} else if (authorsList.length > 0) {
+					authorsHtml = authorsList.join(', ');
 				}
 				
+				// Apply et al. truncation by counting commas (more than 7 authors = 8+ commas)
+				if (authorsHtml) {
+					const commaCount = (authorsHtml.match(/,/g) || []).length;
+					if (commaCount > 7) {
+						// Keep first 7 authors (up to 7th comma)
+						let commasSeen = 0;
+						let truncateIndex = 0;
+						for (let i = 0; i < authorsHtml.length; i++) {
+							if (authorsHtml[i] === ',') {
+								commasSeen++;
+								if (commasSeen === 7) {
+									truncateIndex = i;
+									break;
+								}
+							}
+						}
+						authorsHtml = authorsHtml.substring(0, truncateIndex) + ', et al.';
+					}
+					
+					// Now make Rochester authors clickable
+					rochesterAuthorsList.forEach(rochAuthor => {
+						if (rochAuthor) {
+							const escapedAuthor = rochAuthor.replace(/'/g, "\\'");
+							authorsHtml = authorsHtml.replace(
+								rochAuthor,
+								`<span class="roch-author" data-author="${escapedAuthor}" tabindex="0" role="button" aria-label="View publications by ${escapedAuthor}">${rochAuthor}</span>`
+							);
+						}
+					});
+				}
+				
+				// Fallback: if no authors display exists, rebuild from raw authors list
+				if (!authorsHtml && authorsList.length) {
+					const rebuilt = authorsList.map(raw => {
+						const t = (raw || '').trim();
+						if (!t) return t;
+						if (rochesterAuthorsList.includes(t)) {
+							const esc = t.replace(/'/g, "\\'");
+							return `<span class="roch-author" data-author="${esc}" tabindex="0" role="button" aria-label="View publications by ${esc}">${t}</span>`;
+						}
+						return t;
+					}).join(', ');
+					if (rebuilt) {
+						authorsHtml = rebuilt;
+					}
+				}
+			
 			// Parse affiliations (pipe-separated in CSV)
 			const affiliationsList = article.affiliations ? article.affiliations.split('|') : [];
 			
