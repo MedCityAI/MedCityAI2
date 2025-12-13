@@ -2237,7 +2237,7 @@
 			          'bone marrow', 'lymphocyte']
 		},
 		'Radiology': {
-			keywords: ['radiolog', 'imaging', 'ct', 'mri', 'ultrasound', 'x-ray', 'radiograph', 
+			keywords: ['radiolog', 'imaging', 'ct scan', 'mri', 'ultrasound', 'x-ray', 'radiograph', 
 			          'tomography', 'fluoroscopy', 'interventional radiology', 'pet scan']
 		},
 		'Dermatology': {
@@ -2273,36 +2273,15 @@
 
 	// Classify specialty based on keywords in department, title, and abstract
 	function classifySpecialty(departmentText, title, abstract) {
-		const departmentLower = departmentText.toLowerCase();
-		const titleLower = title.toLowerCase();
-		const abstractLower = abstract.toLowerCase();
+		const searchText = `${departmentText} ${title} ${abstract}`.toLowerCase();
 		
 		// Score each specialty based on keyword matches
 		const specialtyScores = {};
 		for (const [specialty, data] of Object.entries(specialtyMapping)) {
-			let score = 0;
-			
-			// Check each keyword
-			data.keywords.forEach(keyword => {
-				const keywordLower = keyword.toLowerCase();
-				
-				// Department match: 3 points
-				if (departmentLower.includes(keywordLower)) {
-					score += 3;
-				}
-				
-				// Title match: 1 point
-				if (titleLower.includes(keywordLower)) {
-					score += 1;
-				}
-				
-				// Abstract match: 1 point
-				if (abstractLower.includes(keywordLower)) {
-					score += 1;
-				}
-			});
-			
-			specialtyScores[specialty] = score;
+			const matches = data.keywords.filter(keyword => 
+				searchText.includes(keyword.toLowerCase())
+			);
+			specialtyScores[specialty] = matches.length;
 		}
 		
 		// Sort specialties by score
@@ -2319,11 +2298,11 @@
 		// Check for multidisciplinary (dual specialty) criteria:
 		// 1. First specialty must have at least 3 keyword matches
 		// 2. Second specialty must have at least 2 keyword matches
-		// 3. Second specialty must score >= 25% of first specialty
+		// 3. Second specialty must score >= 40% of first specialty
 		if (sorted.length >= 2 && firstScore >= 3) {
 			const [secondSpecialty, secondScore] = sorted[1];
 			
-			if (secondScore >= 2 && secondScore >= firstScore * 0.3) {
+			if (secondScore >= 2 && secondScore >= firstScore * 0.4) {
 				return [firstSpecialty, secondSpecialty];
 			}
 		}
@@ -2636,12 +2615,16 @@
 			// Use pre-classified specialties from earlier pass
 			const specialties = article._specialties || ['General Medicine'];
 			
-			// Build specialty badges HTML
+			// Build specialty badges HTML (use abbreviations for display)
+			const displaySpecialties = specialties.map(s => 
+				s === 'Obstetrics & Gynecology' ? 'OB/GYN' : s
+			);
+			
 			let specialtyBadgesHtml = '';
-			if (specialties.length === 1) {
-				specialtyBadgesHtml = `<div class="department-badge">${specialties[0]}</div>`;
-			} else if (specialties.length === 2) {
-				specialtyBadgesHtml = `<div class="department-badge">${specialties[0]} · ${specialties[1]}</div>`;
+			if (displaySpecialties.length === 1) {
+				specialtyBadgesHtml = `<div class="department-badge">${displaySpecialties[0]}</div>`;
+			} else if (displaySpecialties.length === 2) {
+				specialtyBadgesHtml = `<div class="department-badge">${displaySpecialties[0]} · ${displaySpecialties[1]}</div>`;
 			}
 			
 			const rankingScore = article.rankingScore || 0;
