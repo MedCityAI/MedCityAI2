@@ -790,23 +790,33 @@
 		}
 		.hero-section {
 			min-height: 240px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
 		}
 		.hero-content {
 			padding: 24px 15px 16px 15px;
-		}
-		.hero-left h1 { font-size: 2em; }
-		.hero-left p { font-size: 1em; }
-		.button-row {
-			justify-content: center;
+			text-align: center;
+			display: flex;
 			flex-direction: column;
 			align-items: center;
-			gap: 12px;
+			justify-content: center;
+			width: 100%;
 		}
-		.btn {
-			padding: 12px 24px;
-			font-size: 14px;
-			width: auto;
-			min-width: 200px;
+		.hero-left {
+			text-align: center;
+			max-width: 100%;
+		}
+		.hero-left h1 { 
+			font-size: 2em;
+			margin: 0;
+		}
+		.hero-left p { 
+			font-size: 1em;
+			margin: 10px 0 0 0;
+		}
+		.button-row {
+			display: none;
 		}
 		
 		/* Improved keyword modal for mobile */
