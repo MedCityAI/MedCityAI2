@@ -2273,15 +2273,30 @@
 
 	// Classify specialty based on keywords in department, title, and abstract
 	function classifySpecialty(departmentText, title, abstract) {
-		const searchText = `${departmentText} ${title} ${abstract}`.toLowerCase();
+		const deptLower = departmentText.toLowerCase();
+		const titleLower = title.toLowerCase();
+		const abstractLower = abstract.toLowerCase();
+		const searchText = `${deptLower} ${titleLower} ${abstractLower}`;
 		
 		// Score each specialty based on keyword matches
 		const specialtyScores = {};
 		for (const [specialty, data] of Object.entries(specialtyMapping)) {
-			const matches = data.keywords.filter(keyword => 
-				searchText.includes(keyword.toLowerCase())
-			);
-			specialtyScores[specialty] = matches.length;
+			let score = 0;
+			
+			for (const keyword of data.keywords) {
+				const keywordLower = keyword.toLowerCase();
+				
+				// Count matches in department (2x boost)
+				const deptMatches = (deptLower.match(new RegExp(keywordLower, 'g')) || []).length;
+				score += deptMatches * 2;
+				
+				// Count matches in title and abstract (1x)
+				const titleMatches = (titleLower.match(new RegExp(keywordLower, 'g')) || []).length;
+				const abstractMatches = (abstractLower.match(new RegExp(keywordLower, 'g')) || []).length;
+				score += titleMatches + abstractMatches;
+			}
+			
+			specialtyScores[specialty] = score;
 		}
 		
 		// Sort specialties by score
