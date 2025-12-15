@@ -1,0 +1,58 @@
+{
+  "week_start": "2025-12-07",
+  "week_end": "2025-12-13",
+  "generated_at": "2025-12-14T06:22:24.035433",
+  "articles": [
+    {
+      "pmid": "41183370",
+      "title": "Bridging the Physician Knowledge Gap in Transgender and Gender-Diverse Breast Imaging Care.",
+      "abstract": "Transgender and gender-diverse (TGD) individuals face unique challenges in accessing affirming, evidence-based breast imaging care because of longstanding disparities in provider education, institutional practices, and imaging guidelines. Gender-affirming hormone therapy and gender-affirming surgeries, such as chest masculinization or breast augmentation, impact breast tissue composition and cancer risk, necessitating individualized imaging approaches. Through multiple clinical vignettes, this article illustrates potential pitfalls and key considerations in breast imaging for TGD patients, including appropriate imaging recommendations, inclusive system-level changes, and navigating patient encounters. Education of breast imaging radiologists, technologists, and front-desk staff is critical to bridge the known knowledge gap and improve outcomes for this patient population. By adopting inclusive, culturally competent, and trauma-informed practices, breast imaging professionals can help reduce disparities and improve the experience and health outcomes of TGD patients.© Society of Breast Imaging 2025. All rights reserved. For commercial re-use, please contact reprints@oup.com for reprints and translation rights for reprints. All other permissions can be obtained through our RightsLink service via the Permissions link on the article page on our site—for further information please contact journals.permissions@oup.com.",
+      "journal": "Journal of breast imaging",
+      "pubdate": "Dec 13, 2025",
+      "year": "2025",
+      "month": "Dec",
+      "day": "13",
+      "authors": "Carroll E F|Gao Y",
+      "rochester_authors": "Carroll E F",
+      "affiliations": "Division of Breast Imaging and Intervention, Department of Radiology, Mayo Clinic, Rochester, MN, USA.|Division of Hospital and Emergency Radiology, Department of Radiology, Mayo Clinic, Rochester, MN, USA.|Division of Breast Imaging, Department of Radiology, NYU Langone, New York, NY, USA.",
+      "authors_display": "Carroll E F, Gao Y",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41183370/",
+      "llm_summary": "The key finding of this medical research is that transgender and gender-diverse individuals face unique challenges in accessing appropriate breast imaging care due to a lack of provider education and inclusive practices. The impact is that adopting inclusive and culturally competent practices in breast imaging can help reduce disparities and improve health outcomes for this patient population.",
+      "like_count": 0
+    },
+    {
+      "pmid": "41387682",
+      "title": "USP29 and SMURF1 orchestrate FSP1-mediated ferroptosis suppression to facilitate chemoresistance in gastric cancer.",
+      "abstract": "Gastric cancer (GC) ranks as the third leading cause of cancer-related mortality. Chemoresistance poses a major obstacle to successful treatment for GC patients. Here, we demonstrate that ferroptosis suppressor protein 1 (FSP1) enables chemoresistance in GC by inhibiting ferroptosis, resulting in diminished chemotherapy response and reduced patient survival rate. USP29 and SMURF1 are subsequently discovered as the deubiquitinase and E3 ligase of FSP1, respectively, orchestrating the ubiquitination of FSP1 to modulate ferroptosis and chemoresistance in GC. In the ubiquitination process, SMURF1 is observed to interact with and polyubiquitinate FSP1 within K63/K193 sites. Notably, pharmacological inhibition of FSP1 by iFSP1 is shown to synergize with chemotherapeutic agents across chemoresistant cellular and mouse models. Our findings thus underscore the pivotal role of the USP29 and SMURF1 in regulating GC chemoresistance via FSP1-mediated ferroptosis suppression. FSP1 inhibition may represent a promising therapeutic avenue to overcome chemoresistance in GC.© 2025. The Author(s).",
+      "journal": "Nature communications",
+      "pubdate": "Dec 12, 2025",
+      "year": "2025",
+      "month": "Dec",
+      "day": "12",
+      "authors": "Wu Z|Tu X|Zhu S|Jiang Q|Wang L|Tao K|Lou Z|Deng M|Zeng X",
+      "rochester_authors": "Wu Z|Tu X|Zhu S|Wang L|Lou Z|Zeng X",
+      "affiliations": "Department of Oncology, Mayo Clinic, Rochester, MN, USA.|Department of Gastrointestinal Surgery, Union Hospital, Tongji Medical College, Huazhong University of Science and Technology, Wuhan, China.|Department of Molecular Pharmacology and Experimental Therapeutics, Mayo Clinic, Rochester, MN, USA.|Department of Oncology, Mayo Clinic, Rochester, MN, USA. lou.zhenkun@mayo.edu.|State Key Laboratory of Molecular Oncology and Department of Radiation Oncology, National Cancer Center, National Clinical Research Center for Cancer, Cancer Hospital, Chinese Academy of Medical Sciences and Peking Union Medical College, Beijing, China. dengmin@cicams.ac.cn.|Department of Oncology, Mayo Clinic, Rochester, MN, USA. xiangyuzeng@hust.edu.cn.|Department of Gastrointestinal Surgery, Union Hospital, Tongji Medical College, Huazhong University of Science and Technology, Wuhan, China. xiangyuzeng@hust.edu.cn.",
+      "authors_display": "Wu Z, Tu X, Zhu S, Jiang Q, Wang L, Tao K, Lou Z, Deng M, Zeng X",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41387682/",
+      "llm_summary": "This study found that the proteins USP29 and SMURF1 help gastric cancer cells become resistant to chemotherapy by regulating a protein called FSP1, which suppresses a type of cell death called ferroptosis. Inhibiting FSP1 was shown to make chemotherapy more effective in resistant cancer cells and animal models, suggesting that targeting FSP1 could be a promising approach to overcoming chemoresistance in gastric cancer.",
+      "like_count": 0
+    },
+    {
+      "pmid": "41384357",
+      "title": "A plain language review of the ATTRibute-CM study: efficacy and safety of acoramidis in transthyretin amyloid cardiomyopathy.",
+      "abstract": "No abstract available.",
+      "journal": "Future cardiology",
+      "pubdate": "Dec 12, 2025",
+      "year": "2025",
+      "month": "Dec",
+      "day": "12",
+      "authors": "Gillmore J D|Judge D P|Cappelli F|Fontana M|Garcia-Pavia P|Gibbs S|Grogan M|Hanna M|Hoffman J|Masri A|Maurer M S|Nativi-Nicolau J|Obici L|Poulsen S H|Rockhold F|Shah K B|Soman P|Garg J|Chiswell K|Xu H|Cao X|Lystig T|Sinha U|Fox J C",
+      "rochester_authors": "Grogan M|Nativi-Nicolau J",
+      "affiliations": "aThe National Amyloidosis Centre, Division of Medicine, University College London, Royal Free Hospital, London, UK.|bthe Medical University of South Carolina, Charleston, South Carolina, US.|cTuscan Regional Amyloidosis Centre, Careggi University Hospital, Florence, Italy.|dthe Department of Cardiology, Hospital Universitario Puerta de Hierro Majadahonda, Centro de Investigación Biomédica en Red Enfermedades Cardiovasculares, Madrid, Spain.|eCentro Nacional de Investigaciones Cardiovasculares, Madrid, Spain.|fEuropean Reference Network for Rare, Low Prevalence and Complex Diseases of the Heart, Amsterdam, Netherlands.|gthe Victorian and Tasmanian Amyloidosis Service, Department of Haematology, Monash University Eastern Health Clinical School, Box Hill, Victoria, Australia.|hthe Department of Cardiovascular Diseases, Mayo Clinic, Rochester, Minnesota, US.|ithe Department of Cardiovascular Medicine, Cleveland Clinic, Cleveland, Ohio, US.|jthe Sylvester Comprehensive Cancer Center, University of Miami, Miami, Florida, US.|kthe Cardiac Amyloidosis Program, Knight Cardiovascular Institute, Oregon Health and Science University, Portland, Oregon, US.|lthe Cardiac Amyloidosis Program, Division of Cardiology, Columbia College of Physicians and Surgeons, New York, US.|mthe Amyloidosis Program, Department of Transplant, Mayo Clinic, Jacksonville, Florida, US.|nthe Amyloidosis Research and Treatment Center, IRCCS Fondazione Policlinico San Matteo, Pavia, Italy.|othe Department of Cardiology, Aarhus University Hospital, Aarhus, Denmark.|pDuke Clinical Research Institute, Durham, North Carolina, US.|qDuke University Medical Center, Durham, North Carolina, US.|rthe Pauley Heart Center, Virginia Commonwealth University, Richmond, Virginia, US.|sthe Division of Cardiology, University of Pittsburgh Medical Center, Pittsburgh, Pennsylvania, US.|tEidos Therapeutics, affiliate of BridgeBio Pharma, San Francisco, California, US.",
+      "authors_display": "Gillmore J D, Judge D P, Cappelli F, Fontana M, Garcia-Pavia P, Gibbs S, Grogan M, Hanna M, Hoffman J, Masri A, Maurer M S, Nativi-Nicolau J, Obici L, Poulsen S H, Rockhold F, Fox J C, et al.",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41384357/",
+      "llm_summary": "This research likely explores the effectiveness and safety of a drug called acoramidis in treating a condition called transthyretin amyloid cardiomyopathy. The study uses plain language to review the findings of the ATTRibute-CM study, which investigated the use of this drug for this specific heart condition.",
+      "like_count": 0
+    }
+  ]
+}
