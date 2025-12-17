@@ -235,7 +235,7 @@
 				</g>
 			</svg>
 	<h1 style="position:relative;z-index:1;">Featured This Week</h1>
-	<p style="position:relative;z-index:1; font-size: 1.1em; line-height: 1.7;">Highlighted research based on user engagement</p>
+	<p style="position:relative;z-index:1; font-size: 1.1em; line-height: 1.7;">Top 3 most-liked publications from the prior week</p>
 	</div>		<!-- Featured Publications Container -->
 		<div class="featured-container" id="featured-container">
 			<div class="loading">
@@ -293,11 +293,16 @@
 				const container = document.getElementById('featured-container');
 				
 				try {
-					const response = await fetch('pubmed_data.csv');
-					const csvText = await response.text();
-					const lines = csvText.trim().split('\n');
+					// Fetch from weekly featured JSON file (top 3 most-liked from prior week)
+					const response = await fetch('featured_weekly.json?t=' + new Date().getTime());
 					
-					if (lines.length <= 1) {
+					if (!response.ok) {
+						throw new Error('Featured articles not available');
+					}
+					
+					const data = await response.json();
+					
+					if (!data.articles || data.articles.length === 0) {
 						container.innerHTML = `
 							<div class="empty-state">
 								<i class="fas fa-inbox"></i>
@@ -308,49 +313,43 @@
 						return;
 					}
 
-					// Parse CSV
-					const headers = parseCSVLine(lines[0]);
-					const articles = [];
+					// Take only top 3 articles
+					const articles = data.articles.slice(0, 3);
 					
-					for (let i = 1; i < lines.length; i++) {
-						if (lines[i].trim()) {
-							const values = parseCSVLine(lines[i]);
-							const article = {};
-							headers.forEach((header, index) => {
-								article[header] = values[index] || '';
-							});
-							articles.push(article);
-						}
-					}
-
-					// Display all articles as featured (you can add filtering logic here)
-					if (articles.length === 0) {
-						container.innerHTML = `
-							<div class="empty-state">
-								<i class="fas fa-inbox"></i>
-								<h3>No Featured Publications</h3>
-								<p>Check back soon for highlighted research articles.</p>
+					// Add week information header
+					let html = '';
+					if (data.week_start && data.week_end) {
+						const weekStart = new Date(data.week_start).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+						const weekEnd = new Date(data.week_end).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+						html += `
+							<div style="text-align: center; margin-bottom: 30px; padding: 15px; background: linear-gradient(135deg, rgba(231, 76, 60, 0.1), rgba(192, 57, 43, 0.1)); border-radius: 12px;">
+								<h3 style="color: #e74c3c; margin: 0 0 5px 0; font-size: 1.2em;">
+									<i class="fas fa-trophy"></i> Top Liked Articles
+								</h3>
+								<p style="color: #7f8c8d; margin: 0; font-size: 0.95em;">
+									Week of ${weekStart} - ${weekEnd}
+								</p>
 							</div>
 						`;
-						return;
 					}
 
 					// Generate featured cards
-					let html = '';
 					articles.forEach((article, index) => {
 						const title = article.title || 'Untitled';
-						const abstract = article.abstract || article.llm_summary || 'No abstract available.';
+						const abstract = article.abstract || 'No abstract available.';
 						const journal = article.journal || 'Unknown Journal';
 						const pubdate = article.pubdate || 'Unknown Date';
 						const authors = article.authors_display || article.authors || 'Unknown Authors';
 						const url = article.url || '#';
 						const pmid = article.pmid || '';
+						const likes = article.likes || 0;
+						const rank = index + 1;
 
 						html += `
 							<div class="featured-card">
 								<div class="featured-badge">
-									<i class="fas fa-star"></i>
-									FEATURED
+									<i class="fas fa-trophy"></i>
+									#${rank} MOST LIKED
 								</div>
 								<h2>${title}</h2>
 								<div class="meta">
@@ -365,6 +364,10 @@
 									<div class="meta-item">
 										<i class="fas fa-flask"></i>
 										PMID: ${pmid}
+									</div>
+									<div class="meta-item" style="color: #e74c3c; font-weight: 600;">
+										<i class="fas fa-heart"></i>
+										${likes} likes
 									</div>
 								</div>
 								<div class="authors">
@@ -391,13 +394,11 @@
 					container.innerHTML = `
 						<div class="empty-state">
 							<i class="fas fa-exclamation-triangle"></i>
-							<h3>Error Loading Publications</h3>
-							<p>Unable to load featured publications. Please try again later.</p>
-						</div>
-					`;
-				}
-			}
-
+						<h3>Featured Articles Coming Soon</h3>
+						<p>Weekly featured articles will be available after the first automated update runs on Sunday.</p>
+						<p style="font-size: 0.9em; color: #95a5a6; margin-top: 15px;">
+							The system automatically identifies the top-liked articles from the prior week.
+						</p>
 			// Share article function
 			function shareArticle(title, url) {
 				if (navigator.share) {
