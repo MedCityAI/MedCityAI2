@@ -234,8 +234,8 @@
 					</circle>
 				</g>
 			</svg>
-	<h1 style="position:relative;z-index:1;">Featured This Week</h1>
-	<p style="position:relative;z-index:1; font-size: 1.1em; line-height: 1.7;">Top 3 most-liked publications from the prior week</p>
+	<h1 style="position:relative;z-index:1;">Coming Soon: Featured This Week</h1>
+	<p style="position:relative;z-index:1; font-size: 1.1em; line-height: 1.7;">Publications featured each week based on user engagement</p>
 	</div>		<!-- Featured Publications Container -->
 		<div class="featured-container" id="featured-container">
 			<div class="loading">
@@ -394,11 +394,16 @@
 					container.innerHTML = `
 						<div class="empty-state">
 							<i class="fas fa-exclamation-triangle"></i>
-						<h3>Featured Articles Coming Soon</h3>
-						<p>Weekly featured articles will be available after the first automated update runs on Sunday.</p>
-						<p style="font-size: 0.9em; color: #95a5a6; margin-top: 15px;">
-							The system automatically identifies the top-liked articles from the prior week.
-						</p>
+							<h3>Featured Articles Coming Soon</h3>
+							<p>Weekly featured articles will be available after the first automated update runs on Sunday.</p>
+							<p style="font-size: 0.9em; color: #95a5a6; margin-top: 15px;">
+								The system automatically identifies the top-liked articles from the prior week.
+							</p>
+						</div>
+					`;
+				}
+			}
+
 			// Share article function
 			function shareArticle(title, url) {
 				if (navigator.share) {
