@@ -729,12 +729,6 @@
 				const likes = article.likes || 0;
 				const url = article.url || '#';
 				
-				// Trophy icons for top 3
-				let rankDisplay = rank;
-				if (rank === 1) rankDisplay = '<span style="font-size: 1.5em;">🥇</span>';
-				else if (rank === 2) rankDisplay = '<span style="font-size: 1.5em;">🥈</span>';
-				else if (rank === 3) rankDisplay = '<span style="font-size: 1.5em;">🥉</span>';
-				
 				// Truncate title if too long
 				const maxTitleLength = 120;
 				const displayTitle = title.length > maxTitleLength 
@@ -743,7 +737,7 @@
 				
 				html += `
 					<tr>
-						<td class="rank-col ${rank <= 3 ? 'top-3' : ''}">${rankDisplay}</td>
+						<td class="rank-col ${rank <= 3 ? 'top-3' : ''}">${rank}</td>
 						<td class="name-col">
 							<a href="${url}" target="_blank" rel="noopener noreferrer" 
 							   style="color: #2568BE; text-decoration: none; font-weight: 500;"
@@ -920,16 +914,13 @@
 		// Render Most Prolific Authors Table (top 10 only)
 		const prolificTableBody = document.querySelector('#prolificTable tbody');
 		if (prolificTableBody && data.prolificAuthors.length > 0) {
-			// Get unique sorted counts for medal assignment
-			const uniqueCounts = [...new Set(data.prolificAuthors.map(a => a.count))].sort((a, b) => b - a);
-			
 			prolificTableBody.innerHTML = data.prolificAuthors.slice(0, 10).map((item, index) => {
-				const medal = getMedalByCount(item.count, uniqueCounts);
-				const rankClass = typeof medal === 'string' ? 'top-3' : '';
+				const rank = index + 1;
+				const rankClass = rank <= 3 ? 'top-3' : '';
 				const displayName = formatName(item.author);
 				return `
 					<tr>
-						<td class="rank-col ${rankClass}">${medal}</td>
+						<td class="rank-col ${rankClass}">${rank}</td>
 						<td class="name-col">${displayName}</td>
 						<td class="count-col">${item.count}</td>
 					</tr>
@@ -940,16 +931,13 @@
 		// Render First Authors Table (top 10 only)
 		const firstTableBody = document.querySelector('#firstTable tbody');
 		if (firstTableBody && data.firstAuthors.length > 0) {
-			// Get unique sorted counts for medal assignment
-			const uniqueCounts = [...new Set(data.firstAuthors.map(a => a.count))].sort((a, b) => b - a);
-			
 			firstTableBody.innerHTML = data.firstAuthors.slice(0, 10).map((item, index) => {
-				const medal = getMedalByCount(item.count, uniqueCounts);
-				const rankClass = typeof medal === 'string' ? 'top-3' : '';
+				const rank = index + 1;
+				const rankClass = rank <= 3 ? 'top-3' : '';
 				const displayName = formatName(item.author);
 				return `
 					<tr>
-						<td class="rank-col ${rankClass}">${medal}</td>
+						<td class="rank-col ${rankClass}">${rank}</td>
 						<td class="name-col">${displayName}</td>
 						<td class="count-col">${item.count}</td>
 					</tr>
