@@ -516,15 +516,33 @@
 				
 				<!-- Tab Navigation -->
 				<div class="tab-navigation">
-					<button class="tab-button active" onclick="switchTab('authors')">By Authors</button>
-					<button class="tab-button" onclick="switchTab('departments')">By Departments</button>
-					<button class="tab-button" onclick="switchTab('geography')">By Geography</button>
+				<button class="tab-button active" onclick="switchTab('articles')">By Article</button>
+				<button class="tab-button" onclick="switchTab('authors')">By Authors</button>
 				</div>
 
-			<!-- Authors Tab -->
-			<div id="authors-tab" class="tab-content active">
-				
-				<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 20px; max-width: 1400px; margin-left: auto; margin-right: auto;">
+		<!-- Articles Tab -->
+		<div id="articles-tab" class="tab-content active">
+			<div style="max-width: 1200px; margin-left: auto; margin-right: auto;">
+				<h3 style="color: #2568BE; font-size: 1.3em; margin-bottom: 5px; font-weight: 600;">Most Liked Articles This Week</h3>
+				<p style="color: #666; font-size: 0.9em; margin-bottom: 15px;">Top publications ranked by user engagement from the prior week</p>
+				<table class="data-table" id="articlesTable">
+					<thead>
+						<tr>
+							<th class="center" style="width: 80px;">Rank</th>
+							<th>Article Title</th>
+							<th style="width: 250px;">Journal</th>
+							<th class="center" style="width: 100px;">Likes</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- Will be populated by JavaScript -->
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<!-- Authors Tab -->
+		<div id="authors-tab" class="tab-content">
 					
 					<!-- Most Prolific Authors -->
 					<div>
@@ -671,6 +689,84 @@
 		// Show selected tab
 		document.getElementById(tabName + '-tab').classList.add('active');
 		event.target.classList.add('active');
+	}
+	
+	// Load featured articles from weekly JSON
+	async function loadFeaturedArticles() {
+		try {
+			const response = await fetch('featured_weekly.json?t=' + new Date().getTime());
+			
+			if (!response.ok) {
+				throw new Error('Featured articles not available');
+			}
+			
+			const data = await response.json();
+			
+			if (!data.articles || data.articles.length === 0) {
+				document.getElementById('articlesTable').querySelector('tbody').innerHTML = `
+					<tr><td colspan="4" style="text-align: center; padding: 40px; color: #999;">
+						<i class="fas fa-info-circle" style="font-size: 2em; margin-bottom: 10px; display: block;"></i>
+						No featured articles available yet. Check back after the weekly update runs.
+					</td></tr>
+				`;
+				return;
+			}
+			
+			// Take top 10 articles
+			const articles = data.articles.slice(0, 10);
+			
+			// Populate table
+			const tbody = document.getElementById('articlesTable').querySelector('tbody');
+			let html = '';
+			
+			articles.forEach((article, index) => {
+				const rank = index + 1;
+				const title = article.title || 'Untitled';
+				const journal = article.journal || 'Unknown Journal';
+				const likes = article.likes || 0;
+				const url = article.url || '#';
+				
+				// Trophy icons for top 3
+				let rankDisplay = rank;
+				if (rank === 1) rankDisplay = '<span style="font-size: 1.5em;">🥇</span>';
+				else if (rank === 2) rankDisplay = '<span style="font-size: 1.5em;">🥈</span>';
+				else if (rank === 3) rankDisplay = '<span style="font-size: 1.5em;">🥉</span>';
+				
+				// Truncate title if too long
+				const maxTitleLength = 120;
+				const displayTitle = title.length > maxTitleLength 
+					? title.substring(0, maxTitleLength) + '...' 
+					: title;
+				
+				html += `
+					<tr>
+						<td class="center" style="font-weight: 600;">${rankDisplay}</td>
+						<td>
+							<a href="${url}" target="_blank" rel="noopener noreferrer" 
+							   style="color: #2568BE; text-decoration: none; font-weight: 500;"
+							   title="${title.replace(/"/g, '&quot;')}">
+								${displayTitle}
+							</a>
+						</td>
+						<td style="color: #666; font-size: 0.9em;">${journal}</td>
+						<td class="center" style="color: #e74c3c; font-weight: 600;">
+							<i class="fas fa-heart" style="margin-right: 5px;"></i>${likes}
+						</td>
+					</tr>
+				`;
+			});
+			
+			tbody.innerHTML = html;
+			
+		} catch (error) {
+			console.error('Error loading featured articles:', error);
+			document.getElementById('articlesTable').querySelector('tbody').innerHTML = `
+				<tr><td colspan="4" style="text-align: center; padding: 40px; color: #999;">
+					<i class="fas fa-exclamation-triangle" style="font-size: 2em; margin-bottom: 10px; display: block;"></i>
+					Unable to load featured articles. Please try again later.
+				</td></tr>
+			`;
+		}
 	}
 	
 	// Load and parse leaderboard data from CSV
@@ -935,6 +1031,9 @@
 
 	// Set up event listeners after DOM is loaded
 	document.addEventListener('DOMContentLoaded', async function() {
+		// Load featured articles
+		await loadFeaturedArticles();
+		
 		// Load and render leaderboard data from CSV
 		const data = await loadLeaderboardData();
 		if (data) {
