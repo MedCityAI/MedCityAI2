@@ -520,6 +520,8 @@
 				<button class="tab-button" onclick="switchTab('authors')">By Authors</button>
 				<button class="tab-button" onclick="switchTab('departments')">By Departments</button>
 				<button class="tab-button" onclick="switchTab('geography')">By Geography</button>
+				</div>
+
 		<!-- Articles Tab -->
 		<div id="articles-tab" class="tab-content active">
 			<div style="max-width: 1200px; margin-left: auto; margin-right: auto;">
@@ -543,44 +545,45 @@
 
 		<!-- Authors Tab -->
 		<div id="authors-tab" class="tab-content">
-					
-					<!-- Most Prolific Authors -->
-					<div>
-						<h3 style="color: #2568BE; font-size: 1.3em; margin-bottom: 5px; font-weight: 600;">Overall Publications</h3>
-						<p style="color: #666; font-size: 0.9em; margin-bottom: 15px;">Researchers with the highest total publication count in 2025</p>
-						<table class="data-table" id="prolificTable">
-							<thead>
+			<div style="max-width: 1200px; margin-left: auto; margin-right: auto;">
+				
+				<!-- Most Prolific Authors -->
+				<div>
+					<h3 style="color: #2568BE; font-size: 1.3em; margin-bottom: 5px; font-weight: 600;">Overall Publications</h3>
+					<p style="color: #666; font-size: 0.9em; margin-bottom: 15px;">Researchers with the highest total publication count in 2025</p>
+					<table class="data-table" id="prolificTable">
+						<thead>
+						<tr>
+							<th class="center">Rank</th>
+							<th>Author Name</th>
+							<th class="center">Publications</th>
+						</tr>
+						</thead>
+						<tbody>
+							<!-- Will be populated by JavaScript -->
+						</tbody>
+					</table>
+				</div>
+
+				<!-- First Authors -->
+				<div style="margin-top: 40px;">
+					<h3 style="color: #2568BE; font-size: 1.3em; margin-bottom: 5px; font-weight: 600;">First Author Publications</h3>
+					<p style="color: #666; font-size: 0.9em; margin-bottom: 15px;">Researchers who led the most studies as primary/first author</p>
+					<table class="data-table" id="firstTable">
+						<thead>
 							<tr>
 								<th class="center">Rank</th>
 								<th>Author Name</th>
-								<th class="center">Publications</th>
+								<th class="center">Pubs</th>
 							</tr>
-							</thead>
-							<tbody>
-								<!-- Will be populated by JavaScript -->
-							</tbody>
-						</table>
-					</div>
-
-					<!-- First Authors -->
-					<div>
-						<h3 style="color: #2568BE; font-size: 1.3em; margin-bottom: 5px; font-weight: 600;">First Author Publications</h3>
-						<p style="color: #666; font-size: 0.9em; margin-bottom: 15px;">Researchers who led the most studies as primary/first author</p>
-						<table class="data-table" id="firstTable">
-							<thead>
-								<tr>
-									<th class="center">Rank</th>
-									<th>Author Name</th>
-									<th class="center">Pubs</th>
-								</tr>
-							</thead>
-							<tbody>
-								<!-- Will be populated by JavaScript -->
-							</tbody>
-						</table>
-					</div>
+						</thead>
+						<tbody>
+							<!-- Will be populated by JavaScript -->
+						</tbody>
+					</table>
 				</div>
-			</div>				<!-- Departments Tab -->
+			</div>
+		</div>				<!-- Departments Tab -->
 				<div id="departments-tab" class="tab-content">
 
 					<div style="max-width: 1200px; margin-left: auto; margin-right: auto;">
