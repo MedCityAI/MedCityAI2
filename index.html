@@ -1968,15 +1968,22 @@
 			// Send like action to Google Sheets
 			sendClick(pmid, 'liked');
 		}
-					button.classList.add('liked');
-				}
-			});
-			
-			// Fetch and display counts from Google Sheet
-			fetchLikeCounts();
-		}
+}
 
-		// Function to flip card and match heights (with keyboard support)
+// Initialize like buttons from local storage
+function initializeLikes() {
+	document.querySelectorAll('.like-button').forEach(button => {
+		const pmid = button.getAttribute('data-pmid');
+		if (localStorage.getItem(`liked_${pmid}`) === 'true') {
+			button.classList.add('liked');
+		}
+	});
+	
+	// Fetch and display counts from Google Sheet
+	fetchLikeCounts();
+}
+
+	// Function to flip card and match heights (with keyboard support)
 		function flipCard(container, event) {
 			// Support both click and keyboard events
 			if (event.type === 'keydown' && event.key !== 'Enter' && event.key !== ' ') {
