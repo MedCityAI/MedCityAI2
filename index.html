@@ -1875,11 +1875,11 @@
 	});
 
 	// Send interaction data to Google Apps Script
-	async function sendClick(pmid, action) {
+	async function sendClick(pmid, action, delta) {
 		try {
-			console.log('Sending to Google Apps Script:', { action, pmid });
+			console.log('Sending to Google Apps Script:', { action, pmid, delta });
 			
-			const url = `https://script.google.com/macros/s/AKfycbw2g5z_1ALbqWjcdY7YsCkwpOpztGJhjOgfRxhGhB8dDA1nwtvySoB5nivNpCnaxIz4/exec?action=${encodeURIComponent(action)}&pmid=${encodeURIComponent(pmid)}&timestamp=${encodeURIComponent(new Date().toISOString())}`;
+			const url = `https://script.google.com/macros/s/AKfycbw2g5z_1ALbqWjcdY7YsCkwpOpztGJhjOgfRxhGhB8dDA1nwtvySoB5nivNpCnaxIz4/exec?action=${encodeURIComponent(action)}&pmid=${encodeURIComponent(pmid)}&delta=${encodeURIComponent(delta)}&timestamp=${encodeURIComponent(new Date().toISOString())}`;
 			
 			const response = await fetch(url, {
 				method: "GET",
@@ -1954,7 +1954,7 @@
 			}
 			
 			// Send unlike action to Google Sheets
-			sendClick(pmid, 'unliked');
+			sendClick(pmid, 'unliked', -1);
 		} else {
 			// Like: add liked state
 			button.classList.add('liked');
@@ -1966,7 +1966,7 @@
 			}
 			
 			// Send like action to Google Sheets
-			sendClick(pmid, 'liked');
+			sendClick(pmid, 'liked', 1);
 		}
 }
 
