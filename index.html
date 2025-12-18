@@ -1939,29 +1939,35 @@
 			const button = event.currentTarget;
 			const isLiked = button.classList.contains('liked');
 			
-			// Only allow liking, not unliking
-			if (isLiked) {
-				return; // Do nothing if already liked
+		// Get count span
+		const countSpan = button.querySelector('.like-count');
+		const currentCount = parseInt(countSpan?.textContent) || 0;
+		
+		if (isLiked) {
+			// Unlike: remove liked state
+			button.classList.remove('liked');
+			localStorage.removeItem(`liked_${pmid}`);
+			
+			// Decrement count display
+			if (countSpan) {
+				countSpan.textContent = Math.max(0, currentCount - 1);
 			}
 			
+			// Send unlike action to Google Sheets
+			sendClick(pmid, 'unliked');
+		} else {
+			// Like: add liked state
 			button.classList.add('liked');
 			localStorage.setItem(`liked_${pmid}`, 'true');
 			
-			// Immediately update count display
-			const countSpan = button.querySelector('.like-count');
+			// Increment count display
 			if (countSpan) {
-				const currentCount = parseInt(countSpan.textContent) || 0;
 				countSpan.textContent = currentCount + 1;
 			}
 			
+			// Send like action to Google Sheets
 			sendClick(pmid, 'liked');
 		}
-		
-		// Initialize like buttons from local storage
-		function initializeLikes() {
-			document.querySelectorAll('.like-button').forEach(button => {
-				const pmid = button.getAttribute('data-pmid');
-				if (localStorage.getItem(`liked_${pmid}`) === 'true') {
 					button.classList.add('liked');
 				}
 			});
