@@ -349,7 +349,7 @@
 				}
 				
 				#departments-tab::before {
-					content: "By Departments";
+					content: "By Department";
 					display: block;
 					font-size: 1.5em;
 					font-weight: bold;
@@ -515,7 +515,7 @@
 				<div class="tab-navigation">
 				<button class="tab-button active" onclick="switchTab('articles')">By Article</button>
 				<button class="tab-button" onclick="switchTab('authors')">By Author</button>
-				<button class="tab-button" onclick="switchTab('departments')">By Departments</button>
+				<button class="tab-button" onclick="switchTab('departments')">By Department</button>
 				<button class="tab-button" onclick="switchTab('geography')">By Geography</button>
 				</div>
 
@@ -527,10 +527,10 @@
 				<table class="data-table" id="articlesTable">
 					<thead>
 						<tr>
-							<th class="center" style="width: 80px;">Rank</th>
+							<th style="width: 80px;">Rank</th>
 							<th>Article Title</th>
 							<th style="width: 250px;">Journal</th>
-							<th class="center" style="width: 100px;">Likes</th>
+							<th style="width: 100px;">Likes</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -549,9 +549,9 @@
 					<table class="data-table" id="prolificTable">
 						<thead>
 						<tr>
-							<th class="center">Rank</th>
+							<th>Rank</th>
 							<th>Author Name</th>
-							<th class="center">Publications</th>
+							<th>Publications</th>
 						</tr>
 						</thead>
 						<tbody>
@@ -567,9 +567,9 @@
 					<table class="data-table" id="firstTable">
 						<thead>
 							<tr>
-								<th class="center">Rank</th>
+								<th >Rank</th>
 								<th>Author Name</th>
-								<th class="center">Publications</th>
+								<th >Publications</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -578,18 +578,19 @@
 					</table>
 				</div>
 			</div>
-		</div>				<!-- Departments Tab -->
-				<div id="departments-tab" class="tab-content">
+		</div>
 
-					<div style="max-width: 1400px; margin-left: auto; margin-right: auto;">
-					<h3 style="color: #2568BE; font-size: 1.3em; margin-bottom: 5px; font-weight: 600;">Top Departments by Publication Volume</h3>
-					<p style="color: #666; font-size: 0.9em; margin-bottom: 15px;">Medical specialties and departments ranked by research output</p>
-					<table class="data-table" id="departmentsTable">
-						<thead>
-							<tr>
-								<th class="center">Rank</th>
-								<th>Department</th>
-								<th class="center">Publications</th>
+	<!-- Departments Tab -->
+	<div id="departments-tab" class="tab-content">
+		<div style="max-width: 1400px; margin-left: auto; margin-right: auto;">
+			<h3 style="color: #2568BE; font-size: 1.3em; margin-bottom: 5px; font-weight: 600;">Top Departments by Publication Volume</h3>
+			<p style="color: #666; font-size: 0.9em; margin-bottom: 15px;">Medical specialties and departments ranked by research output</p>
+			<table class="data-table" id="departmentsTable">
+				<thead>
+					<tr>
+						<th>Rank</th>
+						<th>Department</th>
+						<th>Publications</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -617,9 +618,9 @@
 							<table class="data-table" id="statesTable">
 								<thead>
 								<tr>
-									<th class="center">Rank</th>
+									<th >Rank</th>
 									<th>State</th>
-									<th class="center">Publications</th>
+									<th >Publications</th>
 								</tr>
 								</thead>
 								<tbody>
@@ -635,9 +636,9 @@
 							<table class="data-table" id="countriesTable">
 								<thead>
 								<tr>
-									<th class="center">Rank</th>
+									<th >Rank</th>
 									<th>Country</th>
-									<th class="center">Publications</th>
+									<th >Publications</th>
 								</tr>
 								</thead>
 								<tbody>
