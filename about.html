@@ -402,8 +402,12 @@
 		.contact-content {
 			display: grid;
 			grid-template-columns: 1fr 1fr;
-			gap: 60px;
-			align-items: start;
+			gap: 30px;
+			align-items: stretch;
+		}
+		.contact-form-section {
+			grid-column: 1 / -1;
+			margin-top: 30px;
 		}
 		.contact-info {
 			background: white;
@@ -762,8 +766,8 @@
 						</div>
 					</div>
 
-					<!-- Contact Information -->
-					<div class="contact-form">
+				<!-- We Value Your Feedback -->
+				<div class="contact-info">
 					<h2>We Value Your Feedback</h2>
 					<p style="font-size: 1.1em; color: #555; margin-bottom: 30px;">We appreciate any suggestions you may have regarding site functionality and how we can best serve the Rochester research community. Thank you.</p>
 							<div style="font-size: 2.5em; margin-bottom: 15px;">📧</div>
@@ -779,12 +783,14 @@
 							">medcityai@gmail.com</a>
 							<p style="color: #666; margin-top: 20px; font-size: 0.95em;">Click to open your email client</p>
 						</div>
-						
-						<!-- Send us a Message Form -->
-						<div class="contact-form" style="margin-top: 20px; max-width: 100%; margin-left: -40px; margin-right: -40px; width: calc(100% + 80px);">
-							<h2>Send us a Message</h2>
-							
-							<div class="success-message" id="successMessage">
+			</div>
+
+			<!-- Send us a Message Form (Full Width) -->
+			<div class="contact-form-section">
+				<div class="contact-form">
+					<h2>Send us a Message</h2>
+					
+					<div class="success-message" id="successMessage">
 								Thank you for your message! We'll get back to you soon.
 							</div>
 							
@@ -830,11 +836,8 @@
 								<button type="submit" class="submit-btn">Send Message</button>
 							</form>
 						</div>
-					</div>
-				</div>
 			</div>
-		</section>
-
+		</div>
 		<!-- Thanks Section -->
 		<section class="thanks-section">
 			<div class="container">
