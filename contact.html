@@ -364,7 +364,7 @@
 								Thank you for your message! We'll get back to you soon.
 							</div>
 							
-							<form id="contactForm" onsubmit="handleSubmit(event)">
+							<form id="contactForm" action="https://formspree.io/f/mdakgrwl" method="POST">
 								<div class="form-row">
 									<div class="form-group">
 										<label for="firstName">First Name *</label>
@@ -390,8 +390,10 @@
 									<label for="message">Message *</label>
 									<textarea id="message" name="message" required placeholder="Please share your questions, comments, or feedback. We're here to help and would love to hear from you!"></textarea>
 								</div>
-								
-								<button type="submit" class="submit-btn">Send Message</button>
+																<!-- Hidden fields for FormSpree -->
+								<input type="hidden" name="_next" value="https://www.medcityai.com/contact.html?success=true">
+								<input type="hidden" name="_subject" value="New Contact Form Submission - Med City AI">
+																<button type="submit" class="submit-btn">Send Message</button>
 							</form>
 						</div>
 					</div>
@@ -423,45 +425,27 @@
 		<script src="assets/js/main.js"></script>
 
 		<script>
-		function handleSubmit(event) {
-			event.preventDefault();
-			
-			// Get form data
-			const formData = new FormData(event.target);
-			const data = {
-				firstName: formData.get('firstName'),
-				lastName: formData.get('lastName'),
-				email: formData.get('email'),
-				subject: formData.get('subject'),
-				message: formData.get('message')
-			};
-			
-			// Show success message
+		// Check if form was successfully submitted (redirected back with success parameter)
+		if (window.location.search.includes('success=true')) {
 			document.getElementById('successMessage').style.display = 'block';
 			
-			// Reset form
-			event.target.reset();
-			
-			// In a real implementation, you would send the data to your server
-			console.log('Form submission:', data);
-			
-			// Create mailto link as fallback
-			const mailtoLink = `mailto:medcityai@gmail.com?subject=${encodeURIComponent(data.subject)}&body=${encodeURIComponent(
-				`Name: ${data.firstName} ${data.lastName}\n` +
-				`Email: ${data.email}\n\n` +
-				`Message:\n${data.message}`
-			)}`;
-			
-			// Open email client after a brief delay
-			setTimeout(() => {
-				window.location.href = mailtoLink;
-			}, 1000);
+			// Remove success parameter from URL
+			const url = new URL(window.location);
+			url.searchParams.delete('success');
+			window.history.replaceState({}, document.title, url);
 			
 			// Hide success message after 5 seconds
 			setTimeout(() => {
 				document.getElementById('successMessage').style.display = 'none';
 			}, 5000);
 		}
+
+		// Add loading state when form is submitted
+		document.getElementById('contactForm').addEventListener('submit', function() {
+			const submitBtn = this.querySelector('.submit-btn');
+			submitBtn.textContent = 'Sending...';
+			submitBtn.disabled = true;
+		});
 		</script>
 		<script src="assets/js/navigation.js"></script>
 	</body>
