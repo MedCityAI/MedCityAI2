@@ -500,135 +500,6 @@
 			border-color: #2980b9;
 		}
 
-		/* Citation Modal */
-		.citation-modal {
-			display: none;
-			position: fixed;
-			top: 0;
-			left: 0;
-			right: 0;
-			bottom: 0;
-			background: rgba(0, 0, 0, 0.6);
-			z-index: 2000;
-			justify-content: center;
-			align-items: center;
-			backdrop-filter: blur(4px);
-		}
-		.citation-modal-content {
-			background: white;
-			border-radius: 16px;
-			padding: 32px;
-			max-width: 700px;
-			width: 90%;
-			max-height: 80vh;
-			overflow-y: auto;
-			box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-			animation: modalSlideIn 0.3s ease-out;
-		}
-		@keyframes modalSlideIn {
-			from {
-				transform: translateY(-50px);
-				opacity: 0;
-			}
-			to {
-				transform: translateY(0);
-				opacity: 1;
-			}
-		}
-		.citation-modal-header {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			margin-bottom: 24px;
-			padding-bottom: 16px;
-			border-bottom: 2px solid #e0e0e0;
-		}
-		.citation-modal-header h3 {
-			margin: 0;
-			color: #2c3e50;
-			font-size: 1.5em;
-		}
-		.citation-close {
-			background: none;
-			border: none;
-			font-size: 28px;
-			color: #95a5a6;
-			cursor: pointer;
-			transition: color 0.2s ease;
-			padding: 0;
-			width: 32px;
-			height: 32px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-		}
-		.citation-close:hover {
-			color: #2c3e50;
-		}
-		.citation-tabs {
-			display: flex;
-			gap: 8px;
-			margin-bottom: 20px;
-			border-bottom: 2px solid #e0e0e0;
-		}
-		.citation-tab {
-			background: transparent;
-			border: none;
-			padding: 12px 24px;
-			cursor: pointer;
-			font-weight: 500;
-			color: #7f8c8d;
-			transition: all 0.2s ease;
-			border-bottom: 3px solid transparent;
-			margin-bottom: -2px;
-		}
-		.citation-tab:hover {
-			color: #3498db;
-		}
-		.citation-tab.active {
-			color: #3498db;
-			border-bottom-color: #3498db;
-		}
-		.citation-content {
-			background: #f8f9fa;
-			border: 1px solid #e0e0e0;
-			border-radius: 8px;
-			padding: 20px;
-			margin-bottom: 16px;
-			font-family: 'Courier New', monospace;
-			font-size: 14px;
-			line-height: 1.8;
-			color: #2c3e50;
-			min-height: 120px;
-			white-space: pre-wrap;
-			word-wrap: break-word;
-		}
-		.citation-actions {
-			display: flex;
-			gap: 12px;
-		}
-		.citation-copy-btn {
-			background: linear-gradient(135deg, #27ae60, #229954);
-			color: white;
-			border: none;
-			padding: 12px 24px;
-			border-radius: 8px;
-			font-size: 14px;
-			font-weight: 600;
-			cursor: pointer;
-			transition: all 0.3s ease;
-			display: flex;
-			align-items: center;
-			gap: 8px;
-		}
-		.citation-copy-btn:hover {
-			transform: translateY(-2px);
-			box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
-		}
-		.citation-copy-btn.copied {
-			background: #95a5a6;
-		}
-
 		/* Author Bibliography Modal */
 		.author-modal {
 			display: none;
@@ -1031,19 +902,15 @@
 		/* Modal accessibility */
 		.modal-bg[aria-hidden="true"],
 		.author-modal-bg[aria-hidden="true"],
-		.citation-modal-bg[aria-hidden="true"] {
-			display: none;
-		}
-		
-		.modal-close, .author-modal-close, .citation-modal-close {
+		.modal-close, .author-modal-close {
 			cursor: pointer;
 		}
 		
-		.modal-close:hover, .author-modal-close:hover, .citation-modal-close:hover {
+		.modal-close:hover, .author-modal-close:hover {
 			color: #3498db;
 		}
 		
-		.modal-close:focus, .author-modal-close:focus, .citation-modal-close:focus {
+		.modal-close:focus, .author-modal-close:focus {
 			outline: 3px solid #3498db;
 			outline-offset: 2px;
 			border-radius: 4px;
@@ -1177,30 +1044,6 @@
 			</section>
 
 			<!-- Citation Modal -->
-			<div id="citationModal" class="citation-modal citation-modal-bg" role="dialog" aria-modal="true" aria-labelledby="citationModalTitle" aria-hidden="true">
-				<div class="citation-modal-content" role="document">
-					<div class="citation-modal-header">
-						<h3 id="citationModalTitle">Citation Formats</h3>
-						<button class="citation-close citation-modal-close" onclick="closeCitationModal()" aria-label="Close citation modal">&times;</button>
-					</div>
-					
-					<div class="citation-tabs" role="tablist">
-						<button class="citation-tab active" onclick="switchCitationTab('mla')" role="tab" aria-selected="true" aria-controls="mla-panel">MLA</button>
-						<button class="citation-tab" onclick="switchCitationTab('apa')" role="tab" aria-selected="false" aria-controls="apa-panel">APA</button>
-						<button class="citation-tab" onclick="switchCitationTab('chicago')" role="tab" aria-selected="false" aria-controls="chicago-panel">Chicago</button>
-						<button class="citation-tab" onclick="switchCitationTab('vancouver')" role="tab" aria-selected="false" aria-controls="vancouver-panel">Vancouver</button>
-					</div>
-					
-					<div id="citationText" class="citation-content" role="tabpanel"></div>
-					
-					<div class="citation-actions">
-						<button class="citation-copy-btn" onclick="copyCitation()" aria-label="Copy citation to clipboard">
-							<i class="fas fa-copy" aria-hidden="true"></i> Copy Citation
-						</button>
-					</div>
-				</div>
-			</div>
-
 			<!-- Author Bibliography Modal -->
 			<div id="authorModal" class="author-modal author-modal-bg" role="dialog" aria-modal="true" aria-labelledby="authorModalTitle" aria-hidden="true">
 				<div class="author-modal-content" role="document">
@@ -1772,13 +1615,10 @@
 								${authorsHTML}
 							</div>
 
-							<div class="result-actions">
-								<a href="${article.url}" target="_blank" class="btn-link primary">
-									<i class="fas fa-external-link-alt"></i> View on PubMed
+							<div style="margin-top: 12px;">
+								<a href="${article.url}" target="_blank" style="color: #0056a3; text-decoration: none; font-size: 14px; font-weight: 500;">
+									View on PubMed →
 								</a>
-								<button class="btn-link" onclick='showCitationModal(${JSON.stringify(article).replace(/'/g, "&apos;")})'>
-									<i class="fas fa-quote-right"></i> Cite
-								</button>
 							</div>
 						</div>
 					</div>
@@ -1867,33 +1707,6 @@
 		}
 
 		// Citation Modal Functions
-		function showCitationModal(article) {
-			currentCitationArticle = article;
-			currentCitationStyle = 'mla';
-			
-			// Reset tabs
-			document.querySelectorAll('.citation-tab').forEach(tab => tab.classList.remove('active'));
-			document.querySelector('.citation-tab').classList.add('active');
-			
-			// Generate citation
-			generateCitation();
-			
-			// Show modal
-			document.getElementById('citationModal').style.display = 'flex';
-		}
-
-		function closeCitationModal() {
-			const modal = document.getElementById('citationModal');
-			modal.style.display = 'none';
-			modal.setAttribute('aria-hidden', 'true');
-			currentCitationArticle = null;
-			
-			// Return focus to triggering element
-			if (window.lastFocusedElement) {
-				window.lastFocusedElement.focus();
-			}
-		}
-		
 		function closeAuthorModal() {
 			const modal = document.getElementById('authorModal');
 			modal.style.display = 'none';
@@ -1908,24 +1721,13 @@
 		// Keyboard accessibility for modals
 		document.addEventListener('keydown', function(e) {
 			if (e.key === 'Escape') {
-				const citationModal = document.getElementById('citationModal');
 				const authorModal = document.getElementById('authorModal');
 				
-				if (citationModal.style.display === 'flex') {
-					closeCitationModal();
-				} else if (authorModal.style.display === 'flex') {
+				if (authorModal.style.display === 'flex') {
 					closeAuthorModal();
 				}
 			}
 		});
-		
-		// Store focus before opening modal
-		function openCitationModal(article) {
-			window.lastFocusedElement = document.activeElement;
-			showCitationModal(article);
-			const modal = document.getElementById('citationModal');
-			modal.setAttribute('aria-hidden', 'false');
-		}
 		
 		function openAuthorBibliography(authorName) {
 			window.lastFocusedElement = document.activeElement;
@@ -1933,86 +1735,6 @@
 			modal.setAttribute('aria-hidden', 'false');
 			// Call existing function
 			showAuthorBibliography(authorName);
-		}
-
-		function switchCitationTab(style) {
-			currentCitationStyle = style;
-			
-			// Update active tab
-			document.querySelectorAll('.citation-tab').forEach(tab => tab.classList.remove('active'));
-			event.target.classList.add('active');
-			
-			// Generate new citation
-			generateCitation();
-		}
-
-		function generateCitation() {
-			if (!currentCitationArticle) return;
-			
-			const article = currentCitationArticle;
-			let citation = '';
-			
-			// Parse authors
-			const authors = article.authors.split(', ').filter(a => a && !a.includes('et al'));
-			const firstAuthor = authors[0] || 'Unknown Author';
-			const year = article.year || 'n.d.';
-			
-			switch(currentCitationStyle) {
-				case 'mla':
-					// MLA Format: Last, First. "Title." Journal, vol. #, no. #, Year, pp. #-#.
-					citation = `${firstAuthor}`;
-					if (authors.length > 1) {
-						citation += `, et al`;
-					}
-					citation += `. "${article.title}" ${article.journal}, ${year}. PubMed, ${article.url}.`;
-					break;
-					
-				case 'apa':
-					// APA Format: Author, A. A. (Year). Title. Journal Name, volume(issue), pages.
-					citation = `${firstAuthor}`;
-					if (authors.length > 1) {
-						citation += `, et al.`;
-					}
-					citation += ` (${year}). ${article.title} ${article.journal}. ${article.url}`;
-					break;
-					
-				case 'chicago':
-					// Chicago Format: Author. "Title." Journal Volume, no. Issue (Year): Pages.
-					citation = `${firstAuthor}`;
-					if (authors.length > 1) {
-						citation += ` et al.`;
-					}
-					citation += ` "${article.title}" ${article.journal} (${year}). ${article.url}.`;
-					break;
-					
-				case 'vancouver':
-					// Vancouver Format: Author AA. Title. Journal. Year;volume(issue):pages.
-					const vancouverAuthor = firstAuthor.split(' ').reverse().join(' ');
-					citation = `${vancouverAuthor}`;
-					if (authors.length > 1) {
-						citation += `, et al`;
-					}
-					citation += `. ${article.title} ${article.journal}. ${year}. PMID: ${article.pmid}. Available from: ${article.url}`;
-					break;
-			}
-			
-			document.getElementById('citationText').textContent = citation;
-		}
-
-		function copyCitation() {
-			const citationText = document.getElementById('citationText').textContent;
-			const copyBtn = document.querySelector('.citation-copy-btn');
-			
-			navigator.clipboard.writeText(citationText).then(() => {
-				// Show success feedback
-				copyBtn.classList.add('copied');
-				copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-				
-				setTimeout(() => {
-					copyBtn.classList.remove('copied');
-					copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy Citation';
-				}, 2000);
-			});
 		}
 
 		// Author Bibliography Modal Functions
@@ -2212,12 +1934,6 @@
 		}
 
 		// Close modal when clicking outside
-		document.getElementById('citationModal').addEventListener('click', function(e) {
-			if (e.target === this) {
-				closeCitationModal();
-			}
-		});
-		
 		document.getElementById('authorModal').addEventListener('click', function(e) {
 			if (e.target === this) {
 				closeAuthorModal();
