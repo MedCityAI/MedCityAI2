@@ -18,6 +18,7 @@
                     <a href="search.html" role="menuitem" data-page="search">Search</a>
                     <a href="leaderboard.html" role="menuitem" data-page="leaderboard">Leaderboard</a>
                     <a href="about.html" role="menuitem" data-page="about">About</a>
+                    <a href="contact.html" role="menuitem" data-page="contact">Contact</a>
                 </div>
                 <div style="display: flex; align-items: center; gap: 15px;">
                     <button class="menu-icon" aria-label="Toggle mobile menu" aria-expanded="false" aria-controls="mobile-menu">
@@ -36,6 +37,7 @@
             <a href="search.html" data-page="search">Search</a>
             <a href="leaderboard.html" data-page="leaderboard">Leaderboard</a>
             <a href="about.html" data-page="about">About</a>
+            <a href="contact.html" data-page="contact">Contact</a>
         </div>
     `;
     
