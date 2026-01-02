@@ -2275,7 +2275,23 @@ function initializeLikes() {
 		} else {
 			// No search query, show all articles
 			filteredArticlesData = [...allArticlesData];
-		}			// Filter out articles where Rochester authors account for less than 1% of total authors
+		}
+		
+		// Filter to show only articles from the last 48 hours
+		const now = new Date();
+		const fortyEightHoursAgo = new Date(now.getTime() - (48 * 60 * 60 * 1000));
+		const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+		
+		filteredArticlesData = filteredArticlesData.filter(article => {
+			if (article.year && article.month && article.day) {
+				const monthNum = monthNames.indexOf(article.month);
+				if (monthNum > 0) {
+					const articleDate = new Date(article.year, monthNum - 1, article.day);
+					return articleDate >= fortyEightHoursAgo;
+				}
+			}
+			return false; // Exclude articles without valid dates
+		});			// Filter out articles where Rochester authors account for less than 1% of total authors
 			filteredArticlesData = filteredArticlesData.filter(article => {
 				const authorsList = article.authors ? article.authors.split('|') : [];
 				const rochesterAuthorsList = article.rochester_authors ? article.rochester_authors.split('|') : [];
@@ -2321,8 +2337,7 @@ function initializeLikes() {
 		const matchingArticles = [];
 		const otherArticles = [];
 		
-		// Get current date for recency badge logic
-		const now = new Date();
+		// Get current date for recency badge logic (reuse 'now' already declared above)
 		const twoDaysAgo = new Date(now.getTime() - (2 * 24 * 60 * 60 * 1000));
 		const sevenDaysAgo = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
 		const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
