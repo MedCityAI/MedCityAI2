@@ -230,9 +230,8 @@
 			text-align: center;
 		}
 		.bubble-cloud {
-			display: grid;
-			grid-template-columns: repeat(3, 1fr);
-			gap: 15px;
+			column-count: 3;
+			column-gap: 15px;
 			padding: 40px 20px;
 			margin-bottom: 30px;
 			max-width: 1200px;
@@ -249,13 +248,17 @@
 			font-weight: 500;
 			cursor: pointer;
 			transition: all 0.3s ease;
-			display: flex;
+			display: inline-flex;
 			align-items: center;
 			justify-content: center;
 			gap: 8px;
 			box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 			position: relative;
 			min-height: 60px;
+			width: 100%;
+			margin-bottom: 15px;
+			break-inside: avoid;
+			page-break-inside: avoid;
 		}
 		.search-bubble i {
 			color: #3498db;
