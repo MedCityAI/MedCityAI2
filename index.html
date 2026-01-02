@@ -2160,6 +2160,7 @@ function initializeLikes() {
 	// Classify specialty based on keywords in department, title, and abstract
 	function classifySpecialty(departmentText, title, abstract) {
 		const searchText = `${departmentText} ${title} ${abstract}`.toLowerCase();
+		const titleLower = title.toLowerCase();
 		
 		// Score each specialty based on keyword matches
 		const specialtyScores = {};
@@ -2180,6 +2181,15 @@ function initializeLikes() {
 		}
 		
 		const [firstSpecialty, firstScore] = sorted[0];
+		
+		// Check if AI/ML/DL keywords are in the title
+		const aiKeywords = specialtyMapping['AI/ML/DL'].keywords;
+		const hasAIInTitle = aiKeywords.some(keyword => titleLower.includes(keyword.toLowerCase()));
+		
+		// If AI/ML/DL keywords are in title and first specialty is not AI/ML/DL, add it as second specialty
+		if (hasAIInTitle && firstSpecialty !== 'AI/ML/DL') {
+			return [firstSpecialty, 'AI/ML/DL'];
+		}
 		
 		// Check for multidisciplinary (dual specialty) criteria:
 		// 1. First specialty must have at least 3 keyword matches
