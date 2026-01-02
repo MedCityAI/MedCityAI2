@@ -2629,7 +2629,7 @@ function initializeLikes() {
 		// Recommended section (only if there are matches and user has keywords)
 		if (hasUserKeywords && matchingArticles.length > 0) {
 			finalHTML += `
-				<div class="recommended-section" style="max-width:1200px;margin:20px auto;padding:15px 20px;border:2px dotted #ccc;border-radius:8px;">
+				<div class="recommended-section" style="max-width:1200px;margin:20px auto;padding:15px 20px;border:2px dotted #ccc;border-radius:8px;background-color:#f5f5f5;">
 					<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
 						<h3 style="margin:0;color:#555;font-size:13px;font-weight:500;letter-spacing:0.3px;line-height:1.1;">Recommended For You <span style="color:#3498db;font-weight:600;">(${matchingArticles.length})</span></h3>
 						<a href="#" onclick="event.preventDefault();openKeywordsModal();" style="color:#3498db;font-size:12px;text-decoration:none;font-weight:500;">Update Keywords</a>
