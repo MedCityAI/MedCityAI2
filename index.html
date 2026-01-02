@@ -1432,10 +1432,6 @@
 								<i class="fas fa-arrow-down"></i>
 								New Today
 							</button>
-							<button class="hero-btn hero-btn-primary" id="featuredBtn">
-								<i class="fas fa-star"></i>
-								Featured
-							</button>
 							<button class="hero-btn hero-btn-primary" id="searchDatabaseBtn">
 								<i class="fas fa-search"></i>
 								Search
@@ -3030,7 +3026,6 @@ function initializeLikes() {
 			}
 		});			// Hero button event listeners
 			const newTodayBtn = document.getElementById('newTodayBtn');
-			const featuredBtn = document.getElementById('featuredBtn');
 			const searchDatabaseBtn = document.getElementById('searchDatabaseBtn');
 
 			if (newTodayBtn) {
@@ -3059,13 +3054,6 @@ function initializeLikes() {
 			}
 			
 			// New Today navigation link (same behavior as hero button)
-
-			if (featuredBtn) {
-				featuredBtn.addEventListener('click', function() {
-					// Navigate to featured page
-					window.location.href = 'featured.html';
-				});
-			}
 
 		if (searchDatabaseBtn) {
 			searchDatabaseBtn.addEventListener('click', function() {
