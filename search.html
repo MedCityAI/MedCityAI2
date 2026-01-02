@@ -231,7 +231,7 @@
 		}
 		.bubble-cloud {
 			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+			grid-template-columns: repeat(3, 1fr);
 			gap: 15px;
 			padding: 40px 20px;
 			margin-bottom: 30px;
@@ -243,7 +243,7 @@
 			background: white;
 			border: 2px solid #3498db;
 			color: #2c3e50;
-			padding: 12px 24px;
+			padding: 15px 24px;
 			border-radius: 12px;
 			font-size: 0.95em;
 			font-weight: 500;
@@ -255,6 +255,7 @@
 			gap: 8px;
 			box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 			position: relative;
+			min-height: 60px;
 		}
 		.search-bubble i {
 			color: #3498db;
@@ -1622,15 +1623,117 @@
 						searchQuery = '("Mayo WJ" OR "Mayo CH" OR "W J Mayo" OR "C H Mayo") AND 1890:1940[dp]';
 						skipLocationFilter = true;
 						break;
-					case 'generative-ai':
-						searchQuery = '("Generative AI" OR "Large Language Model" OR "LLM" OR "ChatGPT")';
-						break;
-					case 'virtual-reality':
-						searchQuery = '("Virtual Reality" OR "Augmented Reality")';
-						break;
 					case 'nobel-laureates':
 						searchQuery = '("Hench PS" OR "Kendall EC" OR "Alvarez LW") AND 1900:1970[dp]';
 						skipLocationFilter = true;
+						break;
+					// Cancer & Oncology
+					case 'cancer-immunotherapy':
+						searchQuery = '("cancer immunotherapy" OR "immune checkpoint" OR "PD-1" OR "PD-L1" OR "CTLA-4")';
+						break;
+					case 'breast-cancer':
+						searchQuery = '"breast cancer"';
+						break;
+					case 'pancreatic-cancer':
+						searchQuery = '"pancreatic cancer"';
+						break;
+					case 'lung-cancer':
+						searchQuery = '("lung cancer" OR "NSCLC" OR "small cell lung cancer")';
+						break;
+					case 'car-t-therapy':
+						searchQuery = '("CAR-T" OR "CAR T cell" OR "chimeric antigen receptor")';
+						break;
+					// Infectious Disease
+					case 'covid-19':
+						searchQuery = '("COVID-19" OR "SARS-CoV-2" OR "coronavirus 2019")';
+						break;
+					case 'vaccine-development':
+						searchQuery = '("vaccine development" OR "vaccination" OR "immunization")';
+						break;
+					case 'antimicrobial-resistance':
+						searchQuery = '("antimicrobial resistance" OR "antibiotic resistance" OR "drug resistance")';
+						break;
+					case 'long-covid':
+						searchQuery = '("long COVID" OR "post-acute COVID" OR "PASC")';
+						break;
+					case 'viral-immunology':
+						searchQuery = '("viral immunology" OR "antiviral immunity" OR "virus host interaction")';
+						break;
+					// Neuroscience & Mental Health
+					case 'alzheimers':
+						searchQuery = '("Alzheimer" OR "Alzheimer\'s disease" OR "dementia")';
+						break;
+					case 'parkinsons':
+						searchQuery = '("Parkinson" OR "Parkinson\'s disease")';
+						break;
+					case 'depression':
+						searchQuery = '("depression" OR "major depressive disorder" OR "antidepressant")';
+						break;
+					case 'brain-computer':
+						searchQuery = '("brain-computer interface" OR "BCI" OR "neural interface")';
+						break;
+					case 'neuroplasticity':
+						searchQuery = '("neuroplasticity" OR "neural plasticity" OR "brain plasticity")';
+						break;
+					// Technology & AI
+					case 'generative-ai':
+						searchQuery = '("Generative AI" OR "Large Language Model" OR "LLM" OR "ChatGPT")';
+						break;
+					case 'machine-learning':
+						searchQuery = '("machine learning" OR "deep learning" OR "neural network")';
+						break;
+					case 'digital-health':
+						searchQuery = '("digital health" OR "eHealth" OR "mHealth" OR "mobile health")';
+						break;
+					case 'precision-medicine':
+						searchQuery = '("precision medicine" OR "personalized medicine" OR "targeted therapy")';
+						break;
+					case 'medical-imaging-ai':
+						searchQuery = '("medical imaging" AND ("artificial intelligence" OR "machine learning" OR "deep learning"))';
+						break;
+					case 'drug-discovery-ai':
+						searchQuery = '("drug discovery" AND ("artificial intelligence" OR "machine learning" OR "AI"))';
+						break;
+					case 'virtual-reality':
+						searchQuery = '("Virtual Reality" OR "Augmented Reality" OR "VR" OR "AR")';
+						break;
+					// Cardiology & Metabolism
+					case 'heart-disease':
+						searchQuery = '("heart disease" OR "cardiovascular disease" OR "cardiac")';
+						break;
+					case 'diabetes':
+						searchQuery = '("diabetes" OR "diabetes mellitus" OR "type 2 diabetes")';
+						break;
+					case 'obesity':
+						searchQuery = '("obesity" OR "weight loss" OR "bariatric")';
+						break;
+					case 'cardiovascular-ai':
+						searchQuery = '("cardiovascular" AND ("artificial intelligence" OR "machine learning"))';
+						break;
+					// Other Hot Topics
+					case 'crispr':
+						searchQuery = '("CRISPR" OR "gene editing" OR "Cas9")';
+						break;
+					case 'regenerative-medicine':
+						searchQuery = '("regenerative medicine" OR "tissue engineering" OR "cell therapy")';
+						break;
+					case 'stem-cell':
+						searchQuery = '("stem cell" OR "pluripotent" OR "stem cell therapy")';
+						break;
+					case 'microbiome':
+						searchQuery = '("microbiome" OR "gut microbiota" OR "microbiota")';
+						break;
+					case 'rare-diseases':
+						searchQuery = '("rare disease" OR "orphan disease" OR "rare disorder")';
+						break;
+					case 'telemedicine':
+						searchQuery = '("telemedicine" OR "telehealth" OR "remote consultation")';
+						break;
+					case 'organ-transplantation':
+						searchQuery = '("organ transplantation" OR "transplant" OR "organ donation")';
+						break;
+					case 'personalized-medicine':
+						searchQuery = '("personalized medicine" OR "precision medicine" OR "individualized treatment")';
 						break;
 				}
 				
