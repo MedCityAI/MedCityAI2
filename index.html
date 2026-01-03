@@ -214,14 +214,7 @@
 			background: #e74c3c;
 			color: #fff;
 			font-size: 12px;
-			font-weight: bold;
-			padding: 4px 12px;
-			border-radius: 8px 0 8px 0;
-			z-index: 10;
-			pointer-events: none; /* Prevent blocking clicks */
-		}
-		
-		.this-week-tab {
+		font-weight: normal;
 			position: absolute;
 			top: 0;
 			left: 0;
@@ -2558,7 +2551,7 @@ function initializeLikes() {
 						<div class="card-flip-container" role="group" aria-label="${title.substring(0, 100)}...">
 							<!-- Front of card -->
 							<div class="card-face card-front" onclick="flipCard(this.closest('.card-flip-container'), event);" style="cursor: pointer;">
-								${recencyBadge ? `<div class="${recencyClass}">${recencyBadge}</div>` : ''}
+								${recencyBadge ? `<div class="${recencyClass}">${recencyBadge === 'TODAY' ? '✨ ' : ''}${recencyBadge}</div>` : ''}
 								${specialtyBadgesHtml}
 								<br>
 								<a href="#" class="result-title" 
