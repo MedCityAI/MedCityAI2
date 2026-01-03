@@ -1433,7 +1433,7 @@
 						<div class="hero-buttons">
 							<button class="hero-btn hero-btn-primary" id="newTodayBtn">
 								<i class="fas fa-arrow-down"></i>
-								New Today
+								TODAY
 							</button>
 							<button class="hero-btn hero-btn-primary" id="searchDatabaseBtn">
 								<i class="fas fa-search"></i>
@@ -2286,9 +2286,9 @@ function initializeLikes() {
 			filteredArticlesData = [...allArticlesData];
 		}
 		
-		// Filter to show only articles from the last 48 hours
+		// Filter to show only articles from the last 7 days
 		const now = new Date();
-		const fortyEightHoursAgo = new Date(now.getTime() - (48 * 60 * 60 * 1000));
+		const sevenDaysAgo = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
 		const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 		
 		filteredArticlesData = filteredArticlesData.filter(article => {
@@ -2296,7 +2296,7 @@ function initializeLikes() {
 				const monthNum = monthNames.indexOf(article.month);
 				if (monthNum > 0) {
 					const articleDate = new Date(article.year, monthNum - 1, article.day);
-					return articleDate >= fortyEightHoursAgo;
+					return articleDate >= sevenDaysAgo;
 				}
 			}
 			return false; // Exclude articles without valid dates
@@ -2346,10 +2346,8 @@ function initializeLikes() {
 		const matchingArticles = [];
 		const otherArticles = [];
 		
-		// Get current date for recency badge logic (reuse 'now' already declared above)
+		// Get current date for recency badge logic (reuse 'now' and 'sevenDaysAgo' already declared above)
 		const twoDaysAgo = new Date(now.getTime() - (2 * 24 * 60 * 60 * 1000));
-		const sevenDaysAgo = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
-		const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
 		
 		// First pass: classify and separate articles
 		filteredArticlesData.forEach(article => {
@@ -2430,19 +2428,16 @@ function initializeLikes() {
 					}
 				}
 				
-				// Determine recency badge (within last 48 hrs, 7 days, or 30 days)
-				let recencyBadge = '';
-				let recencyClass = '';
-				if (articleDate) {
-					if (articleDate >= twoDaysAgo) {
-						recencyBadge = 'NEW';
-						recencyClass = 'new-tab';
-					} else if (articleDate >= sevenDaysAgo) {
-						recencyBadge = 'THIS WEEK';
-						recencyClass = 'this-week-tab';
-					} else if (articleDate >= thirtyDaysAgo) {
-						recencyBadge = 'THIS MONTH';
-						recencyClass = 'this-month-tab';
+// Determine recency badge (within last 48 hrs = TODAY, within 7 days = THIS WEEK)
+			let recencyBadge = '';
+			let recencyClass = '';
+			if (articleDate) {
+				if (articleDate >= twoDaysAgo) {
+					recencyBadge = 'TODAY';
+					recencyClass = 'new-tab';
+				} else if (articleDate >= sevenDaysAgo) {
+					recencyBadge = 'THIS WEEK';
+					recencyClass = 'this-week-tab';
 					}
 				}
 				
@@ -2629,40 +2624,65 @@ function initializeLikes() {
 		// Build HTML sections
 		let finalHTML = '';
 		
-		// Recommended section (only if there are matches and user has keywords)
-		if (hasUserKeywords && matchingArticles.length > 0) {
-			finalHTML += `
-				<div class="recommended-section" style="max-width:1200px;margin:20px auto;padding:15px 20px;border:2px dotted #ccc;border-radius:8px;background-color:#f5f5f5;">
-					<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
-						<h3 style="margin:0;color:#555;font-size:13px;font-weight:500;letter-spacing:0.3px;line-height:1.1;">Recommended For You <span style="color:#3498db;font-weight:600;">(${matchingArticles.length})</span></h3>
-						<a href="#" onclick="event.preventDefault();openKeywordsModal();" style="color:#3498db;font-size:12px;text-decoration:none;font-weight:500;">Update Keywords</a>
-					</div>
-					<div class="results">`;
-			
-			matchingArticles.forEach(article => {
-				finalHTML += renderArticle(article);
-			});
-			
-			finalHTML += `</div>
-				</div>`;
-		}
+	// Limit articles for display
+	const maxRecommended = 15;
+	const maxTotal = 100;
+	
+	// Calculate total items to display
+	let displayedCount = 0;
+	
+	// Recommended section (only if there are matches and user has keywords)
+	let displayedMatching = [];
+	let displayedOther = [];
+	
+	if (hasUserKeywords && matchingArticles.length > 0) {
+		// Limit to 15 recommended articles
+		displayedMatching = matchingArticles.slice(0, maxRecommended);
+		displayedCount += displayedMatching.length;
 		
-		// All publications section (no header if no matches or no keywords)
-		if (otherArticles.length > 0) {
-			finalHTML += `<div class="all-publications-section"><div class="results">`;
-			
-			otherArticles.forEach(article => {
-				finalHTML += renderArticle(article);
-			});
-			
-			finalHTML += `</div></div>`;
-		}
+		finalHTML += `
+			<div class="recommended-section" style="max-width:1200px;margin:20px auto;padding:15px 20px;border:2px dotted #ccc;border-radius:8px;background-color:#f5f5f5;">
+				<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+					<h3 style="margin:0;color:#555;font-size:13px;font-weight:500;letter-spacing:0.3px;line-height:1.1;">Recommended For You <span style="color:#3498db;font-weight:600;">(${displayedMatching.length}${matchingArticles.length > maxRecommended ? '+' : ''})</span></h3>
+					<a href="#" onclick="event.preventDefault();openKeywordsModal();" style="color:#3498db;font-size:12px;text-decoration:none;font-weight:500;">Update Keywords</a>
+				</div>
+				<div class="results">`;
+		
+		displayedMatching.forEach(article => {
+			finalHTML += renderArticle(article);
+		});
+		
+		finalHTML += `</div>
+			</div>`;
+	}
+	
+	// All publications section - limit to remaining space up to 100 total
+	const remainingSlots = maxTotal - displayedCount;
+	if (otherArticles.length > 0 && remainingSlots > 0) {
+		displayedOther = otherArticles.slice(0, remainingSlots);
+		
+		finalHTML += `<div class="all-publications-section"><div class="results">`;
+		
+		displayedOther.forEach(article => {
+			finalHTML += renderArticle(article);
+		});
+		
+		finalHTML += `</div></div>`;
+		displayedCount += displayedOther.length;
+	}
 
-	document.getElementById("pubmed-results").innerHTML = finalHTML;		// Hide pagination controls
+	document.getElementById("pubmed-results").innerHTML = finalHTML;		
+	
+	// Show pagination message if there are more articles than displayed
+	const totalAvailable = matchingArticles.length + otherArticles.length;
+	if (totalAvailable > displayedCount) {
+		document.getElementById("pagination-controls").style.display = 'block';
+		document.getElementById("pageInfo").textContent = `Showing ${displayedCount} of ${totalAvailable} articles (limited to first ${maxTotal})`;
+		document.getElementById("prevPage").style.display = 'none';
+		document.getElementById("nextPage").style.display = 'none';
+	} else {
 		document.getElementById("pagination-controls").style.display = 'none';
-		
-		// Initialize like buttons
-		setTimeout(() => initializeLikes(), 100);
+	}
 	}
 	
 	// Featured Carousel Functions
