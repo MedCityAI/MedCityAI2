@@ -2125,8 +2125,8 @@ function initializeLikes() {
 			const twoDaysAgo = new Date(now.getTime() - (2 * 24 * 60 * 60 * 1000));
 			const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 			
-			// Calculate TODAY count (last 48 hours)
-			const todayCount = allArticlesData.filter(article => {
+			// Calculate TODAY count (last 48 hours, unique PMIDs)
+			const todayArticles = allArticlesData.filter(article => {
 				if (article.year && article.month && article.day) {
 					const monthNum = monthNames.indexOf(article.month);
 					if (monthNum > 0) {
@@ -2135,11 +2135,16 @@ function initializeLikes() {
 					}
 				}
 				return false;
-			}).length;
+			});
+			const uniqueTodayPmids = new Set(todayArticles.map(article => article.pmid));
+			const todayCount = uniqueTodayPmids.size;
 			
-		// Calculate 2026 YTD count (unique PMIDs only)
-		const uniquePmids = new Set(allArticlesData.map(article => article.pmid));
-		const ytdCount = uniquePmids.size;
+			// Calculate 2026 YTD count (unique PMIDs only)
+			const uniquePmids = new Set(allArticlesData.map(article => article.pmid));
+			const ytdCount = uniquePmids.size;
+			
+			// Animate the numbers
+			animateCount('todayCount', todayCount, 1000);
 			animateCount('ytdCount', ytdCount, 1500);
 		}
 		
