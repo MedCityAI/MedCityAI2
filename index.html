@@ -1398,26 +1398,31 @@
 		.stat-card {
 			background: rgba(255, 255, 255, 0.15);
 			backdrop-filter: blur(10px);
-			border-radius: 16px;
-			padding: 30px 40px;
-			min-width: 180px;
-			text-align: center;
-			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
-						0 0 0 1px rgba(255, 255, 255, 0.2) inset;
-			position: relative;
-			overflow: hidden;
-		}
-		
-		.stat-card.today {
-			background: linear-gradient(135deg, rgba(231, 76, 60, 0.25), rgba(255, 107, 107, 0.25));
-		}
-		
-		.stat-card.ytd {
-			background: linear-gradient(135deg, rgba(52, 152, 219, 0.25), rgba(41, 128, 185, 0.25));
-			min-width: 250px;
-		}
-		
-		.stat-label {
+		padding: 30px 40px;
+		text-align: center;
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
+					0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+		position: relative;
+		overflow: hidden;
+	}
+	
+	.stat-card.today {
+		background: linear-gradient(135deg, rgba(231, 76, 60, 0.25), rgba(255, 107, 107, 0.25));
+		border-radius: 50%;
+		width: 200px;
+		height: 200px;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		padding: 20px;
+	}
+	
+	.stat-card.ytd {
+		background: linear-gradient(135deg, rgba(52, 152, 219, 0.25), rgba(41, 128, 185, 0.25));
+		border-radius: 100px;
+		min-width: 350px;
+		padding: 30px 50px;
 			display: flex;
 			align-items: center;
 			justify-content: center;
@@ -1465,9 +1470,13 @@
 				flex-direction: column;
 				align-items: center;
 			}
-			.stat-card {
-				width: 90%;
-				max-width: 300px;
+			.stat-card.today {
+				width: 180px;
+				height: 180px;
+			}
+			.stat-card.ytd {
+				min-width: 90%;
+				max-width: 350px;
 			}
 			.stat-number {
 				font-size: 48px;
@@ -2128,11 +2137,9 @@ function initializeLikes() {
 				return false;
 			}).length;
 			
-			// Calculate 2026 YTD count (all articles in dataset)
-			const ytdCount = allArticlesData.length;
-			
-			// Animate the numbers
-			animateCount('todayCount', todayCount, 1000);
+		// Calculate 2026 YTD count (unique PMIDs only)
+		const uniquePmids = new Set(allArticlesData.map(article => article.pmid));
+		const ytdCount = uniquePmids.size;
 			animateCount('ytdCount', ytdCount, 1500);
 		}
 		
@@ -2180,22 +2187,26 @@ function initializeLikes() {
 				
 				// Parse data rows
 				allArticlesData = [];
-				for (let i = 1; i < lines.length; i++) {
-					if (!lines[i].trim()) continue;
-					
-					const row = parseCSVLine(lines[i]);
-					if (row.length === headers.length) {
-						const article = {};
-						headers.forEach((header, index) => {
-							article[header] = row[index];
-						});
-						allArticlesData.push(article);
+			let skippedRows = 0;
+			for (let i = 1; i < lines.length; i++) {
+				if (!lines[i].trim()) continue;
+				
+				const row = parseCSVLine(lines[i]);
+				if (row.length === headers.length) {
+					const article = {};
+					headers.forEach((header, index) => {
+						article[header] = row[index];
+					});
+					allArticlesData.push(article);
+				} else {
+					skippedRows++;
+					if (skippedRows <= 5) {
+						console.warn(`Row ${i} has ${row.length} fields, expected ${headers.length}`);
 					}
 				}
-				
-				console.log(`Loaded ${allArticlesData.length} articles from CSV`);
+			}
 			
-			// Update stats after loading
+			console.log(`Loaded ${allArticlesData.length} articles from CSV (${skippedRows} rows skipped)`);
 			updatePublicationStats();
 			
 			} catch (error) {
@@ -2212,23 +2223,31 @@ function initializeLikes() {
 			const result = [];
 			let current = '';
 			let inQuotes = false;
+			let i = 0;
 			
-			for (let i = 0; i < line.length; i++) {
+			while (i < line.length) {
 				const char = line[i];
 				
 				if (char === '"') {
+					// Check for escaped quotes ("")
+					if (inQuotes && i + 1 < line.length && line[i + 1] === '"') {
+						current += '"';
+						i += 2;
+						continue;
+					}
 					inQuotes = !inQuotes;
 				} else if (char === ',' && !inQuotes) {
-					result.push(current.trim());
+					result.push(current.replace(/^"|"$/g, '').trim());
 					current = '';
 				} else {
 					current += char;
 				}
+				i++;
 			}
-			result.push(current.trim());
+			result.push(current.replace(/^"|"$/g, '').trim());
 			
-		return result;
-	}
+			return result;
+		}
 
 	// Specialty mapping configuration
 	const specialtyMapping = {
