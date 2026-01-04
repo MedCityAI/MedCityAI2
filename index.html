@@ -1518,19 +1518,23 @@
 	
 						<h1 style="color:#fff; text-shadow: 0 4px 18px rgba(0,0,0,0.28);">What's New in Rochester?</h1>
 						<p style="color:#e0e0e0;">Real-time biomedical research feed for Rochester, Minnesota. All information sourced from the National Library of Medicine, PubMed.</p>
-						<div class="hero-buttons">
-							<button class="hero-btn hero-btn-primary" id="newTodayBtn">
-								<i class="fas fa-arrow-down"></i>
-								TODAY
-							</button>
-							<button class="hero-btn hero-btn-primary" id="searchDatabaseBtn">
-								<i class="fas fa-search"></i>
-								Search
-							</button>
-							<button class="hero-btn hero-btn-primary" id="leaderboardBtn">
-								<i class="fas fa-trophy"></i>
-								Leaderboard
-							</button>
+						<div class="stats-container">
+							<div class="stat-card today">
+								<div class="stat-label">
+									<i class="fas fa-fire"></i>
+									<span>TODAY</span>
+								</div>
+								<div class="stat-number" id="todayCount">0</div>
+								<div class="stat-subtitle">Publications</div>
+							</div>
+							<div class="stat-card ytd">
+								<div class="stat-label">
+									<i class="fas fa-chart-line"></i>
+									<span>2026 Year-to-Date</span>
+								</div>
+								<div class="stat-number" id="ytdCount">0</div>
+								<div class="stat-subtitle">Publications</div>
+							</div>
 						</div>
 					</div>
 					<div class="hero-right">
@@ -2104,6 +2108,66 @@ function initializeLikes() {
 			container.classList.toggle('flipped');
 		}
 
+		// Update publication statistics
+		function updatePublicationStats() {
+			if (allArticlesData.length === 0) return;
+			
+			const now = new Date();
+			const twoDaysAgo = new Date(now.getTime() - (2 * 24 * 60 * 60 * 1000));
+			const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+			
+			// Calculate TODAY count (last 48 hours)
+			const todayCount = allArticlesData.filter(article => {
+				if (article.year && article.month && article.day) {
+					const monthNum = monthNames.indexOf(article.month);
+					if (monthNum > 0) {
+						const articleDate = new Date(article.year, monthNum - 1, article.day);
+						return articleDate >= twoDaysAgo;
+					}
+				}
+				return false;
+			}).length;
+			
+			// Calculate 2026 YTD count
+			const ytdCount = allArticlesData.filter(article => {
+				return article.year === '2026';
+			}).length;
+			
+			// Animate the numbers
+			animateCount('todayCount', todayCount, 1000);
+			animateCount('ytdCount', ytdCount, 1500);
+		}
+		
+		// Animate counting up numbers
+		function animateCount(elementId, targetValue, duration) {
+			const element = document.getElementById(elementId);
+			if (!element) return;
+			
+			element.classList.add('animate');
+			
+			const startValue = 0;
+			const startTime = performance.now();
+			
+			function updateCount(currentTime) {
+				const elapsed = currentTime - startTime;
+				const progress = Math.min(elapsed / duration, 1);
+				
+				// Easing function for smooth animation
+				const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+				const currentValue = Math.floor(startValue + (targetValue - startValue) * easeOutQuart);
+				
+				element.textContent = currentValue.toLocaleString();
+				
+				if (progress < 1) {
+					requestAnimationFrame(updateCount);
+				} else {
+					element.textContent = targetValue.toLocaleString();
+				}
+			}
+			
+			requestAnimationFrame(updateCount);
+		}
+
 		// Load CSV data
 		async function loadCSVData() {
 			try {
@@ -2132,7 +2196,10 @@ function initializeLikes() {
 				}
 				
 				console.log(`Loaded ${allArticlesData.length} articles from CSV`);
-				return allArticlesData;
+			
+			// Update stats after loading
+			updatePublicationStats();
+			
 			} catch (error) {
 				console.error('Error loading CSV:', error);
 				return [];
