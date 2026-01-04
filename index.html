@@ -1409,7 +1409,7 @@
 	}
 	
 	.stat-card.today {
-		background: linear-gradient(135deg, rgba(231, 76, 60, 0.25), rgba(255, 107, 107, 0.25));
+		background: linear-gradient(135deg, rgba(52, 152, 219, 0.25), rgba(41, 128, 185, 0.25));
 		border-radius: 50%;
 		width: 200px;
 		height: 200px;
@@ -1424,9 +1424,9 @@
 	.stat-card.ytd {
 		background: linear-gradient(135deg, rgba(52, 152, 219, 0.25), rgba(41, 128, 185, 0.25));
 		border-radius: 100px;
-		min-width: 350px;
-		padding: 30px 50px 30px 120px;
-		margin-left: -100px;
+		min-width: 400px;
+		padding: 30px 50px 30px 150px;
+		margin-left: -120px;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
@@ -1476,22 +1476,28 @@
 		
 		@media (max-width: 768px) {
 			.stats-container {
-				flex-direction: column;
+				flex-direction: row;
 				align-items: center;
-				gap: 20px;
+				justify-content: center;
 			}
 			.stat-card.today {
-				width: 180px;
-				height: 180px;
+				width: 160px;
+				height: 160px;
 			}
 			.stat-card.ytd {
-				min-width: 90%;
+				min-width: 300px;
 				max-width: 350px;
-				margin-left: 0;
-				padding: 30px 50px;
+				margin-left: -100px;
+				padding: 25px 40px 25px 120px;
 			}
 			.stat-number {
-				font-size: 48px;
+				font-size: 42px;
+			}
+			.stat-label {
+				font-size: 10px;
+			}
+			.stat-subtitle {
+				font-size: 12px;
 			}
 		}
 		</style>
