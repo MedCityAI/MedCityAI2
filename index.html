@@ -2130,9 +2130,7 @@ function initializeLikes() {
 			
 			// Calculate 2026 YTD count
 			const ytdCount = allArticlesData.filter(article => {
-				return article.year === '2026';
-			}).length;
-			
+			return article.year === '2026' || article.year === 2026;
 			// Animate the numbers
 			animateCount('todayCount', todayCount, 1000);
 			animateCount('ytdCount', ytdCount, 1500);
