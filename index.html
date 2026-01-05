@@ -1471,6 +1471,13 @@
 		font-weight: 500;
 		text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 	}
+	
+	.stat-ytd-inline {
+		font-size: 12px;
+		color: rgba(255, 255, 255, 0.8);
+		margin-top: 8px;
+		letter-spacing: 0.5px;
+	}
 		
 		@keyframes countUp {
 			from { opacity: 0; transform: translateY(10px); }
@@ -2169,15 +2176,15 @@ function initializeLikes() {
 		const ytdCount = uniquePmids.size;
 		
 		console.log(`YTD Count: ${ytdCount} unique PMIDs from ${allArticlesData.length} total articles`);
-			animateCount('ytdCount', ytdCount, 1500);
-		}
-		
-		// Animate counting up numbers
-		function animateCount(elementId, targetValue, duration) {
-			const element = document.getElementById(elementId);
-			if (!element) return;
-			
-			element.classList.add('animate');
+	
+	// Update the counts without animation
+	const todayElement = document.getElementById('todayCount');
+	const ytdElement = document.getElementById('ytdCount');
+	const ytdInlineElement = document.getElementById('ytdInlineCount');
+	
+	if (todayElement) todayElement.textContent = '+' + todayCount.toLocaleString();
+	if (ytdElement) ytdElement.textContent = ytdCount.toLocaleString();
+	if (ytdInlineElement) ytdInlineElement.textContent = ytdCount.toLocaleString();
 			
 			const startValue = 0;
 			const startTime = performance.now();
