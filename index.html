@@ -2190,12 +2190,14 @@ function initializeLikes() {
 				const easeOutQuart = 1 - Math.pow(1 - progress, 4);
 				const currentValue = Math.floor(startValue + (targetValue - startValue) * easeOutQuart);
 				
-				element.textContent = currentValue.toLocaleString();
+				// Add + prefix for TODAY count
+				const prefix = elementId === 'todayCount' ? '+' : '';
+				element.textContent = prefix + currentValue.toLocaleString();
 				
 				if (progress < 1) {
 					requestAnimationFrame(updateCount);
 				} else {
-					element.textContent = targetValue.toLocaleString();
+					element.textContent = prefix + targetValue.toLocaleString();
 				}
 			}
 			
