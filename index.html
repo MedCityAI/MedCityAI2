@@ -2164,12 +2164,11 @@ function initializeLikes() {
 			const uniqueTodayPmids = new Set(todayArticles.map(article => article.pmid));
 			const todayCount = uniqueTodayPmids.size;
 			
-			// Calculate 2026 YTD count (unique PMIDs only)
-			const uniquePmids = new Set(allArticlesData.map(article => article.pmid));
-			const ytdCount = uniquePmids.size;
-			
-			// Animate the numbers
-			animateCount('todayCount', todayCount, 1000);
+		// Calculate 2026 YTD count (unique PMIDs only - ALL articles from CSV)
+		const uniquePmids = new Set(allArticlesData.filter(article => article.pmid).map(article => article.pmid));
+		const ytdCount = uniquePmids.size;
+		
+		console.log(`YTD Count: ${ytdCount} unique PMIDs from ${allArticlesData.length} total articles`);
 			animateCount('ytdCount', ytdCount, 1500);
 		}
 		
@@ -2237,7 +2236,11 @@ function initializeLikes() {
 			}
 			
 			console.log(`Loaded ${allArticlesData.length} articles from CSV (${skippedRows} rows skipped)`);
-			updatePublicationStats();
+		
+		// Debug: Count unique PMIDs
+		const debugPmids = new Set(allArticlesData.filter(a => a.pmid && a.pmid.trim()).map(a => a.pmid.trim()));
+		console.log(`Unique PMIDs in loaded data: ${debugPmids.size}`);
+		
 			
 			} catch (error) {
 				console.error('Error loading CSV:', error);
