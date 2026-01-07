@@ -377,6 +377,65 @@
 			color: #ccc;
 		}
 		
+		.specialty-filter-bar {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			padding: 8px 0;
+			box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+		}
+		
+		.specialty-filter-content {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 0 20px;
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			flex-wrap: wrap;
+		}
+		
+		.specialty-filter-label {
+			color: #fff;
+			font-size: 11px;
+			font-weight: 600;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+			white-space: nowrap;
+		}
+		
+		.specialty-tag {
+			background: rgba(255,255,255,0.2);
+			color: #fff;
+			font-size: 11px;
+			padding: 4px 10px;
+			border-radius: 12px;
+			cursor: pointer;
+			transition: all 0.2s;
+			border: 1px solid rgba(255,255,255,0.3);
+			white-space: nowrap;
+		}
+		
+		.specialty-tag:hover {
+			background: rgba(255,255,255,0.3);
+			transform: translateY(-1px);
+		}
+		
+		.specialty-tag.active {
+			background: #fff;
+			color: #667eea;
+			font-weight: 600;
+			box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+		}
+		
+		@media (max-width: 768px) {
+			.specialty-filter-content {
+				padding: 0 10px;
+			}
+			.specialty-tag {
+				font-size: 10px;
+				padding: 3px 8px;
+			}
+		}
+		
 		/* Main content layout */
 		#main-content {
 			width: 100%;
@@ -1636,6 +1695,15 @@
 				</div>
 			</section>
 
+			<!-- Specialty Filter Bar -->
+			<div class="specialty-filter-bar">
+				<div class="specialty-filter-content">
+					<span class="specialty-filter-label">Filter by Specialty:</span>
+					<div class="specialty-tag active" data-specialty="all">All</div>
+					<div id="specialtyFilters"></div>
+				</div>
+			</div>
+
 			<!-- Results Section -->
 			<main id="main-content" role="main">
 				<div class="filter-bar">
@@ -2570,6 +2638,14 @@ function initializeLikes() {
 				return rochesterPercentage >= 5;
 			});
 			
+			// Apply specialty filter if selected
+			if (currentSpecialtyFilter && currentSpecialtyFilter !== 'all') {
+				filteredArticlesData = filteredArticlesData.filter(article => {
+					return (article.primary_specialty && article.primary_specialty.trim() === currentSpecialtyFilter) ||
+						   (article.secondary_specialty && article.secondary_specialty.trim() === currentSpecialtyFilter);
+				});
+			}
+			
 			// Apply ranking system and sort articles by score
 			filteredArticlesData.forEach(article => {
 				article.rankingScore = calculateArticleScore(article, likeCountsForRanking);
@@ -3478,9 +3554,51 @@ function initializeLikes() {
 			// Load data and display results
 			loadStatistics();
 			loadCSVData().then(() => {
+				loadSpecialtyFilters();
 				fetchPubMedResults('', 1);
 			});
 		});
+		
+		// Specialty filtering
+		let currentSpecialtyFilter = 'all';
+		
+		function loadSpecialtyFilters() {
+			const specialties = new Set();
+			
+			// Extract unique specialties from all articles
+			allArticlesData.forEach(article => {
+				if (article.primary_specialty && article.primary_specialty.trim() && article.primary_specialty !== 'null') {
+					specialties.add(article.primary_specialty.trim());
+				}
+				if (article.secondary_specialty && article.secondary_specialty.trim() && article.secondary_specialty !== 'null') {
+					specialties.add(article.secondary_specialty.trim());
+				}
+			});
+			
+			// Sort specialties alphabetically
+			const sortedSpecialties = Array.from(specialties).sort();
+			
+			// Populate filter bar
+			const filtersContainer = document.getElementById('specialtyFilters');
+			filtersContainer.innerHTML = sortedSpecialties.map(specialty => 
+				`<div class="specialty-tag" data-specialty="${specialty}">${specialty}</div>`
+			).join('');
+			
+			// Add click handlers
+			document.querySelectorAll('.specialty-tag').forEach(tag => {
+				tag.addEventListener('click', function() {
+					// Remove active class from all tags
+					document.querySelectorAll('.specialty-tag').forEach(t => t.classList.remove('active'));
+					// Add active class to clicked tag
+					this.classList.add('active');
+					// Set filter and refresh results
+					currentSpecialtyFilter = this.dataset.specialty;
+					currentPage = 1;
+					fetchPubMedResults(currentSearchQuery, 1);
+				});
+			});
+		}
+		
 		</script>
 		<script src="assets/js/navigation.js"></script>
 	</body>
