@@ -1411,26 +1411,12 @@
 		overflow: hidden;
 	}
 	
-	.stat-card.today {
-		background: linear-gradient(135deg, rgba(52, 152, 219, 0.25), rgba(41, 128, 185, 0.25));
-		border-radius: 50%;
-		width: 170px;
-		height: 170px;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		padding: 15px;
-		z-index: 2;
-	}
-	
 	.stat-card.ytd {
 		background: linear-gradient(135deg, rgba(52, 152, 219, 0.25), rgba(41, 128, 185, 0.25));
 		border-radius: 75px;
 		flex: 1;
 		max-width: 700px;
-		padding: 20px 60px 20px 130px;
-		margin-left: -105px;
+		padding: 20px 60px;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
@@ -1540,15 +1526,10 @@
 				align-items: center;
 				justify-content: center;
 			}
-			.stat-card.today {
-				width: 160px;
-				height: 160px;
-			}
 			.stat-card.ytd {
 				min-width: 300px;
 				max-width: 350px;
-				margin-left: -100px;
-				padding: 25px 40px 25px 120px;
+				padding: 25px 40px;
 			}
 			.stat-number {
 				font-size: 42px;
@@ -1660,13 +1641,6 @@
 						</div>
 						
 						<div class="stats-container">
-							<div class="stat-card today">
-								<div class="stat-label">
-									<span>TODAY</span>
-								</div>
-								<div class="stat-number" id="todayCount">0</div>
-								<div class="stat-label">Publications</div>
-							</div>
 							<div class="stat-card ytd">
 								<div class="ai-digest" id="aiDailyDigest" style="display: none;">
 									<div class="ai-digest-label">
@@ -2263,8 +2237,6 @@ function initializeLikes() {
 				}
 				return false;
 			});
-			const uniqueTodayPmids = new Set(todayArticles.map(article => article.pmid));
-			const todayCount = uniqueTodayPmids.size;
 			
 		// Calculate 2026 YTD count (unique PMIDs only - ALL articles from CSV)
 		const uniquePmids = new Set(allArticlesData.filter(article => article.pmid).map(article => article.pmid));
@@ -2273,11 +2245,9 @@ function initializeLikes() {
 		console.log(`YTD Count: ${ytdCount} unique PMIDs from ${allArticlesData.length} total articles`);
 	
 	// Update the counts without animation
-	const todayElement = document.getElementById('todayCount');
 	const ytdElement = document.getElementById('ytdCount');
 	const ytdInlineElement = document.getElementById('ytdInlineCount');
 	
-	if (todayElement) todayElement.textContent = '+' + todayCount.toLocaleString();
 	if (ytdElement) ytdElement.textContent = ytdCount.toLocaleString();
 	if (ytdInlineElement) ytdInlineElement.textContent = ytdCount.toLocaleString();
 			
@@ -2292,14 +2262,12 @@ function initializeLikes() {
 				const easeOutQuart = 1 - Math.pow(1 - progress, 4);
 				const currentValue = Math.floor(startValue + (targetValue - startValue) * easeOutQuart);
 				
-				// Add + prefix for TODAY count
-				const prefix = elementId === 'todayCount' ? '+' : '';
-				element.textContent = prefix + currentValue.toLocaleString();
+				element.textContent = currentValue.toLocaleString();
 				
 				if (progress < 1) {
 					requestAnimationFrame(updateCount);
 				} else {
-					element.textContent = prefix + targetValue.toLocaleString();
+					element.textContent = targetValue.toLocaleString();
 				}
 			}
 			
@@ -3481,26 +3449,9 @@ function initializeLikes() {
 		// Load data and initialize carousel with today's new articles (up to 10)
 		getNewTodayArticles().then(articles => {
 			if (articles && articles.length > 0) {
-				// Count actual today's articles (not backfilled ones)
-				const today = new Date();
-				const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-				const todayYear = today.getFullYear();
-				const todayMonth = monthNames[today.getMonth() + 1];
-				const todayDay = today.getDate();
-				
-				const actualTodayCount = articles.filter(article => {
-					return article.year == todayYear && 
-					       article.month === todayMonth && 
-					       article.day == todayDay;
-				}).length;
-				
-				// Update the today counter
-				document.getElementById('todayCount').textContent = actualTodayCount;
-				
 				initializeFeaturedCarousel(articles);
 			} else {
 				console.log('No articles found for carousel');
-				document.getElementById('todayCount').textContent = '0';
 			}
 		});			// Hero button event listeners
 			const newTodayBtn = document.getElementById('newTodayBtn');
