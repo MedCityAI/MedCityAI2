@@ -1386,162 +1386,6 @@
 			font-weight: 500;
 		}
 		
-		/* Stats Cards */
-		.stats-container {
-			display: flex;
-		gap: 0;
-		justify-content: center;
-		align-items: center;
-		margin-top: 20px;
-		flex-wrap: nowrap;
-		position: relative;
-		max-width: 900px;
-		margin-left: auto;
-		margin-right: auto;
-	}
-	
-	.stat-card {
-		background: rgba(255, 255, 255, 0.15);
-		backdrop-filter: blur(10px);
-		padding: 20px 30px;
-		text-align: center;
-		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-		border: 2px solid rgba(255, 255, 255, 0.3);
-		position: relative;
-		overflow: hidden;
-	}
-	
-	.stat-card.ytd {
-		background: linear-gradient(135deg, rgba(52, 152, 219, 0.25), rgba(41, 128, 185, 0.25));
-		border-radius: 75px;
-		flex: 1;
-		max-width: 700px;
-		padding: 20px 60px;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		z-index: 1;
-	}
-	
-	.stat-label {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 8px;
-		font-size: 12px;
-		text-transform: uppercase;
-		letter-spacing: 1.5px;
-		color: #fff;
-		font-weight: 600;
-		margin-bottom: 12px;
-		text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-	}
-	
-	.stat-label i {
-		font-size: 16px;
-	}
-	
-	.stat-number {
-		font-size: 56px;
-		font-weight: bold;
-		color: #fff;
-		line-height: 1;
-		text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-		margin-bottom: 8px;
-	}
-	
-	.stat-subtitle {
-		font-size: 14px;
-		color: rgba(255, 255, 255, 0.9);
-		font-weight: 500;
-		text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-	}
-	
-	.stat-ytd-inline {
-		font-size: 12px;
-		color: rgba(255, 255, 255, 0.8);
-		margin-top: 8px;
-		letter-spacing: 0.5px;
-	}
-	
-	.ai-digest {
-		font-size: 12px;
-		color: rgba(255, 255, 255, 0.95);
-		padding: 20px;
-		background: rgba(0, 0, 0, 0.15);
-		border-radius: 8px;
-		max-height: 100%;
-		overflow-y: auto;
-		text-align: left;
-		line-height: 1.5;
-		cursor: pointer;
-		transition: all 0.3s ease;
-		width: 100%;
-		height: 100%;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-	}
-	
-	.ai-digest:hover {
-		background: rgba(0, 0, 0, 0.25);
-	}
-	
-	.ai-digest-label {
-		font-weight: 600;
-		font-size: 11px;
-		text-transform: uppercase;
-		letter-spacing: 1px;
-		color: rgba(255, 255, 255, 1);
-		margin-bottom: 10px;
-		display: flex;
-		align-items: center;
-		gap: 6px;
-	}
-	
-	.ai-digest-text {
-		font-size: 11px;
-		line-height: 1.6;
-		display: -webkit-box;
-		-webkit-line-clamp: 4;
-		line-clamp: 4;
-		-webkit-box-orient: vertical;
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
-		
-		@keyframes countUp {
-			from { opacity: 0; transform: translateY(10px); }
-			to { opacity: 1; transform: translateY(0); }
-		}
-		
-		.stat-number.animate {
-			animation: countUp 0.6s ease-out;
-		}
-		
-		@media (max-width: 768px) {
-			.stats-container {
-				flex-direction: row;
-				align-items: center;
-				justify-content: center;
-			}
-			.stat-card.ytd {
-				min-width: 300px;
-				max-width: 350px;
-				padding: 25px 40px;
-			}
-			.stat-number {
-				font-size: 42px;
-			}
-			.stat-label {
-				font-size: 10px;
-			}
-			.stat-subtitle {
-				font-size: 12px;
-			}
-		}
-		
 		/* Hero Action Buttons */
 		.hero-buttons {
 			display: flex;
@@ -1555,15 +1399,20 @@
 			display: inline-flex;
 			align-items: center;
 			gap: 8px;
-			padding: 10px 20px;
-			background-color: #ADD8E6;
-			color: #333;
+			padding: 12px 30px;
+			background: linear-gradient(135deg, rgba(52, 152, 219, 0.25), rgba(41, 128, 185, 0.25));
+			backdrop-filter: blur(10px);
+			border: 2px solid rgba(255, 255, 255, 0.3);
+			color: #fff;
 			text-decoration: none;
-			border-radius: 10px;
+			border-radius: 50px;
 			font-size: 14px;
-			font-weight: 500;
+			font-weight: 600;
+			text-transform: uppercase;
+			letter-spacing: 1px;
 			transition: none;
-			box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+			text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 		}
 		
 		.hero-btn i {
@@ -2237,19 +2086,6 @@ function initializeLikes() {
 				}
 				return false;
 			});
-			
-		// Calculate 2026 YTD count (unique PMIDs only - ALL articles from CSV)
-		const uniquePmids = new Set(allArticlesData.filter(article => article.pmid).map(article => article.pmid));
-		const ytdCount = uniquePmids.size;
-		
-		console.log(`YTD Count: ${ytdCount} unique PMIDs from ${allArticlesData.length} total articles`);
-	
-	// Update the counts without animation
-	const ytdElement = document.getElementById('ytdCount');
-	const ytdInlineElement = document.getElementById('ytdInlineCount');
-	
-	if (ytdElement) ytdElement.textContent = ytdCount.toLocaleString();
-	if (ytdInlineElement) ytdInlineElement.textContent = ytdCount.toLocaleString();
 			
 			const startValue = 0;
 			const startTime = performance.now();
