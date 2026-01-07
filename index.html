@@ -377,65 +377,6 @@
 			color: #ccc;
 		}
 		
-		.specialty-filter-bar {
-		background: transparent;
-		padding: 0;
-		box-shadow: none;
-		}
-		.specialty-filter-content {
-			max-width: 1200px;
-			margin: 0 auto;
-			padding: 0 20px;
-			display: flex;
-			align-items: center;
-			gap: 0;
-			flex-wrap: wrap;
-		}
-		
-		.specialty-filter-label {
-		color: #2c3e50;
-			font-weight: 600;
-			text-transform: uppercase;
-			letter-spacing: 0.5px;
-			white-space: nowrap;
-			margin-right: 12px;
-		}
-		
-		.specialty-tag {
-			color: #555;
-			font-size: 11px;
-			cursor: pointer;
-			transition: all 0.2s;
-			white-space: nowrap;
-			text-decoration: none;
-		}
-		
-		.specialty-tag:hover {
-		color: #3498db;
-		}
-		
-		.specialty-tag.active {
-			color: #fff;
-			font-weight: 700;
-			text-decoration: underline;
-		}
-		
-		.specialty-separator {
-			color: rgba(255,255,255,0.5);
-		    margin: 0;
-		}
-		@media (max-width: 768px) {
-			.specialty-filter-content {
-				padding: 0 10px;
-			}
-			.specialty-tag {
-				font-size: 10px;
-			}
-			.specialty-separator {
-				margin: 0;
-			}
-		}
-		
 		/* Main content layout */
 		#main-content {
 			width: 100%;
@@ -1446,45 +1387,17 @@
 		}
 		
 		/* Stats Cards */
-.hero-buttons {
-		display: flex;
-		gap: 16px;
-		justify-content: flex-start;
+		.stats-container {
+			display: flex;
+		gap: 0;
+		justify-content: center;
 		align-items: center;
-		margin-top: 30px;
-		flex-wrap: wrap;
-	}
-	
-	.hero-btn {
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-		color: #fff;
-		padding: 14px 28px;
-		border-radius: 30px;
-		font-size: 15px;
-		font-weight: 600;
-		border: none;
-		cursor: pointer;
-		transition: all 0.3s ease;
-		box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-		display: flex;
-		align-items: center;
-		gap: 10px;
-		text-decoration: none;
-	}
-	
-	.hero-btn i {
-		font-size: 16px;
-	}
-	
-	.hero-btn:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-		background: linear-gradient(135deg, #7b8ff5 0%, #8b5bb8 100%);
-	}
-	
-	.hero-btn:active {
-		transform: translateY(0);
-		box-shadow: 0 2px 10px rgba(102, 126, 234, 0.4);
+		margin-top: 20px;
+		flex-wrap: nowrap;
+		position: relative;
+		max-width: 900px;
+		margin-left: auto;
+		margin-right: auto;
 	}
 	
 	.stat-card {
@@ -1692,19 +1605,22 @@
 	
 						<h1 style="color:#fff; text-shadow: 0 4px 18px rgba(0,0,0,0.28);">What's New in Rochester?</h1>
 						<p style="color:#e0e0e0;">Real-time biomedical research feed for Rochester, Minnesota. All information sourced from the National Library of Medicine, PubMed.</p>
-						<div class="hero-buttons">
-							<button class="hero-btn" id="newTodayBtn">
-								<i class="fas fa-arrow-down"></i>
-								New Today
-							</button>
-							<a href="search.html" class="hero-btn">
-								<i class="fas fa-search"></i>
-								Search
-							</a>
-							<a href="leaderboard.html" class="hero-btn">
-								<i class="fas fa-trophy"></i>
-								Leaderboard
-							</a>
+						<div class="stats-container">
+							<div class="stat-card today">
+								<div class="stat-label">
+									<span>TODAY</span>
+								</div>
+								<div class="stat-number" id="todayCount">0</div>
+								<div class="stat-label">Publications</div>
+							</div>
+							<div class="stat-card ytd">
+								<div class="ai-digest" id="aiDailyDigest" style="display: none;">
+									<div class="ai-digest-label">
+										<i class="fas fa-brain"></i> AI Daily Digest
+									</div>
+									<div class="ai-digest-text" id="aiDigestText"></div>
+								</div>
+							</div>
 						</div>
 					</div>
 					<div class="hero-right">
@@ -1719,15 +1635,6 @@
 					</div>
 				</div>
 			</section>
-
-			<!-- Specialty Filter Bar -->
-			<div class="specialty-filter-bar">
-				<div class="specialty-filter-content">
-					<span class="specialty-filter-label">Filter by Specialty:</span>
-					<div class="specialty-tag active" data-specialty="all">All</div>
-					<div id="specialtyFilters"></div>
-				</div>
-			</div>
 
 			<!-- Results Section -->
 			<main id="main-content" role="main">
@@ -2663,14 +2570,6 @@ function initializeLikes() {
 				return rochesterPercentage >= 5;
 			});
 			
-			// Apply specialty filter if selected
-			if (currentSpecialtyFilter && currentSpecialtyFilter !== 'all') {
-				filteredArticlesData = filteredArticlesData.filter(article => {
-					return (article.primary_specialty && article.primary_specialty.trim() === currentSpecialtyFilter) ||
-						   (article.secondary_specialty && article.secondary_specialty.trim() === currentSpecialtyFilter);
-				});
-			}
-			
 			// Apply ranking system and sort articles by score
 			filteredArticlesData.forEach(article => {
 				article.rankingScore = calculateArticleScore(article, likeCountsForRanking);
@@ -3579,57 +3478,9 @@ function initializeLikes() {
 			// Load data and display results
 			loadStatistics();
 			loadCSVData().then(() => {
-				loadSpecialtyFilters();
 				fetchPubMedResults('', 1);
 			});
 		});
-		
-		// Specialty filtering
-		let currentSpecialtyFilter = 'all';
-		
-		function loadSpecialtyFilters() {
-			const specialtyCounts = {};
-			
-			// Count articles per specialty
-			allArticlesData.forEach(article => {
-				if (article.primary_specialty && article.primary_specialty.trim() && article.primary_specialty !== 'null') {
-					const spec = article.primary_specialty.trim();
-					specialtyCounts[spec] = (specialtyCounts[spec] || 0) + 1;
-				}
-				if (article.secondary_specialty && article.secondary_specialty.trim() && article.secondary_specialty !== 'null') {
-					const spec = article.secondary_specialty.trim();
-					specialtyCounts[spec] = (specialtyCounts[spec] || 0) + 1;
-				}
-			});
-			
-			// Sort specialties by count (descending), then alphabetically
-			const sortedSpecialties = Object.entries(specialtyCounts)
-				.sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-				.map(entry => ({ name: entry[0], count: entry[1] }));
-			
-			// Populate filter bar with counts and separators
-			const filtersContainer = document.getElementById('specialtyFilters');
-			const html = sortedSpecialties.map((specialty, index) => {
-				const separator = index > 0 ? '<span class="specialty-separator">·</span>' : '';
-				return `${separator}<span class="specialty-tag" data-specialty="${specialty.name}">${specialty.name}(${specialty.count})</span>`;
-			}).join('');
-			filtersContainer.innerHTML = html;
-			
-			// Add click handlers
-			document.querySelectorAll('.specialty-tag').forEach(tag => {
-				tag.addEventListener('click', function() {
-					// Remove active class from all tags
-					document.querySelectorAll('.specialty-tag').forEach(t => t.classList.remove('active'));
-					// Add active class to clicked tag
-					this.classList.add('active');
-					// Set filter and refresh results
-					currentSpecialtyFilter = this.dataset.specialty;
-					currentPage = 1;
-					fetchPubMedResults(currentSearchQuery, 1);
-				});
-			});
-		}
-		
 		</script>
 		<script src="assets/js/navigation.js"></script>
 	</body>
