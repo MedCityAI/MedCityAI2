@@ -1774,25 +1774,21 @@
 						authorsHTML = authorsHTML.replace(regex, 
 							`<span class="roch-author" onclick="showAuthorBibliography('${escapedAuthor}')" tabindex="0" role="button">${rochAuthor}</span>`
 					);
-			});
-		}
+				});
+			}
 
-		const resultNumber = startIdx + index + 1;
+			const resultNumber = startIdx + index + 1;
 
-		resultsHTML += `
-			<div class="result-item">
-				<div class="result-content">
-					<a href="${article.url}" target="_blank" class="result-title" data-number="${resultNumber}">${article.title}</a>
-					<div class="result-meta">
-								<div class="result-meta-item">
-									<i class="fas fa-calendar"></i>
-									${article.pubdate}
-								</div>
-								<div class="result-meta-item">
-									<i class="fas fa-book"></i>
-									${article.journal}
-								</div>
-								<div class="result-meta-item">
+			resultsHTML += `
+				<div class="result-item">
+					<div class="result-content">
+						<a href="${article.url}" target="_blank" class="result-title" data-number="${resultNumber}">${article.title}</a>
+						<div class="result-meta">
+							<div class="result-meta-item">
+								<i class="fas fa-calendar"></i>
+								${article.pubdate}
+							</div>
+							<div class="result-meta-item">
 									<i class="fas fa-hashtag"></i>
 									${article.pmid}
 								</div>
