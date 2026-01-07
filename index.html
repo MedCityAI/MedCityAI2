@@ -389,7 +389,7 @@
 			padding: 0 20px;
 			display: flex;
 			align-items: center;
-			gap: 12px;
+			gap: 0;
 			flex-wrap: wrap;
 		}
 		
@@ -400,30 +400,33 @@
 			text-transform: uppercase;
 			letter-spacing: 0.5px;
 			white-space: nowrap;
+			margin-right: 12px;
 		}
 		
 		.specialty-tag {
-			background: rgba(255,255,255,0.2);
-			color: #fff;
+			color: rgba(255,255,255,0.85);
 			font-size: 11px;
-			padding: 4px 10px;
-			border-radius: 12px;
 			cursor: pointer;
 			transition: all 0.2s;
-			border: 1px solid rgba(255,255,255,0.3);
 			white-space: nowrap;
+			text-decoration: none;
 		}
 		
 		.specialty-tag:hover {
-			background: rgba(255,255,255,0.3);
-			transform: translateY(-1px);
+			color: #fff;
+			text-decoration: underline;
 		}
 		
 		.specialty-tag.active {
-			background: #fff;
-			color: #667eea;
-			font-weight: 600;
-			box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+			color: #fff;
+			font-weight: 700;
+			text-decoration: underline;
+		}
+		
+		.specialty-separator {
+			color: rgba(255,255,255,0.5);
+			margin: 0 8px;
+			font-size: 11px;
 		}
 		
 		@media (max-width: 768px) {
@@ -432,7 +435,9 @@
 			}
 			.specialty-tag {
 				font-size: 10px;
-				padding: 3px 8px;
+			}
+			.specialty-separator {
+				margin: 0 6px;
 			}
 		}
 		
@@ -3563,26 +3568,32 @@ function initializeLikes() {
 		let currentSpecialtyFilter = 'all';
 		
 		function loadSpecialtyFilters() {
-			const specialties = new Set();
+			const specialtyCounts = {};
 			
-			// Extract unique specialties from all articles
+			// Count articles per specialty
 			allArticlesData.forEach(article => {
 				if (article.primary_specialty && article.primary_specialty.trim() && article.primary_specialty !== 'null') {
-					specialties.add(article.primary_specialty.trim());
+					const spec = article.primary_specialty.trim();
+					specialtyCounts[spec] = (specialtyCounts[spec] || 0) + 1;
 				}
 				if (article.secondary_specialty && article.secondary_specialty.trim() && article.secondary_specialty !== 'null') {
-					specialties.add(article.secondary_specialty.trim());
+					const spec = article.secondary_specialty.trim();
+					specialtyCounts[spec] = (specialtyCounts[spec] || 0) + 1;
 				}
 			});
 			
-			// Sort specialties alphabetically
-			const sortedSpecialties = Array.from(specialties).sort();
+			// Sort specialties by count (descending), then alphabetically
+			const sortedSpecialties = Object.entries(specialtyCounts)
+				.sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+				.map(entry => ({ name: entry[0], count: entry[1] }));
 			
-			// Populate filter bar
+			// Populate filter bar with counts and separators
 			const filtersContainer = document.getElementById('specialtyFilters');
-			filtersContainer.innerHTML = sortedSpecialties.map(specialty => 
-				`<div class="specialty-tag" data-specialty="${specialty}">${specialty}</div>`
-			).join('');
+			const html = sortedSpecialties.map((specialty, index) => {
+				const separator = index > 0 ? '<span class="specialty-separator">·</span>' : '';
+				return `${separator}<span class="specialty-tag" data-specialty="${specialty.name}">${specialty.name} (${specialty.count})</span>`;
+			}).join('');
+			filtersContainer.innerHTML = html;
 			
 			// Add click handlers
 			document.querySelectorAll('.specialty-tag').forEach(tag => {
