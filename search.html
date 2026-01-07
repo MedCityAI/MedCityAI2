@@ -1534,12 +1534,14 @@
 		const searchIcon = document.querySelector('.search-icon');
 		
 		function performSearch() {
-		// Hide suggested searches section
-		const suggestedSection = document.getElementById('suggestedSearchesSection');
-		if (suggestedSection) {
-			suggestedSection.style.display = 'none';
-		}
-		
+			const query = heroSearchBar.value.trim();
+			
+			// Hide suggested searches section
+			const suggestedSection = document.getElementById('suggestedSearchesSection');
+			if (suggestedSection) {
+				suggestedSection.style.display = 'none';
+			}
+			
 			if (query.length >= 2) {
 				performPubMedSearch(query);
 			}
