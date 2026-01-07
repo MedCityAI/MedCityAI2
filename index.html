@@ -2831,6 +2831,9 @@ function initializeLikes() {
 
 	document.getElementById("pubmed-results").innerHTML = finalHTML;		
 	
+	// Initialize like buttons after articles are rendered
+	initializeLikes();
+	
 	// Show pagination message if there are more articles than displayed
 	const totalAvailable = matchingArticles.length + otherArticles.length;
 	if (totalAvailable > displayedCount) {
