@@ -378,11 +378,10 @@
 		}
 		
 		.specialty-filter-bar {
-			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-			padding: 8px 0;
-			box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+		background: transparent;
+		padding: 0;
+		box-shadow: none;
 		}
-		
 		.specialty-filter-content {
 			max-width: 1200px;
 			margin: 0 auto;
@@ -394,8 +393,7 @@
 		}
 		
 		.specialty-filter-label {
-			color: #fff;
-			font-size: 11px;
+		color: #2c3e50;
 			font-weight: 600;
 			text-transform: uppercase;
 			letter-spacing: 0.5px;
@@ -404,7 +402,7 @@
 		}
 		
 		.specialty-tag {
-			color: rgba(255,255,255,0.85);
+			color: #555;
 			font-size: 11px;
 			cursor: pointer;
 			transition: all 0.2s;
@@ -413,8 +411,7 @@
 		}
 		
 		.specialty-tag:hover {
-			color: #fff;
-			text-decoration: underline;
+		color: #3498db;
 		}
 		
 		.specialty-tag.active {
@@ -425,10 +422,8 @@
 		
 		.specialty-separator {
 			color: rgba(255,255,255,0.5);
-			margin: 0 8px;
-			font-size: 11px;
+		    margin: 0;
 		}
-		
 		@media (max-width: 768px) {
 			.specialty-filter-content {
 				padding: 0 10px;
@@ -437,7 +432,7 @@
 				font-size: 10px;
 			}
 			.specialty-separator {
-				margin: 0 6px;
+				margin: 0;
 			}
 		}
 		
@@ -1451,17 +1446,45 @@
 		}
 		
 		/* Stats Cards */
-		.stats-container {
-			display: flex;
-		gap: 0;
-		justify-content: center;
+.hero-buttons {
+		display: flex;
+		gap: 16px;
+		justify-content: flex-start;
 		align-items: center;
-		margin-top: 20px;
-		flex-wrap: nowrap;
-		position: relative;
-		max-width: 900px;
-		margin-left: auto;
-		margin-right: auto;
+		margin-top: 30px;
+		flex-wrap: wrap;
+	}
+	
+	.hero-btn {
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		color: #fff;
+		padding: 14px 28px;
+		border-radius: 30px;
+		font-size: 15px;
+		font-weight: 600;
+		border: none;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		text-decoration: none;
+	}
+	
+	.hero-btn i {
+		font-size: 16px;
+	}
+	
+	.hero-btn:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+		background: linear-gradient(135deg, #7b8ff5 0%, #8b5bb8 100%);
+	}
+	
+	.hero-btn:active {
+		transform: translateY(0);
+		box-shadow: 0 2px 10px rgba(102, 126, 234, 0.4);
 	}
 	
 	.stat-card {
@@ -1669,22 +1692,19 @@
 	
 						<h1 style="color:#fff; text-shadow: 0 4px 18px rgba(0,0,0,0.28);">What's New in Rochester?</h1>
 						<p style="color:#e0e0e0;">Real-time biomedical research feed for Rochester, Minnesota. All information sourced from the National Library of Medicine, PubMed.</p>
-						<div class="stats-container">
-							<div class="stat-card today">
-								<div class="stat-label">
-									<span>TODAY</span>
-								</div>
-								<div class="stat-number" id="todayCount">0</div>
-								<div class="stat-label">Publications</div>
-							</div>
-							<div class="stat-card ytd">
-								<div class="ai-digest" id="aiDailyDigest" style="display: none;">
-									<div class="ai-digest-label">
-										<i class="fas fa-brain"></i> AI Daily Digest
-									</div>
-									<div class="ai-digest-text" id="aiDigestText"></div>
-								</div>
-							</div>
+						<div class="hero-buttons">
+							<button class="hero-btn" id="newTodayBtn">
+								<i class="fas fa-arrow-down"></i>
+								New Today
+							</button>
+							<a href="search.html" class="hero-btn">
+								<i class="fas fa-search"></i>
+								Search
+							</a>
+							<a href="leaderboard.html" class="hero-btn">
+								<i class="fas fa-trophy"></i>
+								Leaderboard
+							</a>
 						</div>
 					</div>
 					<div class="hero-right">
@@ -3591,7 +3611,7 @@ function initializeLikes() {
 			const filtersContainer = document.getElementById('specialtyFilters');
 			const html = sortedSpecialties.map((specialty, index) => {
 				const separator = index > 0 ? '<span class="specialty-separator">·</span>' : '';
-				return `${separator}<span class="specialty-tag" data-specialty="${specialty.name}">${specialty.name} (${specialty.count})</span>`;
+				return `${separator}<span class="specialty-tag" data-specialty="${specialty.name}">${specialty.name}(${specialty.count})</span>`;
 			}).join('');
 			filtersContainer.innerHTML = html;
 			
