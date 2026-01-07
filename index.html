@@ -2665,12 +2665,15 @@ function initializeLikes() {
 				todayArticles.push(article);
 			}
 			
-			// Check if any specialty matches user keywords
-			const hasMatch = specialties.some(spec => userKeywords.includes(spec));
-			if (hasUserKeywords && hasMatch) {
-				matchingArticles.push(article);
-			} else {
-				otherArticles.push(article);
+			// Check if any specialty matches user keywords (exclude today articles)
+			const isFromToday = articleDate && articleDate >= twoDaysAgo;
+			if (!isFromToday) {
+				const hasMatch = specialties.some(spec => userKeywords.includes(spec));
+				if (hasUserKeywords && hasMatch) {
+					matchingArticles.push(article);
+				} else {
+					otherArticles.push(article);
+				}
 			}
 		});
 		
