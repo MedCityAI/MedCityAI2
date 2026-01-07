@@ -230,7 +230,9 @@
 			.data-table td {
 				padding: 10px 15px;
 				color: #333;
-			text-align: left;
+			}
+			
+			.rank-col {
 				width: 60px;
 				font-weight: bold;
 				font-size: 1.1em;
@@ -574,11 +576,10 @@
 
 	<!-- Departments Tab -->
 	<div id="departments-tab" class="tab-content">
-		<div style="display: grid; grid-template-columns: 1fr; gap: 40px; margin-top: 20px; max-width: 1400px; margin-left: auto; margin-right: auto;">
-			<div>
-				<h3 style="color: #2568BE; font-size: 1.3em; margin-bottom: 5px; font-weight: 600;">Top Departments by Publication Volume</h3>
-				<p style="color: #666; font-size: 0.9em; margin-bottom: 15px;">Medical specialties and departments ranked by research output</p>
-				<table class="data-table" id="departmentsTable">
+		<div style="max-width: 1400px; margin-left: auto; margin-right: auto;">
+			<h3 style="color: #2568BE; font-size: 1.3em; margin-bottom: 5px; font-weight: 600;">Top Departments by Publication Volume</h3>
+			<p style="color: #666; font-size: 0.9em; margin-bottom: 15px;">Medical specialties and departments ranked by research output</p>
+			<table class="data-table" id="departmentsTable">
 				<thead>
 					<tr>
 						<th>Rank</th>
@@ -596,9 +597,17 @@
 					<div class="compact-chart" id="collaborationChart">
 						<!-- Will be populated by JavaScript -->
 					</div>
-			</div>
-		</div>
-	</div>
+					</div>
+				</div>
+
+				<!-- Geography Tab -->
+				<div id="geography-tab" class="tab-content">
+					
+					<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 20px; max-width: 1400px; margin-left: auto; margin-right: auto;">
+						
+						<!-- US States -->
+						<div>
+							<h3 style="color: #2568BE; font-size: 1.3em; margin-bottom: 5px; font-weight: 600;">ACROSS THE U.S.</h3>
 							<p style="color: #666; margin-bottom: 15px; font-size: 0.9em;">Most frequent state collaborations (excluding Minnesota)</p>
 							<table class="data-table" id="statesTable">
 								<thead>
