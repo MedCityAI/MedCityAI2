@@ -2691,11 +2691,11 @@ function initializeLikes() {
 					recencyBadge = '<i class="fas fa-bell" style="margin-right:4px;"></i>TODAY';
 					recencyClass = 'new-tab';
 				} else if (articleDate >= sevenDaysAgo) {
-				// Format date as MM/DD/YY
-				const month = String(articleDate.getMonth() + 1).padStart(2, '0');
-				const day = String(articleDate.getDate()).padStart(2, '0');
-				const year = String(articleDate.getFullYear()).slice(-2);
-				recencyBadge = `${month}/${day}/${year}`;
+					recencyBadge = 'THIS WEEK';
+					recencyClass = 'this-week-tab';
+					}
+				}
+				
 				// Parse authors (pipe-separated in CSV)
 				const authorsList = article.authors ? article.authors.split('|') : [];
 				const rochesterAuthorsList = article.rochester_authors ? article.rochester_authors.split('|') : [];
@@ -3382,21 +3382,23 @@ function initializeLikes() {
 		// Load data and initialize carousel with today's new articles (up to 10)
 		getNewTodayArticles().then(articles => {
 			if (articles && articles.length > 0) {
-				// Count actual today's articles (not backfilled ones)
-				const today = new Date();
+				// Count articles from the last 48 hours
+				const now = new Date();
+				const fortyEightHoursAgo = new Date(now.getTime() - (48 * 60 * 60 * 1000));
 				const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-				const todayYear = today.getFullYear();
-				const todayMonth = monthNames[today.getMonth() + 1];
-				const todayDay = today.getDate();
 				
-				const actualTodayCount = articles.filter(article => {
-					return article.year == todayYear && 
-					       article.month === todayMonth && 
-					       article.day == todayDay;
+				const last48HoursCount = articles.filter(article => {
+					if (!article.year || !article.month || !article.day) return false;
+					
+					const monthNum = monthNames.indexOf(article.month);
+					if (monthNum === -1) return false;
+					
+					const articleDate = new Date(article.year, monthNum - 1, article.day);
+					return articleDate >= fortyEightHoursAgo;
 				}).length;
 				
-				// Update the today counter
-				document.getElementById('todayCount').textContent = actualTodayCount;
+				// Update the today counter with last 48 hours count
+				document.getElementById('todayCount').textContent = last48HoursCount;
 				
 				initializeFeaturedCarousel(articles);
 			} else {
