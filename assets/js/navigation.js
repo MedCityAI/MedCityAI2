@@ -16,7 +16,7 @@
                 <div class="nav-links" role="menubar">
                     <a href="index.html" role="menuitem" data-page="index">New Today</a>
                     <a href="search.html" role="menuitem" data-page="search">Search</a>
-                    <a href="leaderboard.html" role="menuitem" data-page="leaderboard">Leaderboard</a>
+                    <a href="leaderboard.html" role="menuitem" data-page="leaderboard">2025 Year in Review</a>
                     <a href="about.html" role="menuitem" data-page="about">About</a>
                 </div>
                 <div style="display: flex; align-items: center; gap: 15px;">
@@ -34,7 +34,7 @@
         <div id="mobile-menu" class="mobile-menu" aria-hidden="true">
             <a href="index.html" data-page="index">New Today</a>
             <a href="search.html" data-page="search">Search</a>
-            <a href="leaderboard.html" data-page="leaderboard">Leaderboard</a>
+            <a href="leaderboard.html" data-page="leaderboard">2025 Year in Review</a>
             <a href="about.html" data-page="about">About</a>
         </div>
     `;

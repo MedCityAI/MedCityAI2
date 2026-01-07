@@ -2706,7 +2706,7 @@ function initializeLikes() {
 					}
 				}
 				
-// Determine recency badge (within last 48 hrs = TODAY, within 7 days = THIS WEEK)
+// Determine recency badge (within last 48 hrs = TODAY, within 7 days = EARLIER THIS WEEK)
 			let recencyBadge = '';
 			let recencyClass = '';
 			if (articleDate) {
@@ -2714,7 +2714,7 @@ function initializeLikes() {
 					recencyBadge = '<i class="fas fa-bell" style="margin-right:4px;"></i>TODAY';
 					recencyClass = 'new-tab';
 				} else if (articleDate >= sevenDaysAgo) {
-					recencyBadge = 'THIS WEEK';
+					recencyBadge = 'EARLIER THIS WEEK';
 					recencyClass = 'this-week-tab';
 					}
 				}
