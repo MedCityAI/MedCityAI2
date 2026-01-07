@@ -1581,14 +1581,10 @@
 					<div class="hero-right">
 						<div class="featured-carousel">
 							<div class="carousel-container">
-								<div class="carousel-slide" id="featuredSlide1"></div>
-								<div class="carousel-slide" id="featuredSlide2"></div>
-								<div class="carousel-slide" id="featuredSlide3"></div>
+								<!-- Slides will be dynamically generated -->
 							</div>
 							<div class="carousel-dots">
-								<span class="dot active" data-slide="0"></span>
-								<span class="dot" data-slide="1"></span>
-								<span class="dot" data-slide="2"></span>
+								<!-- Dots will be dynamically generated -->
 							</div>
 						</div>
 					</div>
@@ -2903,7 +2899,7 @@ function initializeLikes() {
 	let carouselInterval;
 	let currentSlideIndex = 0;
 
-	async function getFeaturedArticles() {
+	async function getNewTodayArticles() {
 		// Ensure CSV data is loaded
 		if (allArticlesData.length === 0) {
 			await loadCSVData();
@@ -2911,7 +2907,20 @@ function initializeLikes() {
 		
 		const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 		
-		// Sort all articles by date (most recent first)
+		// Get today's date
+		const today = new Date();
+		const todayYear = today.getFullYear();
+		const todayMonth = monthNames[today.getMonth() + 1]; // +1 because monthNames has empty string at index 0
+		const todayDay = today.getDate();
+		
+		// Filter articles published today
+		const todayArticles = allArticlesData.filter(article => {
+			return article.year == todayYear && 
+			       article.month === todayMonth && 
+			       article.day == todayDay;
+		});
+		
+		// Sort all articles by date (most recent first) for backfill
 		const sortedArticles = allArticlesData.slice().sort((a, b) => {
 			if (!a.year || !a.month || !a.day) return 1;
 			if (!b.year || !b.month || !b.day) return -1;
@@ -2928,35 +2937,62 @@ function initializeLikes() {
 			return dateB - dateA; // Most recent first
 		});
 		
-		// Return top 3 most recent articles
-		return sortedArticles.slice(0, 3);
+		// If we have enough today's articles, return up to 10
+		if (todayArticles.length >= 10) {
+			return todayArticles.slice(0, 10);
+		}
+		
+		// Otherwise, backfill with most recent articles to reach 10
+		const result = [...todayArticles];
+		for (const article of sortedArticles) {
+			if (result.length >= 10) break;
+			// Don't add duplicates
+			if (!result.some(a => a.pmid === article.pmid)) {
+				result.push(article);
+			}
+		}
+		
+		return result.slice(0, 10);
 	}
 
 	function initializeFeaturedCarousel(articles) {
 		if (!articles || articles.length === 0) return;
 
-		// Populate each slide
+		const carouselContainer = document.querySelector('.carousel-container');
+		const carouselDots = document.querySelector('.carousel-dots');
+		
+		// Clear existing content
+		carouselContainer.innerHTML = '';
+		carouselDots.innerHTML = '';
+		
+		const totalSlides = articles.length;
+		
+		// Create slides dynamically
 		articles.forEach((article, index) => {
-			const slide = document.getElementById(`featuredSlide${index + 1}`);
-			if (slide) {
-				slide.innerHTML = createFeaturedCard(article);
-			}
+			const slide = document.createElement('div');
+			slide.className = 'carousel-slide';
+			slide.id = `featuredSlide${index}`;
+			slide.innerHTML = createFeaturedCard(article);
+			carouselContainer.appendChild(slide);
+		});
+		
+		// Create dots dynamically
+		articles.forEach((article, index) => {
+			const dot = document.createElement('span');
+			dot.className = 'dot';
+			dot.setAttribute('data-slide', index);
+			dot.addEventListener('click', () => {
+				showSlide(index);
+				resetCarouselTimer(totalSlides);
+			});
+			carouselDots.appendChild(dot);
 		});
 
 		// Show first slide
 		showSlide(0);
 
-		// Set up dot navigation
-		const dots = document.querySelectorAll('.carousel-dots .dot');
-		dots.forEach((dot, index) => {
-			dot.addEventListener('click', () => {
-				showSlide(index);
-				resetCarouselTimer();
-			});
-		});
-
 		// Start auto-rotation
-		startCarouselRotation();
+		startCarouselRotation(totalSlides);
 	}		function createFeaturedCard(article) {
 			const title = article.title || 'Untitled';
 			const authors = article.authors_display || article.authors?.replaceAll('|', ', ') || 'Authors unavailable';
@@ -2981,7 +3017,7 @@ function initializeLikes() {
 			return `
 				<div class="featured-card">
 					<div class="featured-badge">
-						FEATURED
+						<i class="fas fa-bell"></i> TODAY
 					</div>
 					<i class="fas fa-star featured-star"></i>
 					<a href="${url}" class="result-title" target="_blank" rel="noopener noreferrer">
@@ -3013,16 +3049,17 @@ function initializeLikes() {
 			currentSlideIndex = index;
 		}
 
-		function startCarouselRotation() {
+		function startCarouselRotation(totalSlides) {
+			if (!totalSlides || totalSlides < 2) return; // Don't rotate if only 1 slide
 			carouselInterval = setInterval(() => {
-				const nextIndex = (currentSlideIndex + 1) % 3;
+				const nextIndex = (currentSlideIndex + 1) % totalSlides;
 				showSlide(nextIndex);
 			}, 5000); // Rotate every 5 seconds
 		}
 
-		function resetCarouselTimer() {
+		function resetCarouselTimer(totalSlides) {
 			clearInterval(carouselInterval);
-			startCarouselRotation();
+			startCarouselRotation(totalSlides);
 		}
 
 		// Initialize application
@@ -3254,12 +3291,12 @@ function initializeLikes() {
 		
 			
 		
-		// Load data and initialize featured carousel with top 3 most-liked articles from prior week (Sunday-Saturday)
-		getFeaturedArticles().then(articles => {
+		// Load data and initialize carousel with today's new articles (up to 10)
+		getNewTodayArticles().then(articles => {
 			if (articles && articles.length > 0) {
 				initializeFeaturedCarousel(articles);
 			} else {
-				console.log('No featured articles found from the prior week');
+				console.log('No articles found for carousel');
 			}
 		});			// Hero button event listeners
 			const newTodayBtn = document.getElementById('newTodayBtn');
