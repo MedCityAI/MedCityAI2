@@ -3382,9 +3382,26 @@ function initializeLikes() {
 		// Load data and initialize carousel with today's new articles (up to 10)
 		getNewTodayArticles().then(articles => {
 			if (articles && articles.length > 0) {
+				// Count actual today's articles (not backfilled ones)
+				const today = new Date();
+				const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+				const todayYear = today.getFullYear();
+				const todayMonth = monthNames[today.getMonth() + 1];
+				const todayDay = today.getDate();
+				
+				const actualTodayCount = articles.filter(article => {
+					return article.year == todayYear && 
+					       article.month === todayMonth && 
+					       article.day == todayDay;
+				}).length;
+				
+				// Update the today counter
+				document.getElementById('todayCount').textContent = actualTodayCount;
+				
 				initializeFeaturedCarousel(articles);
 			} else {
 				console.log('No articles found for carousel');
+				document.getElementById('todayCount').textContent = '0';
 			}
 		});			// Hero button event listeners
 			const newTodayBtn = document.getElementById('newTodayBtn');
