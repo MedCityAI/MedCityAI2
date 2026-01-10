@@ -57,6 +57,27 @@
 	color: #3498db;
 }
 
+/* CTA Button - Submit Research */
+.cta-button {
+	background: linear-gradient(135deg, #3498db, #2980b9);
+	color: white !important;
+	padding: 10px 22px;
+	border-radius: 25px;
+	text-decoration: none !important;
+	font-weight: 600 !important;
+	font-size: 14px;
+	transition: all 0.3s ease;
+	white-space: nowrap;
+	border: none !important;
+	box-shadow: 0 4px 12px rgba(52, 152, 219, 0.25);
+}
+
+.cta-button:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 6px 16px rgba(52, 152, 219, 0.35);
+	color: white !important;
+}
+
 /* Mobile Menu Icon */
 .menu-icon {
 	display: none;
@@ -124,6 +145,24 @@
 .mobile-menu a:hover {
 	background: #f8f9fa;
 	color: #3498db;
+}
+
+/* Mobile CTA styling */
+.mobile-menu a.mobile-cta {
+	background: linear-gradient(135deg, #3498db, #2980b9);
+	color: white !important;
+	font-weight: 700;
+	text-align: center;
+	bcta-button {
+		display: none !important;
+	}
+	
+	.order-bottom: none;
+}
+
+.mobile-menu a.mobile-cta:hover {
+	background: linear-gradient(135deg, #2980b9, #21618c);
+	color: white !important;
 }
 
 /* Responsive Design - Mobile */

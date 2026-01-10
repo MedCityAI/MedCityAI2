@@ -1,0 +1,650 @@
+<!DOCTYPE HTML>
+<!--
+	MedCityAI - Submit Research Page
+-->
+<html lang="en">
+	<head>
+		<title>Submit Research - MedCityAI</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<link rel="stylesheet" href="assets/css/navigation.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<style>
+		/* Hero Section */
+		.submit-hero {
+			background: linear-gradient(120deg, #2568BE 0%, #1B4C7D 100%);
+			color: white;
+			padding: 120px 0 80px 0;
+			text-align: center;
+			position: relative;
+			overflow: hidden;
+		}
+		
+		.hero-bg-blobs {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			z-index: 0;
+			pointer-events: none;
+			opacity: 0.3;
+		}
+		
+		.submit-hero .hero-content {
+			position: relative;
+			z-index: 2;
+			max-width: 900px;
+			margin: 0 auto;
+			padding: 0 20px;
+		}
+		
+		.submit-hero .subtitle {
+			color: #e0e0e0;
+			font-size: 14px;
+			font-weight: 600;
+			text-transform: uppercase;
+			letter-spacing: 1px;
+			margin-bottom: 15px;
+		}
+		
+		.submit-hero h1 {
+			font-size: 3.5em;
+			font-weight: 800;
+			margin-bottom: 20px;
+			text-shadow: 0 4px 18px rgba(0,0,0,0.28);
+		}
+		
+		.submit-hero p {
+			font-size: 1.3em;
+			line-height: 1.6;
+			opacity: 0.95;
+			max-width: 700px;
+			margin: 0 auto 20px;
+		}
+		
+		.submit-hero .encouragement {
+			font-size: 1.1em;
+			opacity: 0.9;
+			margin-top: 15px;
+			font-style: italic;
+		}
+		
+		/* Container */
+		.container {
+			max-width: 900px;
+			margin: 0 auto;
+			padding: 0 20px;
+		}
+		
+		.submit-section {
+			padding: 60px 0;
+			background: #f8f9fa;
+		}
+		
+		.submit-form-wrapper {
+			background: white;
+			border-radius: 15px;
+			padding: 50px;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+			margin-bottom: 30px;
+		}
+		
+		.submit-form-wrapper h2 {
+			color: #2c3e50;
+			font-size: 2em;
+			margin-bottom: 10px;
+			font-weight: 700;
+		}
+		
+		.submit-form-wrapper .intro-text {
+			color: #666;
+			font-size: 1.1em;
+			line-height: 1.6;
+			margin-bottom: 30px;
+			padding: 20px;
+			background: #f0f7ff;
+			border-left: 4px solid #3498db;
+			border-radius: 8px;
+		}
+		
+		/* Form Styles */
+		.form-group {
+			margin-bottom: 25px;
+		}
+		
+		.form-group label {
+			display: block;
+			color: #2c3e50;
+			font-weight: 600;
+			margin-bottom: 8px;
+			font-size: 1em;
+		}
+		
+		.form-group label .required {
+			color: #e74c3c;
+		}
+		
+		.form-group input[type="text"],
+		.form-group input[type="email"],
+		.form-group input[type="url"],
+		.form-group input[type="date"],
+		.form-group textarea {
+			width: 100%;
+			padding: 15px;
+			border: 2px solid #eee;
+			border-radius: 8px;
+			font-size: 1em;
+			transition: border-color 0.3s ease;
+			font-family: inherit;
+			color: #2c3e50;
+			box-sizing: border-box;
+		}
+		
+		.form-group input:focus,
+		.form-group textarea:focus {
+			outline: none;
+			border-color: #3498db;
+			box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+		}
+		
+		.form-group textarea {
+			resize: vertical;
+			min-height: 150px;
+		}
+		
+		.form-group small {
+			display: block;
+			color: #666;
+			font-size: 0.9em;
+			margin-top: 5px;
+			font-style: italic;
+		}
+		
+		/* Checkbox Group */
+		.checkbox-group {
+			margin-bottom: 25px;
+		}
+		
+		.checkbox-group legend {
+			color: #2c3e50;
+			font-weight: 600;
+			margin-bottom: 12px;
+			font-size: 1em;
+		}
+		
+		.checkbox-group legend .required {
+			color: #e74c3c;
+		}
+		
+		.checkbox-item {
+			display: flex;
+			align-items: center;
+			margin-bottom: 10px;
+			padding: 10px;
+			background: #f8f9fa;
+			border-radius: 6px;
+			transition: background 0.2s ease;
+		}
+		
+		.checkbox-item:hover {
+			background: #e9ecef;
+		}
+		
+		.checkbox-item input[type="checkbox"] {
+			width: 20px;
+			height: 20px;
+			margin-right: 12px;
+			cursor: pointer;
+			flex-shrink: 0;
+		}
+		
+		.checkbox-item label {
+			cursor: pointer;
+			margin: 0;
+			color: #2c3e50;
+			font-weight: 500;
+			flex: 1;
+		}
+		
+		.checkbox-item.select-all {
+			background: #e3f2fd;
+			border: 2px solid #3498db;
+		}
+		
+		.checkbox-item.select-all label {
+			font-weight: 700;
+			color: #2568BE;
+		}
+		
+		/* Consent Group */
+		.consent-group {
+			margin-bottom: 25px;
+			display: flex;
+			align-items: flex-start;
+			gap: 10px;
+			padding: 15px;
+			background: #fff8e1;
+			border-radius: 8px;
+			border: 1px solid #ffd54f;
+		}
+		
+		.consent-group input[type="checkbox"] {
+			margin-top: 4px;
+			width: 20px;
+			height: 20px;
+			cursor: pointer;
+			flex-shrink: 0;
+		}
+		
+		.consent-group label {
+			color: #2c3e50;
+			font-size: 0.95em;
+			line-height: 1.6;
+			cursor: pointer;
+			margin: 0;
+		}
+		
+		.consent-group label a {
+			color: #2568BE;
+			text-decoration: none;
+			font-weight: 600;
+		}
+		
+		.consent-group label a:hover {
+			text-decoration: underline;
+		}
+		
+		/* Disclaimer Box */
+		.disclaimer-box {
+			background: #f0f7ff;
+			border: 2px solid #3498db;
+			border-radius: 8px;
+			padding: 20px;
+			margin: 25px 0;
+		}
+		
+		.disclaimer-box h3 {
+			color: #2568BE;
+			font-size: 1.1em;
+			margin-bottom: 10px;
+			font-weight: 700;
+		}
+		
+		.disclaimer-box p {
+			color: #555;
+			font-size: 0.95em;
+			line-height: 1.6;
+			margin: 0;
+		}
+		
+		/* Submit Button */
+		.submit-btn {
+			background: linear-gradient(135deg, #3498db, #2980b9);
+			color: white;
+			padding: 18px 40px;
+			border: none;
+			border-radius: 8px;
+			font-size: 1.2em;
+			font-weight: 700;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			width: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			box-shadow: 0 4px 16px rgba(52, 152, 219, 0.3);
+		}
+		
+		.submit-btn:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+		}
+		
+		.submit-btn:disabled {
+			opacity: 0.6;
+			cursor: not-allowed;
+			transform: none;
+		}
+		
+		/* Success Message */
+		.success-message {
+			background: linear-gradient(135deg, #27ae60, #229954);
+			color: white;
+			padding: 20px 25px;
+			border-radius: 8px;
+			margin-bottom: 25px;
+			display: none;
+			font-size: 1.1em;
+			line-height: 1.6;
+		}
+		
+		.success-message strong {
+			display: block;
+			font-size: 1.2em;
+			margin-bottom: 8px;
+		}
+		
+		/* Help Text */
+		.help-section {
+			text-align: center;
+			padding: 30px;
+			color: #666;
+			font-size: 1em;
+		}
+		
+		.help-section a {
+			color: #3498db;
+			text-decoration: none;
+			font-weight: 600;
+		}
+		
+		.help-section a:hover {
+			text-decoration: underline;
+		}
+		
+		/* Section Divider */
+		.section-divider {
+			border: 0;
+			height: 2px;
+			background: linear-gradient(to right, transparent, #ddd, transparent);
+			margin: 35px 0;
+		}
+		
+		/* Responsive */
+		@media (max-width: 768px) {
+			.submit-hero h1 {
+				font-size: 2.5em;
+			}
+			
+			.submit-hero p {
+				font-size: 1.1em;
+			}
+			
+			.submit-form-wrapper {
+				padding: 30px 20px;
+			}
+			
+			.submit-form-wrapper h2 {
+				font-size: 1.6em;
+			}
+		}
+		</style>
+	</head>
+	<body class="landing is-preload">
+
+		<!-- Page Wrapper -->
+		<div id="page-wrapper">
+			<!-- Navigation -->
+			<div id="navigation-placeholder" data-page="submit"></div>
+
+			<!-- Hero Section -->
+			<section class="submit-hero" aria-label="Page banner">
+				<svg class="hero-bg-blobs" width="100%" height="100%" viewBox="0 0 1440 400" aria-hidden="true" role="presentation">
+					<defs>
+						<linearGradient id="blobGradient1" x1="0" y1="0" x2="1" y2="1">
+							<stop offset="0%" stop-color="#ffffff" stop-opacity="0.15"/>
+							<stop offset="100%" stop-color="#ffffff" stop-opacity="0.05"/>
+						</linearGradient>
+						<linearGradient id="blobGradient2" x1="0" y1="1" x2="1" y2="0">
+							<stop offset="0%" stop-color="#ffffff" stop-opacity="0.12"/>
+							<stop offset="100%" stop-color="#ffffff" stop-opacity="0.08"/>
+						</linearGradient>
+					</defs>
+					<g>
+						<circle id="blob1" cx="200" cy="100" r="150" fill="url(#blobGradient1)">
+							<animate attributeName="cx" values="200;1240;200" dur="20s" repeatCount="indefinite"/>
+						</circle>
+						<circle id="blob2" cx="1200" cy="200" r="180" fill="url(#blobGradient2)">
+							<animate attributeName="cx" values="1200;200;1200" dur="22s" repeatCount="indefinite"/>
+						</circle>
+					</g>
+				</svg>
+				
+				<div class="hero-content">
+					<div class="subtitle">SHARE YOUR DISCOVERY</div>
+					<h1>Submit Your Research</h1>
+					<p>Join Rochester's thriving biomedical research community. Share your breakthrough with colleagues and help advance medical knowledge.</p>
+					<p class="encouragement">Your research matters. We're excited to learn about your work!</p>
+				</div>
+			</section>
+			
+			<!-- Form Section -->
+			<section class="submit-section">
+				<div class="container">
+					<div class="submit-form-wrapper">
+						<h2>Research Submission Form</h2>
+						
+						<div class="intro-text">
+							<strong>Thank you for your interest in sharing your research!</strong><br>
+							Our Advisory Board reviews all submissions thoughtfully. While we can't feature every article, we're grateful for your contribution to our community and we think you're awesome for sharing your work with us.
+						</div>
+						
+						<div class="success-message" id="successMessage">
+							<strong>Thank you for sharing your research with us!</strong>
+							Your submission has been received successfully. Our Advisory Board will review it carefully, and we'll be in touch soon. We appreciate your contribution to the Rochester research community!
+						</div>
+						
+						<form id="submitResearchForm" action="https://formspree.io/f/mdakgrwl" method="POST">
+							
+							<!-- Researcher Information -->
+							<h3 style="color: #2568BE; font-size: 1.4em; margin-bottom: 20px; margin-top: 10px;">Researcher Information</h3>
+							
+							<div class="form-group">
+								<label for="fullName">Full Name <span class="required">*</span></label>
+								<input type="text" id="fullName" name="fullName" placeholder="Dr. Jane Smith" required>
+							</div>
+							
+							<div class="form-group">
+								<label for="email">Email Address <span class="required">*</span></label>
+								<input type="email" id="email" name="email" placeholder="jane.smith@institution.edu" required>
+							</div>
+							
+							<div class="form-group">
+								<label for="institution">Institution/Affiliation</label>
+								<input type="text" id="institution" name="institution" placeholder="Mayo Clinic, University of Minnesota, etc.">
+								<small>Optional - helps us understand your research context</small>
+							</div>
+							
+							<hr class="section-divider">
+							
+							<!-- Article Details -->
+							<h3 style="color: #2568BE; font-size: 1.4em; margin-bottom: 20px;">Article Details</h3>
+							
+							<div class="form-group">
+								<label for="articleTitle">Title of Peer-Reviewed Article <span class="required">*</span></label>
+								<input type="text" id="articleTitle" name="articleTitle" placeholder="Enter the complete title of your published article" required>
+							</div>
+							
+							<div class="form-group">
+								<label for="journalName">Journal Name</label>
+								<input type="text" id="journalName" name="journalName" placeholder="Nature Medicine, JAMA, etc.">
+								<small>Optional - where was this article published?</small>
+							</div>
+							
+							<div class="form-group">
+								<label for="publicationDate">Publication Date</label>
+								<input type="date" id="publicationDate" name="publicationDate">
+								<small>Optional - when was the article published?</small>
+							</div>
+							
+							<hr class="section-divider">
+							
+							<!-- Submission Categories -->
+							<fieldset class="checkbox-group">
+								<legend>Where would this fit best? <span class="required">*</span></legend>
+								<small style="color: #666; margin-bottom: 15px; display: block;">Select all categories that apply to your research</small>
+								
+								<div class="checkbox-item select-all">
+									<input type="checkbox" id="selectAll" name="selectAll">
+									<label for="selectAll">Select All</label>
+								</div>
+								
+								<div class="checkbox-item">
+									<input type="checkbox" id="journalClub" name="categories" value="Journal Club">
+									<label for="journalClub">Journal Club</label>
+								</div>
+								
+								<div class="checkbox-item">
+									<input type="checkbox" id="traineeSpotlight" name="categories" value="Trainee Spotlight">
+									<label for="traineeSpotlight">Trainee Spotlight</label>
+								</div>
+								
+								<div class="checkbox-item">
+									<input type="checkbox" id="featuredArticles" name="categories" value="Featured Articles">
+									<label for="featuredArticles">Featured Articles</label>
+								</div>
+								
+								<div class="checkbox-item">
+									<input type="checkbox" id="multidisciplinary" name="categories" value="Multidisciplinary Science">
+									<label for="multidisciplinary">Multidisciplinary Science</label>
+								</div>
+							</fieldset>
+							
+							<hr class="section-divider">
+							
+							<!-- Description -->
+							<h3 style="color: #2568BE; font-size: 1.4em; margin-bottom: 20px;">Tell Us About Your Research</h3>
+							
+							<div class="form-group">
+								<label for="description">What makes this research compelling? <span class="required">*</span></label>
+								<textarea id="description" name="description" placeholder="Tell us what excites you about this work and why it matters. What are the key findings? How might it impact patient care or advance the field?" required></textarea>
+								<small>Share your enthusiasm! Help us understand the significance of your work (200-500 words recommended)</small>
+							</div>
+							
+							<hr class="section-divider">
+							
+							<!-- Media Sharing -->
+							<h3 style="color: #2568BE; font-size: 1.4em; margin-bottom: 20px;">Share Visual Content</h3>
+							
+							<div class="disclaimer-box">
+								<h3>Content Usage Rights</h3>
+								<p>By providing Google Drive links below, you grant MedCityAI permission to use this content on our website and LinkedIn page. Please ensure you have the right to share these materials.</p>
+							</div>
+							
+							<div class="form-group">
+								<label for="photoLink">Photo Link (Google Drive)</label>
+								<input type="url" id="photoLink" name="photoLink" placeholder="https://drive.google.com/file/d/...">
+								<small>Optional - Share a researcher photo, lab photo, or related image (make sure link is set to "Anyone with the link can view")</small>
+							</div>
+							
+							<div class="form-group">
+								<label for="figureLink">Figure/Graphical Abstract Link (Google Drive)</label>
+								<input type="url" id="figureLink" name="figureLink" placeholder="https://drive.google.com/file/d/...">
+								<small>Optional - Share a key figure or graphical abstract from your paper (make sure link is set to "Anyone with the link can view")</small>
+							</div>
+							
+							<hr class="section-divider">
+							
+							<!-- Hidden Fields for Formspree -->
+							<input type="hidden" name="_next" value="https://www.medcityai.com/submit_research.html?success=true">
+							<input type="hidden" name="_subject" value="New Research Submission - MedCityAI">
+							
+							<!-- Consent Checkboxes -->
+							<h3 style="color: #2568BE; font-size: 1.4em; margin-bottom: 20px;">Terms & Consent</h3>
+							
+							<div class="consent-group">
+								<input type="checkbox" id="contentConsent" name="contentConsent" required>
+								<label for="contentConsent">
+									<strong>I agree that accepted submissions and content may be shared on the MedCityAI website and LinkedIn page.</strong> <span class="required">*</span>
+								</label>
+							</div>
+							
+							<div class="consent-group">
+								<input type="checkbox" id="privacyConsent" name="privacyConsent" required>
+								<label for="privacyConsent">
+									I consent to having my submitted information stored and processed in accordance with the <a href="privacy_policy.html" target="_blank">Privacy Policy</a>. My email will be used only to communicate about this submission. We use Formspree (third-party service) to process submissions securely. <span class="required">*</span>
+								</label>
+							</div>
+							
+							<button type="submit" class="submit-btn">Submit Research</button>
+						</form>
+					</div>
+					
+					<!-- Help Section -->
+					<div class="help-section">
+						<p>Questions about the submission process? Need help?</p>
+						<p>Contact us at <a href="mailto:medcityai@gmail.com">medcityai@gmail.com</a></p>
+					</div>
+				</div>
+			</section>
+
+			<!-- Footer -->
+			<footer id="footer">
+				<ul class="icons">
+					<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+					<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+					<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+					<li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
+					<li><a href="mailto:medcityai@gmail.com" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+				</ul>
+				<ul class="copyright">
+					<li>&copy; MedCityAI</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li><li><a href="terms_of_use.html" style="color: #999;">Terms</a> | <a href="privacy_policy.html" style="color: #999;">Privacy</a> | <a href="cookie_policy.html" style="color: #999;">Cookies</a></li>
+				</ul>
+			</footer>
+		</div>
+
+		<!-- Scripts -->
+		<script src="assets/js/jquery.min.js"></script>
+		<script src="assets/js/browser.min.js"></script>
+		<script src="assets/js/breakpoints.min.js"></script>
+		<script src="assets/js/util.js"></script>
+		<script src="assets/js/main.js"></script>
+		<script src="assets/js/navigation.js"></script>
+
+		<script>
+		// Select All functionality
+		document.getElementById('selectAll').addEventListener('change', function() {
+			const categoryCheckboxes = document.querySelectorAll('input[name="categories"]');
+			categoryCheckboxes.forEach(checkbox => {
+				checkbox.checked = this.checked;
+			});
+		});
+		
+		// Update Select All if individual checkboxes change
+		document.querySelectorAll('input[name="categories"]').forEach(checkbox => {
+			checkbox.addEventListener('change', function() {
+				const categoryCheckboxes = document.querySelectorAll('input[name="categories"]');
+				const allChecked = Array.from(categoryCheckboxes).every(cb => cb.checked);
+				document.getElementById('selectAll').checked = allChecked;
+			});
+		});
+		
+		// Check if form was successfully submitted
+		if (window.location.search.includes('success=true')) {
+			document.getElementById('successMessage').style.display = 'block';
+			
+			// Scroll to success message
+			document.getElementById('successMessage').scrollIntoView({ behavior: 'smooth', block: 'center' });
+			
+			// Remove success parameter from URL
+			const url = new URL(window.location);
+			url.searchParams.delete('success');
+			window.history.replaceState({}, document.title, url);
+			
+			// Hide success message after 10 seconds
+			setTimeout(() => {
+				document.getElementById('successMessage').style.display = 'none';
+			}, 10000);
+		}
+		
+		// Add loading state when form is submitted
+		document.getElementById('submitResearchForm').addEventListener('submit', function(e) {
+			// Check if at least one category is selected
+			const categoryCheckboxes = document.querySelectorAll('input[name="categories"]');
+			const anyChecked = Array.from(categoryCheckboxes).some(cb => cb.checked);
+			
+			if (!anyChecked) {
+				e.preventDefault();
+				alert('Please select at least one category for your submission.');
+				return false;
+			}
+			
+			const submitBtn = this.querySelector('.submit-btn');
+			submitBtn.textContent = 'Submitting...';
+			submitBtn.disabled = true;
+		});
+		</script>
+	</body>
+</html>
