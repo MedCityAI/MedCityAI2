@@ -153,11 +153,7 @@
 	color: white !important;
 	font-weight: 700;
 	text-align: center;
-	bcta-button {
-		display: none !important;
-	}
-	
-	.order-bottom: none;
+	border-bottom: none;
 }
 
 .mobile-menu a.mobile-cta:hover {
@@ -168,6 +164,10 @@
 /* Responsive Design - Mobile */
 @media (max-width: 900px) {
 	.nav-links {
+		display: none !important;
+	}
+	
+	.cta-button {
 		display: none !important;
 	}
 	
