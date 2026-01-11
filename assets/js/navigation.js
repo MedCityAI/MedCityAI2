@@ -18,7 +18,7 @@
                     <a href="search.html" role="menuitem" data-page="search">Search</a>
                     <a href="about.html" role="menuitem" data-page="about">About</a>
                 </div>
-                <div style="display: flex; align-items: center; gap: 15px;">
+                <div style="display: flex; align-items: center; gap: 20px;">
                     <a href="submit_research.html" class="cta-button" role="button" data-page="submit">Share Your Work</a>
                     <button class="menu-icon" aria-label="Toggle mobile menu" aria-expanded="false" aria-controls="mobile-menu">
                         <span class="sr-only">Menu</span>
