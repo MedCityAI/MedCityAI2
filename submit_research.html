@@ -178,10 +178,16 @@
 			color: #e74c3c;
 		}
 		
+		.checkbox-items-container {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 15px;
+		}
+		
 		.checkbox-item {
 			display: flex;
 			align-items: center;
-			margin-bottom: 10px;
+			margin-bottom: 0;
 			padding: 10px;
 			background: #f8f9fa;
 			border-radius: 6px;
@@ -436,28 +442,29 @@
 						
 						<form id="submitResearchForm" action="https://formspree.io/f/mdakgrwl" method="POST">
 							
-							<div class="form-group">
-								<label for="fullName">Name <span class="required">*</span></label>
-								<input type="text" id="fullName" name="fullName" placeholder="Dr. Jane Smith" required>
-							</div>
-							
-							<div class="form-group">
-								<label for="email">Email Address <span class="required">*</span></label>
-								<input type="email" id="email" name="email" placeholder="jane.smith@institution.edu" required>
+							<div class="form-row">
+								<div class="form-group">
+									<label for="fullName">Name <span class="required">*</span></label>
+								<input type="text" id="fullName" name="fullName" required>
+								<div class="form-group">
+									<label for="email">Email Address <span class="required">*</span></label>
+								<input type="email" id="email" name="email" required>
+								</div>
 							</div>
 							
 							<div class="form-group">
 								<label for="articleTitle">Article Title <span class="required">*</span></label>
-								<input type="text" id="articleTitle" name="articleTitle" placeholder="Enter the title of your article" required>
-							</div>
+							<input type="text" id="articleTitle" name="articleTitle" required>
+						</div>
+						
+						<hr class="section-divider">
+						
+						<!-- Submission Categories - Radio Buttons -->
+						<fieldset class="checkbox-group">
+							<legend>Where would this fit best? <span class="required">*</span></legend>
+							<small style="color: #666; margin-bottom: 15px; display: block;">Select all that apply</small>
 							
-							<hr class="section-divider">
-							
-							<!-- Submission Categories - Radio Buttons -->
-							<fieldset class="checkbox-group">
-								<legend>Where would this fit best? <span class="required">*</span></legend>
-								<small style="color: #666; margin-bottom: 15px; display: block;">Select one category</small>
-								
+							<div class="checkbox-items-container">
 								<div class="checkbox-item">
 									<input type="radio" id="featuredArticles" name="category" value="Featured Article" required>
 									<label for="featuredArticles">Featured Article</label>
@@ -467,15 +474,12 @@
 									<input type="radio" id="journalClub" name="category" value="Journal Club" required>
 									<label for="journalClub">Journal Club</label>
 								</div>
-							</fieldset>
 							
 							<hr class="section-divider">
 							
 							<div class="form-group">
 								<label for="comments">Comments</label>
-								<textarea id="comments" name="comments" placeholder="Optional - Share any additional thoughts or context about this work"></textarea>
-								<small>Tell us what makes this research interesting to you</small>
-							</div>
+						<textarea id="comments" name="comments"></textarea>
 							
 							<hr class="section-divider">
 							
