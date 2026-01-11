@@ -1584,43 +1584,6 @@
 			</footer>
 		</div>
 
-		<!-- Welcome Modal -->
-		<div class="welcome-modal" id="welcomeModal" onclick="closeModalOnOutsideClick(event)">
-			<div class="welcome-content">
-				<button class="modal-close-btn" onclick="closeKeywordsModal()" aria-label="Close">&times;</button>
-				<h2>Welcome!</h2>
-				<p class="subheader">Select topics of interest to you. Your preferences are saved in your browser using local storage. This data never leaves your device.</p>
-			<div class="topics-grid" id="topicsGrid">
-				<button class="topic-button" onclick="toggleTopic(this, 'Cardiology')">Cardiology</button>
-				<button class="topic-button" onclick="toggleTopic(this, 'Oncology')">Oncology</button>
-				<button class="topic-button" onclick="toggleTopic(this, 'Neurology')">Neurology</button>
-				<button class="topic-button" onclick="toggleTopic(this, 'Gastroenterology')">Gastroenterology</button>
-				<button class="topic-button" onclick="toggleTopic(this, 'Orthopedics')">Orthopedics</button>
-				<button class="topic-button" onclick="toggleTopic(this, 'Pulmonology')">Pulmonology</button>
-				<button class="topic-button" onclick="toggleTopic(this, 'Nephrology')">Nephrology</button>
-				<button class="topic-button" onclick="toggleTopic(this, 'Endocrinology')">Endocrinology</button>
-				<button class="topic-button" onclick="toggleTopic(this, 'Rheumatology')">Rheumatology</button>
-				<button class="topic-button" onclick="toggleTopic(this, 'Infectious Disease')">Infectious Disease</button>
-				<button class="topic-button" onclick="toggleTopic(this, 'Hematology')">Hematology</button>
-				<button class="topic-button" onclick="toggleTopic(this, 'Radiology')">Radiology</button>
-				<button class="topic-button" onclick="toggleTopic(this, 'Dermatology')">Dermatology</button>
-				<button class="topic-button" onclick="toggleTopic(this, 'Psychiatry')">Psychiatry</button>
-				<button class="topic-button" onclick="toggleTopic(this, 'Ophthalmology')">Ophthalmology</button>
-				<button class="topic-button" onclick="toggleTopic(this, 'AI/ML/DL')">AI/ML/DL</button>
-				<button class="topic-button" onclick="toggleTopic(this, 'Surgery')">Surgery</button>
-				<button class="topic-button" onclick="toggleTopic(this, 'Emergency Medicine')">Emergency Medicine</button>
-				<button class="topic-button" onclick="toggleTopic(this, 'Obstetrics & Gynecology')">Obstetrics & Gynecology</button>
-			<button class="topic-button" onclick="toggleTopic(this, 'Urology')">Urology</button>
-			<button class="topic-button" onclick="toggleTopic(this, 'Anesthesiology')">Anesthesiology</button>
-		</div>
-
-		<div class="welcome-actions">
-				<button class="welcome-button primary" onclick="closeKeywordsModal()">Continue</button>
-			</div>				<!-- Selected Keywords Display -->
-				<div class="selected-keywords-text" id="selectedKeywordsText"></div>
-			</div>
-		</div>
-
 		<!-- Scripts -->
 		<script src="assets/js/jquery.min.js" defer></script>
 		<script src="assets/js/jquery.scrollex.min.js" defer></script>
@@ -1920,8 +1883,8 @@
 
 	// Initialize on page load
 	document.addEventListener('DOMContentLoaded', function() {
-		console.log('DOMContentLoaded - Initializing keywords modal');
-		checkFirstVisit();
+		console.log('DOMContentLoaded - Keywords modal disabled');
+		// checkFirstVisit() - removed to disable welcome screen
 	});
 
 	// Send interaction data to Google Apps Script
