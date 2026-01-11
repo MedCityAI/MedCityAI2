@@ -417,8 +417,8 @@
 						<h2>Research Submission Form</h2>
 						
 						<div class="intro-text">
-							<strong>Thank you for your interest in sharing your research!</strong><br>
-							Our Advisory Board reviews all submissions thoughtfully. While we can't feature every article, we're grateful for your contribution to our community and we think you're awesome for sharing your work with us.
+							<strong>We want to hear about your work!</strong><br>
+							Share your favorite papers with our community. Our Advisory Board reviews all submissions thoughtfully. We think you're awesome, thanks for sharing your work!
 						</div>
 						
 						<div class="success-message" id="successMessage">
@@ -428,11 +428,8 @@
 						
 						<form id="submitResearchForm" action="https://formspree.io/f/mdakgrwl" method="POST">
 							
-							<!-- Researcher Information -->
-							<h3 style="color: #2568BE; font-size: 1.4em; margin-bottom: 20px; margin-top: 10px;">Researcher Information</h3>
-							
 							<div class="form-group">
-								<label for="fullName">Full Name <span class="required">*</span></label>
+								<label for="fullName">Name <span class="required">*</span></label>
 								<input type="text" id="fullName" name="fullName" placeholder="Dr. Jane Smith" required>
 							</div>
 							
@@ -442,97 +439,34 @@
 							</div>
 							
 							<div class="form-group">
-								<label for="institution">Institution/Affiliation</label>
-								<input type="text" id="institution" name="institution" placeholder="Mayo Clinic, University of Minnesota, etc.">
-								<small>Optional - helps us understand your research context</small>
+								<label for="articleTitle">Article Title <span class="required">*</span></label>
+								<input type="text" id="articleTitle" name="articleTitle" placeholder="Enter the title of your article" required>
 							</div>
 							
 							<hr class="section-divider">
 							
-							<!-- Article Details -->
-							<h3 style="color: #2568BE; font-size: 1.4em; margin-bottom: 20px;">Article Details</h3>
-							
-							<div class="form-group">
-								<label for="articleTitle">Title of Peer-Reviewed Article <span class="required">*</span></label>
-								<input type="text" id="articleTitle" name="articleTitle" placeholder="Enter the complete title of your published article" required>
-							</div>
-							
-							<div class="form-group">
-								<label for="journalName">Journal Name</label>
-								<input type="text" id="journalName" name="journalName" placeholder="Nature Medicine, JAMA, etc.">
-								<small>Optional - where was this article published?</small>
-							</div>
-							
-							<div class="form-group">
-								<label for="publicationDate">Publication Date</label>
-								<input type="date" id="publicationDate" name="publicationDate">
-								<small>Optional - when was the article published?</small>
-							</div>
-							
-							<hr class="section-divider">
-							
-							<!-- Submission Categories -->
+							<!-- Submission Categories - Radio Buttons -->
 							<fieldset class="checkbox-group">
 								<legend>Where would this fit best? <span class="required">*</span></legend>
-								<small style="color: #666; margin-bottom: 15px; display: block;">Select all categories that apply to your research</small>
+								<small style="color: #666; margin-bottom: 15px; display: block;">Select one category</small>
 								
-								<div class="checkbox-item select-all">
-									<input type="checkbox" id="selectAll" name="selectAll">
-									<label for="selectAll">Select All</label>
+								<div class="checkbox-item">
+									<input type="radio" id="featuredArticles" name="category" value="Featured Article" required>
+									<label for="featuredArticles">Featured Article</label>
 								</div>
 								
 								<div class="checkbox-item">
-									<input type="checkbox" id="journalClub" name="categories" value="Journal Club">
+									<input type="radio" id="journalClub" name="category" value="Journal Club" required>
 									<label for="journalClub">Journal Club</label>
-								</div>
-								
-								<div class="checkbox-item">
-									<input type="checkbox" id="traineeSpotlight" name="categories" value="Trainee Spotlight">
-									<label for="traineeSpotlight">Trainee Spotlight</label>
-								</div>
-								
-								<div class="checkbox-item">
-									<input type="checkbox" id="featuredArticles" name="categories" value="Featured Articles">
-									<label for="featuredArticles">Featured Articles</label>
-								</div>
-								
-								<div class="checkbox-item">
-									<input type="checkbox" id="multidisciplinary" name="categories" value="Multidisciplinary Science">
-									<label for="multidisciplinary">Multidisciplinary Science</label>
 								</div>
 							</fieldset>
 							
 							<hr class="section-divider">
 							
-							<!-- Description -->
-							<h3 style="color: #2568BE; font-size: 1.4em; margin-bottom: 20px;">Tell Us About Your Research</h3>
-							
 							<div class="form-group">
-								<label for="description">What makes this research compelling? <span class="required">*</span></label>
-								<textarea id="description" name="description" placeholder="Tell us what excites you about this work and why it matters. What are the key findings? How might it impact patient care or advance the field?" required></textarea>
-								<small>Share your enthusiasm! Help us understand the significance of your work (200-500 words recommended)</small>
-							</div>
-							
-							<hr class="section-divider">
-							
-							<!-- Media Sharing -->
-							<h3 style="color: #2568BE; font-size: 1.4em; margin-bottom: 20px;">Share Visual Content</h3>
-							
-							<div class="disclaimer-box">
-								<h3>Content Usage Rights</h3>
-								<p>By providing Google Drive links below, you grant MedCityAI permission to use this content on our website and LinkedIn page. Please ensure you have the right to share these materials.</p>
-							</div>
-							
-							<div class="form-group">
-								<label for="photoLink">Photo Link (Google Drive)</label>
-								<input type="url" id="photoLink" name="photoLink" placeholder="https://drive.google.com/file/d/...">
-								<small>Optional - Share a researcher photo, lab photo, or related image (make sure link is set to "Anyone with the link can view")</small>
-							</div>
-							
-							<div class="form-group">
-								<label for="figureLink">Figure/Graphical Abstract Link (Google Drive)</label>
-								<input type="url" id="figureLink" name="figureLink" placeholder="https://drive.google.com/file/d/...">
-								<small>Optional - Share a key figure or graphical abstract from your paper (make sure link is set to "Anyone with the link can view")</small>
+								<label for="comments">Comments</label>
+								<textarea id="comments" name="comments" placeholder="Optional - Share any additional thoughts or context about this work"></textarea>
+								<small>Tell us what makes this research interesting to you</small>
 							</div>
 							
 							<hr class="section-divider">
@@ -542,15 +476,6 @@
 							<input type="hidden" name="_subject" value="New Research Submission - MedCityAI">
 							
 							<!-- Consent Checkboxes -->
-							<h3 style="color: #2568BE; font-size: 1.4em; margin-bottom: 20px;">Terms & Consent</h3>
-							
-							<div class="consent-group">
-								<input type="checkbox" id="contentConsent" name="contentConsent" required>
-								<label for="contentConsent">
-									<strong>I agree that accepted submissions and content may be shared on the MedCityAI website and LinkedIn page.</strong> <span class="required">*</span>
-								</label>
-							</div>
-							
 							<div class="consent-group">
 								<input type="checkbox" id="privacyConsent" name="privacyConsent" required>
 								<label for="privacyConsent">
@@ -594,23 +519,6 @@
 		<script src="assets/js/navigation.js"></script>
 
 		<script>
-		// Select All functionality
-		document.getElementById('selectAll').addEventListener('change', function() {
-			const categoryCheckboxes = document.querySelectorAll('input[name="categories"]');
-			categoryCheckboxes.forEach(checkbox => {
-				checkbox.checked = this.checked;
-			});
-		});
-		
-		// Update Select All if individual checkboxes change
-		document.querySelectorAll('input[name="categories"]').forEach(checkbox => {
-			checkbox.addEventListener('change', function() {
-				const categoryCheckboxes = document.querySelectorAll('input[name="categories"]');
-				const allChecked = Array.from(categoryCheckboxes).every(cb => cb.checked);
-				document.getElementById('selectAll').checked = allChecked;
-			});
-		});
-		
 		// Check if form was successfully submitted
 		if (window.location.search.includes('success=true')) {
 			document.getElementById('successMessage').style.display = 'block';
@@ -631,16 +539,6 @@
 		
 		// Add loading state when form is submitted
 		document.getElementById('submitResearchForm').addEventListener('submit', function(e) {
-			// Check if at least one category is selected
-			const categoryCheckboxes = document.querySelectorAll('input[name="categories"]');
-			const anyChecked = Array.from(categoryCheckboxes).some(cb => cb.checked);
-			
-			if (!anyChecked) {
-				e.preventDefault();
-				alert('Please select at least one category for your submission.');
-				return false;
-			}
-			
 			const submitBtn = this.querySelector('.submit-btn');
 			submitBtn.textContent = 'Submitting...';
 			submitBtn.disabled = true;
