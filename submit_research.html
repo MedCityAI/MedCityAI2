@@ -466,27 +466,31 @@
 							<label for="articleTitle">Article Title <span class="required">*</span></label>
 							<input type="text" id="articleTitle" name="articleTitle" required>
 						</div>
-						<!-- Submission Categories - Radio Buttons -->
-						<fieldset class="checkbox-group">
-							<legend>Where would this fit best? <span class="required">*</span></legend>
-							<small style="color: #666; margin-bottom: 15px; display: block;">Select all that apply</small>
-							
-							<div class="checkbox-items-container">
-								<div class="checkbox-item">
-									<input type="radio" id="featuredArticles" name="category" value="Featured Article" required>
-									<label for="featuredArticles">Featured Article</label>
-								</div>
+						
+						<div class="form-row">
+							<!-- Submission Categories - Radio Buttons -->
+							<fieldset class="checkbox-group">
+								<legend>Where would this fit best? <span class="required">*</span></legend>
+								<small style="color: #666; margin-bottom: 15px; display: block;">Select all that apply</small>
 								
-								<div class="checkbox-item">
-									<input type="radio" id="journalClub" name="category" value="Journal Club" required>
-									<label for="journalClub">Journal Club</label>
+								<div class="checkbox-items-container">
+									<div class="checkbox-item">
+										<input type="radio" id="featuredArticles" name="category" value="Featured Article" required>
+										<label for="featuredArticles">Featured Article</label>
+									</div>
+									
+									<div class="checkbox-item">
+										<input type="radio" id="journalClub" name="category" value="Journal Club" required>
+										<label for="journalClub">Journal Club</label>
+									</div>
 								</div>
-							
-							<hr class="section-divider">
+							</fieldset>
 							
 							<div class="form-group">
 								<label for="comments">Comments</label>
-						<textarea id="comments" name="comments"></textarea>
+								<textarea id="comments" name="comments"></textarea>
+							</div>
+						</div>
 							
 							<hr class="section-divider">
 							
