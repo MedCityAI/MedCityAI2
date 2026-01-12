@@ -101,7 +101,7 @@ input, select, textarea {
 
 	body, input, select, textarea {
 		color: #fff;
-		font-family: "Iowan Old Style", "Apple Garamond", "Baskerville", "Times New Roman", "Droid Serif", "Times", serif;
+		font-family: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 		font-size: 15pt;
 		font-weight: 400;
 		letter-spacing: 0.075em;
