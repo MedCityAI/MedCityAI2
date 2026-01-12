@@ -12,14 +12,41 @@
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<link rel="stylesheet" href="assets/css/navigation.css" />
+		<!-- Load CSS asynchronously to prevent render blocking -->
+		<link rel="stylesheet" href="assets/css/main.css" media="print" onload="this.media='all'">
+		<link rel="stylesheet" href="assets/css/navigation.css" media="print" onload="this.media='all'">
+		<noscript>
+			<link rel="stylesheet" href="assets/css/main.css">
+			<link rel="stylesheet" href="assets/css/navigation.css">
+		</noscript>
 		
 		<!-- Load FontAwesome asynchronously (non-blocking) -->
 		<link rel="stylesheet" href="assets/css/fontawesome-all.min.css" media="print" onload="this.media='all'">
 		<noscript><link rel="stylesheet" href="assets/css/fontawesome-all.min.css"></noscript>
 		
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		
+		<!-- Critical CSS - inline minimum styles for initial render -->
+		<style>
+		/* Basic layout to prevent layout shift */
+		body {
+			margin: 0;
+			padding: 0;
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+			background: #fff;
+		}
+		#page-wrapper {
+			width: 100%;
+		}
+		.top-bar {
+			background: #fff;
+			box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+			position: fixed;
+			top: 0;
+			width: 100%;
+			z-index: 1000;
+		}
+		</style>
 		<style>
 		/* Modal for abstracts */
 		.modal-bg {
