@@ -1367,7 +1367,7 @@
 			opacity: 0.95;
 			margin-top: 16px;
 			padding-top: 16px;
-			border-top: 1px solid rgba(255, 255, 255, 0.3);
+			border-top: 1px solid rgba(255,255,255,0.3);
 		}
 		.author-modal-close {
 			background: none;
@@ -2524,6 +2524,11 @@ function initializeLikes() {
 				const monthNum = monthNames.indexOf(month);
 				if (monthNum > 0) {
 					articleDate = new Date(year, monthNum - 1, day);
+				}
+			} else if (year && month) {
+				const monthNum = monthNames.indexOf(month);
+				if (monthNum > 0) {
+					articleDate = new Date(year, monthNum - 1, 1);
 				}
 			}
 			
