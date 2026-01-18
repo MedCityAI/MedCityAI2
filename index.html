@@ -1161,7 +1161,7 @@
 			background: linear-gradient(135deg, #3498db, #2980b9);
 			color: white;
 			border-radius: 20px;
-			font-size: 13px;
+		font-size: 13px;
 			font-weight: 500;
 			box-shadow: 0 2px 4px rgba(52, 152, 219, 0.3);
 		}
@@ -1550,9 +1550,17 @@
 					</div>
 				</div>
 			</section>
-
-			<!-- Results Section -->
-			<main id="main-content" role="main">
+			<!-- Filter Bar (Below Hero) -->
+            <div class="filter-bar" id="main-filter-bar" style="margin-bottom:0;">
+                <div class="filter-bar-content" style="display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;">
+                    <button class="dept-filter-link" id="filterRecent" type="button">Most Recent</button>
+                    <button class="dept-filter-link" id="filterPopular" type="button">Most Popular</button>
+                    <button class="dept-filter-link specialty-filter" id="filterSpecialty1" type="button">Specialty 1</button>
+                    <button class="dept-filter-link specialty-filter" id="filterSpecialty2" type="button">Specialty 2</button>
+                </div>
+            </div>
+            <!-- Results Section -->
+            <main id="main-content" role="main">
 				<div class="filter-bar">
 					<div class="filter-bar-content">
 						<!-- Results Grid -->
@@ -2034,7 +2042,7 @@ function initializeLikes() {
 	fetchLikeCounts();
 }
 
-	// Function to flip card and match heights (with keyboard support)
+		// Function to flip card and match heights (with keyboard support)
 		function flipCard(container, event) {
 			// Support both click and keyboard events
 			if (event.type === 'keydown' && event.key !== 'Enter' && event.key !== ' ') {
