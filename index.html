@@ -3378,39 +3378,71 @@ function initializeLikes() {
 		<script>
 		document.addEventListener('DOMContentLoaded', function() {
 			const filterLinks = document.querySelectorAll('.specialty-filter-link');
+
+			// Helper to select a specialty in the filter bar
+			function selectSpecialty(specialty) {
+				filterLinks.forEach(l => {
+					l.classList.remove('selected');
+					l.style.color = '#000';
+					l.style.fontWeight = '';
+					l.style.textDecoration = '';
+				});
+				const selected = Array.from(filterLinks).find(l => l.getAttribute('data-specialty') === specialty);
+				if (selected) {
+					selected.classList.add('selected');
+					selected.style.color = '#1565c0';
+					selected.style.fontWeight = '700';
+					selected.style.textDecoration = 'underline';
+				}
+				// Show/hide cards
+				const cards = document.querySelectorAll('.result-item');
+				cards.forEach(card => {
+					const badge = card.querySelector('.department-badge');
+					if (!badge) {
+						card.style.display = (specialty === 'all') ? '' : 'none';
+						return;
+					}
+					if (specialty === 'all') {
+						card.style.display = '';
+					} else {
+						const badgeText = badge.textContent;
+						if (badgeText === specialty || badgeText.split('·').map(s=>s.trim()).includes(specialty)) {
+							card.style.display = '';
+						} else {
+							card.style.display = 'none';
+						}
+					}
+				});
+			}
+
+			// On first load, prompt for specialty if not set
+			let userSpecialty = localStorage.getItem('userSpecialty');
+			if (!userSpecialty) {
+				setTimeout(function() {
+					let options = Array.from(filterLinks).map(l => l.getAttribute('data-specialty')).filter(s => s !== 'all');
+					let promptText = 'Select your preferred specialty for filtering articles:\n' + options.join(', ');
+					let input = prompt(promptText, options[0]);
+					if (input && options.includes(input)) {
+						userSpecialty = input;
+						localStorage.setItem('userSpecialty', userSpecialty);
+						selectSpecialty(userSpecialty);
+					} else {
+						// If invalid or cancelled, default to 'all'
+						localStorage.setItem('userSpecialty', 'all');
+						selectSpecialty('all');
+					}
+				}, 500);
+			} else {
+				selectSpecialty(userSpecialty);
+			}
+
+			// When user clicks a filter, update preference
 			filterLinks.forEach(link => {
 				link.addEventListener('click', function(e) {
 					e.preventDefault();
-					filterLinks.forEach(l => {
-						l.classList.remove('selected');
-						l.style.color = '';
-						l.style.fontWeight = '';
-						l.style.textDecoration = '';
-					});
-					this.classList.add('selected');
-					this.style.color = '#1565c0';
-					this.style.fontWeight = '700';
-					this.style.textDecoration = 'underline';
 					const specialty = this.getAttribute('data-specialty');
-					const cards = document.querySelectorAll('.result-item');
-					cards.forEach(card => {
-						const badge = card.querySelector('.department-badge');
-						if (!badge) {
-							card.style.display = (specialty === 'all') ? '' : 'none';
-							return;
-						}
-						if (specialty === 'all') {
-							card.style.display = '';
-						} else {
-							// Match exact specialty (handles single or multi-specialty badges)
-							const badgeText = badge.textContent;
-							if (badgeText === specialty || badgeText.split('·').map(s=>s.trim()).includes(specialty)) {
-								card.style.display = '';
-							} else {
-								card.style.display = 'none';
-							}
-						}
-					});
+					localStorage.setItem('userSpecialty', specialty);
+					selectSpecialty(specialty);
 				});
 			});
 		});
