@@ -1693,36 +1693,48 @@
 		}
 
 		// --- Specialty Filtering Logic ---
+
+		// Filter articles by Primary or Secondary specialty
 		function filterArticlesBySpecialty(specialty) {
-			// allArticlesData is assumed to be loaded globally
 			if (!window.allArticlesData || !Array.isArray(window.allArticlesData)) return;
 			const filtered = window.allArticlesData.filter(article => {
-				// Match specialty in department badge (top right)
-				if (article.department) {
-					return article.department.trim().toLowerCase() === specialty.trim().toLowerCase();
-				}
-				return false;
+				const primary = article["Primary speciality"] ? article["Primary speciality"].trim().toLowerCase() : "";
+				const secondary = article["Secondary speciality"] ? article["Secondary speciality"].trim().toLowerCase() : "";
+				return (
+					primary === specialty.trim().toLowerCase() ||
+					secondary === specialty.trim().toLowerCase()
+				);
 			});
 			window.filteredArticlesData = filtered;
 			renderArticlesWithBadge(filtered, specialty);
 		}
 
+
+		// Render articles with the specialty badge (shows both primary and secondary if present)
 		function renderArticlesWithBadge(articles, specialty) {
-			// Render articles with the department badge matching the selected specialty
 			const container = document.getElementById('pubmed-results');
 			if (!container) return;
 			if (!articles || articles.length === 0) {
 				container.innerHTML = '<div style="padding:2em;text-align:center;color:#888;">No articles found for this specialty.</div>';
 				return;
 			}
-			container.innerHTML = articles.map(article =>
-				`<div class="result-item">
-					<span class="department-badge" style="position:absolute;top:8px;right:8px;background:#3498db;color:#fff;font-size:11px;font-style:italic;padding:4px 10px;border-radius:4px;z-index:10;">${specialty}</span>
-					<a href="#" class="result-title">${article.title || 'Untitled'}</a>
-					<div class="result-authors">${article.authors || ''}</div>
-					<div class="result-citation">${article.citation || ''}</div>
-				</div>`
-			).join('');
+			container.innerHTML = articles.map(article => {
+				const primary = article["Primary speciality"] || "";
+				const secondary = article["Secondary speciality"] || "";
+				let badgeHtml = `<span class="department-badge" style="position:absolute;top:8px;right:8px;background:#3498db;color:#fff;font-size:11px;font-style:italic;padding:4px 10px;border-radius:4px;z-index:10;">${primary}`;
+				if (secondary && secondary.toLowerCase() !== primary.toLowerCase()) {
+					badgeHtml += ` · ${secondary}`;
+				}
+				badgeHtml += '</span>';
+				return `
+					<div class="result-item">
+						${badgeHtml}
+						<a href="#" class="result-title">${article.title || 'Untitled'}</a>
+						<div class="result-authors">${article.authors || ''}</div>
+						<div class="result-citation">${article.citation || ''}</div>
+					</div>
+				`;
+			}).join('');
 		}
 
 		document.addEventListener('DOMContentLoaded', function() {
