@@ -1695,15 +1695,16 @@
 		// --- Specialty Filtering Logic ---
 
 		// Filter articles by Primary or Secondary specialty
+
+		// Filter articles so only those whose badge (primary or secondary specialty) matches the selected specialty are shown
 		function filterArticlesBySpecialty(specialty) {
 			if (!window.allArticlesData || !Array.isArray(window.allArticlesData)) return;
+			const selected = specialty.trim().toLowerCase();
 			const filtered = window.allArticlesData.filter(article => {
 				const primary = article["Primary speciality"] ? article["Primary speciality"].trim().toLowerCase() : "";
 				const secondary = article["Secondary speciality"] ? article["Secondary speciality"].trim().toLowerCase() : "";
-				return (
-					primary === specialty.trim().toLowerCase() ||
-					secondary === specialty.trim().toLowerCase()
-				);
+				// Only show cards where the badge (primary or secondary) exactly matches the selected specialty
+				return (primary === selected || secondary === selected);
 			});
 			window.filteredArticlesData = filtered;
 			renderArticlesWithBadge(filtered, specialty);
