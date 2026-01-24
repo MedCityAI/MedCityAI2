@@ -1680,6 +1680,15 @@
 					localStorage.setItem('userSpecialties', JSON.stringify(selected));
 					modal.style.display = 'none';
 					updateSpecialtyFilters(selected);
+					// Automatically filter and reload cards for the first selected specialty
+					filterArticlesBySpecialty(selected[0]);
+					// Set the first specialty button as active, remove active from the second
+					const s1 = document.getElementById('filterSpecialty1');
+					const s2 = document.getElementById('filterSpecialty2');
+					if (s1 && s2) {
+						s1.classList.add('active');
+						s2.classList.remove('active');
+					}
 				}
 			};
 			document.getElementById('specialtyModalClose').onclick = function() {
