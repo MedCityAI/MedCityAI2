@@ -1557,12 +1557,14 @@
 				</div>
 			</div>
 						<!-- Specialty Selection Modal -->
+
 						<div id="specialtyModal" class="modal-bg" style="display:none;z-index:4000;align-items:center;justify-content:center;">
-							<div class="modal-content" style="max-width:400px;text-align:center;">
+							<div class="modal-content" style="max-width:400px;text-align:center;position:relative;">
 								<button class="modal-close" id="specialtyModalClose" aria-label="Close modal">&times;</button>
 								<h2 style="margin-bottom:18px;">Select Your Top 2 Specialties</h2>
 								<div id="specialtyOptions" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:18px;"></div>
 								<button id="saveSpecialtiesBtn" class="btn btn-primary" disabled>Save</button>
+								<div id="modal-refresh-indicator" class="spinner" style="display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:4100;"></div>
 							</div>
 						</div>
             <!-- Results Section -->
@@ -1738,38 +1740,48 @@
 			}).join('');
 		}
 
+
 		document.addEventListener('DOMContentLoaded', function() {
 			// Add click listeners for specialty filter links
 			const s1 = document.getElementById('filterSpecialty1');
 			const s2 = document.getElementById('filterSpecialty2');
-			if (s1) s1.addEventListener('click', function(e) {
-				e.preventDefault();
-				filterArticlesBySpecialty(s1.textContent);
-				s1.classList.add('active');
-				if (s2) s2.classList.remove('active');
-				closeAnyOpenModal();
-			});
-			if (s2) s2.addEventListener('click', function(e) {
-				e.preventDefault();
-				filterArticlesBySpecialty(s2.textContent);
-				s2.classList.add('active');
-				if (s1) s1.classList.remove('active');
-				closeAnyOpenModal();
-			});
-
+			function showSpinner() {
+				const spinner = document.getElementById('modal-refresh-indicator');
+				if (spinner) spinner.style.display = 'block';
+			}
+			function hideSpinner() {
+				const spinner = document.getElementById('modal-refresh-indicator');
+				if (spinner) spinner.style.display = 'none';
+			}
 			function closeAnyOpenModal() {
-				// Close the main modal if open
 				var modalBg = document.getElementById('modalBg');
 				if (modalBg && modalBg.style.display === 'flex') {
 					modalBg.style.display = 'none';
 					modalBg.setAttribute('aria-hidden', 'true');
 				}
-				// Optionally, reset modal content if needed
 				var modalTitle = document.getElementById('modalTitle');
 				var modalAbstract = document.getElementById('modalAbstract');
 				if (modalTitle) modalTitle.innerHTML = '';
 				if (modalAbstract) modalAbstract.innerHTML = '';
 			}
+			function refreshSpecialtyModal(specialty, btnActive, btnInactive) {
+				closeAnyOpenModal();
+				showSpinner();
+				setTimeout(function() {
+					filterArticlesBySpecialty(specialty);
+					hideSpinner();
+					if (btnActive) btnActive.classList.add('active');
+					if (btnInactive) btnInactive.classList.remove('active');
+				}, 400); // Simulate spinner for 400ms for smoothness
+			}
+			if (s1) s1.addEventListener('click', function(e) {
+				e.preventDefault();
+				refreshSpecialtyModal(s1.textContent, s1, s2);
+			});
+			if (s2) s2.addEventListener('click', function(e) {
+				e.preventDefault();
+				refreshSpecialtyModal(s2.textContent, s2, s1);
+			});
 		});
 		document.addEventListener('DOMContentLoaded', function() {
 			// On first visit, prompt for specialties
