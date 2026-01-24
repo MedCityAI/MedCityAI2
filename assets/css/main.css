@@ -48,56 +48,7 @@
 	font-size: 16px;
 	margin-right: 5px;
 }
-/* Specialty Modal Styles */
-#specialtyModal {
-	display: none;
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100vw;
-	height: 100vh;
-	background: rgba(0,0,0,0.5);
-	z-index: 4000;
-	align-items: center;
-	justify-content: center;
-}
-#specialtyModal .modal-content {
-	background: #fff;
-	border-radius: 10px;
-	max-width: 400px;
-	width: 90vw;
-	padding: 32px 24px 24px 24px;
-	box-shadow: 0 4px 24px rgba(0,0,0,0.18);
-	position: relative;
-	text-align: center;
-}
-.specialty-option {
-	margin: 0.5em 0.25em;
-	padding: 0.5em 1.2em;
-	border-radius: 4px;
-	border: 1px solid #ccc;
-	background: #f9f9f9;
-	cursor: pointer;
-	font-size: 1em;
-	transition: background 0.2s, color 0.2s, border 0.2s;
-}
-.specialty-option.selected {
-	background: #3498db;
-	color: #fff;
-	border-color: #3498db;
-}
-#saveSpecialtiesBtn:disabled {
-	opacity: 0.5;
-	cursor: not-allowed;
-}
-
-/* Remove outlines from filter-by and specialty buttons */
-.dept-filter-link, .specialty-option, #filterSettingsBtn {
-	outline: none !important;
-	box-shadow: none !important;
-}
-
-/* Filter bar flex and settings button */
+/* Specialty modal and filter-by CSS removed */
 #main-filter-bar .filter-bar-content {
 	display: flex;
 	gap: 12px;
