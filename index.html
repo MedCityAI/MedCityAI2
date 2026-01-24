@@ -1697,33 +1697,31 @@
 			// allArticlesData is assumed to be loaded globally
 			if (!window.allArticlesData || !Array.isArray(window.allArticlesData)) return;
 			const filtered = window.allArticlesData.filter(article => {
-				// Try to match specialty in article.department or similar field
-				// Adjust the field name as needed for your data
+				// Match specialty in department badge (top right)
 				if (article.department) {
-					return article.department.toLowerCase() === specialty.toLowerCase();
-				}
-				// Fallback: try keywords or other fields
-				if (article.keywords) {
-					return article.keywords.toLowerCase().includes(specialty.toLowerCase());
+					return article.department.trim().toLowerCase() === specialty.trim().toLowerCase();
 				}
 				return false;
 			});
 			window.filteredArticlesData = filtered;
-			renderArticles(filtered);
+			renderArticlesWithBadge(filtered, specialty);
 		}
 
-		function renderArticles(articles) {
-			// This function should render the articles in #pubmed-results
-			// You may already have a function for this; if so, call it here
+		function renderArticlesWithBadge(articles, specialty) {
+			// Render articles with the department badge matching the selected specialty
 			const container = document.getElementById('pubmed-results');
 			if (!container) return;
 			if (!articles || articles.length === 0) {
 				container.innerHTML = '<div style="padding:2em;text-align:center;color:#888;">No articles found for this specialty.</div>';
 				return;
 			}
-			// Example rendering (replace with your actual rendering logic)
 			container.innerHTML = articles.map(article =>
-				`<div class="result-item"><a href="#" class="result-title">${article.title || 'Untitled'}</a><div class="result-authors">${article.authors || ''}</div><div class="result-citation">${article.citation || ''}</div></div>`
+				`<div class="result-item">
+					<span class="department-badge" style="position:absolute;top:8px;right:8px;background:#3498db;color:#fff;font-size:11px;font-style:italic;padding:4px 10px;border-radius:4px;z-index:10;">${specialty}</span>
+					<a href="#" class="result-title">${article.title || 'Untitled'}</a>
+					<div class="result-authors">${article.authors || ''}</div>
+					<div class="result-citation">${article.citation || ''}</div>
+				</div>`
 			).join('');
 		}
 
