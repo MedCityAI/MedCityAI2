@@ -1560,29 +1560,16 @@
 				<div class="filter-bar">
 					<div class="filter-bar-content">
 						<!-- Specialty Filter Bar (as text links above results) -->
-						<nav id="specialty-filter" style="max-width:1200px;margin:0 auto 10px auto;padding:10px 0 0 0;display:flex;flex-wrap:wrap;gap:18px;justify-content:center;align-items:center;font-size:15px;">
-							<a href="#" class="specialty-filter-link selected" data-specialty="all" style="color:#000;font-weight:700;text-decoration:underline;">Show All</a>
-							<a href="#" class="specialty-filter-link" data-specialty="Cardiology" style="color:#000;">Cardiology</a>
-							<a href="#" class="specialty-filter-link" data-specialty="Oncology" style="color:#000;">Oncology</a>
-							<a href="#" class="specialty-filter-link" data-specialty="Neurology" style="color:#000;">Neurology</a>
-							<a href="#" class="specialty-filter-link" data-specialty="Gastroenterology" style="color:#000;">Gastroenterology</a>
-							<a href="#" class="specialty-filter-link" data-specialty="Orthopedics" style="color:#000;">Orthopedics</a>
-							<a href="#" class="specialty-filter-link" data-specialty="Pulmonology" style="color:#000;">Pulmonology</a>
-							<a href="#" class="specialty-filter-link" data-specialty="Nephrology" style="color:#000;">Nephrology</a>
-							<a href="#" class="specialty-filter-link" data-specialty="Endocrinology" style="color:#000;">Endocrinology</a>
-							<a href="#" class="specialty-filter-link" data-specialty="Rheumatology" style="color:#000;">Rheumatology</a>
-							<a href="#" class="specialty-filter-link" data-specialty="Infectious Disease" style="color:#000;">Infectious Disease</a>
-							<a href="#" class="specialty-filter-link" data-specialty="Hematology" style="color:#000;">Hematology</a>
+						<nav id="specialty-filter" style="max-width:1200px;margin:0 auto 10px auto;padding:10px 0 0 0;display:flex;flex-wrap:nowrap;gap:0;justify-content:flex-start;align-items:center;font-size:15px;">
+							<a href="#" class="specialty-filter-link selected" data-specialty="all" style="color:#000;font-weight:700;text-decoration:underline;">Most Recent</a>
+							<span style="margin: 0 10px; color: #888;">&middot;</span>
 							<a href="#" class="specialty-filter-link" data-specialty="Radiology" style="color:#000;">Radiology</a>
-							<a href="#" class="specialty-filter-link" data-specialty="Dermatology" style="color:#000;">Dermatology</a>
-							<a href="#" class="specialty-filter-link" data-specialty="Psychiatry" style="color:#000;">Psychiatry</a>
-							<a href="#" class="specialty-filter-link" data-specialty="Ophthalmology" style="color:#000;">Ophthalmology</a>
+							<span style="margin: 0 10px; color: #888;">&middot;</span>
+							<a href="#" class="specialty-filter-link" data-specialty="Oncology" style="color:#000;">Oncology</a>
+							<span style="margin: 0 10px; color: #888;">&middot;</span>
+							<a href="#" class="specialty-filter-link" data-specialty="Cardiology" style="color:#000;">Cardiology</a>
+							<span style="margin: 0 10px; color: #888;">&middot;</span>
 							<a href="#" class="specialty-filter-link" data-specialty="AI/ML/DL" style="color:#000;">AI/ML/DL</a>
-							<a href="#" class="specialty-filter-link" data-specialty="Surgery" style="color:#000;">Surgery</a>
-							<a href="#" class="specialty-filter-link" data-specialty="Emergency Medicine" style="color:#000;">Emergency Medicine</a>
-							<a href="#" class="specialty-filter-link" data-specialty="Obstetrics & Gynecology" style="color:#000;">Obstetrics & Gynecology</a>
-							<a href="#" class="specialty-filter-link" data-specialty="Urology" style="color:#000;">Urology</a>
-							<a href="#" class="specialty-filter-link" data-specialty="Anesthesiology" style="color:#000;">Anesthesiology</a>
 						</nav>
 						<!-- Results Grid -->
 						<div id="pubmed-results" role="region" aria-live="polite" aria-atomic="false" aria-label="Publication results"></div>
@@ -2608,9 +2595,13 @@ function initializeLikes() {
 					recencyBadge = '<i class="fas fa-bell" style="margin-right:4px;"></i>NEW';
 					recencyClass = 'new-tab';
 				} else if (articleDate >= sevenDaysAgo) {
-					recencyBadge = 'EARLIER THIS WEEK';
+					// Show date as 'MON DD' (e.g., JAN 23)
+					const m = articleDate.getMonth() + 1;
+					const d = articleDate.getDate();
+					const mon = monthNames[m] ? monthNames[m].toUpperCase() : '';
+					recencyBadge = `${mon} ${d}`;
 					recencyClass = 'this-week-tab';
-					}
+				}
 				}
 				
 				// Parse authors (pipe-separated in CSV)
@@ -3396,52 +3387,43 @@ function initializeLikes() {
 				}
 				// Show/hide cards
 				const cards = document.querySelectorAll('.result-item');
+				const now = new Date();
+				const thirtyDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 30);
 				cards.forEach(card => {
 					const badge = card.querySelector('.department-badge');
-					if (!badge) {
-						card.style.display = (specialty === 'all') ? '' : 'none';
-						return;
-					}
+					// Find article date from data-attribute if available, else show
+					let show = false;
 					if (specialty === 'all') {
-						card.style.display = '';
-					} else {
-						const badgeText = badge.textContent;
-						if (badgeText === specialty || badgeText.split('·').map(s=>s.trim()).includes(specialty)) {
-							card.style.display = '';
+						show = true;
+					} else if (badge) {
+						// Try to get date from data-article-date attribute (set in card), else parse from badge or fallback
+						let dateStr = card.getAttribute('data-article-date');
+						let articleDate = null;
+						if (dateStr) {
+							articleDate = new Date(dateStr);
 						} else {
-							card.style.display = 'none';
+							// Try to parse from badge or skip
+							articleDate = null;
+						}
+						if (articleDate && articleDate >= thirtyDaysAgo) {
+							const badgeText = badge.textContent;
+							if (badgeText === specialty || badgeText.split('·').map(s=>s.trim()).includes(specialty)) {
+								show = true;
+							}
 						}
 					}
+					card.style.display = show ? '' : 'none';
 				});
 			}
 
-			// On first load, prompt for specialty if not set
-			let userSpecialty = localStorage.getItem('userSpecialty');
-			if (!userSpecialty) {
-				setTimeout(function() {
-					let options = Array.from(filterLinks).map(l => l.getAttribute('data-specialty')).filter(s => s !== 'all');
-					let promptText = 'Select your preferred specialty for filtering articles:\n' + options.join(', ');
-					let input = prompt(promptText, options[0]);
-					if (input && options.includes(input)) {
-						userSpecialty = input;
-						localStorage.setItem('userSpecialty', userSpecialty);
-						selectSpecialty(userSpecialty);
-					} else {
-						// If invalid or cancelled, default to 'all'
-						localStorage.setItem('userSpecialty', 'all');
-						selectSpecialty('all');
-					}
-				}, 500);
-			} else {
-				selectSpecialty(userSpecialty);
-			}
+			// Default to 'all' on load
+			selectSpecialty('all');
 
-			// When user clicks a filter, update preference
+			// When user clicks a filter, update selection
 			filterLinks.forEach(link => {
 				link.addEventListener('click', function(e) {
 					e.preventDefault();
 					const specialty = this.getAttribute('data-specialty');
-					localStorage.setItem('userSpecialty', specialty);
 					selectSpecialty(specialty);
 				});
 			});
