@@ -3387,32 +3387,22 @@ function initializeLikes() {
 				}
 				// Show/hide cards
 				const cards = document.querySelectorAll('.result-item');
-				const now = new Date();
-				const thirtyDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 30);
 				cards.forEach(card => {
 					const badge = card.querySelector('.department-badge');
-					// Find article date from data-attribute if available, else show
-					let show = false;
+					if (!badge) {
+						card.style.display = (specialty === 'all') ? '' : 'none';
+						return;
+					}
 					if (specialty === 'all') {
-						show = true;
-					} else if (badge) {
-						// Try to get date from data-article-date attribute (set in card), else parse from badge or fallback
-						let dateStr = card.getAttribute('data-article-date');
-						let articleDate = null;
-						if (dateStr) {
-							articleDate = new Date(dateStr);
+						card.style.display = '';
+					} else {
+						const badgeText = badge.textContent;
+						if (badgeText === specialty || badgeText.split('·').map(s=>s.trim()).includes(specialty)) {
+							card.style.display = '';
 						} else {
-							// Try to parse from badge or skip
-							articleDate = null;
-						}
-						if (articleDate && articleDate >= thirtyDaysAgo) {
-							const badgeText = badge.textContent;
-							if (badgeText === specialty || badgeText.split('·').map(s=>s.trim()).includes(specialty)) {
-								show = true;
-							}
+							card.style.display = 'none';
 						}
 					}
-					card.style.display = show ? '' : 'none';
 				});
 			}
 
