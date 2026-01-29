@@ -2809,22 +2809,23 @@ function initializeLikes() {
 	let displayedMatching = [];
 	let displayedOther = [];
 	
-	if (todayArticles.length > 0) {
+	// Only show 'FRESH OFF THE PRESS' if specialty is 'all' (Most Recent)
+	if (todayArticles.length > 0 && (typeof window === 'undefined' || !window.selectedSpecialty || window.selectedSpecialty === 'all')) {
 		// Show all today articles (no limit)
 		displayedToday = todayArticles;
 		displayedCount += displayedToday.length;
-		
+    
 		finalHTML += `
 			<div class="new-today-section" style="max-width:1200px;margin:20px auto;padding:15px 20px;border:2px dotted #ccc;border-radius:8px;background-color:#f5f5f5;">
 			<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
 			<h3 style="margin:0;color:#555;font-size:13px;font-weight:500;letter-spacing:0.3px;line-height:1.1;"><i class="fas fa-bell" style="margin-right:6px;"></i>FRESH OFF THE PRESS  <span style="color:#3498db;font-weight:600;">(${displayedToday.length})</span></h3>
 			</div>
 			<div class="results">`;
-		
+    
 		displayedToday.forEach(article => {
 			finalHTML += renderArticle(article);
 		});
-		
+    
 		finalHTML += `</div>
 			</div>`;
 	}
@@ -2844,10 +2845,16 @@ function initializeLikes() {
 		displayedCount += displayedOther.length;
 	}
 
-	document.getElementById("pubmed-results").innerHTML = finalHTML;		
-	
+	document.getElementById("pubmed-results").innerHTML = finalHTML;        
+    
 	// Initialize like buttons after articles are rendered
 	initializeLikes();
+	// Store selected specialty globally for conditional rendering
+	if (typeof window !== 'undefined' && window.selectedSpecialty !== undefined) {
+		// already set by filter bar
+	} else {
+		window.selectedSpecialty = 'all';
+	}
 	
 	// Show pagination message if there are more articles than displayed
 	const totalAvailable = matchingArticles.length + otherArticles.length;
@@ -3393,6 +3400,7 @@ function initializeLikes() {
 
 			// Helper to select a specialty in the filter bar
 			function selectSpecialty(specialty) {
+				window.selectedSpecialty = specialty;
 				filterLinks.forEach(l => {
 					l.classList.remove('selected');
 					l.style.color = '#000';
