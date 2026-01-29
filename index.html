@@ -2422,6 +2422,9 @@ function initializeLikes() {
 		// Filter to show only articles from the last 7 days
 		const now = new Date();
 		const sevenDaysAgo = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
+		// Filter to show only articles from the last 30 days
+		const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
+
 		const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 		
 		filteredArticlesData = filteredArticlesData.filter(article => {
@@ -2429,7 +2432,7 @@ function initializeLikes() {
 				const monthNum = monthNames.indexOf(article.month);
 				if (monthNum > 0) {
 					const articleDate = new Date(article.year, monthNum - 1, article.day);
-					return articleDate >= sevenDaysAgo;
+					return articleDate >= thirtyDaysAgo;
 				}
 			}
 			return false; // Exclude articles without valid dates
@@ -2594,6 +2597,7 @@ function initializeLikes() {
 				}
 				
 // Determine recency badge (within last 48 hrs = TODAY, within 7 days = EARLIER THIS WEEK)
+// Determine recency badge (within last 48 hrs = TODAY, within 30 days = RECENT)
 			let recencyBadge = '';
 			let recencyClass = '';
 			if (articleDate) {
@@ -2606,6 +2610,9 @@ function initializeLikes() {
 					const d = articleDate.getDate();
 					const mon = monthNames[m] ? monthNames[m].toUpperCase() : '';
 					recencyBadge = `${mon} ${d}`;
+					recencyClass = 'this-week-tab';
+				} else if (articleDate >= thirtyDaysAgo) {
+					recencyClass = 'this-month-tab';
 					recencyClass = 'this-week-tab';
 				}
 				}
@@ -2913,6 +2920,9 @@ function initializeLikes() {
 		const today = new Date();
 		const sevenDaysAgo = new Date(today);
 		sevenDaysAgo.setDate(today.getDate() - 7);
+		// Get date range for last 30 days (30 days ago to today)
+		const thirtyDaysAgo = new Date(today);
+		thirtyDaysAgo.setDate(today.getDate() - 30);
 		
 		// Filter articles from the last week
 		const lastWeekArticles = allArticlesData.filter(article => {
@@ -2925,15 +2935,29 @@ function initializeLikes() {
 			return articleDate >= sevenDaysAgo && articleDate <= today;
 		});
 		
+		
+		// Return only 3 articles
+		return sortedArticles.slice(0, 3);
+		// Filter articles from the last 30 days
+		const lastMonthArticles = allArticlesData.filter(article => {
+			if (!article.year || !article.month || !article.day) return false;
+            
+			const monthNum = monthNames.indexOf(article.month);
+			if (monthNum === -1) return false;
+            
+			const articleDate = new Date(article.year, monthNum - 1, article.day);
+			return articleDate >= thirtyDaysAgo && articleDate <= today;
+		});
+        
 		// Sort by date (most recent first)
-		const sortedArticles = lastWeekArticles.sort((a, b) => {
+		const sortedArticles = lastMonthArticles.sort((a, b) => {
 			const monthNumA = monthNames.indexOf(a.month);
 			const monthNumB = monthNames.indexOf(b.month);
 			const dateA = new Date(a.year, monthNumA - 1, a.day);
 			const dateB = new Date(b.year, monthNumB - 1, b.day);
 			return dateB - dateA;
 		});
-		
+        
 		// Return only 3 articles
 		return sortedArticles.slice(0, 3);
 	}
