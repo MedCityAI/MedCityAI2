@@ -2541,9 +2541,13 @@ function initializeLikes() {
 				}
 			}
 			
-			// Check if article is from today (last 48 hours)
-			if (articleDate && articleDate >= twoDaysAgo) {
-				todayArticles.push(article);
+			// Only include articles published from two days ago up to one day in the future
+			if (articleDate) {
+				const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1); // yesterday
+				const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);   // tomorrow
+				if (articleDate >= start && articleDate <= end) {
+					todayArticles.push(article);
+				}
 			}
 			
 			// Check if any specialty matches user keywords (exclude today articles)
