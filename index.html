@@ -3043,167 +3043,121 @@ function initializeLikes() {
 			const modal = document.getElementById('authorModal');
 			const title = document.getElementById('authorModalTitle');
 			const loading = document.getElementById('authorModalLoading');
-			const bibliography = document.getElementById('authorBibliography');
-			const statsDiv = document.getElementById('authorStats');
-			
-		// Show modal and loading state
-		modal.style.display = 'flex';
-		document.body.style.overflow = 'hidden';
-		title.textContent = '';
-		loading.style.display = 'block';
-		bibliography.innerHTML = '';
-		statsDiv.style.display = 'none';
-		
-		try {
-			// Build query for this author (all publications)
-			const query = `${authorName}[Author]`;
-			
-			// First, get total count (all PubMed publications)
-			const countUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmode=json&retmax=0`;
-			const countResponse = await fetch(countUrl);
-			const countData = await countResponse.json();
-			const totalCount = parseInt(countData.esearchresult.count);
-			
-			// Get Rochester-specific count
-			const rochesterQuery = `${authorName}[Author] AND Rochester[Affiliation]`;
-			const rochesterCountUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(rochesterQuery)}&retmode=json&retmax=0`;
-			const rochesterCountResponse = await fetch(rochesterCountUrl);
-			const rochesterCountData = await rochesterCountResponse.json();
-			const rochesterCount = parseInt(rochesterCountData.esearchresult.count);
-			
-			if (totalCount === 0) {
+			// Only fetch Rochester publications, robust error handling
+			try {
+				const query = `${authorName}[Author] AND Rochester[Affiliation]`;
+				let rochesterCount = 0;
+				let articles = [];
+				// Fetch count
+				const countUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmode=json&retmax=0`;
+				const countResponse = await fetch(countUrl);
+				if (countResponse.ok) {
+					const countData = await countResponse.json();
+					rochesterCount = parseInt(countData.esearchresult.count) || 0;
+				}
+				// Always show author name and count
 				title.textContent = authorName;
-				bibliography.innerHTML = '<li style="color: #7f8c8d; text-align: center; padding: 40px;">No publications found for this author.</li>';
-				loading.style.display = 'none';
-				return;
-			}				// Search PubMed for most recent 100
+				document.getElementById('authorFullName').textContent = authorName;
+				document.getElementById('authorPubCount').textContent = rochesterCount.toLocaleString();
+				statsDiv.style.display = 'block';
+				// If no publications, show message and exit
+				if (!rochesterCount) {
+					loading.style.display = 'none';
+					bibliography.innerHTML = '<li style="color: #7f8c8d; text-align: center; padding: 40px;">No publications found for this author.</li>';
+					return;
+				}
+				// Fetch up to 100 recent Rochester publications
 				const searchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmax=100&retmode=json&sort=pub+date`;
 				const searchResponse = await fetch(searchUrl);
-				const searchData = await searchResponse.json();
-				
-				const articleIds = searchData.esearchresult.idlist;
-				
+				let articleIds = [];
+				if (searchResponse.ok) {
+					const searchData = await searchResponse.json();
+					articleIds = searchData.esearchresult.idlist || [];
+				}
+				if (!articleIds.length) {
+					loading.style.display = 'none';
+					bibliography.innerHTML = '<li style="color: #7f8c8d; text-align: center; padding: 40px;">No publications found for this author.</li>';
+					return;
+				}
 				// Fetch article details
 				const fetchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${articleIds.join(',')}&retmode=xml`;
 				const fetchResponse = await fetch(fetchUrl);
-				const xmlText = await fetchResponse.text();
-				
-				// Parse XML
-				const parser = new DOMParser();
-				const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-				const articleNodes = xmlDoc.querySelectorAll('PubmedArticle');
-				
-				// Extract full name and departments
-				let fullName = authorName;
-				const departments = {};
-				const articles = [];
-				
-				articleNodes.forEach(articleNode => {
+				if (fetchResponse.ok) {
+					const xmlText = await fetchResponse.text();
 					try {
-						// Find the author and get full name
-						const authorNodes = articleNode.querySelectorAll('Author');
-						authorNodes.forEach(authorNode => {
-							const lastNameNode = authorNode.querySelector('LastName');
-							const foreNameNode = authorNode.querySelector('ForeName');
-							const lastName = lastNameNode ? lastNameNode.textContent : '';
-							const foreName = foreNameNode ? foreNameNode.textContent : '';
-							
-							// Check if this matches our author
-							if (lastName && foreName && authorName.includes(lastName)) {
-								fullName = `${foreName} ${lastName}`;
-								
-								// Extract department from affiliation
-								const affiliationNodes = authorNode.querySelectorAll('Affiliation');
-								affiliationNodes.forEach(affNode => {
-									const affText = affNode.textContent;
-									if (affText.toLowerCase().includes('rochester')) {
-										// Try to extract department name
-										const deptMatch = affText.match(/Department of ([^,;.]+)/i);
-										if (deptMatch) {
-											const dept = deptMatch[1].trim();
-											departments[dept] = (departments[dept] || 0) + 1;
-										}
+						const parser = new DOMParser();
+						const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+						const articleNodes = xmlDoc.querySelectorAll('PubmedArticle');
+						articleNodes.forEach(articleNode => {
+							try {
+								const pmidNode = articleNode.querySelector('PMID');
+								const pmid = pmidNode ? pmidNode.textContent : '';
+								const titleNode = articleNode.querySelector('ArticleTitle');
+								const title = titleNode ? titleNode.textContent : 'No title';
+								const journalNode = articleNode.querySelector('Journal Title');
+								let journal = journalNode ? journalNode.textContent : '';
+								if (!journal || journal.split(/\s+/).length > 5) {
+									const isoAbbrevNode = articleNode.querySelector('ISOAbbreviation');
+									if (isoAbbrevNode) journal = isoAbbrevNode.textContent;
+								}
+								const yearNode = articleNode.querySelector('PubDate Year');
+								const year = yearNode ? yearNode.textContent : '';
+								const monthNode = articleNode.querySelector('PubDate Month');
+								const month = monthNode ? monthNode.textContent : '';
+								let pubdate = '';
+								if (year && month) {
+									pubdate = `${month} ${year}`;
+								} else if (year) {
+									pubdate = year;
+								}
+								const authorNodesAll = articleNode.querySelectorAll('Author');
+								const authorsArray = [];
+								authorNodesAll.forEach(an => {
+									const ln = an.querySelector('LastName');
+									const fn = an.querySelector('ForeName');
+									if (ln && fn) {
+										const initials = fn.textContent.split(' ').map(n => n[0]).join('');
+										authorsArray.push(`${ln.textContent} ${initials}`);
 									}
 								});
-							}
+								let authorsDisplay = authorsArray.join(', ');
+								if (authorsArray.length > 15) {
+									authorsDisplay = authorsArray.slice(0, 14).join(', ') + ', et al.';
+								}
+								articles.push({
+									pmid,
+									title,
+									journal,
+									year,
+									pubdate,
+									authors: authorsDisplay,
+									url: `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`
+								});
+							} catch (err) {}
 						});
-						
-						// Parse article details
-						const pmidNode = articleNode.querySelector('PMID');
-						const pmid = pmidNode ? pmidNode.textContent : '';
-						
-						const titleNode = articleNode.querySelector('ArticleTitle');
-						const title = titleNode ? titleNode.textContent : 'No title';
-						
-						const journalNode = articleNode.querySelector('Journal Title');
-						let journal = journalNode ? journalNode.textContent : '';
-						if (!journal || journal.split(/\s+/).length > 5) {
-							const isoAbbrevNode = articleNode.querySelector('ISOAbbreviation');
-							if (isoAbbrevNode) journal = isoAbbrevNode.textContent;
-						}
-						
-						const yearNode = articleNode.querySelector('PubDate Year');
-						const year = yearNode ? yearNode.textContent : '';
-						
-						const monthNode = articleNode.querySelector('PubDate Month');
-						const month = monthNode ? monthNode.textContent : '';
-						
-						let pubdate = '';
-						if (year && month) {
-							pubdate = `${month} ${year}`;
-						} else if (year) {
-							pubdate = year;
-						}
-						
-						const authorNodesAll = articleNode.querySelectorAll('Author');
-						const authorsArray = [];
-						authorNodesAll.forEach(an => {
-							const ln = an.querySelector('LastName');
-							const fn = an.querySelector('ForeName');
-							if (ln && fn) {
-								const initials = fn.textContent.split(' ').map(n => n[0]).join('');
-								authorsArray.push(`${ln.textContent} ${initials}`);
-							}
-						});
-						let authorsDisplay = authorsArray.join(', ');
-						if (authorsArray.length > 15) {
-							authorsDisplay = authorsArray.slice(0, 14).join(', ') + ', et al.';
-						}
-						
-						articles.push({
-							pmid,
-							title,
-							journal,
-							year,
-							pubdate,
-							authors: authorsDisplay,
-							url: `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`
-						});
-						
-					} catch (error) {
-						console.error('Error parsing article:', error);
-					}
-				});
-				
-				// Sort by year (most recent first)
-				articles.sort((a, b) => {
-					const yearA = parseInt(a.year) || 0;
-					const yearB = parseInt(b.year) || 0;
-					return yearB - yearA;
-				});
-				
-				// Find most common department
-				let primaryDepartment = '—';
-				let maxCount = 0;
-				for (const [dept, count] of Object.entries(departments)) {
-					if (count > maxCount) {
-						maxCount = count;
-						primaryDepartment = dept;
+					} catch (err) {}
+				}
+				// Sort and render
+				articles.sort((a, b) => (parseInt(b.year) || 0) - (parseInt(a.year) || 0));
+				let bibliographyHTML = '';
+				if (articles.length) {
+					articles.forEach((article, index) => {
+						const citation = generateMLACitation(article);
+						bibliographyHTML += `<li><strong style=\"color: #3498db; margin-right: 8px;\">${index + 1}.</strong>${citation}</li>`;
+					});
+				} else {
+					bibliographyHTML = '<li style="color: #7f8c8d; text-align: center; padding: 40px;">No publications found for this author.</li>';
+				}
+				loading.style.display = 'none';
+				bibliography.innerHTML = bibliographyHTML;
+			} catch (error) {
+				loading.style.display = 'none';
+				title.textContent = authorName;
+				document.getElementById('authorFullName').textContent = authorName;
+				document.getElementById('authorPubCount').textContent = '0';
+				statsDiv.style.display = 'block';
+				bibliography.innerHTML = '<li style="color: #7f8c8d; text-align: center; padding: 40px;">No publications found for this author.</li>';
 			}
-		}
-		
-		// Display stats with Rochester count only
-		title.textContent = fullName;
 		document.getElementById('authorPubCount').textContent = rochesterCount.toLocaleString();
 		document.getElementById('authorDepartment').textContent = primaryDepartment;
 		// Update bibliography header
@@ -3224,11 +3178,6 @@ function initializeLikes() {
 				bibliography.innerHTML = bibliographyHTML;
 				loading.style.display = 'none';
 				
-			} catch (error) {
-				console.error('Error fetching author bibliography:', error);
-				bibliography.innerHTML = '<li style="color: #e74c3c; text-align: center; padding: 40px;">Error loading publications. Please try again.</li>';
-				loading.style.display = 'none';
-			}
 		}
 		
 		function generateMLACitation(article) {
