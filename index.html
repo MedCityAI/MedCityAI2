@@ -2599,23 +2599,14 @@ function initializeLikes() {
 // Determine recency badge (within last 48 hrs = TODAY, within 7 days = EARLIER THIS WEEK)
 // Determine recency badge (within last 48 hrs = TODAY, within 30 days = RECENT)
 			let recencyBadge = '';
-			let recencyClass = '';
+			let recencyClass = 'this-week-tab';
 			if (articleDate) {
-				if (articleDate >= twoDaysAgo) {
-					recencyBadge = '<i class="fas fa-bell" style="margin-right:4px;"></i>NEW';
-					recencyClass = 'new-tab';
-				} else if (articleDate >= sevenDaysAgo) {
-					// Show date as 'MON DD' (e.g., JAN 23)
-					const m = articleDate.getMonth() + 1;
-					const d = articleDate.getDate();
-					const mon = monthNames[m] ? monthNames[m].toUpperCase() : '';
-					recencyBadge = `${mon} ${d}`;
-					recencyClass = 'this-week-tab';
-				} else if (articleDate >= thirtyDaysAgo) {
-					recencyClass = 'this-month-tab';
-					recencyClass = 'this-week-tab';
-				}
-				}
+				const m = articleDate.getMonth() + 1;
+				const d = articleDate.getDate();
+				const y = articleDate.getFullYear();
+				const mon = monthNames[m] ? monthNames[m].toUpperCase() : '';
+				recencyBadge = `${mon} ${d}, ${y}`;
+			}
 				
 				// Parse authors (pipe-separated in CSV)
 				const authorsList = article.authors ? article.authors.split('|') : [];
@@ -2734,7 +2725,7 @@ function initializeLikes() {
 						<div class="card-flip-container" role="group" aria-label="${title.substring(0, 100)}...">
 							<!-- Front of card -->
 							<div class="card-face card-front" onclick="flipCard(this.closest('.card-flip-container'), event);" style="cursor: pointer;">
-								${recencyBadge ? `<div class="${recencyClass}">${recencyBadge}</div>` : ''}
+								<div class="${recencyClass}">${recencyBadge}</div>
 								${specialtyBadgesHtml}
 								<br>
 								<a href="#" class="result-title" 
