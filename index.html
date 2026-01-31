@@ -1,138 +1,3453 @@
-<!DOCTYPE html>
+						   <!-- Author Bibliography Modal -->
+						   <div id="authorModal" class="author-modal author-modal-bg" role="dialog" aria-modal="true" aria-labelledby="authorModalTitle" aria-hidden="true">
+							   <div class="author-modal-content" role="document">
+								   <div class="author-modal-header">
+									   <h3 id="authorModalTitle">Author Publications</h3>
+									   <button class="author-modal-close" id="authorModalCloseBtn" aria-label="Close author publications modal">&times;</button>
+								   </div>
+								   <div id="authorStats" class="author-stats" style="display: none;">
+									   <h4 id="authorFullName" style="font-size: 1.5em; margin-bottom: 20px; color: #2c3e50;"></h4>
+									   <div class="author-stats-grid">
+										   <div class="author-stat-item">
+											   <div class="author-stat-label">Total Publications</div>
+											   <div class="author-stat-value" id="authorPubCount">0</div>
+										   </div>
+										   <div class="author-stat-item">
+											   <div class="author-stat-label">Primary Department</div>
+											   <div class="author-stat-value" id="authorDepartment" style="font-size: 1.1em;">—</div>
+										   </div>
+									   </div>
+									   <div class="author-stats-header" id="authorBibHeader" style="margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.2); font-size: 1.1em;">Recent Publications</div>
+								   </div>
+								   <div id="authorModalLoading" class="author-modal-loading" style="display: none;" role="status" aria-live="polite">
+									   <div class="spinner" aria-hidden="true"></div>
+									   <p>Loading publications...</p>
+								   </div>
+								   <ol id="authorBibliography" class="author-bibliography" aria-label="List of author publications"></ol>
+							   </div>
+						   </div>
+<!DOCTYPE HTML>
+<!--
+	MedCityAI - Real-time research analytics
+-->
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MedCityAI - Biomedical Research Analytics</title>
-    <link rel="stylesheet" href="assets/css/main.css">
-    <link rel="stylesheet" href="assets/css/navigation.css">
-    <link rel="stylesheet" href="assets/css/fontawesome-all.min.css">
-    <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f7fafd; color: #222; margin: 0; }
-        .hero-bar {
-            background: linear-gradient(90deg, #0f2027 0%, #2c5364 100%);
-            color: #fff;
-            padding: 64px 0 32px 0;
-            text-align: center;
-            box-shadow: 0 4px 24px rgba(44,83,100,0.08);
-        }
-        .hero-bar h1 {
-            font-size: 2.8em;
-            font-weight: 800;
-            margin-bottom: 0.3em;
-            letter-spacing: -1px;
-        }
-        .hero-bar p {
-            font-size: 1.3em;
-            font-weight: 400;
-            color: #e0eafc;
-            margin-bottom: 1.5em;
-        }
-        .hero-bar .cta-btn {
-            background: #00c6ff;
-            color: #fff;
-            border: none;
-            border-radius: 32px;
-            padding: 16px 40px;
-            font-size: 1.1em;
-            font-weight: 700;
-            box-shadow: 0 2px 12px rgba(0,198,255,0.15);
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .hero-bar .cta-btn:hover {
-            background: #0072ff;
-        }
-        .brand-logo {
-            width: 72px;
-            height: 72px;
-            border-radius: 50%;
-            background: #fff;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 18px;
-            box-shadow: 0 2px 12px rgba(44,83,100,0.10);
-        }
-        .brand-logo img {
-            width: 48px;
-            height: 48px;
-        }
-        @media (max-width: 600px) {
-            .hero-bar h1 { font-size: 2em; }
-            .hero-bar p { font-size: 1em; }
-        }
-    </style>
-</head>
-<body>
-    <header class="hero-bar">
-        <div class="brand-logo">
-            <img src="assets/images/brand_logo.svg" alt="MedCityAI Logo" onerror="this.style.display='none'">
-            <!-- If no SVG, fallback to text -->
-        </div>
-        <h1>MedCityAI</h1>
-        <p>Modern analytics for biomedical research in Rochester, MN.<br>
-        Discover, analyze, and visualize the latest research trends in real time.</p>
-        <a href="#main-content" class="cta-btn">Explore Research</a>
-    </header>
+	<head>
+		<title>MedCityAI - Rochester MN Biomedical Research</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		
+		<!-- Preconnect to Google Fonts for faster loading -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		
+		<!-- Load CSS asynchronously to prevent render blocking -->
+		<link rel="stylesheet" href="assets/css/main.css" media="print" onload="this.media='all'">
+		<link rel="stylesheet" href="assets/css/navigation.css" media="print" onload="this.media='all'">
+		<noscript>
+			<link rel="stylesheet" href="assets/css/main.css">
+			<link rel="stylesheet" href="assets/css/navigation.css">
+		</noscript>
+		
+		<!-- Load FontAwesome asynchronously (non-blocking) -->
+		<link rel="stylesheet" href="assets/css/fontawesome-all.min.css" media="print" onload="this.media='all'">
+		<noscript><link rel="stylesheet" href="assets/css/fontawesome-all.min.css"></noscript>
+		
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		
+		<!-- Critical CSS - inline minimum styles for initial render -->
+		<style>
+		/* Basic layout to prevent layout shift */
+		body {
+			margin: 0;
+			padding: 0;
+			font-family: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+			background: #fff;
+		}
+		#page-wrapper {
+			width: 100%;
+		}
+		.top-bar {
+			background: #fff;
+			box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+			position: fixed;
+			top: 0;
+			width: 100%;
+			z-index: 1000;
+		}
+		</style>
+		<style>
+		/* Modal for abstracts */
+		.modal-bg {
+			display: none;
+			position: fixed;
+			top: 0; left: 0; width: 100vw; height: 100vh;
+			background: rgba(0,0,0,0.5);
+			z-index: 3000;
+			justify-content: center;
+			align-items: center;
+		}
+		.modal-content {
+			background: #fff;
+			border-radius: 10px;
+			max-width: 600px;
+			width: 90vw;
+			max-height: 80vh;
+			overflow-y: auto;
+			padding: 32px 24px 24px 24px;
+			box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+			position: relative;
+		}
+		.modal-close {
+			position: absolute;
+			top: 12px;
+			right: 18px;
+			font-size: 22px;
+			color: #333;
+			cursor: pointer;
+			font-weight: bold;
+		}
+		.modal-abstract {
+			margin-top: 18px;
+			font-size: 15px;
+			color: #222;
+			line-height: 1.6;
+		}
+		.modal-abstract h4 {
+			color: #0056a3;
+			margin-top: 15px;
+			margin-bottom: 10px;
+			font-size: 16px;
+		}
+		.modal-abstract strong {
+			color: #333;
+		}
 
-    <!-- Results Section (identical) -->
-    <main id="main-content" role="main">
-        <div class="filter-bar">
-            <div class="filter-bar-content">
-                <!-- Specialty Filter Bar (as text links above results) -->
-                <nav id="specialty-filter" style="max-width:1200px;margin:0 auto 10px auto;padding:10px 0 0 0;display:flex;flex-wrap:nowrap;gap:0;justify-content:center;align-items:center;font-size:15px;">
-                    <a href="#" class="specialty-filter-link selected" data-specialty="all" style="color:#000;font-weight:700;text-decoration:underline;">Most Recent</a>
-                    <span style="margin: 0 10px; color: #888;">&middot;</span>
-                    <a href="#" class="specialty-filter-link" data-specialty="Radiology" style="color:#000;">Radiology</a>
-                    <span style="margin: 0 10px; color: #888;">&middot;</span>
-                    <a href="#" class="specialty-filter-link" data-specialty="Oncology" style="color:#000;">Oncology</a>
-                    <span style="margin: 0 10px; color: #888;">&middot;</span>
-                    <a href="#" class="specialty-filter-link" data-specialty="Cardiology" style="color:#000;">Cardiology</a>
-                    <span style="margin: 0 10px; color: #888;">&middot;</span>
-                    <a href="#" class="specialty-filter-link" data-specialty="Neurology" style="color:#000;">Neurology</a>
-                    <span style="margin: 0 10px; color: #888;">&middot;</span>
-                    <a href="#" class="specialty-filter-link" data-specialty="AI/ML/DL" style="color:#000;">AI/ML/DL</a>
-                </nav>
-                <!-- Results Grid -->
-                <div id="pubmed-results" role="region" aria-live="polite" aria-atomic="false" aria-label="Publication results"></div>
-                <!-- Pagination Controls -->
-                <nav id="pagination-controls" style="display:none; text-align:center; margin: 30px 0; padding: 20px;" role="navigation" aria-label="Pagination">
-                    <button id="prevPage" aria-label="Go to previous page" style="padding:12px 24px; margin:0 10px; border-radius:25px; border:1px solid #3498db; background:white; color:#3498db; cursor:pointer; font-weight:600;">← Previous</button>
-                    <span id="pageInfo" role="status" aria-live="polite" style="margin:0 20px; font-size:16px; color:#2c3e50; font-weight:500;">Page 1</span>
-                    <button id="nextPage" aria-label="Go to next page" style="padding:12px 24px; margin:0 10px; border-radius:25px; border:1px solid #3498db; background:white; color:#3498db; cursor:pointer; font-weight:600;">Next →</button>
-                </nav>
-            </div>
-        </div>
-        <!-- Modal for abstracts -->
-        <div id="modalBg" class="modal-bg" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
-            <div class="modal-content" role="document">
-                <button class="modal-close" id="modalClose" aria-label="Close modal">&times;</button>
-                <h3 id="modalTitle"></h3>
-                <div class="modal-abstract" id="modalAbstract"></div>
-            </div>
-        </div>
-    </main>
+		/* Research results grid */
+		.results {
+			max-width: 1200px;
+			margin: 10px auto;
+			padding: 0;
+			column-count: 3;
+			column-gap: 20px;
+		}
+		.result-item {
+			background: transparent;
+			border-radius: 10px;
+			margin: 0 0 20px;
+			display: inline-block;
+			width: 100%;
+			box-sizing: border-box;
+			position: relative;
+			perspective: 1000px;
+			min-height: 200px;
+		}
+		
+	.card-flip-container {
+		position: relative;
+		width: 100%;
+		min-height: 100%;
+		transition: transform 0.6s;
+		transform-style: preserve-3d;
+	}
+	
+	.card-flip-container.flipped {
+		transform: rotateY(180deg);
+	}
+	
+	.card-face {
+		width: 100%;
+		backface-visibility: hidden;
+		-webkit-backface-visibility: hidden;
+		border-radius: 10px;
+		padding: 20px;
+		box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+		background: #fff;
+		box-sizing: border-box;
+	}
+	
+	.card-front {
+		position: relative;
+		z-index: 2;
+		cursor: pointer;
+		overflow: hidden;
+	}
+	
+	.card-back {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		transform: rotateY(180deg);
+		background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%);
+		border: 2px solid #2196f3;
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+		z-index: 3;
+	}
+	
+	.card-back::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%);
+		z-index: -1;
+	}
+	
+	.card-back-header {
+		display: flex;
+		align-items: center;
+		margin-bottom: 12px;
+		padding-bottom: 12px;
+		border-bottom: 2px solid #2196f3;
+		flex-shrink: 0;
+		cursor: pointer;
+	}
+		
+	.card-back-content {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		overflow-y: auto;
+		overflow-x: hidden;
+		padding-right: 5px;
+		position: relative;
+		-webkit-overflow-scrolling: touch;
+		touch-action: pan-y;
+		cursor: default;
+	}
+	
+	.card-back-content::after {
+		content: '';
+		position: sticky;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		height: 30px;
+		background: linear-gradient(to bottom, transparent, rgba(227, 242, 253, 0.9));
+		pointer-events: none;
+		z-index: 1;
+	}
+	
+	.card-back-content::-webkit-scrollbar {
+		width: 6px;
+	}
+	
+	.card-back-content::-webkit-scrollbar-track {
+		background: rgba(33, 150, 243, 0.1);
+		border-radius: 3px;
+	}
+	
+	.card-back-content::-webkit-scrollbar-thumb {
+		background: #2196f3;
+		border-radius: 3px;
+	}
+	
+	.card-back-content::-webkit-scrollbar-thumb:hover {
+		background: #1976d2;
+	}
+	
+	.card-back-summary {
+		flex: 1;
+		line-height: 1.7;
+		color: #1a237e;
+		font-size: 15px;
+		margin-bottom: 12px;
+		touch-action: pan-y;
+	}		.card-back-disclaimer {
+			padding-top: 12px;
+			border-top: 1px solid #bbdefb;
+			margin-top: auto;
+			flex-shrink: 0;
+		}
+		
+	.flip-instruction {
+		text-align: center;
+		font-size: 12px;
+		color: #999;
+		margin-top: 8px;
+		font-style: italic;
+		flex-shrink: 0;
+		cursor: pointer;
+	}		.new-tab {
+			position: absolute;
+			top: 0;
+			left: 0;
+			background: #e74c3c;
+			color: #fff;
+			font-size: 12px;
+			font-weight: bold;
+			padding: 4px 12px;
+			border-radius: 8px 0 8px 0;
+			z-index: 10;
+			pointer-events: none; /* Prevent blocking clicks */
+		}
+		
+		.this-week-tab {
+			position: absolute;
+			top: 0;
+			left: 0;
+			background: #e74c3c;
+			color: #fff;
+			font-size: 12px;
+			font-weight: normal;
+			padding: 4px 12px;
+			border-radius: 8px 0 8px 0;
+			z-index: 10;
+			pointer-events: none;
+		}
+		
+		.this-month-tab {
+			position: absolute;
+			top: 0;
+			left: 0;
+			background: #e74c3c;
+			color: #fff;
+			font-size: 12px;
+			font-weight: normal;
+			padding: 4px 12px;
+			border-radius: 8px 0 8px 0;
+			z-index: 10;
+			pointer-events: none;
+		}
+		
+		.department-badge {
+			position: absolute;
+			top: 8px;
+			right: 8px;
+			background: transparent;
+			color: #2c3e50;
+			font-size: 11px;
+			font-weight: 500;
+			font-style: italic;
+			padding: 4px 10px;
+			border-radius: 4px;
+			z-index: 10;
+			max-width: 200px;
+			text-align: right;
+			line-height: 1.3;
+			pointer-events: none; /* Prevent blocking clicks */
+		}
+		
+		/* Multi-specialty badges container */
+		.specialty-badges {
+			position: absolute;
+			top: 8px;
+			right: 8px;
+			display: flex;
+			flex-direction: column;
+			gap: 4px;
+			align-items: flex-end;
+			z-index: 10;
+			pointer-events: none;
+		}
+		
+		.specialty-badges .department-badge {
+			position: relative;
+			top: auto;
+			right: auto;
+		}
+		
+		.specialty-badges .department-badge.secondary {
+			opacity: 0.75;
+			font-size: 10px;
+		}
+		
+		/* Department filter links */
+		.dept-filter-link {
+			display: inline-block;
+			cursor: pointer;
+		}
+		.dept-filter-link:hover {
+			color: #fff !important;
+			background: rgba(255, 255, 255, 0.1);
+			border-radius: 4px;
+		}
+		.dept-filter-link.active {
+			color: #fff !important;
+			background: rgba(255, 255, 255, 0.2);
+			border-radius: 4px;
+			font-weight: 600;
+		}
+		
+		/* Filter bar below header */
+		.filter-bar {
+			background: #f5f5f5;
+			border-bottom: 2px solid #e0e0e0;
+			padding: 20px 0 20px 0;
+			box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+		}
+		
+		.filter-bar-content {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 0;
+		}
+		
+		.filter-bar-content #pubmed-results {
+			background: #f5f5f5;
+			padding: 20px 0;
+			margin-top: 0;
+			border-radius: 0;
+			box-shadow: none;
+		}
+		
+		/* Add side padding only on mobile */
+		@media (max-width: 768px) {
+			.filter-bar-content {
+				padding: 0 10px;
+			}
+			.filter-bar-content #pubmed-results {
+				padding: 20px 10px;
+			}
+		}
+		
+		.filter-bar-title {
+			color: #2c3e50;
+			font-size: 14px;
+			font-weight: 600;
+			margin-bottom: 12px;
+				/* Filter bar content is now in the body, not in the style block. */
+			align-items: center;
+		}
+		
+		.filter-bar .dept-filter-link {
+			color: #555;
+			text-decoration: none;
+			font-size: 14px;
+			padding: 6px 12px;
+			transition: all 0.2s;
+			border-radius: 4px;
+		}
+		
+		.filter-bar .dept-filter-link:hover {
+			background: #f5f5f5;
+			color: #2c3e50;
+		}
+		
+		.filter-bar .dept-filter-link.active {
+			color: #fff !important;
+			background: #3498db;
+		}
+		
+		.filter-bar-links span {
+			color: #ccc;
+		}
+		
+		/* Main content layout */
+		#main-content {
+			width: 100%;
+			padding: 0;
+		}
+		
+		.result-title {
+			display: block;
+			font-size: 18px;
+			font-weight: 600;
+			color: #0056a3;
+			text-decoration: none;
+			margin-bottom: 8px;
+		}
+		.result-title:hover { 
+			text-decoration: underline; 
+		}
+		.result-authors { 
+			color: #333; 
+			font-size: 14px; 
+			margin-bottom: 6px; 
+		}
+		
+		/* Clickable Rochester authors */
+		.result-authors .roch-author {
+			color: #555; /* dark gray */
+			font-weight: 500; /* less bold */
+			text-decoration: none;
+			border-bottom: 1px dashed #bbb; /* subtle underline */
+			cursor: pointer;
+			transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+			padding: 1px 2px;
+			border-radius: 3px;
+		}
+		.result-authors .roch-author:hover {
+			color: #222; /* darker on hover */
+			background-color: #f0f0f0;
+			border-bottom-color: #999;
+		}
+		
+		.result-citation { 
+			color: #666; 
+			font-size: 13px; 
+			margin-bottom: 10px; 
+		}
 
-    <footer id="footer">
-        <ul class="icons">
-            <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-            <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-            <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-            <li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
-            <li><a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
-        </ul>
-        <ul class="copyright">
-            <li>&copy; MedCityAI</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li><li><a href="terms_of_use.html" style="color: #999;">Terms</a> | <a href="privacy_policy.html" style="color: #999;">Privacy</a> | <a href="cookie_policy.html" style="color: #999;">Cookies</a></li>
-        </ul>
-    </footer>
+		/* Share buttons */
+		.share-buttons { 
+			margin-top: 10px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 10px;
+		}
+		.share-buttons a {
+			display: inline-block;
+			font-size: 20px;
+			color: #5e5e5e;
+			padding: 6px 10px;
+			border-radius: 6px;
+			text-decoration: none;
+			transition: opacity 0.3s ease;
+		}
+		.share-buttons a:hover { 
+			opacity: 0.85; 
+		}
+		.like-button {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 20px;
+			color: #999;
+			padding: 0px 10px;
+			margin-left: auto;
+			background: transparent;
+			border: none;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			outline: none;
+			flex-direction: row-reverse;
+		}
+		.like-count {
+			font-size: 14px;
+			color: #3a3a3a;
+			margin-right: 5px;
+			font-weight: 700;
+			letter-spacing: -0.25px;
+		}
+		.like-button:hover {
+			color: #e74c3c;
+			transform: scale(1);
+			background: transparent;
+			outline: none;
+		}
+		.like-button:focus {
+			outline: none;
+		}
+		.like-button.liked {
+			color: #e74c3c;
+			outline: none;
+		}
+		.like-button.liked i {
+			font-weight: 900;
+			outline: none;
+		}
+		.like-button.liked i::before {
+			content: "\f004" !important;
+			font-family: "Font Awesome 5 Free" !important;
+			font-weight: 900 !important;
+			outline: none;
+		}
 
-    <script src="assets/js/jquery.min.js" defer></script>
-    <script src="assets/js/jquery.scrollex.min.js" defer></script>
-    <script src="assets/js/jquery.scrolly.min.js" defer></script>
-    <script src="assets/js/browser.min.js" defer></script>
-    <script src="assets/js/breakpoints.min.js" defer></script>
-    <script src="assets/js/util.js" defer></script>
-    <script src="assets/js/main.js" defer></script>
-</body>
+		/* Top Navigation Bar */
+		
+	/* Hero section */
+		   .hero-section {
+			   background: linear-gradient(120deg, #2568BE 0%, #1B4C7D 100%);
+			   min-height: 340px;
+			   display: flex;
+			   align-items: center;
+			   position: relative;
+			   overflow: hidden;
+			   z-index: 1;
+			   padding-top: 70px;
+		   }
+		   .hero-bg-blobs {
+			   position: absolute;
+			   top: 0;
+			   left: 0;
+			   width: 100%;
+			   height: 100%;
+			   z-index: 0;
+			   pointer-events: none;
+			   opacity: 1;
+			   transition: opacity 0.5s;
+		   }
+
+		/* Extend the backdrop into the results grid section */
+		#one.wrapper.style1.special {
+			background: linear-gradient(135deg, #e3eaf3 0%, #b6c7e0 100%);
+			z-index: 0;
+		}
+		.hero-section::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			right: 0;
+			width: 50%;
+			height: 100%;
+			background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" fill="rgba(52,152,219,0.05)"><circle cx="300" cy="150" r="100"/><circle cx="350" cy="400" r="80"/><path d="M200,100 Q300,200 400,300" stroke="rgba(52,152,219,0.1)" stroke-width="3" fill="none"/></svg>') center/cover;
+			z-index: 1;
+		}
+		.hero-content {
+			max-width: 1200px;
+			margin: 0 auto;
+			   padding: 36px 20px;
+			display: grid;
+			grid-template-columns: 1fr 350px;
+			gap: 60px;
+			align-items: center;
+			position: relative;
+			z-index: 2;
+		}
+		.hero-right {
+			position: relative;
+		}
+
+		/* Featured Carousel Styles */
+		.featured-carousel {
+			position: relative;
+			width: 100%;
+			max-width: 380px;
+			aspect-ratio: 1;
+		}
+		.carousel-container {
+			position: relative;
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+			border-radius: 16px;
+		}
+		.carousel-slide {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			opacity: 0;
+			transition: opacity 0.6s ease-in-out;
+			pointer-events: none;
+		}
+		.carousel-slide.active {
+			opacity: 1;
+			pointer-events: auto;
+		}
+		.featured-card {
+			background: #fff;
+			border-radius: 16px;
+			padding: 24px;
+			height: 100%;
+			box-shadow: 0 12px 40px rgba(0,0,0,0.25), 0 4px 12px rgba(0,0,0,0.15);
+			display: flex;
+			flex-direction: column;
+			gap: 14px;
+			position: relative;
+			overflow: hidden;
+		}
+		.featured-badge {
+			position: absolute;
+			top: 0;
+			left: 0;
+			background: #e74c3c;
+			color: #fff;
+			font-size: 12px;
+			font-weight: bold;
+			padding: 4px 12px;
+			border-radius: 8px 0 8px 0;
+			z-index: 10;
+		}
+		.featured-star {
+			position: absolute;
+			top: 12px;
+			right: 12px;
+			color: #e74c3c;
+			font-size: 18px;
+			z-index: 10;
+		}
+		.featured-card .result-title {
+			display: block;
+			font-size: 16px;
+			font-weight: 600;
+			color: #0056a3;
+			text-decoration: none;
+			margin-top: 24px;
+			margin-bottom: 10px;
+			line-height: 1.4;
+		}
+		.featured-card .result-title:hover {
+			text-decoration: underline;
+		}
+		.featured-card .result-authors {
+			color: #555;
+			font-size: 13px;
+			margin-bottom: 8px;
+			line-height: 1.5;
+		}
+		.featured-card .result-citation {
+			color: #777;
+			font-size: 12px;
+			margin-bottom: 12px;
+		}
+		.featured-card .result-abstract {
+			color: #666;
+			font-size: 13px;
+			line-height: 1.6;
+			flex: 1;
+			overflow: hidden;
+			display: -webkit-box;
+			-webkit-line-clamp: 6;
+			line-clamp: 6;
+			-webkit-box-orient: vertical;
+		}
+		.carousel-dots {
+			display: flex;
+			justify-content: center;
+			gap: 10px;
+			margin-top: 16px;
+		}
+		.carousel-dots .dot {
+			width: 10px;
+			height: 10px;
+			border-radius: 50%;
+			background: rgba(255,255,255,0.4);
+			cursor: pointer;
+			transition: all 0.3s ease;
+		}
+		.carousel-dots .dot.active {
+			background: #fff;
+			width: 28px;
+			border-radius: 5px;
+		}
+		.carousel-dots .dot:hover {
+			background: rgba(255,255,255,0.7);
+		}
+
+		.hero-left h1 {
+			font-size: 3em;
+			font-weight: 800;
+			color: #2c3e50;
+			margin-bottom: 24px;
+			line-height: 1.1;
+			text-shadow: 0 2px 8px rgba(0,0,0,0.1);
+		}
+		.hero-left .subtitle {
+			font-size: 1.2em;
+			color: #7f8c8d;
+			margin-bottom: 16px;
+			font-weight: 500;
+		}
+		.hero-left p {
+			font-size: 1.1em;
+			color: #34495e;
+			margin-bottom: 36px;
+			line-height: 1.7;
+		}
+		.button-row {
+			display: flex;
+			gap: 16px;
+			flex-wrap: wrap;
+		}
+		.btn {
+			padding: 14px 28px;
+			border-radius: 50px;
+			font-weight: 600;
+			text-decoration: none;
+			transition: all 0.3s ease;
+			border: none;
+			cursor: pointer;
+			font-size: 15px;
+		}
+		.btn-primary {
+			background: linear-gradient(135deg, #3498db, #2980b9);
+			color: white;
+			box-shadow: 0 4px 16px rgba(52, 152, 219, 0.3);
+		}
+		.btn-primary:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+		}
+		.btn-secondary {
+			background: rgba(255, 255, 255, 0.1);
+			color: white;
+			border: 2px solid rgba(255, 255, 255, 0.3);
+		}
+		.btn-secondary:hover {
+			background: rgba(255, 255, 255, 0.2);
+			border-color: rgba(255, 255, 255, 0.5);
+		}
+
+		/* Hero Buttons */
+		.hero-buttons {
+			display: flex;
+			gap: 8px;
+			flex-wrap: nowrap;
+			margin-top: 32px;
+			width: 100%;
+		}
+		.hero-btn {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			gap: 6px;
+			padding: 10px 16px;
+			border-radius: 50px;
+			font-weight: 600;
+			font-size: 13px;
+			border: none;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+			white-space: nowrap;
+			flex: 1;
+		}
+		.hero-btn i {
+			font-size: 13px;
+		}
+		.hero-btn-primary {
+			background: linear-gradient(135deg, #3498db, #2980b9);
+			color: white;
+		}
+		.hero-btn-primary:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+		}
+		.hero-btn-secondary {
+			background: rgba(255, 255, 255, 0.95);
+			color: #2c3e50;
+			border: 2px solid rgba(52, 152, 219, 0.3);
+		}
+		.hero-btn-secondary:hover {
+			background: white;
+			border-color: #3498db;
+			transform: translateY(-2px);
+			box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
+		}
+
+		/* Responsive design */
+		@media (max-width: 900px) {
+			.results { 
+				column-count: 2;
+				padding: 0 15px;
+			}
+			.hero-content {
+				grid-template-columns: 1fr;
+				gap: 40px;
+				text-align: center;
+			}
+			.featured-carousel {
+				display: none;
+			}
+			.hero-left h1 { font-size: 2.4em; }
+			.hero-left p { font-size: 1.1em; }
+			.nav-links {
+				display: none !important;
+			}
+			.menu-icon {
+				display: flex !important;
+			}
+		}
+	@media (max-width: 600px) {
+		.results { 
+			column-count: 1;
+			padding: 0 10px;
+		}
+		.recommended-section .results {
+			padding: 0;
+		}
+		.hero-section {
+			min-height: 240px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.hero-content {
+			padding: 24px 15px 16px 15px;
+			text-align: center;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			width: 100%;
+		}
+		.hero-left {
+			text-align: center;
+			max-width: 100%;
+		}
+		.hero-left h1 { 
+			font-size: 2em;
+			margin: 0;
+		}
+		.hero-left p { 
+			font-size: 1em;
+			margin: 10px 0 0 0;
+		}
+		.button-row {
+			display: none;
+		}
+		
+		/* Improved keyword modal for mobile */
+		.welcome-content {
+			padding: 30px 20px;
+			width: 98%;
+			max-height: 95vh;
+		}
+		.welcome-content h2 {
+			font-size: 24px;
+			margin-bottom: 8px;
+		}
+		.welcome-content .subheader {
+			font-size: 14px;
+			margin-bottom: 20px;
+		}
+		.topics-grid {
+			gap: 4px;
+			padding: 5px;
+			margin-bottom: 20px;
+			justify-content: flex-start;
+		}
+		.topic-button {
+			padding: 6px 10px;
+			font-size: 11.5px;
+			min-height: 28px;
+			flex: 0 0 auto;
+			white-space: nowrap;
+		}
+		.modal-close-btn {
+			top: 10px;
+			right: 10px;
+			font-size: 28px;
+			width: 32px;
+			height: 32px;
+		}
+		.welcome-actions {
+			margin-top: 15px;
+		}
+		.welcome-button {
+			padding: 10px 20px;
+			font-size: 14px;
+		}
+		
+		/* Hide scrollbar on mobile for cleaner look */
+		.card-back-content::-webkit-scrollbar {
+			display: none;
+		}
+		.card-back-content {
+			-ms-overflow-style: none;
+			scrollbar-width: none;
+		}
+	}		/* Loading spinner */
+		.spinner {
+			border: 3px solid #f3f3f3;
+			border-top: 3px solid #3498db;
+			border-radius: 50%;
+			width: 40px;
+			height: 40px;
+			animation: spin 1s linear infinite;
+			margin: 0 auto 20px;
+		}
+		@keyframes spin {
+			0% { transform: rotate(0deg); }
+			100% { transform: rotate(360deg); }
+		}
+		
+		/* ===== ACCESSIBILITY IMPROVEMENTS ===== */
+		
+		/* Skip to main content link */
+		.skip-link {
+			position: absolute;
+			top: -50px;
+			left: 10px;
+			background: #3498db;
+			color: white;
+			padding: 10px 20px;
+			text-decoration: none;
+			z-index: 10001;
+			font-weight: 600;
+			border-radius: 0 0 8px 8px;
+			transition: top 0.3s;
+		}
+		.skip-link:focus {
+			top: 0;
+		}
+		
+		/* Enhanced focus styles for keyboard navigation */
+		*:focus {
+			outline: 3px solid #3498db;
+			outline-offset: 2px;
+		}
+		
+		a:focus {
+			outline: 3px solid #3498db;
+			outline-offset: 3px;
+		}
+		
+		button:focus {
+			outline: 3px solid #3498db;
+			outline-offset: 3px;
+		}
+		
+		.nav-links a:focus {
+			text-decoration: underline;
+		}
+		
+		.menu-icon {
+			cursor: pointer;
+			background: none;
+			border: none;
+			padding: 8px;
+		}
+		
+		.menu-icon:hover,
+		.menu-icon:focus {
+			background: rgba(52, 152, 219, 0.1);
+			border-radius: 4px;
+		}
+		
+		/* Modal accessibility */
+		.modal-bg[aria-hidden="true"] {
+			display: none;
+		}
+		
+		.modal-content {
+			position: relative;
+		}
+		
+		.modal-close {
+			cursor: pointer;
+			background: none;
+			border: none;
+			font-size: 28px;
+			line-height: 1;
+		}
+		
+		.modal-close:hover {
+			color: #3498db;
+		}
+		
+		.modal-close:focus {
+			outline: 3px solid #3498db;
+			outline-offset: 2px;
+			border-radius: 4px;
+		}
+		
+		/* Ensure sufficient color contrast */
+		.result-authors {
+			color: #2c3e50; /* Improved from #333 */
+		}
+		
+		.result-citation {
+			color: #555; /* Improved from #666 */
+		}
+		
+		/* Screen reader only text */
+		.sr-only {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			padding: 0;
+			margin: -1px;
+			overflow: hidden;
+			clip: rect(0, 0, 0, 0);
+			white-space: nowrap;
+			border-width: 0;
+		}
+
+		/* Welcome Modal */
+		.welcome-modal {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.6);
+			z-index: 10000;
+			justify-content: center;
+			align-items: center;
+			backdrop-filter: blur(4px);
+		}
+		.welcome-modal.active {
+			display: flex;
+		}
+		.welcome-content {
+			background: white;
+			padding: 50px;
+			border-radius: 16px;
+			max-width: 1000px;
+			width: 95%;
+			max-height: 90vh;
+			overflow-y: auto;
+			box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+			position: relative;
+		}
+		.modal-close-btn {
+			position: absolute;
+			top: 20px;
+			right: 20px;
+			background: none;
+			border: none;
+			font-size: 36px;
+			color: #999;
+			cursor: pointer;
+			line-height: 1;
+			padding: 0;
+			width: 40px;
+			height: 40px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			transition: color 0.2s;
+		}
+		.modal-close-btn:hover {
+			color: #333;
+		}
+		.welcome-content h2 {
+			color: #2c3e50;
+			margin-bottom: 10px;
+			font-size: 32px;
+			text-align: center;
+		}
+		.welcome-content .subheader {
+			color: #666;
+			margin-bottom: 35px;
+			font-size: 17px;
+			text-align: center;
+		}
+		.topics-grid {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px;
+			margin-bottom: 40px;
+			padding: 10px;
+			justify-content: center;
+			align-items: flex-start;
+		}
+		.topic-button {
+			padding: 12px 18px;
+			background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+			border: 2px solid #dee2e6;
+			border-radius: 25px;
+			cursor: pointer;
+			transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+			text-align: center;
+			font-family: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+			font-size: 14px;
+			font-weight: 500;
+			color: #2c3e50;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+			white-space: nowrap;
+			flex-shrink: 0;
+			user-select: none;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			text-transform: none;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			line-height: 1;
+			min-height: 40px;
+		}
+		.topic-button:hover {
+			box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+		}
+		.topic-button:active {
+			transform: scale(0.98);
+		}
+		.topic-button.selected {
+			background: linear-gradient(135deg, #3498db, #2980b9);
+			border-color: #2980b9;
+			color: white;
+			box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+		}
+		.selected-keywords-section {
+			margin-top: 30px;
+			padding: 20px;
+			background: #f8f9fa;
+			border-radius: 8px;
+			border: 1px solid #dee2e6;
+		}
+		.selected-keywords-section h4 {
+			margin: 0 0 15px 0;
+			color: #2c3e50;
+			font-size: 16px;
+			font-weight: 600;
+		}
+		.selected-keywords-list {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px;
+		}
+		.selected-keyword-tag {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			padding: 8px 12px;
+			background: linear-gradient(135deg, #3498db, #2980b9);
+			color: white;
+			border-radius: 20px;
+		font-size: 13px;
+			font-weight: 500;
+			box-shadow: 0 2px 4px rgba(52, 152, 219, 0.3);
+		}
+		.selected-keyword-tag .remove-btn {
+			cursor: pointer;
+			background: rgba(255, 255, 255, 0.2);
+			border: none;
+			color: white;
+			width: 18px;
+			height: 18px;
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 14px;
+			line-height: 1;
+			padding: 0;
+			transition: background 0.2s;
+		}
+		.selected-keyword-tag .remove-btn:hover {
+			background: rgba(255, 255, 255, 0.3);
+		}
+		.custom-keyword-section {
+			margin-top: 20px;
+			display: flex;
+			gap: 10px;
+			align-items: center;
+		}
+		.custom-keyword-input {
+			flex: 1;
+			padding: 12px 16px;
+			border: 2px solid #dee2e6;
+			border-radius: 25px;
+			font-size: 14px;
+			font-family: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+			outline: none;
+			transition: border-color 0.2s;
+		}
+		.custom-keyword-input:focus {
+			border-color: #3498db;
+		}
+		.add-keyword-button {
+			padding: 12px 24px;
+			background: none;
+			color: #2c3e50;
+			border: 2px solid #dee2e6;
+			border-radius: 25px;
+			font-family: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+			font-size: 14px;
+			font-weight: 500;
+			cursor: pointer;
+			transition: all 0.2s;
+		}
+		.add-keyword-button:hover {
+			box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+		}
+		.add-keyword-button:active {
+			transform: scale(0.98);
+		}
+
+		.selected-keywords-text {
+			margin-top: 15px;
+			text-align: center;
+			font-family: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+			font-size: 13px;
+			font-style: italic;
+			color: #999;
+			line-height: 1.6;
+		}
+		.selected-keywords-text .clear-all {
+			cursor: pointer;
+			color: #666;
+			text-decoration: underline;
+			margin-left: 5px;
+		}
+		.selected-keywords-text .clear-all:hover {
+			color: #333;
+		}
+		.privacy-disclaimer {
+			font-size: 12px;
+			color: #666;
+			text-align: center;
+			margin: 20px 0 10px 0;
+			padding: 12px 20px;
+			background: #f8f9fa;
+			border-radius: 8px;
+			border-left: 3px solid #4CAF50;
+			line-height: 1.5;
+		}
+		.welcome-actions {
+			display: flex;
+			justify-content: center;
+			gap: 15px;
+		}
+		.welcome-button {
+			padding: 12px 30px;
+			border-radius: 25px;
+			font-family: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+			font-weight: 500;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			font-size: 14px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			line-height: 1;
+		}
+		.welcome-button.primary {
+			background: linear-gradient(135deg, #3498db, #2980b9);
+			color: white;
+			border: none;
+		}
+		.welcome-button.primary:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+		}
+		.welcome-button.secondary {
+			background: transparent;
+			color: #666;
+			border: 2px solid #ddd;
+		}
+		.welcome-button.secondary:hover {
+			background: #f8f9fa;
+		}
+
+		/* Author Modal Styles */
+		.author-modal {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: rgba(0, 0, 0, 0.6);
+			z-index: 2000;
+			justify-content: center;
+			align-items: center;
+			backdrop-filter: blur(4px);
+		}
+		.author-modal-content {
+			background: white;
+			border-radius: 16px;
+			padding: 32px;
+			max-width: 900px;
+			width: 90%;
+			max-height: 85vh;
+			overflow-y: auto;
+			box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+			animation: modalSlideIn 0.3s ease-out;
+		}
+		.author-modal-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 24px;
+			padding-bottom: 16px;
+			border-bottom: 2px solid #e0e0e0;
+		}
+		.author-modal-header h3 {
+			margin: 0;
+			color: #2c3e50;
+			font-size: 1.6em;
+		}
+		.author-stats {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			color: white;
+			padding: 24px;
+			border-radius: 12px 12px 0 0;
+			box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+		}
+		.author-stats h4 {
+			margin: 0 0 16px 0;
+			font-size: 1.4em;
+			font-weight: 600;
+		}
+		#authorFullName {
+			display: none;
+		}
+		.author-stats-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+			gap: 16px;
+			margin-bottom: 20px;
+		}
+		.author-stat-item {
+			background: rgba(255, 255, 255, 0.15);
+			padding: 12px 16px;
+			border-radius: 8px;
+			backdrop-filter: blur(10px);
+		}
+		.author-stat-label {
+			font-size: 13px;
+			opacity: 0.9;
+			margin-bottom: 4px;
+		}
+		.author-stat-value {
+			font-size: 1.5em;
+			font-weight: 700;
+		}
+		.author-stats-header {
+			font-size: 15px;
+			font-weight: 600;
+			opacity: 0.95;
+			margin-top: 16px;
+			padding-top: 16px;
+			border-top: 1px solid rgba(255,255,255,0.3);
+		}
+		.author-modal-close {
+			background: none;
+			border: none;
+			font-size: 28px;
+			color: #95a5a6;
+			cursor: pointer;
+			transition: color 0.2s ease;
+			padding: 0;
+			width: 32px;
+			height: 32px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.author-modal-close:hover {
+			color: #2c3e50;
+		}
+		.author-modal-loading {
+			text-align: center;
+			padding: 40px;
+			color: #7f8c8d;
+		}
+		.author-bibliography {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+			background: white;
+			border-radius: 0 0 12px 12px;
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+		}
+		.author-bibliography li {
+			padding: 16px 24px;
+			border-bottom: 1px solid #e0e0e0;
+			font-size: 14px;
+			line-height: 1.7;
+			color: #2c3e50;
+		}
+		.author-bibliography li:last-child {
+			border-bottom: none;
+			border-radius: 0 0 12px 12px;
+		}
+		.author-bibliography .pub-title {
+			font-weight: 600;
+			color: #0056a3;
+			margin-bottom: 4px;
+		}
+		.author-bibliography .pub-journal {
+			color: #555;
+			font-style: italic;
+		}
+		.author-bibliography .pub-year {
+			color: #7f8c8d;
+			font-weight: 500;
+		}
+		
+		/* Hero Action Buttons */
+		.hero-buttons {
+			display: flex;
+			gap: 20px;
+			justify-content: center;
+			align-items: center;
+			margin: 25px 0 20px 0;
+		}
+		
+		.hero-btn {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			padding: 12px 30px;
+			background: linear-gradient(135deg, rgba(52, 152, 219, 0.25), rgba(41, 128, 185, 0.25));
+			backdrop-filter: blur(10px);
+			border: 2px solid rgba(255, 255, 255, 0.3);
+			color: #fff;
+			text-decoration: none;
+			border-radius: 50px;
+			font-size: 14px;
+			font-weight: 600;
+			text-transform: uppercase;
+			letter-spacing: 1px;
+			transition: none;
+			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+			text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+		}
+		
+		.hero-btn i {
+			font-size: 16px;
+		}
+		
+		@media (max-width: 768px) {
+			.hero-buttons {
+				flex-direction: column;
+				gap: 12px;
+			}
+			
+			.hero-btn {
+				width: 200px;
+				justify-content: center;
+			}
+		}
+		</style>
+	</head>
+	<body class="landing is-preload">
+				<!-- Skip to main content link for keyboard users -->
+				<a href="#main-content" class="skip-link">Skip to main content</a>
+
+				<!-- Page Wrapper -->
+				<div id="page-wrapper">
+					<!-- Modern Medical Navigation Header -->
+					<div id="navigation-placeholder"></div>
+
+					<!-- Hero Section -->
+		<!-- Skip to main content link for keyboard users -->
+		<a href="#main-content" class="skip-link">Skip to main content</a>
+		
+		<!-- Page Wrapper -->
+		<div id="page-wrapper">
+			<!-- Modern Medical Navigation Header -->
+			<div id="navigation-placeholder"></div>
+
+			<!-- Hero Section -->
+			<section class="hero-section" aria-label="Hero banner" style="position:relative; overflow:hidden;">
+				<!-- Animated SVG background blobs -->
+				   <svg class="hero-bg-blobs" width="100%" height="900" viewBox="0 0 1440 900" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;" aria-hidden="true" role="presentation">
+					   <defs>
+						   <linearGradient id="blobGradient1" x1="0" y1="0" x2="1" y2="1">
+							   <stop offset="0%" stop-color="#3498db" stop-opacity="0.18"/>
+							   <stop offset="100%" stop-color="#b6c7e0" stop-opacity="0.12"/>
+						   </linearGradient>
+						   <linearGradient id="blobGradient2" x1="0" y1="1" x2="1" y2="0">
+							   <stop offset="0%" stop-color="#e3eaf3" stop-opacity="0.16"/>
+							   <stop offset="100%" stop-color="#2980b9" stop-opacity="0.10"/>
+						   </linearGradient>
+					   </defs>
+					   <g>
+						   <circle id="blob1" cx="330" cy="220" r="330" fill="url(#blobGradient1)">
+							   <animate attributeName="cx" values="330;1110;330" dur="15s" repeatCount="indefinite"/>
+							   <animate attributeName="cy" values="220;680;220" dur="13.125s" repeatCount="indefinite"/>
+						   </circle>
+						   <circle id="blob2" cx="270" cy="180" r="270" fill="url(#blobGradient2)">
+							   <animate attributeName="cx" values="270;1170;270" dur="16.875s" repeatCount="indefinite"/>
+							   <animate attributeName="cy" values="180;720;180" dur="11.25s" repeatCount="indefinite"/>
+						   </circle>
+						   <circle id="blob3" cx="450" cy="450" r="450" fill="url(#blobGradient1)" opacity="0.7">
+							   <animate attributeName="cx" values="450;990;450" dur="18.75s" repeatCount="indefinite"/>
+							   <animate attributeName="cy" values="450;850;450" dur="15s" repeatCount="indefinite"/>
+						   </circle>
+					   </g>
+				   </svg>
+				<div class="hero-content">
+					<div class="hero-left">
+	
+						<h1 style="color:#fff; text-shadow: 0 4px 18px rgba(0,0,0,0.28);">What's New in Rochester?</h1>
+						<p style="color:#e0e0e0;">Real-time biomedical research feed for Rochester, Minnesota. All information sourced from the National Library of Medicine, PubMed.</p>
+						
+						<!-- Hero Action Buttons -->
+						<div class="hero-buttons">
+							<a href="#pubmed-results" class="hero-btn">
+								<i class="fas fa-arrow-down"></i> New Today
+							</a>
+							<a href="search.html" class="hero-btn">
+								<i class="fas fa-search"></i> Search
+							</a>
+							<a href="leaderboard.html" class="hero-btn">
+								<i class="fas fa-trophy"></i> Year in Review
+							</a>
+						</div>
+						
+						<div class="stats-container">
+							<div class="stat-card ytd">
+								<div class="ai-digest" id="aiDailyDigest" style="display: none;">
+									<div class="ai-digest-label">
+										<i class="fas fa-brain"></i> AI Daily Digest
+									</div>
+									<div class="ai-digest-text" id="aiDigestText"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="hero-right">
+						<div class="featured-carousel">
+							<div class="carousel-container">
+								<!-- Slides will be dynamically generated -->
+							</div>
+							<div class="carousel-dots">
+								<!-- Dots will be dynamically generated -->
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- Specialty filter bar and modal removed -->
+            <!-- Results Section -->
+            <main id="main-content" role="main">
+				<div class="filter-bar">
+					<div class="filter-bar-content">
+						<!-- Specialty Filter Bar (as text links above results) -->
+						<nav id="specialty-filter" style="max-width:1200px;margin:0 auto 10px auto;padding:10px 0 0 0;display:flex;flex-wrap:nowrap;gap:0;justify-content:center;align-items:center;font-size:15px;">
+							<a href="#" class="specialty-filter-link selected" data-specialty="all" style="color:#000;font-weight:700;text-decoration:underline;">Most Recent</a>
+							<span style="margin: 0 10px; color: #888;">&middot;</span>
+							<a href="#" class="specialty-filter-link" data-specialty="Radiology" style="color:#000;">Radiology</a>
+							<span style="margin: 0 10px; color: #888;">&middot;</span>
+							<a href="#" class="specialty-filter-link" data-specialty="Oncology" style="color:#000;">Oncology</a>
+							<span style="margin: 0 10px; color: #888;">&middot;</span>
+							<a href="#" class="specialty-filter-link" data-specialty="Cardiology" style="color:#000;">Cardiology</a>
+							<span style="margin: 0 10px; color: #888;">&middot;</span>
+							<a href="#" class="specialty-filter-link" data-specialty="Neurology" style="color:#000;">Neurology</a>
+							<span style="margin: 0 10px; color: #888;">&middot;</span>
+							<a href="#" class="specialty-filter-link" data-specialty="AI/ML/DL" style="color:#000;">AI/ML/DL</a>
+						</nav>
+						<!-- Results Grid -->
+						<div id="pubmed-results" role="region" aria-live="polite" aria-atomic="false" aria-label="Publication results"></div>
+						
+						<!-- Pagination Controls -->
+						<nav id="pagination-controls" style="display:none; text-align:center; margin: 30px 0; padding: 20px;" role="navigation" aria-label="Pagination">
+							<button id="prevPage" aria-label="Go to previous page" style="padding:12px 24px; margin:0 10px; border-radius:25px; border:1px solid #3498db; background:white; color:#3498db; cursor:pointer; font-weight:600;">← Previous</button>
+							<span id="pageInfo" role="status" aria-live="polite" style="margin:0 20px; font-size:16px; color:#2c3e50; font-weight:500;">Page 1</span>
+							<button id="nextPage" aria-label="Go to next page" style="padding:12px 24px; margin:0 10px; border-radius:25px; border:1px solid #3498db; background:white; color:#3498db; cursor:pointer; font-weight:600;">Next →</button>
+						</nav>
+					</div>
+				</div>
+
+						<!-- Modal for abstracts -->
+						<div id="modalBg" class="modal-bg" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
+							<div class="modal-content" role="document">
+								<button class="modal-close" id="modalClose" aria-label="Close modal">&times;</button>
+								<h3 id="modalTitle"></h3>
+								<div class="modal-abstract" id="modalAbstract"></div>
+							</div>
+						</div>
+						
+				</div>
+			</main>
+
+		<!-- Footer -->
+			<footer id="footer">
+				<ul class="icons">
+					<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+					<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+					<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+					<li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
+					<li><a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+				</ul>
+				<ul class="copyright">
+					<li>&copy; MedCityAI</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li><li><a href="terms_of_use.html" style="color: #999;">Terms</a> | <a href="privacy_policy.html" style="color: #999;">Privacy</a> | <a href="cookie_policy.html" style="color: #999;">Cookies</a></li>
+				</ul>
+			</footer>
+		</div>
+
+		<!-- Scripts -->
+		<script src="assets/js/jquery.min.js" defer></script>
+		<script src="assets/js/jquery.scrollex.min.js" defer></script>
+		<script src="assets/js/jquery.scrolly.min.js" defer></script>
+		<script src="assets/js/browser.min.js" defer></script>
+		<script src="assets/js/breakpoints.min.js" defer></script>
+		<script src="assets/js/util.js" defer></script>
+		<script src="assets/js/main.js" defer></script>
+		<!-- Specialty filter bar and modal scripts removed -->
+
+		<script defer>
+		
+		// Application state
+		let VarTot = 0, VarDay = 0, VarWeek = 0, VarMonth = 0;
+		let currentPage = 1;
+		let currentSearchQuery = '';
+		const resultsPerPage = 50;
+		let selectedTopics = [];
+
+		// Welcome Modal Functions
+		function checkFirstVisit() {
+			const hasKeywords = localStorage.getItem('medcity_keywords');
+			if (!hasKeywords) {
+				document.getElementById('welcomeModal').classList.add('active');
+			}
+		}
+
+		function skipWelcome() {
+			localStorage.setItem('medcity_keywords', JSON.stringify([]));
+			document.getElementById('welcomeModal').classList.remove('active');
+		}
+
+		function saveTopics() {
+			if (selectedTopics.length === 0) {
+				alert('Please select at least one topic to continue');
+				return;
+			}
+			localStorage.setItem('medcity_keywords', JSON.stringify(selectedTopics));
+			document.getElementById('welcomeModal').classList.remove('active');
+			console.log('Saved topics:', selectedTopics);
+		}
+
+		// Modal functions
+		function showAbstractModal(link) {
+			const modalBg = document.getElementById('modalBg');
+			const modalTitle = document.getElementById('modalTitle');
+			const modalAbstract = document.getElementById('modalAbstract');
+			
+			const title = link.getAttribute('data-title');
+			const abstract = link.getAttribute('data-abstract');
+			const pmid = link.getAttribute('data-pmid');
+			const authors = link.getAttribute('data-authors');
+			const affiliations = link.getAttribute('data-affiliations');
+			const llmSummary = link.getAttribute('data-llm-summary');
+
+			// Title in black at top
+			modalTitle.innerHTML = `<span style='color:#111;font-weight:800;font-size:1.3em;'>${title}</span>`;
+
+			// Authors and affiliations
+			let authorList = '';
+			if (authors) {
+				authorList += `<div style='margin:10px 0 18px 0;font-size:1em;color:#222;'><strong>Authors:</strong> ${authors.replace(/;/g, '; ')}</div>`;
+			}
+			if (affiliations) {
+				authorList += `<div style='margin-bottom:18px;font-size:0.95em;color:#444;'><strong>Affiliations:</strong> ${affiliations.replace(/;/g, '; ')}</div>`;
+			}
+
+			// Start with authors
+			let content = authorList;
+			
+			// Show AI-Generated Summary if available, otherwise show original abstract
+			if (llmSummary && llmSummary.trim() !== '' && llmSummary !== 'No abstract available.') {
+				content += `<div style="background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%); padding: 20px; border-radius: 12px; margin-bottom: 24px; border-left: 4px solid #2196f3; box-shadow: 0 2px 8px rgba(33, 150, 243, 0.1);">`;
+				content += `<div style="display: flex; align-items: center; margin-bottom: 12px;">`;
+				content += `<span style="font-size: 24px; margin-right: 10px;">🤖</span>`;
+				content += `<h4 style="color: #1565c0; margin: 0; font-size: 16px; font-weight: 700;">AI-GENERATED PLAIN LANGUAGE SUMMARY</h4>`;
+				content += `</div>`;
+				content += `<p style="margin: 0 0 12px 0; line-height: 1.7; color: #1a237e; font-size: 15px;">${llmSummary}</p>`;
+				content += `<div style="padding-top: 12px; border-top: 1px solid #bbdefb; margin-top: 12px;">`;
+				content += `<p style="margin: 0; font-size: 12px; color: #546e7a; font-style: italic; line-height: 1.5;">`;
+				content += `<strong>⚠️ Disclaimer:</strong> This summary was generated by artificial intelligence and may contain inaccuracies or oversimplifications. `;
+				content += `Please refer to the full publication for complete and accurate information. `;
+				content += `This AI summary is provided for informational purposes only and should not be used for clinical decision-making.`;
+				content += `</p>`;
+				content += `</div>`;
+				content += `</div>`;
+			} else {
+				// Fallback to original abstract if no LLM summary
+				content += `<h4 style="color: #0056a3; border-bottom: 2px solid #0056a3; padding-bottom: 8px; margin-bottom: 12px;">Abstract</h4>`;
+				content += `<p style="line-height: 1.6;">${abstract}</p>`;
+			}
+
+			modalAbstract.innerHTML = content;
+			modalBg.style.display = 'flex';
+
+			// Prevent scroll to top
+			if (window.scrollY) {
+				setTimeout(() => window.scrollTo({top: window.scrollY}), 0);
+			}
+		}
+
+		function closeModal() {
+			const modalBg = document.getElementById('modalBg');
+			modalBg.style.display = 'none';
+			modalBg.setAttribute('aria-hidden', 'true');
+			
+			// Return focus to the element that opened the modal
+			if (window.lastFocusedElement) {
+				window.lastFocusedElement.focus();
+			}
+		}
+		
+
+
+		// Statistics loading (Note: currently not displayed in UI, but kept for potential future use)
+		async function loadStatistics() {
+			try {
+				const response = await fetch('./database/summary_stats.txt');
+				if (!response.ok) throw new Error('Statistics file not found');
+				
+				const statsText = await response.text();
+				statsText.split('\n').forEach(line => {
+					const [key, value] = line.split('=');
+					if (key && value) {
+						const trimmedKey = key.trim();
+						const numValue = parseInt(value.trim());
+						
+						switch(trimmedKey) {
+							case 'VarTot': VarTot = numValue; break;
+							case 'VarDay': VarDay = numValue; break;
+							case 'VarWeek': VarWeek = numValue; break;
+							case 'VarMonth': VarMonth = numValue; break;
+						}
+					}
+				});
+			} catch (err) {
+				console.error('Error loading statistics:', err);
+			}
+		}
+
+	// Global variables for CSV data
+	let allArticlesData = [];
+	let filteredArticlesData = [];
+	let currentlyFlippedCard = null;
+	let likeCountsForRanking = {};	// Welcome Modal Functions
+	function checkFirstVisit() {
+		const hasKeywords = localStorage.getItem('medcity_keywords');
+		if (!hasKeywords) {
+			document.getElementById('welcomeModal').classList.add('active');
+			document.body.style.overflow = 'hidden';
+		}
+	}
+
+	function closeKeywordsModal() {
+		document.getElementById('welcomeModal').classList.remove('active');
+		document.body.style.overflow = '';
+		// Save current selections to localStorage
+		localStorage.setItem('medcity_keywords', JSON.stringify(selectedTopics));
+		console.log('Modal closed, saved topics:', selectedTopics);
+	}
+
+	function closeModalOnOutsideClick(event) {
+		// Close modal if clicking on the background (not the content)
+		if (event.target.id === 'welcomeModal') {
+			closeKeywordsModal();
+		}
+	}
+
+	function skipWelcome() {
+		localStorage.setItem('medcity_keywords', JSON.stringify([]));
+		document.getElementById('welcomeModal').classList.remove('active');
+		document.body.style.overflow = '';
+	}
+
+	function saveTopics() {
+		if (selectedTopics.length === 0) {
+			alert('Please select at least one topic to continue');
+			return;
+		}
+		localStorage.setItem('medcity_keywords', JSON.stringify(selectedTopics));
+		document.getElementById('welcomeModal').classList.remove('active');
+		document.body.style.overflow = '';
+		console.log('Saved topics:', selectedTopics);
+	}
+
+	function openKeywordsModal() {
+		// Load existing topics from localStorage
+		const existingTopics = JSON.parse(localStorage.getItem('medcity_keywords') || '[]');
+		selectedTopics = [...existingTopics];
+		
+		// Update UI to show selected topics
+		document.querySelectorAll('.topic-button').forEach(button => {
+			const buttonText = button.textContent.trim();
+			if (selectedTopics.includes(buttonText)) {
+				button.classList.add('selected');
+			} else {
+			button.classList.remove('selected');
+		}
+	});
+	
+	// Update selected keywords display
+	updateSelectedKeywordsDisplay();
+	
+	document.getElementById('welcomeModal').classList.add('active');
+	document.body.style.overflow = 'hidden';
+}	// Toggle topic button and update localStorage immediately
+	function toggleTopic(button, topic) {
+		console.log('Toggle topic clicked:', topic);
+		
+		// Toggle button visual state
+		if (button.classList.contains('selected')) {
+			button.classList.remove('selected');
+			// Remove from array
+			selectedTopics = selectedTopics.filter(t => t !== topic);
+			console.log('Removed:', topic);
+		} else {
+			button.classList.add('selected');
+			// Add to array if not already there
+			if (!selectedTopics.includes(topic)) {
+				selectedTopics.push(topic);
+			}
+			console.log('Added:', topic);
+		}
+		
+		// Immediately save to localStorage
+		localStorage.setItem('medcity_keywords', JSON.stringify(selectedTopics));
+		console.log('Updated medcity_keywords in localStorage:', selectedTopics);
+		
+		// Update the selected keywords display
+		updateSelectedKeywordsDisplay();
+	}
+
+	// Update the selected keywords display section
+	function updateSelectedKeywordsDisplay() {
+		const textDiv = document.getElementById('selectedKeywordsText');
+		
+		if (selectedTopics.length === 0) {
+			textDiv.innerHTML = '';
+			return;
+		}
+		
+		const keywordsList = selectedTopics.join(', ');
+		textDiv.innerHTML = `Selected Keywords: ${keywordsList} <span class="clear-all" onclick="clearAllKeywords()">(clear all)</span>`;
+	}
+
+	// Clear all keywords
+	function clearAllKeywords() {
+		selectedTopics = [];
+		localStorage.setItem('medcity_keywords', JSON.stringify(selectedTopics));
+		
+		// Deselect all buttons
+		document.querySelectorAll('.topic-button').forEach(button => {
+			button.classList.remove('selected');
+		});
+		
+		updateSelectedKeywordsDisplay();
+		console.log('Cleared all keywords');
+	}
+
+	// Remove a keyword from selected topics
+	function removeKeyword(topic) {
+		selectedTopics = selectedTopics.filter(t => t !== topic);
+		localStorage.setItem('medcity_keywords', JSON.stringify(selectedTopics));
+		
+		// Update button state
+		document.querySelectorAll('.topic-button').forEach(button => {
+			if (button.textContent.trim() === topic) {
+				button.classList.remove('selected');
+			}
+		});
+		
+		updateSelectedKeywordsDisplay();
+		console.log('Removed keyword:', topic);
+	}
+
+	// Add custom keyword
+	function addCustomKeyword() {
+		const input = document.getElementById('customKeywordInput');
+		const keyword = input.value.trim();
+		
+		if (!keyword) {
+			alert('Please enter a keyword');
+			return;
+		}
+		
+		if (selectedTopics.includes(keyword)) {
+			alert('This keyword is already selected');
+			return;
+		}
+		
+		selectedTopics.push(keyword);
+		localStorage.setItem('medcity_keywords', JSON.stringify(selectedTopics));
+		input.value = '';
+		
+		updateSelectedKeywordsDisplay();
+		console.log('Added custom keyword:', keyword);
+	}
+
+	// Initialize on page load
+	document.addEventListener('DOMContentLoaded', function() {
+		console.log('DOMContentLoaded - Keywords modal disabled');
+		// checkFirstVisit() - removed to disable welcome screen
+	});
+
+	// Send interaction data to Google Apps Script
+	async function sendClick(pmid, action, delta) {
+		try {
+			console.log('Sending to Google Apps Script:', { action, pmid, delta });
+			
+			const url = `https://script.google.com/macros/s/AKfycbw2g5z_1ALbqWjcdY7YsCkwpOpztGJhjOgfRxhGhB8dDA1nwtvySoB5nivNpCnaxIz4/exec?action=${encodeURIComponent(action)}&pmid=${encodeURIComponent(pmid)}&delta=${encodeURIComponent(delta)}&timestamp=${encodeURIComponent(new Date().toISOString())}`;
+			
+			const response = await fetch(url, {
+				method: "GET",
+				mode: "no-cors"
+			});
+			
+		console.log('Data sent successfully');
+	} catch (error) {
+		console.error('Error sending click data:', error);
+	}
+}	// Fetch all counts from Google Sheet
+	async function fetchLikeCounts() {
+		try {
+			console.log('Fetching like counts from Google Sheet...');
+			const url = 'https://script.google.com/macros/s/AKfycbw2g5z_1ALbqWjcdY7YsCkwpOpztGJhjOgfRxhGhB8dDA1nwtvySoB5nivNpCnaxIz4/exec?action=getCounts';
+			
+			const response = await fetch(url);
+			const data = await response.json();
+			
+			console.log('Received counts:', data);
+			
+			// Store for ranking system
+			likeCountsForRanking = data;
+			
+			// Update all like buttons with counts
+			document.querySelectorAll('.like-button').forEach(button => {
+				const pmid = button.getAttribute('data-pmid');
+				const count = data[pmid] || 0;
+				
+				// Add or update count span
+				let countSpan = button.querySelector('.like-count');
+				if (!countSpan) {
+					countSpan = document.createElement('span');
+					countSpan.className = 'like-count';
+					button.appendChild(countSpan);
+				}
+				countSpan.textContent = count;
+			});
+		} catch (error) {
+			console.error('Error fetching like counts:', error);
+			// Set all counts to 0 on error
+			document.querySelectorAll('.like-button').forEach(button => {
+				let countSpan = button.querySelector('.like-count');
+				if (!countSpan) {
+					countSpan = document.createElement('span');
+					countSpan.className = 'like-count';
+					button.appendChild(countSpan);
+				}
+				countSpan.textContent = '0';
+			});
+		}
+	}		// Like button functionality
+		function toggleLike(event, pmid) {
+			event.stopPropagation();
+			event.preventDefault();
+			
+			const button = event.currentTarget;
+			const isLiked = button.classList.contains('liked');
+			
+		// Get count span
+		const countSpan = button.querySelector('.like-count');
+		const currentCount = parseInt(countSpan?.textContent) || 0;
+		
+		if (isLiked) {
+			// Unlike: remove liked state
+			button.classList.remove('liked');
+			localStorage.removeItem(`liked_${pmid}`);
+			
+			// Decrement count display
+			if (countSpan) {
+				countSpan.textContent = Math.max(0, currentCount - 1);
+			}
+			
+			// Send unlike action to Google Sheets
+			sendClick(pmid, 'unliked', -1);
+		} else {
+			// Like: add liked state
+			button.classList.add('liked');
+			localStorage.setItem(`liked_${pmid}`, 'true');
+			
+			// Increment count display
+			if (countSpan) {
+				countSpan.textContent = currentCount + 1;
+			}
+			
+			// Send like action to Google Sheets
+			sendClick(pmid, 'liked', 1);
+		}
+}
+
+// Initialize like buttons from local storage
+function initializeLikes() {
+	document.querySelectorAll('.like-button').forEach(button => {
+		const pmid = button.getAttribute('data-pmid');
+		if (localStorage.getItem(`liked_${pmid}`) === 'true') {
+			button.classList.add('liked');
+		}
+	});
+	
+	// Fetch and display counts from Google Sheet
+	fetchLikeCounts();
+}
+
+		// Function to flip card and match heights (with keyboard support)
+		function flipCard(container, event) {
+			// Support both click and keyboard events
+			if (event.type === 'keydown' && event.key !== 'Enter' && event.key !== ' ') {
+				return; // Only respond to Enter or Space key
+			}
+			
+			event.stopPropagation();
+			event.preventDefault(); // Prevent space from scrolling
+			
+			const cardFront = container.querySelector('.card-front');
+			const cardBack = container.querySelector('.card-back');
+			
+			// Get PMID from like button if available
+			const likeButton = container.querySelector('.like-button');
+			const pmid = likeButton ? likeButton.getAttribute('data-pmid') : null;
+			
+			// If there's a currently flipped card and it's not this one, flip it back
+			if (currentlyFlippedCard && currentlyFlippedCard !== container && currentlyFlippedCard.classList.contains('flipped')) {
+				currentlyFlippedCard.classList.remove('flipped');
+			}
+			
+			if (!container.classList.contains('flipped')) {
+				// Flipping to back - capture front height and apply to back
+				const frontHeight = cardFront.offsetHeight;
+				cardBack.style.height = frontHeight + 'px';
+				currentlyFlippedCard = container;
+			} else {
+				currentlyFlippedCard = null;
+			}
+			
+			container.classList.toggle('flipped');
+		}
+
+		// Update publication statistics
+		function updatePublicationStats() {
+			if (allArticlesData.length === 0) return;
+			
+			const now = new Date();
+			const twoDaysAgo = new Date(now.getTime() - (2 * 24 * 60 * 60 * 1000));
+			const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+			
+			// Calculate TODAY count (last 48 hours, unique PMIDs)
+			const todayArticles = allArticlesData.filter(article => {
+				if (article.year && article.month && article.day) {
+					const monthNum = monthNames.indexOf(article.month);
+					if (monthNum > 0) {
+						const articleDate = new Date(article.year, monthNum - 1, article.day);
+						return articleDate >= twoDaysAgo;
+					}
+				}
+				return false;
+			});
+			
+			const startValue = 0;
+			const startTime = performance.now();
+			
+			function updateCount(currentTime) {
+				const elapsed = currentTime - startTime;
+				const progress = Math.min(elapsed / duration, 1);
+				
+				// Easing function for smooth animation
+				const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+				const currentValue = Math.floor(startValue + (targetValue - startValue) * easeOutQuart);
+				
+				element.textContent = currentValue.toLocaleString();
+				
+				if (progress < 1) {
+					requestAnimationFrame(updateCount);
+				} else {
+					element.textContent = targetValue.toLocaleString();
+				}
+			}
+			
+			requestAnimationFrame(updateCount);
+		}
+
+		// Load CSV data
+		async function loadCSVData() {
+			try {
+				const response = await fetch('pubmed_data.csv');
+				if (!response.ok) throw new Error('CSV file not found');
+				
+				const csvText = await response.text();
+				const lines = csvText.split('\n');
+				
+				// Parse header
+				const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+				
+				// Parse data rows
+				allArticlesData = [];
+			let skippedRows = 0;
+			for (let i = 1; i < lines.length; i++) {
+				if (!lines[i].trim()) continue;
+				
+				const row = parseCSVLine(lines[i]);
+				if (row.length === headers.length) {
+					const article = {};
+					headers.forEach((header, index) => {
+						article[header] = row[index];
+					});
+					allArticlesData.push(article);
+				} else {
+					skippedRows++;
+					if (skippedRows <= 5) {
+						console.warn(`Row ${i} has ${row.length} fields, expected ${headers.length}`);
+					}
+				}
+			}
+			
+			console.log(`Loaded ${allArticlesData.length} articles from CSV (${skippedRows} rows skipped)`);
+		
+		// Debug: Count unique PMIDs
+		const debugPmids = new Set(allArticlesData.filter(a => a.pmid && a.pmid.trim()).map(a => a.pmid.trim()));
+		console.log(`Unique PMIDs in loaded data: ${debugPmids.size}`);
+		
+			
+			} catch (error) {
+				console.error('Error loading CSV:', error);
+				return [];
+			}
+		}
+
+
+
+
+		// Parse CSV line handling quoted fields
+		function parseCSVLine(line) {
+			const result = [];
+			let current = '';
+			let inQuotes = false;
+			let i = 0;
+			
+			while (i < line.length) {
+				const char = line[i];
+				
+				if (char === '"') {
+					// Check for escaped quotes ("")
+					if (inQuotes && i + 1 < line.length && line[i + 1] === '"') {
+						current += '"';
+						i += 2;
+						continue;
+					}
+					inQuotes = !inQuotes;
+				} else if (char === ',' && !inQuotes) {
+					result.push(current.replace(/^"|"$/g, '').trim());
+					current = '';
+				} else {
+					current += char;
+				}
+				i++;
+			}
+			result.push(current.replace(/^"|"$/g, '').trim());
+			
+			return result;
+		}
+
+	// Specialty mapping configuration
+	const specialtyMapping = {
+		'Cardiology': {
+			keywords: ['cardio', 'heart', 'coronary', 'cardiac', 'cardiovascular', 'myocardial', 
+			          'aortic', 'valve', 'atrial', 'ventricular', 'arrhythmia', 'pericardial']
+		},
+		'Oncology': {
+			keywords: ['cancer', 'oncology', 'tumor', 'carcinoma', 'malignancy', 'neoplasm', 
+			          'chemotherapy', 'lymphoma', 'leukemia', 'metastatic', 'melanoma', 'sarcoma']
+		},
+		'Neurology': {
+			keywords: ['neuro', 'brain', 'stroke', 'seizure', 'epilep', 'alzheimer', 'parkinson', 
+			          'dementia', 'cerebral', 'cognitive', 'nervous system', 'spinal cord', 'multiple sclerosis']
+		},
+		'Gastroenterology': {
+			keywords: ['gastro', 'digestive', 'liver', 'colon', 'intestin', 'gi ', 'hepat', 'stomach', 
+			          'esophag', 'pancrea', 'bowel', 'crohn', 'ulcerative colitis']
+		},
+		'Orthopedics': {
+			keywords: ['orthop', 'bone', 'joint', 'fracture', 'musculoskeletal', 'arthroplasty', 'spine', 
+			          'skeletal', 'cartilage', 'ligament', 'tendon', 'arthritis']
+		},
+		'Pulmonology': {
+			keywords: ['pulmon', 'lung', 'respiratory', 'asthma', 'copd', 'pneumonia', 'bronch', 
+			          'thoracic', 'pleural', 'airway']
+		},
+		'Nephrology': {
+			keywords: ['renal', 'kidney', 'nephro', 'dialysis', 'glomerular', 'urinary', 'proteinuria']
+		},
+		'Endocrinology': {
+			keywords: ['endocrin', 'diabetes', 'thyroid', 'hormone', 'metabolic', 'insulin', 'glucose', 
+			          'pituitary', 'adrenal']
+		},
+		'Rheumatology': {
+			keywords: ['rheumat', 'arthritis', 'lupus', 'autoimmune', 'inflammatory', 'connective tissue']
+		},
+		'Infectious Disease': {
+			keywords: ['infection', 'infectious', 'viral', 'bacterial', 'antibio', 'sepsis', 'hiv', 
+			          'hepatitis', 'tuberculosis', 'pathogen']
+		},
+		'Hematology': {
+			keywords: ['blood', 'hematol', 'anemia', 'coagulation', 'thrombosis', 'platelet', 'hemoglobin', 
+			          'bone marrow', 'lymphocyte']
+		},
+		'Radiology': {
+			keywords: ['radiolog', 'imaging', 'department of radiology',  'ct scan', 'mri', 'ultrasound', 'x-ray', 'radiograph', 
+			          'tomography', 'fluoroscopy', 'interventional radiology', 'pet scan']
+		},
+		'Dermatology': {
+			keywords: ['dermatol', 'skin', 'cutaneous', 'dermal', 'psoriasis', 'eczema', 'rash']
+		},
+		'Psychiatry': {
+			keywords: ['psychiatr', 'mental health', 'depression', 'anxiety', 'psychosis', 'bipolar', 
+			          'schizophrenia', 'psychological']
+		},
+		'Ophthalmology': {
+			keywords: ['ophthalm', 'eye', 'ocular', 'retina', 'vision', 'visual', 'glaucoma', 'cataract']
+		},
+		'AI/ML/DL': {
+			keywords: ['artificial intelligence', 'machine learning', 'ai-based', 'llm', 'chatgpt', 'deep learning', 'neural network', 'cnn']
+		},
+		'Surgery': {
+			keywords: ['surgical', 'surgery', 'operative', 'postoperative', 'laparoscop', 'transplant']
+		},
+		'Emergency Medicine': {
+			keywords: ['emergency', 'trauma', 'acute care', 'critical care', 'resuscitation']
+		},
+		'Obstetrics & Gynecology': {
+			keywords: ['obstetric', 'gynecolog', 'pregnancy', 'maternal', 'fetal', 'prenatal', 'ovarian', 
+			          'uterine', 'cervical']
+		},
+		'Urology': {
+			keywords: ['urolog', 'prostate', 'bladder', 'urinary tract', 'erectile']
+		},
+		'Anesthesiology': {
+			keywords: ['anesthes', 'analgesia', 'pain management', 'sedation']
+		}
+	};
+
+	// Classify specialty based on keywords in department, title, and abstract
+	function classifySpecialty(departmentText, title, abstract) {
+		const searchText = `${departmentText} ${title} ${abstract}`.toLowerCase();
+		const titleLower = title.toLowerCase();
+		
+		// Score each specialty based on keyword matches
+		const specialtyScores = {};
+		for (const [specialty, data] of Object.entries(specialtyMapping)) {
+			const matches = data.keywords.filter(keyword => 
+				searchText.includes(keyword.toLowerCase())
+			);
+			specialtyScores[specialty] = matches.length;
+		}
+		
+		// Sort specialties by score
+		const sorted = Object.entries(specialtyScores)
+			.filter(([_, score]) => score > 0)
+			.sort((a, b) => b[1] - a[1]);
+		
+		if (sorted.length === 0) {
+			return ['General Medicine'];
+		}
+		
+		const [firstSpecialty, firstScore] = sorted[0];
+		
+		// Check if AI/ML/DL keywords are in the title
+		const aiKeywords = specialtyMapping['AI/ML/DL'].keywords;
+		const hasAIInTitle = aiKeywords.some(keyword => titleLower.includes(keyword.toLowerCase()));
+		
+		// If AI/ML/DL keywords are in title and first specialty is not AI/ML/DL, add it as second specialty
+		if (hasAIInTitle && firstSpecialty !== 'AI/ML/DL') {
+			return [firstSpecialty, 'AI/ML/DL'];
+		}
+		
+		// Check for multidisciplinary (dual specialty) criteria:
+		// 1. First specialty must have at least 3 keyword matches
+		// 2. Second specialty must have at least 2 keyword matches
+		// 3. Second specialty must score >= 40% of first specialty
+		if (sorted.length >= 2 && firstScore >= 3) {
+			const [secondSpecialty, secondScore] = sorted[1];
+			
+			if (secondScore >= 2 && secondScore >= firstScore * 0.4) {
+				return [firstSpecialty, secondSpecialty];
+			}
+		}
+		
+		// Return single specialty
+		return [firstSpecialty];
+	}
+
+	// Calculate article ranking score
+	function calculateArticleScore(article, likeCountsData = {}) {
+		let score = 0;
+		
+		// +1 if 51% of authors are from Rochester
+		const totalAuthors = article.authors ? article.authors.split('|').length : 0;
+		const rochesterAuthors = article.rochester_authors ? article.rochester_authors.split('|').length : 0;
+		if (totalAuthors > 0 && (rochesterAuthors / totalAuthors) > 0.5) {
+			score += 1;
+		}
+		
+		// Check recency (+2 if last 24 hours, +1 if last 48 hours)
+		const now = new Date();
+		const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+		if (article.year && article.month && article.day) {
+			const monthNum = monthNames.indexOf(article.month);
+			if (monthNum > 0) {
+				const articleDate = new Date(article.year, monthNum - 1, article.day);
+				const hoursSincePublished = (now - articleDate) / (1000 * 60 * 60);
+				
+				if (hoursSincePublished <= 24) {
+					score += 2;
+				} else if (hoursSincePublished <= 48) {
+					score += 1;
+				}
+			}
+		}
+		
+		// +2 per keyword matching localStorage (search in affiliations field)
+		const userKeywords = JSON.parse(localStorage.getItem('medcity_keywords') || '[]');
+		const affiliationsText = (article.affiliations || '').toLowerCase();
+		userKeywords.forEach(keyword => {
+			const keywordLower = keyword.toLowerCase().trim();
+			if (keywordLower && affiliationsText.includes(keywordLower)) {
+				score += 2;
+			}
+		});
+		
+		// +2 if in the top 10% of liked articles
+		const allLikeCounts = Object.values(likeCountsData);
+		if (allLikeCounts.length > 0) {
+			allLikeCounts.sort((a, b) => b - a);
+			const top10PercentIndex = Math.floor(allLikeCounts.length * 0.1);
+			const top10PercentThreshold = allLikeCounts[top10PercentIndex] || 0;
+			
+			const articleLikes = likeCountsData[article.pmid] || 0;
+			if (articleLikes >= top10PercentThreshold && top10PercentThreshold > 0) {
+				score += 2;
+			}
+		}
+		
+		return score;
+	}
+
+
+
+	// PubMed data display with search and pagination (now using CSV data)
+	async function fetchPubMedResults(searchQuery = '', page = 1) {
+		currentSearchQuery = searchQuery;
+		currentPage = page;
+		
+		// Ensure data is loaded
+		if (allArticlesData.length === 0) {
+			await loadCSVData();
+		}
+		
+		// Filter articles based on search query
+		if (searchQuery && searchQuery.trim() !== '') {
+			const query = searchQuery.trim().toLowerCase();
+			filteredArticlesData = allArticlesData.filter(article => {
+				return article.title.toLowerCase().includes(query) ||
+					   article.abstract.toLowerCase().includes(query) ||
+					   article.authors.toLowerCase().includes(query) ||
+					   article.journal.toLowerCase().includes(query);
+			});
+		} else {
+			// No search query, show all articles
+			filteredArticlesData = [...allArticlesData];
+		}
+		
+		// Filter to show only articles from the last 7 days
+		const now = new Date();
+		const sevenDaysAgo = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
+		// Filter to show only articles from the last 30 days
+		const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
+
+		const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+		
+		filteredArticlesData = filteredArticlesData.filter(article => {
+			if (article.year && article.month && article.day) {
+				const monthNum = monthNames.indexOf(article.month);
+				if (monthNum > 0) {
+					const articleDate = new Date(article.year, monthNum - 1, article.day);
+					return articleDate >= thirtyDaysAgo;
+				}
+			}
+			return false; // Exclude articles without valid dates
+		});			// Filter out articles where Rochester authors account for less than 1% of total authors
+			filteredArticlesData = filteredArticlesData.filter(article => {
+				const authorsList = article.authors ? article.authors.split('|') : [];
+				const rochesterAuthorsList = article.rochester_authors ? article.rochester_authors.split('|') : [];
+				
+				// Skip articles with no authors
+				if (authorsList.length === 0) return false;
+				
+				// Calculate percentage of Rochester authors
+				const rochesterPercentage = (rochesterAuthorsList.length / authorsList.length) * 100;
+				
+				// Keep only if Rochester authors are >= 5%
+				return rochesterPercentage >= 5;
+			});
+			
+			// Apply ranking system and sort articles by score
+			filteredArticlesData.forEach(article => {
+				article.rankingScore = calculateArticleScore(article, likeCountsForRanking);
+			});
+			
+			// Sort by ranking score (highest first), then by date as secondary sort
+			filteredArticlesData.sort((a, b) => {
+				if (b.rankingScore !== a.rankingScore) {
+					return b.rankingScore - a.rankingScore;
+				}
+				// Secondary sort by date if scores are equal
+				const dateA = new Date(a.year || 0, 0, a.day || 1);
+				const dateB = new Date(b.year || 0, 0, b.day || 1);
+				return dateB - dateA;
+			});
+			
+		// Check if we have results
+		if (filteredArticlesData.length === 0) {
+			document.getElementById("pubmed-results").innerHTML = "<p style='text-align:center; padding:40px; color:#666;'>No results found. Try a different search term.</p>";
+			document.getElementById("pagination-controls").style.display = 'none';
+			return;
+		}
+		
+		// Get user keywords for filtering
+		const userKeywords = JSON.parse(localStorage.getItem('medcity_keywords') || '[]');
+		const hasUserKeywords = userKeywords.length > 0;
+		
+		// Separate articles into today, matching, and non-matching
+		const todayArticles = [];
+		const matchingArticles = [];
+		const otherArticles = [];
+		
+		// Get current date for recency badge logic (reuse 'now' and 'sevenDaysAgo' already declared above)
+		const twoDaysAgo = new Date(now.getTime() - (2 * 24 * 60 * 60 * 1000));
+		
+		// First pass: classify and separate articles
+		filteredArticlesData.forEach(article => {
+			// Parse affiliations for classification
+			const authorsList = article.authors ? article.authors.split('|') : [];
+			const rochesterAuthorsList = article.rochester_authors ? article.rochester_authors.split('|') : [];
+			const affiliationsList = article.affiliations ? article.affiliations.split('|') : [];
+			
+			// Extract department text
+			let rawDepartmentText = '';
+			if (rochesterAuthorsList.length > 0 && affiliationsList.length > 0) {
+				const firstRochAuthor = rochesterAuthorsList[0];
+				const authorIndex = authorsList.indexOf(firstRochAuthor);
+				if (authorIndex >= 0 && authorIndex < affiliationsList.length) {
+					const affiliation = affiliationsList[authorIndex];
+					const deptMatch = affiliation.match(/(?:Department|Division|Center|Institute|Clinic|Unit|Section)\s+of\s+([^,\.]+)/i);
+					if (deptMatch) {
+						rawDepartmentText = deptMatch[1].trim();
+					}
+				}
+			}
+			if (!rawDepartmentText && affiliationsList.length > 0) {
+				for (let i = 0; i < affiliationsList.length; i++) {
+					const affiliation = affiliationsList[i];
+					const deptMatch = affiliation.match(/(?:Department|Division|Center|Institute|Clinic|Unit|Section)\s+of\s+([^,\.]+)/i);
+					if (deptMatch) {
+						rawDepartmentText = deptMatch[1].trim();
+						break;
+					}
+				}
+			}
+			
+			// Classify specialty (returns array of 1 or 2 specialties)
+			const specialties = classifySpecialty(
+				rawDepartmentText,
+				article.title || '',
+				article.abstract || ''
+			);
+			
+			// Store specialties with article for later use
+			article._specialties = specialties;
+			
+			// Parse article date to check if it's from today (last 48 hours)
+			let articleDate = null;
+			const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+			const year = article.year;
+			const month = article.month;
+			const day = article.day;
+			
+			if (year && month && day) {
+				const monthNum = monthNames.indexOf(month);
+				if (monthNum > 0) {
+					articleDate = new Date(year, monthNum - 1, day);
+				}
+			} else if (year && month) {
+				const monthNum = monthNames.indexOf(month);
+				if (monthNum > 0) {
+					articleDate = new Date(year, monthNum - 1, 1);
+				}
+			}
+			
+			// Only include articles published from two days ago up to one day in the future
+			if (articleDate) {
+				const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1); // yesterday
+				const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);   // tomorrow
+				if (articleDate >= start && articleDate <= end) {
+					todayArticles.push(article);
+				}
+			}
+			
+			// Check if any specialty matches user keywords (exclude today articles)
+			const isFromToday = articleDate && articleDate >= twoDaysAgo;
+			if (!isFromToday) {
+				const hasMatch = specialties.some(spec => userKeywords.includes(spec));
+				if (hasUserKeywords && hasMatch) {
+					matchingArticles.push(article);
+				} else {
+					otherArticles.push(article);
+				}
+			}
+		});
+		
+		// Build results HTML - function to render a single article
+		const renderArticle = (article) => {
+				const pmid = article.pmid;
+				const title = article.title;
+				const abstract = article.abstract;
+				const journal = article.journal;
+				const pubdate = article.pubdate;
+				const url = article.url;
+				const llmSummary = article.llm_summary || '';
+				
+				// Parse publication date to check if NEW
+				const year = article.year;
+				const month = article.month;
+				const day = article.day;
+				
+				let articleDate = null;
+				const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+				if (year && month && day) {
+					const monthNum = monthNames.indexOf(month);
+					if (monthNum > 0) {
+						articleDate = new Date(year, monthNum - 1, day);
+					}
+				} else if (year && month) {
+					const monthNum = monthNames.indexOf(month);
+					if (monthNum > 0) {
+						articleDate = new Date(year, monthNum - 1, 1);
+					}
+				}
+				
+// Determine recency badge (within last 48 hrs = TODAY, within 7 days = EARLIER THIS WEEK)
+// Determine recency badge (within last 48 hrs = TODAY, within 30 days = RECENT)
+			let recencyBadge = '';
+			let recencyClass = '';
+			if (articleDate) {
+				if (articleDate >= twoDaysAgo) {
+					recencyBadge = '<i class="fas fa-bell" style="margin-right:4px;"></i>NEW';
+					recencyClass = 'new-tab';
+				} else {
+					// Always show date as 'MON DD' (e.g., JAN 23) for articles older than 48 hours
+					const m = articleDate.getMonth() + 1;
+					const d = articleDate.getDate();
+					const mon = monthNames[m] ? monthNames[m].toUpperCase() : '';
+					recencyBadge = `${mon} ${d}`;
+					recencyClass = 'this-week-tab';
+				}
+			}
+				
+				// Parse authors (pipe-separated in CSV)
+				const authorsList = article.authors ? article.authors.split('|') : [];
+				const rochesterAuthorsList = article.rochester_authors ? article.rochester_authors.split('|') : [];
+				
+				// Format authors for display with et al. truncation
+				let authorsHtml = "";
+				if (article.authors_display) {
+					authorsHtml = article.authors_display;
+				} else if (authorsList.length > 0) {
+					authorsHtml = authorsList.join(', ');
+				}
+				
+				// Apply et al. truncation by counting commas (more than 7 authors = 8+ commas)
+				if (authorsHtml) {
+					const commaCount = (authorsHtml.match(/,/g) || []).length;
+					if (commaCount > 7) {
+						// Keep first 7 authors (up to 7th comma)
+						let commasSeen = 0;
+						let truncateIndex = 0;
+						for (let i = 0; i < authorsHtml.length; i++) {
+							if (authorsHtml[i] === ',') {
+								commasSeen++;
+								if (commasSeen === 7) {
+									truncateIndex = i;
+									break;
+								}
+							}
+						}
+						authorsHtml = authorsHtml.substring(0, truncateIndex) + ', et al.';
+					}
+					
+					// Now make Rochester authors clickable
+					rochesterAuthorsList.forEach(rochAuthor => {
+						if (rochAuthor) {
+							const escapedAuthor = rochAuthor.replace(/'/g, "\\'");
+							authorsHtml = authorsHtml.replace(
+								rochAuthor,
+								`<span class="roch-author" data-author="${escapedAuthor}" tabindex="0" role="button" aria-label="View publications by ${escapedAuthor}">${rochAuthor}</span>`
+							);
+						}
+					});
+				}
+				
+				// Fallback: if no authors display exists, rebuild from raw authors list
+				if (!authorsHtml && authorsList.length) {
+					const rebuilt = authorsList.map(raw => {
+						const t = (raw || '').trim();
+						if (!t) return t;
+						if (rochesterAuthorsList.includes(t)) {
+							const esc = t.replace(/'/g, "\\'");
+							return `<span class="roch-author" data-author="${esc}" tabindex="0" role="button" aria-label="View publications by ${esc}">${t}</span>`;
+						}
+						return t;
+					}).join(', ');
+					if (rebuilt) {
+						authorsHtml = rebuilt;
+					}
+				}
+			
+			// Parse affiliations (pipe-separated in CSV)
+			const affiliationsList = article.affiliations ? article.affiliations.split('|') : [];
+			
+			// Extract department/division from affiliations for classification
+			let rawDepartmentText = '';
+			
+			// First, try to get department from first Rochester author
+			if (rochesterAuthorsList.length > 0 && affiliationsList.length > 0) {
+				const firstRochAuthor = rochesterAuthorsList[0];
+				const authorIndex = authorsList.indexOf(firstRochAuthor);
+				
+				if (authorIndex >= 0 && authorIndex < affiliationsList.length) {
+					const affiliation = affiliationsList[authorIndex];
+					const deptMatch = affiliation.match(/(?:Department|Division|Center|Institute|Clinic|Unit|Section)\s+of\s+([^,\.]+)/i);
+					if (deptMatch) {
+						rawDepartmentText = deptMatch[1].trim();
+					}
+				}
+			}
+			
+			// If no department found from first Rochester author, check all affiliations
+			if (!rawDepartmentText && affiliationsList.length > 0) {
+				for (let i = 0; i < affiliationsList.length; i++) {
+					const affiliation = affiliationsList[i];
+					const deptMatch = affiliation.match(/(?:Department|Division|Center|Institute|Clinic|Unit|Section)\s+of\s+([^,\.]+)/i);
+					if (deptMatch) {
+						rawDepartmentText = deptMatch[1].trim();
+						break; // Use the first match found
+					}
+				}
+			}
+			
+			// Use pre-classified specialties from earlier pass
+			const specialties = article._specialties || ['General Medicine'];
+			
+			// Build specialty badges HTML (use abbreviations for display)
+			const displaySpecialties = specialties.map(s => 
+				s === 'Obstetrics & Gynecology' ? 'OB/GYN' : s
+			);
+			
+			let specialtyBadgesHtml = '';
+			if (displaySpecialties.length === 1) {
+				specialtyBadgesHtml = `<div class="department-badge">${displaySpecialties[0]}</div>`;
+			} else if (displaySpecialties.length === 2) {
+				specialtyBadgesHtml = `<div class="department-badge">${displaySpecialties[0]} · ${displaySpecialties[1]}</div>`;
+			}
+			
+			const rankingScore = article.rankingScore || 0;
+				const citation = `${journal}. ${pubdate}. (${rankingScore})`;
+
+				// Build card with flip effect
+				const hasSummary = llmSummary && llmSummary.trim() !== '' && llmSummary !== 'No abstract available.';
+				
+				return `
+					<div class="result-item">
+						<div class="card-flip-container" role="group" aria-label="${title.substring(0, 100)}...">
+							<!-- Front of card -->
+							<div class="card-face card-front" onclick="flipCard(this.closest('.card-flip-container'), event);" style="cursor: pointer;">
+								${recencyBadge ? `<div class="${recencyClass}">${recencyBadge}</div>` : ''}
+								${specialtyBadgesHtml}
+								<br>
+								<a href="#" class="result-title" 
+								   onclick="event.preventDefault(); event.stopPropagation(); flipCard(this.closest('.card-flip-container'), event);" 
+								   onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flipCard(this.closest('.card-flip-container'), event);}"
+								   tabindex="0"
+								   role="button"
+								   aria-label="Click to view AI summary of: ${title}">${title}</a>
+								<div class="result-authors" onclick="event.stopPropagation();">${authorsHtml}</div>
+								<div class="result-citation"><em>${citation}</em></div>
+								<div style="margin-top: 8px; margin-bottom: 10px;">
+									<a href="${url}" target="_blank" onclick="event.stopPropagation();" style="color: #0056a3; text-decoration: none; font-size: 14px; font-weight: 500;">
+										View on PubMed →
+									</a>
+								</div>
+								<div class="share-buttons" role="group" aria-label="Share on social media" onclick="event.stopPropagation();">
+									<a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" class="facebook" target="_blank" aria-label="Share on Facebook">
+										<i class="icon brands fa-facebook-f" aria-hidden="true"></i> 
+									</a>
+									<a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}" class="twitter" target="_blank" aria-label="Share on Twitter">
+										<i class="icon brands fa-twitter" aria-hidden="true"></i> 
+									</a>
+									<a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}" class="linkedin" target="_blank" aria-label="Share on LinkedIn">
+										<i class="icon brands fa-linkedin" aria-hidden="true"></i> 
+									</a>
+									<button class="like-button" data-pmid="${pmid}" onclick="toggleLike(event, '${pmid}')" aria-label="Like this article" title="Like">
+										<i class="icon far fa-heart" aria-hidden="true"></i>
+									</button>
+								</div>
+							</div>
+							
+							<!-- Back of card (AI Summary) -->
+							${hasSummary ? `
+							<div class="card-face card-back" onclick="flipCard(this.closest('.card-flip-container'), event);" style="cursor: pointer;">
+								<div class="card-back-header">
+									<h4 style="color: #1565c0; margin: 0; font-size: 16px; font-weight: 700; cursor: pointer;"
+									    onclick="event.stopPropagation(); flipCard(this.closest('.card-flip-container'), event);"
+									    onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flipCard(this.closest('.card-flip-container'), event);}"
+									    tabindex="0"
+									    role="button"
+									    aria-label="Click to return to article details">
+										AI SUMMARY <span style="font-size: 14px;">↩</span>
+									</h4>
+								</div>
+								<div class="card-back-content">
+									<div class="card-back-summary">${llmSummary}</div>
+									<div class="card-back-disclaimer">
+										<p style="margin: 0 0 10px 0; font-size: 11px; color: #546e7a; font-style: italic; line-height: 1.4;">
+											This summary was generated by AI and may contain inaccuracies. Refer to the full publication for accurate information.
+										</p>
+										<a href="${url}" target="_blank" onclick="event.stopPropagation();" style="color: #0056a3; text-decoration: none; font-size: 14px; font-weight: 500;">
+											View on PubMed →
+										</a>
+									</div>
+								</div>
+							</div>
+					` : ''}
+					</div>
+				</div>
+			`;
+		};
+		
+		// Build HTML sections
+		let finalHTML = '';
+		
+	// Limit articles for display
+	const maxRecommended = 15;
+	const maxTotal = 50;
+	
+	// Calculate total items to display
+	let displayedCount = 0;
+	
+	// New Today section (always show if there are today articles)
+	let displayedToday = [];
+	let displayedMatching = [];
+	let displayedOther = [];
+	
+	// Only show 'FRESH OFF THE PRESS' if specialty is 'all' (Most Recent)
+	if (todayArticles.length > 0 && (typeof window === 'undefined' || !window.selectedSpecialty || window.selectedSpecialty === 'all')) {
+		// Show all today articles (no limit)
+		displayedToday = todayArticles;
+		displayedCount += displayedToday.length;
+    
+		finalHTML += `
+			<div class="new-today-section" style="max-width:1200px;margin:20px auto;padding:15px 20px;border:2px dotted #ccc;border-radius:8px;background-color:#f5f5f5;">
+			<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+			<h3 style="margin:0;color:#555;font-size:13px;font-weight:500;letter-spacing:0.3px;line-height:1.1;"><i class="fas fa-bell" style="margin-right:6px;"></i>FRESH OFF THE PRESS  <span style="color:#3498db;font-weight:600;">(${displayedToday.length})</span></h3>
+			</div>
+			<div class="results">`;
+    
+		displayedToday.forEach(article => {
+			finalHTML += renderArticle(article);
+		});
+    
+		finalHTML += `</div>
+			</div>`;
+	}
+	
+	// All publications section - limit to remaining space up to 100 total
+	const remainingSlots = maxTotal - displayedCount;
+	if (otherArticles.length > 0 && remainingSlots > 0) {
+		displayedOther = otherArticles.slice(0, remainingSlots);
+		
+		finalHTML += `<div class="all-publications-section"><div class="results">`;
+		
+		displayedOther.forEach(article => {
+			finalHTML += renderArticle(article);
+		});
+		
+		finalHTML += `</div></div>`;
+		displayedCount += displayedOther.length;
+	}
+
+	document.getElementById("pubmed-results").innerHTML = finalHTML;        
+    
+	// Initialize like buttons after articles are rendered
+	initializeLikes();
+	// Store selected specialty globally for conditional rendering
+	if (typeof window !== 'undefined' && window.selectedSpecialty !== undefined) {
+		// already set by filter bar
+	} else {
+		window.selectedSpecialty = 'all';
+	}
+	
+	// Show pagination message if there are more articles than displayed
+	const totalAvailable = matchingArticles.length + otherArticles.length;
+	if (totalAvailable > displayedCount) {
+		document.getElementById("pagination-controls").style.display = 'block';
+		document.getElementById("pageInfo").textContent = `Showing ${displayedCount} of ${totalAvailable} articles (limited to first ${maxTotal})`;
+		document.getElementById("prevPage").style.display = 'none';
+		document.getElementById("nextPage").style.display = 'none';
+	} else {
+		document.getElementById("pagination-controls").style.display = 'none';
+	}
+	}
+	
+	// AI Daily Digest Functions
+	async function loadAIDailyDigest() {
+		try {
+			const response = await fetch('specialty_summaries.csv');
+			const csvText = await response.text();
+			const lines = csvText.split('\n');
+			
+			// Find the DAILY_SUMMARY row
+			for (let i = 1; i < lines.length; i++) {
+				const line = lines[i];
+				if (line.startsWith('DAILY_SUMMARY,')) {
+					// Parse CSV line (handle quoted fields)
+					const matches = line.match(/,"([^"]*)",/);
+					if (matches && matches[1]) {
+						const summary = matches[1];
+						// Extract first paragraph or first 200 characters
+						const firstPara = summary.split('\n\n')[0];
+						const preview = firstPara.length > 200 ? firstPara.substring(0, 197) + '...' : firstPara;
+						
+						const digestElement = document.getElementById('aiDailyDigest');
+						const digestText = document.getElementById('aiDigestText');
+						
+						if (digestElement && digestText && preview) {
+							digestText.textContent = preview;
+							digestElement.style.display = 'block';
+							
+							// Click to show full summary
+							digestElement.addEventListener('click', () => {
+								alert(summary.replace(/\\n/g, '\n'));
+							});
+						}
+					}
+					break;
+				}
+			}
+		} catch (error) {
+			console.error('Error loading AI Daily Digest:', error);
+		}
+	}
+
+	// Featured Carousel Functions
+	let carouselInterval;
+	let currentSlideIndex = 0;
+
+	async function getFeaturedArticles() {
+		// Ensure CSV data is loaded
+		if (allArticlesData.length === 0) {
+			await loadCSVData();
+		}
+		
+		const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+		
+		// Get date range for last week (7 days ago to today)
+		const today = new Date();
+		const sevenDaysAgo = new Date(today);
+		sevenDaysAgo.setDate(today.getDate() - 7);
+		// Get date range for last 30 days (30 days ago to today)
+		const thirtyDaysAgo = new Date(today);
+		thirtyDaysAgo.setDate(today.getDate() - 30);
+		
+		// Filter articles from the last week
+		const lastWeekArticles = allArticlesData.filter(article => {
+			if (!article.year || !article.month || !article.day) return false;
+			
+			const monthNum = monthNames.indexOf(article.month);
+			if (monthNum === -1) return false;
+			
+			const articleDate = new Date(article.year, monthNum - 1, article.day);
+			return articleDate >= sevenDaysAgo && articleDate <= today;
+		});
+		
+		
+		// Return only 3 articles
+		return sortedArticles.slice(0, 3);
+		// Filter articles from the last 30 days
+		const lastMonthArticles = allArticlesData.filter(article => {
+			if (!article.year || !article.month || !article.day) return false;
+            
+			const monthNum = monthNames.indexOf(article.month);
+			if (monthNum === -1) return false;
+            
+			const articleDate = new Date(article.year, monthNum - 1, article.day);
+			return articleDate >= thirtyDaysAgo && articleDate <= today;
+		});
+        
+		// Sort by date (most recent first)
+		const sortedArticles = lastMonthArticles.sort((a, b) => {
+			const monthNumA = monthNames.indexOf(a.month);
+			const monthNumB = monthNames.indexOf(b.month);
+			const dateA = new Date(a.year, monthNumA - 1, a.day);
+			const dateB = new Date(b.year, monthNumB - 1, b.day);
+			return dateB - dateA;
+		});
+        
+		// Return only 3 articles
+		return sortedArticles.slice(0, 3);
+	}
+
+	function initializeFeaturedCarousel(articles) {
+		if (!articles || articles.length === 0) return;
+
+		const carouselContainer = document.querySelector('.carousel-container');
+		const carouselDots = document.querySelector('.carousel-dots');
+		
+		// Clear existing content
+		carouselContainer.innerHTML = '';
+		carouselDots.innerHTML = '';
+		
+		const totalSlides = articles.length;
+		
+		// Create slides dynamically
+		articles.forEach((article, index) => {
+			const slide = document.createElement('div');
+			slide.className = 'carousel-slide';
+			slide.id = `featuredSlide${index}`;
+			slide.innerHTML = createFeaturedCard(article);
+			carouselContainer.appendChild(slide);
+		});
+		
+		// Create dots dynamically
+		articles.forEach((article, index) => {
+			const dot = document.createElement('span');
+			dot.className = 'dot';
+			dot.setAttribute('data-slide', index);
+			dot.addEventListener('click', () => {
+				showSlide(index);
+				resetCarouselTimer(totalSlides);
+			});
+			carouselDots.appendChild(dot);
+		});
+
+		// Show first slide
+		showSlide(0);
+
+		// Start auto-rotation
+		startCarouselRotation(totalSlides);
+	}		function createFeaturedCard(article) {
+			const title = article.title || 'Untitled';
+			const authors = article.authors_display || article.authors?.replaceAll('|', ', ') || 'Authors unavailable';
+			const journal = article.journal || 'Journal pending';
+			const pubdate = article.pubdate || '';
+			const pmid = article.pmid || '';
+			const abstract = article.abstract || 'No abstract available.';
+			const url = article.url || `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`;
+			
+			// Truncate authors if too long
+			let authorsHtml = authors;
+			const authorList = authors.split(',').map(a => a.trim());
+			if (authorList.length > 8) {
+				authorsHtml = authorList.slice(0, 7).join(', ') + ', et al.';
+			}
+
+			// Truncate abstract for preview
+			const abstractPreview = abstract.length > 250 ? abstract.substring(0, 247) + '...' : abstract;
+
+			const citation = `${journal}. ${pubdate}. PMID: ${pmid}`;
+
+			return `
+				<div class="featured-card">
+					<div class="featured-badge">
+						<i class="fas fa-star"></i> FEATURED
+					</div>
+					<i class="fas fa-star featured-star"></i>
+					<a href="${url}" class="result-title" target="_blank" rel="noopener noreferrer">
+						${title}
+					</a>
+					<div class="result-authors">${authorsHtml}</div>
+					<div class="result-citation"><em>${citation}</em></div>
+					<div class="result-abstract">${abstractPreview}</div>
+				</div>
+			`;
+		}
+
+		function showSlide(index) {
+			const slides = document.querySelectorAll('.carousel-slide');
+			const dots = document.querySelectorAll('.carousel-dots .dot');
+
+			// Remove active class from all slides and dots
+			slides.forEach(slide => slide.classList.remove('active'));
+			dots.forEach(dot => dot.classList.remove('active'));
+
+			// Add active class to current slide and dot
+			if (slides[index]) {
+				slides[index].classList.add('active');
+			}
+			if (dots[index]) {
+				dots[index].classList.add('active');
+			}
+
+			currentSlideIndex = index;
+		}
+
+		function startCarouselRotation(totalSlides) {
+			if (!totalSlides || totalSlides < 2) return; // Don't rotate if only 1 slide
+			carouselInterval = setInterval(() => {
+				const nextIndex = (currentSlideIndex + 1) % totalSlides;
+				showSlide(nextIndex);
+			}, 5000); // Rotate every 5 seconds
+		}
+
+		function resetCarouselTimer(totalSlides) {
+			clearInterval(carouselInterval);
+			startCarouselRotation(totalSlides);
+		}
+
+		// Initialize application
+		// Move to global scope so event delegation works
+	async function showAuthorBibliography(authorName) {
+			   const modal = document.getElementById('authorModal');
+			   const title = document.getElementById('authorModalTitle');
+			   const loading = document.getElementById('authorModalLoading');
+			   const bibliography = document.getElementById('authorBibliography');
+			   const statsDiv = document.getElementById('authorStats');
+           
+		   // Show modal and loading state
+		   modal.style.display = 'flex';
+		   document.body.style.overflow = 'hidden';
+		   title.textContent = '';
+		   loading.style.display = 'block';
+		   bibliography.innerHTML = '';
+		   statsDiv.style.display = 'none';
+       
+		   try {
+			   // Build query for this author (all publications)
+			   const query = `${authorName}[Author]`;
+           
+			   // First, get total count
+			   const countUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmode=json&retmax=0`;
+			   const countResponse = await fetch(countUrl);
+			   const countData = await countResponse.json();
+			   const totalCount = parseInt(countData.esearchresult.count);
+           
+			   if (totalCount === 0) {
+				   title.textContent = authorName;
+				   bibliography.innerHTML = '<li style="color: #7f8c8d; text-align: center; padding: 40px;">No publications found for this author.</li>';
+				   loading.style.display = 'none';
+				   return;
+			   }
+			   // Search PubMed for most recent 100
+			   const searchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmax=100&retmode=json&sort=pub+date`;
+			   const searchResponse = await fetch(searchUrl);
+			   const searchData = await searchResponse.json();
+           
+			   const articleIds = searchData.esearchresult.idlist;
+           
+			   // Fetch article details
+			   const fetchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${articleIds.join(',')}&retmode=xml`;
+			   const fetchResponse = await fetch(fetchUrl);
+			   const xmlText = await fetchResponse.text();
+           
+			   // Parse XML
+			   const parser = new DOMParser();
+			   const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+			   const articleNodes = xmlDoc.querySelectorAll('PubmedArticle');
+           
+			   // Extract full name and departments
+			   let fullName = authorName;
+			   const departments = {};
+			   const articles = [];
+           
+			   articleNodes.forEach(articleNode => {
+				   try {
+					   // Find the author and get full name
+					   const authorNodes = articleNode.querySelectorAll('Author');
+					   authorNodes.forEach(authorNode => {
+						   const lastNameNode = authorNode.querySelector('LastName');
+						   const foreNameNode = authorNode.querySelector('ForeName');
+						   const lastName = lastNameNode ? lastNameNode.textContent : '';
+						   const foreName = foreNameNode ? foreNameNode.textContent : '';
+                       
+						   // Check if this matches our author
+						   if (lastName && foreName && authorName.includes(lastName)) {
+							   fullName = `${foreName} ${lastName}`;
+                           
+							   // Extract department from affiliation
+							   const affiliationNodes = authorNode.querySelectorAll('Affiliation');
+							   affiliationNodes.forEach(affNode => {
+								   const affText = affNode.textContent;
+								   if (affText.toLowerCase().includes('rochester')) {
+									   // Try to extract department name
+									   const deptMatch = affText.match(/Department of ([^,;.]+)/i);
+									   if (deptMatch) {
+										   const dept = deptMatch[1].trim();
+										   departments[dept] = (departments[dept] || 0) + 1;
+									   }
+								   }
+							   });
+						   }
+					   });
+                   
+					   // Parse article details
+					   const pmidNode = articleNode.querySelector('PMID');
+					   const pmid = pmidNode ? pmidNode.textContent : '';
+                   
+					   const titleNode = articleNode.querySelector('ArticleTitle');
+					   const title = titleNode ? titleNode.textContent : 'No title';
+                   
+					   const journalNode = articleNode.querySelector('Journal Title');
+					   let journal = journalNode ? journalNode.textContent : '';
+					   if (!journal || journal.split(/\s+/).length > 5) {
+						   const isoAbbrevNode = articleNode.querySelector('ISOAbbreviation');
+						   if (isoAbbrevNode) journal = isoAbbrevNode.textContent;
+					   }
+                   
+					   const yearNode = articleNode.querySelector('PubDate Year');
+					   const year = yearNode ? yearNode.textContent : '';
+                   
+					   const monthNode = articleNode.querySelector('PubDate Month');
+					   const month = monthNode ? monthNode.textContent : '';
+                   
+					   let pubdate = '';
+					   if (year && month) {
+						   pubdate = `${month} ${year}`;
+					   } else if (year) {
+						   pubdate = year;
+					   }
+                   
+					   const authorNodesAll = articleNode.querySelectorAll('Author');
+					   const authorsArray = [];
+					   authorNodesAll.forEach(an => {
+						   const ln = an.querySelector('LastName');
+						   const fn = an.querySelector('ForeName');
+						   if (ln && fn) {
+							   const initials = fn.textContent.split(' ').map(n => n[0]).join('');
+							   authorsArray.push(`${ln.textContent} ${initials}`);
+						   }
+					   });
+					   let authorsDisplay = authorsArray.join(', ');
+					   if (authorsArray.length > 15) {
+						   authorsDisplay = authorsArray.slice(0, 14).join(', ') + ', et al.';
+					   }
+                   
+					   articles.push({
+						   pmid,
+						   title,
+						   journal,
+						   year,
+						   pubdate,
+						   authors: authorsDisplay,
+						   url: `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`
+					   });
+                   
+				   } catch (error) {
+					   console.error('Error parsing article:', error);
+				   }
+			   });
+           
+			   // Sort by year (most recent first)
+			   articles.sort((a, b) => {
+				   const yearA = parseInt(a.year) || 0;
+				   const yearB = parseInt(b.year) || 0;
+				   return yearB - yearA;
+			   });
+           
+			   // Find most common department
+			   let primaryDepartment = '—';
+			   let maxCount = 0;
+			   for (const [dept, count] of Object.entries(departments)) {
+				   if (count > maxCount) {
+					   maxCount = count;
+					   primaryDepartment = dept;
+			   }
+		   }
+       
+		   // Display stats with actual total count
+		   title.textContent = fullName;
+		   document.getElementById('authorPubCount').textContent = totalCount.toLocaleString();
+		   document.getElementById('authorDepartment').textContent = primaryDepartment;
+       
+		   // Update bibliography header
+		   const bibHeader = document.getElementById('authorBibHeader');
+		   if (articles.length < totalCount) {
+			   bibHeader.textContent = `Recent Publications (showing ${articles.length} of ${totalCount})`;
+		   } else {
+			   bibHeader.textContent = `Recent Publications`;
+		   }
+       
+		   statsDiv.style.display = 'block';               // Display bibliography with numbering
+				   let bibliographyHTML = '';
+				   articles.forEach((article, index) => {
+					   const citation = generateMLACitation(article);
+					   bibliographyHTML += `<li><strong style="color: #3498db; margin-right: 8px;">${index + 1}.</strong>${citation}</li>`;
+				   });
+               
+				   bibliography.innerHTML = bibliographyHTML;
+				   loading.style.display = 'none';
+               
+			   } catch (error) {
+				   console.error('Error fetching author bibliography:', error);
+				   bibliography.innerHTML = '<li style="color: #e74c3c; text-align: center; padding: 40px;">Error loading publications. Please try again.</li>';
+				   loading.style.display = 'none';
+			   }
+		   }
+       
+		   function generateMLACitation(article) {
+			   // Format: Authors. "Title." Journal, Month Year.
+			   const dateStr = article.pubdate || article.year || 'n.d.';
+			   return `${article.authors}. "${article.title}" <span class="pub-journal">${article.journal}</span>, <span class="pub-year">${dateStr}</span>. <a href="${article.url}" target="_blank" style="color: #3498db;">PubMed</a>`;
+		   }       
+		   function closeAuthorModal() {
+			   document.getElementById('authorModal').style.display = 'none';
+			   document.body.style.overflow = '';
+		   }
+
+		// Set up event listeners after DOM is loaded
+		document.addEventListener('DOMContentLoaded', function() {
+			// Close button for author modal
+			const authorModalCloseBtn = document.getElementById('authorModalCloseBtn');
+			if (authorModalCloseBtn) {
+				authorModalCloseBtn.addEventListener('click', closeAuthorModal);
+			}
+
+			// Event delegation for Rochester author clicks
+			document.addEventListener('click', function(e) {
+			const trigger = e.target.closest('.roch-author');
+			if (trigger) {
+				const name = (trigger.getAttribute('data-author') || trigger.textContent || '').trim();
+				if (name) {
+					e.preventDefault();
+					e.stopPropagation();
+					showAuthorBibliography(name);
+				}
+			}
+		}, true);
+
+		document.addEventListener('keydown', function(e) {
+			if ((e.key === 'Enter' || e.key === ' ') && e.target && e.target.classList && e.target.classList.contains('roch-author')) {
+				e.preventDefault();
+				const name = (e.target.getAttribute('data-author') || e.target.textContent || '').trim();
+				if (name) showAuthorBibliography(name);
+			}
+		});
+		
+			
+		
+		// Load AI Daily Digest
+		loadAIDailyDigest();
+		
+		// Load data and initialize carousel with 3 featured articles from last week
+		getFeaturedArticles().then(articles => {
+			if (articles && articles.length > 0) {
+				initializeFeaturedCarousel(articles);
+			} else {
+				console.log('No articles found for carousel');
+			}
+		});			// Hero button event listeners
+			const newTodayBtn = document.getElementById('newTodayBtn');
+			const searchDatabaseBtn = document.getElementById('searchDatabaseBtn');
+
+			if (newTodayBtn) {
+				newTodayBtn.addEventListener('click', function() {
+					// Get today's date in YYYY-MM-DD format
+					const today = new Date().toISOString().split('T')[0];
+					
+					// Scroll to results section with header offset
+					const resultsSection = document.getElementById('pubmed-results');
+					if (resultsSection) {
+						const headerHeight = 70; // Fixed header height
+						const elementPosition = resultsSection.getBoundingClientRect().top;
+						const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
+						
+						window.scrollTo({
+							top: offsetPosition,
+							behavior: 'smooth'
+						});
+					}
+					
+					// Filter for today's publications
+					setTimeout(() => {
+						fetchPubMedResults('', 1);
+					}, 500);
+				});
+			}
+			
+			// New Today navigation link (same behavior as hero button)
+
+		if (searchDatabaseBtn) {
+			searchDatabaseBtn.addEventListener('click', function() {
+				// Navigate to search page
+				window.location.href = 'search.html';
+			});
+		}			const leaderboardBtn = document.getElementById('leaderboardBtn');
+			if (leaderboardBtn) {
+				leaderboardBtn.addEventListener('click', function() {
+					// Navigate to leaderboard page
+					window.location.href = 'leaderboard.html';
+				});
+			}
+					// Set up modal event listeners
+			const modalBg = document.getElementById('modalBg');
+			const modalClose = document.getElementById('modalClose');
+            
+			modalClose.addEventListener('click', closeModal);
+			modalBg.addEventListener('click', function(e) {
+				if (e.target === modalBg) closeModal();
+			});
+			
+			// Set up author modal close event listener
+			const authorModal = document.getElementById('authorModal');
+			authorModal.addEventListener('click', function(e) {
+				if (e.target === authorModal) closeAuthorModal();
+			});
+
+			// Set up pagination event listeners
+			document.getElementById('prevPage').addEventListener('click', function() {
+				if (currentPage > 1) {
+					fetchPubMedResults(currentSearchQuery, currentPage - 1);
+				}
+			});
+
+			document.getElementById('nextPage').addEventListener('click', function() {
+				const totalPages = Math.ceil(filteredArticlesData.length / resultsPerPage);
+				if (currentPage < totalPages) {
+					fetchPubMedResults(currentSearchQuery, currentPage + 1);
+				}
+			});
+
+			// Load data and display results
+			loadStatistics();
+			loadCSVData().then(() => {
+				fetchPubMedResults('', 1);
+			});
+		});
+		</script>
+
+		<!-- Specialty Filter Script -->
+		<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			const filterLinks = document.querySelectorAll('.specialty-filter-link');
+
+			// Helper to select a specialty in the filter bar
+			function selectSpecialty(specialty) {
+				window.selectedSpecialty = specialty;
+				filterLinks.forEach(l => {
+					l.classList.remove('selected');
+					l.style.color = '#000';
+					l.style.fontWeight = '';
+					l.style.textDecoration = '';
+				});
+				const selected = Array.from(filterLinks).find(l => l.getAttribute('data-specialty') === specialty);
+				if (selected) {
+					selected.classList.add('selected');
+					selected.style.color = '#1565c0';
+					selected.style.fontWeight = '700';
+					selected.style.textDecoration = 'underline';
+				}
+				// Show/hide cards
+				const cards = document.querySelectorAll('.result-item');
+				cards.forEach(card => {
+					const badge = card.querySelector('.department-badge');
+					if (!badge) {
+						card.style.display = (specialty === 'all') ? '' : 'none';
+						return;
+					}
+					if (specialty === 'all') {
+						card.style.display = '';
+					} else {
+						const badgeText = badge.textContent;
+						if (badgeText === specialty || badgeText.split('·').map(s=>s.trim()).includes(specialty)) {
+							card.style.display = '';
+						} else {
+							card.style.display = 'none';
+						}
+					}
+				});
+			}
+
+			// Default to 'all' on load
+			selectSpecialty('all');
+
+			// When user clicks a filter, update selection
+			filterLinks.forEach(link => {
+				link.addEventListener('click', function(e) {
+					e.preventDefault();
+					const specialty = this.getAttribute('data-specialty');
+					selectSpecialty(specialty);
+				});
+			});
+		});
+		</script>
+		<script src="assets/js/navigation.js" defer></script>
+	</body>
 </html>
