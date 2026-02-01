@@ -5,7 +5,7 @@
 .trending-badge {
 	position: absolute;
 	top: 12px;
-	right: 18px;
+	left: 18px;
 	z-index: 2;
 	background: linear-gradient(90deg,#e74c3c 60%,#ffb347 100%);
 	color: #fff;
