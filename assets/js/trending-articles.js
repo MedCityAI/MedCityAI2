@@ -82,11 +82,10 @@
                 articleMap[a.pmid] = a;
             });
 
-            // Merge like counts into articles, filter for last 14 days
-            let merged = Object.entries(likeData).map(([pmid, likes]) => {
+            // 1. Articles with likes in last 14 days
+            let trending = Object.entries(likeData).map(([pmid, likes]) => {
                 const meta = articleMap[pmid];
                 if (!meta) return null;
-                // Parse pubdate
                 const pub = parseDate(meta.pubdate);
                 if (!pub || pub < cutoff) return null;
                 return {
@@ -98,17 +97,49 @@
                     url: meta.url || `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`
                 };
             }).filter(Boolean);
+            trending.sort((a, b) => (b.likes || 0) - (a.likes || 0));
 
-            // Sort by likes descending, take top 5
-            merged.sort((a, b) => (b.likes || 0) - (a.likes || 0));
-            merged = merged.slice(0, 5);
+            // 2. If fewer than 5, fill with most recent articles from last 14 days (even if 0 likes)
+            if (trending.length < 5) {
+                // Find all articles from last 14 days not already in trending
+                let recent = articles.filter(a => {
+                    const pub = parseDate(a.pubdate);
+                    return pub && pub >= cutoff && !trending.find(t => t.pmid === a.pmid);
+                }).map(a => ({
+                    pmid: a.pmid,
+                    likes: Number(likeData[a.pmid] || 0),
+                    title: a.title,
+                    authors_display: a["authors_display"] || a["authors"] || '',
+                    pubdate: a.pubdate,
+                    url: a.url || `https://pubmed.ncbi.nlm.nih.gov/${a.pmid}/`
+                }));
+                // Sort by pubdate descending
+                recent.sort((a, b) => parseDate(b.pubdate) - parseDate(a.pubdate));
+                trending = trending.concat(recent.slice(0, 5 - trending.length));
+            }
 
-            if (!merged.length) {
+            // 3. If still fewer than 5, fill with most recent articles overall
+            if (trending.length < 5) {
+                let recentAll = articles.filter(a => !trending.find(t => t.pmid === a.pmid)).map(a => ({
+                    pmid: a.pmid,
+                    likes: Number(likeData[a.pmid] || 0),
+                    title: a.title,
+                    authors_display: a["authors_display"] || a["authors"] || '',
+                    pubdate: a.pubdate,
+                    url: a.url || `https://pubmed.ncbi.nlm.nih.gov/${a.pmid}/`
+                }));
+                recentAll.sort((a, b) => parseDate(b.pubdate) - parseDate(a.pubdate));
+                trending = trending.concat(recentAll.slice(0, 5 - trending.length));
+            }
+
+            trending = trending.slice(0, 5);
+
+            if (!trending.length) {
                 emptyMsg.style.display = '';
                 return;
             }
             list.innerHTML = '';
-            merged.forEach(article => {
+            trending.forEach(article => {
                 // Get first author last name
                 let firstAuthor = 'Unknown';
                 if (article.authors_display) {
