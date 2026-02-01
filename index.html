@@ -328,6 +328,32 @@
 			margin: 0;
 		}
 		
+		/* Custom scrollbar for trending articles */
+		.trending-articles::-webkit-scrollbar {
+			width: 8px;
+		}
+		
+		.trending-articles::-webkit-scrollbar-track {
+			background: transparent;
+			border-radius: 16px;
+		}
+		
+		.trending-articles::-webkit-scrollbar-thumb {
+			background: #ddd;
+			border-radius: 10px;
+			border: 2px solid #fff;
+		}
+		
+		.trending-articles::-webkit-scrollbar-thumb:hover {
+			background: #bbb;
+		}
+		
+		/* Firefox scrollbar styling */
+		.trending-articles {
+			scrollbar-width: thin;
+			scrollbar-color: #ddd transparent;
+		}
+		
 		.department-badge {
 			position: absolute;
 			top: 8px;
