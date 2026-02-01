@@ -94,6 +94,7 @@
                     title: meta.title,
                     authors_display: meta["authors_display"] || meta["authors"] || '',
                     pubdate: meta.pubdate,
+                    journal: meta.journal || '',
                     url: meta.url || `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`
                 };
             }).filter(Boolean);
@@ -111,6 +112,7 @@
                     title: a.title,
                     authors_display: a["authors_display"] || a["authors"] || '',
                     pubdate: a.pubdate,
+                    journal: a.journal || '',
                     url: a.url || `https://pubmed.ncbi.nlm.nih.gov/${a.pmid}/`
                 }));
                 // Sort by pubdate descending
@@ -126,6 +128,7 @@
                     title: a.title,
                     authors_display: a["authors_display"] || a["authors"] || '',
                     pubdate: a.pubdate,
+                    journal: a.journal || '',
                     url: a.url || `https://pubmed.ncbi.nlm.nih.gov/${a.pmid}/`
                 }));
                 recentAll.sort((a, b) => parseDate(b.pubdate) - parseDate(a.pubdate));
@@ -164,6 +167,7 @@
                         <div style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; line-height: 1.4;">
                             <span style="font-weight:700;color:#e74c3c;margin-right:7px;font-size:1em;vertical-align:middle;">${article.likes || 0} <i class='fas fa-heart'></i></span>
                             <span style="color:#0056a3;font-weight:600;font-size:1em;vertical-align:middle;">${firstAuthor} et al. "${article.title}"</span>
+                            ${article.journal ? `<span style="color:#888;font-size:0.9em;font-style:italic;margin-left:4px;"> — ${article.journal}</span>` : ''}
                         </div>
                     </a>
                 `;
