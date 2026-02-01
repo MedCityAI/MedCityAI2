@@ -155,6 +155,45 @@
                 `;
                 list.appendChild(li);
             });
+            
+            // Auto-scroll functionality - scroll one entry every 3 seconds
+            const container = document.getElementById('trending-articles');
+            if (container && trending.length > 0) {
+                let scrollInterval = setInterval(() => {
+                    const currentScroll = container.scrollTop;
+                    const maxScroll = container.scrollHeight - container.clientHeight;
+                    
+                    // Estimate height of one list item (approximately 40-45px with margins)
+                    const itemHeight = 45;
+                    
+                    if (currentScroll >= maxScroll - 5) {
+                        // At bottom, scroll back to top
+                        container.scrollTo({ top: 0, behavior: 'smooth' });
+                    } else {
+                        // Scroll to next item
+                        container.scrollTo({ top: currentScroll + itemHeight, behavior: 'smooth' });
+                    }
+                }, 3000); // Every 3 seconds
+                
+                // Pause auto-scroll on hover
+                container.addEventListener('mouseenter', () => {
+                    clearInterval(scrollInterval);
+                });
+                
+                container.addEventListener('mouseleave', () => {
+                    scrollInterval = setInterval(() => {
+                        const currentScroll = container.scrollTop;
+                        const maxScroll = container.scrollHeight - container.clientHeight;
+                        const itemHeight = 45;
+                        
+                        if (currentScroll >= maxScroll - 5) {
+                            container.scrollTo({ top: 0, behavior: 'smooth' });
+                        } else {
+                            container.scrollTo({ top: currentScroll + itemHeight, behavior: 'smooth' });
+                        }
+                    }, 3000);
+                });
+            }
         }).catch(() => {
             emptyMsg.style.display = '';
         });
