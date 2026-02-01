@@ -1929,7 +1929,11 @@
 		try {
 			console.log('Sending to Google Apps Script:', { action, pmid, delta });
 			
-			const url = `https://script.google.com/macros/s/AKfycbw2g5z_1ALbqWjcdY7YsCkwpOpztGJhjOgfRxhGhB8dDA1nwtvySoB5nivNpCnaxIz4/exec?action=${encodeURIComponent(action)}&pmid=${encodeURIComponent(pmid)}&delta=${encodeURIComponent(delta)}&timestamp=${encodeURIComponent(new Date().toISOString())}`;
+			const url = `https://script.google.com/macros/s/AKfycbxhePChMjsY_9dh-Ao8qog1OAYUzCeqnlgcv6h_UlfKetiLYDERZ8whnVbab-nRjwRw/exec?action=${encodeURIComponent(action)}&pmid=${encodeURIComponent(pmid)}&delta=${encodeURIComponent(delta)}&timestamp=${encodeURIComponent(new Date().toISOString())}`;
+			
+			// Determine if this is a like or unlike based on delta
+			const isLike = delta > 0;
+			const url = `https://script.google.com/macros/s/AKfycbxhePChMjsY_9dh-Ao8qog1OAYUzCeqnlgcv6h_UlfKetiLYDERZ8whnVbab-nRjwRw/exec?action=click&type=${encodeURIComponent(isLike ? 'like' : 'unlike')}&pmid=${encodeURIComponent(pmid)}&delta=${encodeURIComponent(delta)}&timestamp=${encodeURIComponent(new Date().toISOString())}`;
 			
 			const response = await fetch(url, {
 				method: "GET",
@@ -1944,7 +1948,7 @@
 	async function fetchLikeCounts() {
 		try {
 			console.log('Fetching like counts from Google Sheet...');
-			const url = 'https://script.google.com/macros/s/AKfycbw2g5z_1ALbqWjcdY7YsCkwpOpztGJhjOgfRxhGhB8dDA1nwtvySoB5nivNpCnaxIz4/exec?action=getCounts';
+			const url = 'https://script.google.com/macros/s/AKfycbxhePChMjsY_9dh-Ao8qog1OAYUzCeqnlgcv6h_UlfKetiLYDERZ8whnVbab-nRjwRw/exec?action=getCounts';
 			
 			const response = await fetch(url);
 			const data = await response.json();
