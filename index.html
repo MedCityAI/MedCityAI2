@@ -325,9 +325,34 @@
 			border-radius: 16px 16px 0 0;
 			z-index: 10;
 			pointer-events: none;
-			display: block;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
 			margin: -24px -12px 12px -12px;
 			box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+		}
+		
+		.trending-badge-fire {
+			position: absolute;
+			top: -8px;
+			left: 8px;
+			background: #e74c3c;
+			color: #fff;
+			font-size: 11px;
+			font-weight: bold;
+			padding: 4px 8px;
+			border-radius: 12px;
+			z-index: 11;
+			pointer-events: none;
+			display: inline-flex;
+			align-items: center;
+			gap: 4px;
+		}
+		
+		.trending-badge-title {
+			display: flex;
+			align-items: center;
+			gap: 6px;
 		}
 		
 		.trending-badge-subtitle {
@@ -335,7 +360,7 @@
 			font-size: 10px;
 			color: #666;
 			font-weight: normal;
-			margin-left: 8px;
+			margin-left: auto;
 		}
 		
 		/* Custom scrollbar for trending articles */
@@ -1622,7 +1647,8 @@
 					</div>
 					<div class="hero-right">
 					<div class="trending-articles" id="trending-articles" style="background: #fff; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.15); padding: 0 12px 24px 12px; max-width: 380px; min-height: 220px; max-height: 320px; overflow-y: auto; position: relative; overflow-x: hidden;">
-					<div class="trending-badge-tab"><i class="fas fa-fire" style="margin-right:6px;"></i>TRENDING<span class="trending-badge-subtitle">Community Favorites</span></div>
+					<div class="trending-badge-fire"><i class="fas fa-fire"></i>TRENDING</div>
+					<div class="trending-badge-tab"><div class="trending-badge-title">TRENDING</div><span class="trending-badge-subtitle">Community Favorites</span></div>
 						<ol id="trending-articles-list" style="list-style: none; padding: 0; margin: 0;">
 							<!-- Top 5 articles will be inserted here by JS -->
 						</ol>
