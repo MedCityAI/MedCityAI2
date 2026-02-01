@@ -2058,7 +2058,9 @@
 		try {
 			console.log('Sending to Google Apps Script:', { action, pmid, delta });
 			
-			const url = `https://script.google.com/macros/s/AKfycbw2g5z_1ALbqWjcdY7YsCkwpOpztGJhjOgfRxhGhB8dDA1nwtvySoB5nivNpCnaxIz4/exec?action=${encodeURIComponent(action)}&pmid=${encodeURIComponent(pmid)}&delta=${encodeURIComponent(delta)}&timestamp=${encodeURIComponent(new Date().toISOString())}`;
+			// Determine if this is a like or unlike based on delta
+			const isLike = delta > 0;
+			const url = `https://script.google.com/macros/s/AKfycbw2g5z_1ALbqWjcdY7YsCkwpOpztGJhjOgfRxhGhB8dDA1nwtvySoB5nivNpCnaxIz4/exec?action=click&type=${encodeURIComponent(isLike ? 'like' : 'unlike')}&pmid=${encodeURIComponent(pmid)}&delta=${encodeURIComponent(delta)}&timestamp=${encodeURIComponent(new Date().toISOString())}`;
 			
 			const response = await fetch(url, {
 				method: "GET",
