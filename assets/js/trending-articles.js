@@ -156,11 +156,12 @@
                 list.appendChild(li);
             });
             
-            // Auto-scroll functionality - continuous smooth scrolling
+            // Auto-scroll functionality - continuous smooth scrolling with fade effects
             const container = document.getElementById('trending-articles');
             if (container && trending.length > 0) {
                 let isScrolling = true;
                 let animationFrameId;
+                let isFading = false;
                 
                 function continuousScroll() {
                     if (!isScrolling) return;
@@ -169,8 +170,21 @@
                     const maxScroll = container.scrollHeight - container.clientHeight;
                     
                     if (currentScroll >= maxScroll - 1) {
-                        // At bottom, scroll back to top
-                        container.scrollTop = 0;
+                        // At bottom, start fade out
+                        if (!isFading) {
+                            isFading = true;
+                            container.classList.add('trending-articles-fading');
+                            // Reset to top after fade
+                            setTimeout(() => {
+                                container.scrollTop = 0;
+                                container.classList.remove('trending-articles-fading');
+                                container.classList.add('trending-articles-returning');
+                                setTimeout(() => {
+                                    container.classList.remove('trending-articles-returning');
+                                    isFading = false;
+                                }, 600);
+                            }, 800);
+                        }
                     } else {
                         // Scroll by 0.5px per frame for smooth continuous motion
                         container.scrollTop += 0.5;
@@ -188,6 +202,9 @@
                     if (animationFrameId) {
                         cancelAnimationFrame(animationFrameId);
                     }
+                    // Remove fade classes on hover
+                    container.classList.remove('trending-articles-fading', 'trending-articles-returning');
+                    container.style.opacity = '1';
                 });
                 
                 container.addEventListener('mouseleave', () => {

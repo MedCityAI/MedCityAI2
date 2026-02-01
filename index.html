@@ -365,6 +365,29 @@
 			margin-left: auto;
 		}
 		
+		/* Fade effect for trending articles list */
+		.trending-articles::after {
+			content: '';
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			height: 40px;
+			background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
+			pointer-events: none;
+			z-index: 5;
+		}
+		
+		.trending-articles-fading {
+			opacity: 0.3;
+			transition: opacity 0.8s ease-out;
+		}
+		
+		.trending-articles-returning {
+			opacity: 1;
+			transition: opacity 0.6s ease-in;
+		}
+		
 		/* Custom scrollbar for trending articles */
 		.trending-articles::-webkit-scrollbar {
 			width: 8px;
