@@ -156,42 +156,43 @@
                 list.appendChild(li);
             });
             
-            // Auto-scroll functionality - scroll one entry every 3 seconds
+            // Auto-scroll functionality - continuous smooth scrolling
             const container = document.getElementById('trending-articles');
             if (container && trending.length > 0) {
-                let scrollInterval = setInterval(() => {
+                let isScrolling = true;
+                let animationFrameId;
+                
+                function continuousScroll() {
+                    if (!isScrolling) return;
+                    
                     const currentScroll = container.scrollTop;
                     const maxScroll = container.scrollHeight - container.clientHeight;
                     
-                    // Estimate height of one list item (approximately 40-45px with margins)
-                    const itemHeight = 45;
-                    
-                    if (currentScroll >= maxScroll - 5) {
+                    if (currentScroll >= maxScroll - 1) {
                         // At bottom, scroll back to top
-                        container.scrollTo({ top: 0, behavior: 'smooth' });
+                        container.scrollTop = 0;
                     } else {
-                        // Scroll to next item
-                        container.scrollTo({ top: currentScroll + itemHeight, behavior: 'smooth' });
+                        // Scroll by 0.5px per frame for smooth continuous motion
+                        container.scrollTop += 0.5;
                     }
-                }, 3000); // Every 3 seconds
+                    
+                    animationFrameId = requestAnimationFrame(continuousScroll);
+                }
+                
+                // Start continuous scrolling
+                continuousScroll();
                 
                 // Pause auto-scroll on hover
                 container.addEventListener('mouseenter', () => {
-                    clearInterval(scrollInterval);
+                    isScrolling = false;
+                    if (animationFrameId) {
+                        cancelAnimationFrame(animationFrameId);
+                    }
                 });
                 
                 container.addEventListener('mouseleave', () => {
-                    scrollInterval = setInterval(() => {
-                        const currentScroll = container.scrollTop;
-                        const maxScroll = container.scrollHeight - container.clientHeight;
-                        const itemHeight = 45;
-                        
-                        if (currentScroll >= maxScroll - 5) {
-                            container.scrollTo({ top: 0, behavior: 'smooth' });
-                        } else {
-                            container.scrollTo({ top: currentScroll + itemHeight, behavior: 'smooth' });
-                        }
-                    }, 3000);
+                    isScrolling = true;
+                    continuousScroll();
                 });
             }
         }).catch(() => {
