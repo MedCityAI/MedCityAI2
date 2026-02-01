@@ -1571,108 +1571,181 @@
 						</div>
 					</div>
 					<div class="hero-right">
-						<div class="trending-articles" style="background: #fff; border-radius: 16px; box-shadow: 0 4px 16px rgba(52,152,219,0.10); padding: 24px; max-width: 380px;">
-							<h3 style="font-size: 1.2em; font-weight: 700; color: #2568BE; margin-bottom: 18px; letter-spacing: 0.5px;">Trending Articles (14 days)</h3>
-							<ol id="trendingArticlesList" style="list-style: none; padding: 0; margin: 0;">
-								<!-- Trending articles will be injected here -->
-							</ol>
-							<div id="noTrendingArticles" style="display:none; color:#888; text-align:center; font-size:15px; margin-top:20px;">No trending articles in the last 14 days.</div>
-						</div>
+					<div class="trending-articles" id="trending-articles" style="background: #fff; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.15); padding: 24px; max-width: 380px; min-height: 220px;">
+						<h3 style="font-size: 1.2em; color: #2c3e50; margin-bottom: 18px; font-weight: 700; letter-spacing: 0.5px;">Trending Articles (14 days)</h3>
+						<ol id="trending-articles-list" style="list-style: none; padding: 0; margin: 0;">
+							<!-- Top 5 articles will be inserted here by JS -->
+						</ol>
+						<div id="trending-articles-empty" style="color: #888; font-size: 14px; margin-top: 18px; display: none;">No trending articles in the last 14 days.</div>
+					</div>
 					</div>
 				</div>
 			</section>
 			<!-- Specialty filter bar and modal removed -->
+            <!-- Results Section -->
+            <main id="main-content" role="main">
+				<div class="filter-bar">
+					<div class="filter-bar-content">
+						<!-- Specialty Filter Bar (as text links above results) -->
+						<nav id="specialty-filter" style="max-width:1200px;margin:0 auto 10px auto;padding:10px 0 0 0;display:flex;flex-wrap:nowrap;gap:0;justify-content:center;align-items:center;font-size:15px;">
+							<a href="#" class="specialty-filter-link selected" data-specialty="all" style="color:#000;font-weight:700;text-decoration:underline;">Most Recent</a>
+							<span style="margin: 0 10px; color: #888;">&middot;</span>
+							<a href="#" class="specialty-filter-link" data-specialty="Radiology" style="color:#000;">Radiology</a>
+							<span style="margin: 0 10px; color: #888;">&middot;</span>
+							<a href="#" class="specialty-filter-link" data-specialty="Oncology" style="color:#000;">Oncology</a>
+							<span style="margin: 0 10px; color: #888;">&middot;</span>
+							<a href="#" class="specialty-filter-link" data-specialty="Cardiology" style="color:#000;">Cardiology</a>
+							<span style="margin: 0 10px; color: #888;">&middot;</span>
+							<a href="#" class="specialty-filter-link" data-specialty="Neurology" style="color:#000;">Neurology</a>
+							<span style="margin: 0 10px; color: #888;">&middot;</span>
+							<a href="#" class="specialty-filter-link" data-specialty="AI/ML/DL" style="color:#000;">AI/ML/DL</a>
+						</nav>
+						<!-- Results Grid -->
+						<div id="pubmed-results" role="region" aria-live="polite" aria-atomic="false" aria-label="Publication results"></div>
+						
+						<!-- Pagination Controls -->
+						<nav id="pagination-controls" style="display:none; text-align:center; margin: 30px 0; padding: 20px;" role="navigation" aria-label="Pagination">
+							<button id="prevPage" aria-label="Go to previous page" style="padding:12px 24px; margin:0 10px; border-radius:25px; border:1px solid #3498db; background:white; color:#3498db; cursor:pointer; font-weight:600;">← Previous</button>
+							<span id="pageInfo" role="status" aria-live="polite" style="margin:0 20px; font-size:16px; color:#2c3e50; font-weight:500;">Page 1</span>
+							<button id="nextPage" aria-label="Go to next page" style="padding:12px 24px; margin:0 10px; border-radius:25px; border:1px solid #3498db; background:white; color:#3498db; cursor:pointer; font-weight:600;">Next →</button>
+						</nav>
+					</div>
+				</div>
 
-			// Trending Articles (Top 5, last 14 days)
-			async function renderTrendingArticles() {
-				// Wait for allArticlesData to be loaded if needed
-				if (typeof allArticlesData === 'undefined' || allArticlesData.length === 0) {
-					if (typeof loadCSVData === 'function') await loadCSVData();
-				}
-				const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-				const today = new Date();
-				const fourteenDaysAgo = new Date(today);
-				fourteenDaysAgo.setDate(today.getDate() - 14);
-				// Filter for last 14 days
-				const recentArticles = (allArticlesData || []).filter(article => {
-					if (!article.year || !article.month || !article.day) return false;
-					const monthNum = monthNames.indexOf(article.month);
-					if (monthNum === -1) return false;
-					const articleDate = new Date(article.year, monthNum - 1, article.day);
-					return articleDate >= fourteenDaysAgo && articleDate <= today;
-				});
-				// Sort by like count, descending
-				recentArticles.sort((a, b) => (b.likes || 0) - (a.likes || 0));
-				// Take top 5
-				const topArticles = recentArticles.slice(0, 5);
-				const trendingList = document.getElementById('trendingArticlesList');
-				const noTrending = document.getElementById('noTrendingArticles');
-				trendingList.innerHTML = '';
-				if (topArticles.length === 0) {
-					noTrending.style.display = '';
-					return;
-				} else {
-					noTrending.style.display = 'none';
-				}
-				topArticles.forEach(article => {
-					const pmid = article.pmid || '';
-					const title = article.title || 'Untitled';
-					const authors = article.authors_display || article.authors?.replaceAll('|', ', ') || 'Authors unavailable';
-					const likeCount = article.likes || 0;
-					// Get first author last name
-					let firstAuthor = 'Unknown';
-					if (authors) {
-						const first = authors.split(',')[0].trim();
-						firstAuthor = first.split(' ')[first.split(' ').length - 1];
-					}
-					// Compose display: Like count, first author et al., "Title"
-					const li = document.createElement('li');
-					li.style.display = 'flex';
-					li.style.alignItems = 'center';
-					li.style.marginBottom = '16px';
-					li.innerHTML = `
-						<button class="like-button" data-pmid="${pmid}" style="margin-right:10px;" onclick="toggleLike(event, '${pmid}')" aria-label="Like this article" title="Like">
-							<span class="like-count">${likeCount}</span> <i class="icon far fa-heart" aria-hidden="true"></i>
-						</button>
-						<span style="font-size:15px; color:#2c3e50; font-weight:600; margin-right:6px;">${firstAuthor} et al.</span>
-						<a href="#" class="trending-article-link" data-pmid="${pmid}" style="font-size:15px; color:#0056a3; text-decoration:underline; font-weight:500; flex:1;" title="Jump to article">“${title}”</a>
-					`;
-					trendingList.appendChild(li);
-				});
-				// Add click listeners for jump-to-article
-				trendingList.querySelectorAll('.trending-article-link').forEach(link => {
-					link.addEventListener('click', function(e) {
-						e.preventDefault();
-						const pmid = this.getAttribute('data-pmid');
-						// Try to find the result-item with this pmid
-						const target = document.querySelector(`.result-item [data-pmid='${pmid}']`);
-						if (target) {
-							const card = target.closest('.result-item');
-							if (card) {
-								card.scrollIntoView({behavior:'smooth', block:'center'});
-								card.classList.add('highlight-trending');
-								setTimeout(()=>card.classList.remove('highlight-trending'), 2000);
-							}
-						} else {
-							// If not found, scroll to results grid
-							const results = document.getElementById('pubmed-results');
-							if (results) results.scrollIntoView({behavior:'smooth'});
-						}
-					});
-				});
+						<!-- Modal for abstracts -->
+						<div id="modalBg" class="modal-bg" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
+							<div class="modal-content" role="document">
+								<button class="modal-close" id="modalClose" aria-label="Close modal">&times;</button>
+								<h3 id="modalTitle"></h3>
+								<div class="modal-abstract" id="modalAbstract"></div>
+							</div>
+						</div>
+						
+				</div>
+			</main>
+
+		<!-- Footer -->
+			<footer id="footer">
+				<ul class="icons">
+					<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+					<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+					<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+					<li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
+					<li><a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+				</ul>
+				<ul class="copyright">
+					<li>&copy; MedCityAI</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li><li><a href="terms_of_use.html" style="color: #999;">Terms</a> | <a href="privacy_policy.html" style="color: #999;">Privacy</a> | <a href="cookie_policy.html" style="color: #999;">Cookies</a></li>
+				</ul>
+			</footer>
+		</div>
+
+		<!-- Scripts -->
+		<script src="assets/js/jquery.min.js" defer></script>
+		<script src="assets/js/jquery.scrollex.min.js" defer></script>
+		<script src="assets/js/jquery.scrolly.min.js" defer></script>
+		<script src="assets/js/browser.min.js" defer></script>
+		<script src="assets/js/breakpoints.min.js" defer></script>
+		<script src="assets/js/util.js" defer></script>
+		<script src="assets/js/main.js" defer></script>
+		<!-- Specialty filter bar and modal scripts removed -->
+
+		<script defer>
+		
+		// Application state
+		let VarTot = 0, VarDay = 0, VarWeek = 0, VarMonth = 0;
+		let currentPage = 1;
+		let currentSearchQuery = '';
+		const resultsPerPage = 50;
+		let selectedTopics = [];
+
+		// Welcome Modal Functions
+		function checkFirstVisit() {
+			const hasKeywords = localStorage.getItem('medcity_keywords');
+			if (!hasKeywords) {
+				document.getElementById('welcomeModal').classList.add('active');
+			}
+		}
+
+		function skipWelcome() {
+			localStorage.setItem('medcity_keywords', JSON.stringify([]));
+			document.getElementById('welcomeModal').classList.remove('active');
+		}
+
+		function saveTopics() {
+			if (selectedTopics.length === 0) {
+				alert('Please select at least one topic to continue');
+				return;
+			}
+			localStorage.setItem('medcity_keywords', JSON.stringify(selectedTopics));
+			document.getElementById('welcomeModal').classList.remove('active');
+			console.log('Saved topics:', selectedTopics);
+		}
+
+		// Modal functions
+		function showAbstractModal(link) {
+			const modalBg = document.getElementById('modalBg');
+			const modalTitle = document.getElementById('modalTitle');
+			const modalAbstract = document.getElementById('modalAbstract');
+			
+			const title = link.getAttribute('data-title');
+			const abstract = link.getAttribute('data-abstract');
+			const pmid = link.getAttribute('data-pmid');
+			const authors = link.getAttribute('data-authors');
+			const affiliations = link.getAttribute('data-affiliations');
+			const llmSummary = link.getAttribute('data-llm-summary');
+
+			// Title in black at top
+			modalTitle.innerHTML = `<span style='color:#111;font-weight:800;font-size:1.3em;'>${title}</span>`;
+
+			// Authors and affiliations
+			let authorList = '';
+			if (authors) {
+				authorList += `<div style='margin:10px 0 18px 0;font-size:1em;color:#222;'><strong>Authors:</strong> ${authors.replace(/;/g, '; ')}</div>`;
+			}
+			if (affiliations) {
+				authorList += `<div style='margin-bottom:18px;font-size:0.95em;color:#444;'><strong>Affiliations:</strong> ${affiliations.replace(/;/g, '; ')}</div>`;
 			}
 
-			// Add highlight style for trending jump
-			const style = document.createElement('style');
-			style.innerHTML = `.highlight-trending { box-shadow: 0 0 0 4px #3498db, 0 4px 16px rgba(52,152,219,0.15)!important; transition: box-shadow 0.3s; }`;
-			document.head.appendChild(style);
-
-			// Call renderTrendingArticles after results are loaded
-			if (document.readyState !== 'loading') {
-				setTimeout(renderTrendingArticles, 800);
+			// Start with authors
+			let content = authorList;
+			
+			// Show AI-Generated Summary if available, otherwise show original abstract
+			if (llmSummary && llmSummary.trim() !== '' && llmSummary !== 'No abstract available.') {
+				content += `<div style="background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%); padding: 20px; border-radius: 12px; margin-bottom: 24px; border-left: 4px solid #2196f3; box-shadow: 0 2px 8px rgba(33, 150, 243, 0.1);">`;
+				content += `<div style="display: flex; align-items: center; margin-bottom: 12px;">`;
+				content += `<span style="font-size: 24px; margin-right: 10px;">🤖</span>`;
+				content += `<h4 style="color: #1565c0; margin: 0; font-size: 16px; font-weight: 700;">AI-GENERATED PLAIN LANGUAGE SUMMARY</h4>`;
+				content += `</div>`;
+				content += `<p style="margin: 0 0 12px 0; line-height: 1.7; color: #1a237e; font-size: 15px;">${llmSummary}</p>`;
+				content += `<div style="padding-top: 12px; border-top: 1px solid #bbdefb; margin-top: 12px;">`;
+				content += `<p style="margin: 0; font-size: 12px; color: #546e7a; font-style: italic; line-height: 1.5;">`;
+				content += `<strong>⚠️ Disclaimer:</strong> This summary was generated by artificial intelligence and may contain inaccuracies or oversimplifications. `;
+				content += `Please refer to the full publication for complete and accurate information. `;
+				content += `This AI summary is provided for informational purposes only and should not be used for clinical decision-making.`;
+				content += `</p>`;
+				content += `</div>`;
+				content += `</div>`;
 			} else {
-				document.addEventListener('DOMContentLoaded', () => setTimeout(renderTrendingArticles, 800));
+				// Fallback to original abstract if no LLM summary
+				content += `<h4 style="color: #0056a3; border-bottom: 2px solid #0056a3; padding-bottom: 8px; margin-bottom: 12px;">Abstract</h4>`;
+				content += `<p style="line-height: 1.6;">${abstract}</p>`;
 			}
+
+			modalAbstract.innerHTML = content;
+			modalBg.style.display = 'flex';
+
+			// Prevent scroll to top
+			if (window.scrollY) {
+				setTimeout(() => window.scrollTo({top: window.scrollY}), 0);
+			}
+		}
+
+		function closeModal() {
+			const modalBg = document.getElementById('modalBg');
+			modalBg.style.display = 'none';
+			modalBg.setAttribute('aria-hidden', 'true');
+			
+			// Return focus to the element that opened the modal
 			if (window.lastFocusedElement) {
 				window.lastFocusedElement.focus();
 			}
@@ -3375,5 +3448,6 @@ function initializeLikes() {
 		});
 		</script>
 		<script src="assets/js/navigation.js" defer></script>
+		<script src="assets/js/trending-articles.js" defer></script>
 	</body>
 </html>
