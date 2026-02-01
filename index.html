@@ -1571,7 +1571,21 @@
 						</div>
 					</div>
 					<div class="hero-right">
-					<div class="trending-articles" id="trending-articles" style="background: #fff; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.15); padding: 24px; max-width: 380px; min-height: 220px; max-height: 320px; overflow-y: auto;">
+					<div class="trending-articles" id="trending-articles" style="background: #fff; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.15); padding: 24px; max-width: 380px; min-height: 220px; max-height: 320px; overflow-y: auto; position: relative;">
+						<div class="trending-badge">Trending</div>
+								.trending-badge {
+									position: absolute;
+									top: 0;
+									left: 0;
+									background: #e74c3c;
+									color: #fff;
+									font-size: 12px;
+									font-weight: bold;
+									padding: 4px 12px;
+									border-radius: 8px 0 8px 0;
+									z-index: 10;
+									pointer-events: none;
+								}
 						<h3 style="font-size: 1.2em; color: #2c3e50; margin-bottom: 18px; font-weight: 700; letter-spacing: 0.5px;">Trending Articles</h3>
 						<ol id="trending-articles-list" style="list-style: none; padding: 0; margin: 0;">
 							<!-- Top 5 articles will be inserted here by JS -->
