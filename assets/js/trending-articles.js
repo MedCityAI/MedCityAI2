@@ -147,10 +147,11 @@
                     firstAuthor = first.split(' ').slice(-1)[0];
                 }
                 const li = document.createElement('li');
-                li.style.marginBottom = '16px';
+                li.style.marginBottom = '14px';
+                li.style.fontSize = '15px';
                 li.innerHTML = `
-                    <span style="font-weight:700;color:#e74c3c;margin-right:8px;">${article.likes || 0} <i class='fas fa-heart'></i></span>
-                    <a href="#" class="trending-article-link" data-pmid="${article.pmid}" style="color:#0056a3;font-weight:600;text-decoration:underline;">${firstAuthor} et al. "${article.title}"</a>
+                    <span style="font-weight:700;color:#e74c3c;margin-right:7px;font-size:1em;vertical-align:middle;">${article.likes || 0} <i class='fas fa-heart'></i></span>
+                    <a href="#" class="trending-article-link" data-pmid="${article.pmid}" style="color:#0056a3;font-weight:600;text-decoration:underline;font-size:1em;vertical-align:middle;">${firstAuthor} et al. "${article.title}"</a> article
                 `;
                 li.querySelector('a').addEventListener('click', function(e) {
                     e.preventDefault();
