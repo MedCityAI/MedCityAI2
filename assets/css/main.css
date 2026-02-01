@@ -4,10 +4,10 @@
 }
 .trending-badge {
 	position: absolute;
-	top: 12px;
-	left: 18px;
+	top: 2px;
+	left: 2px;
 	z-index: 2;
-	background: linear-gradient(90deg,#e74c3c 60%,#ffb347 100%);
+	background: #e74c3c;
 	color: #fff;
 	font-weight: 700;
 	font-size: 13px;
