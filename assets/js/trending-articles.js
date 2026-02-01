@@ -151,12 +151,8 @@
                 li.style.fontSize = '13px';
                 li.innerHTML = `
                     <span style="font-weight:700;color:#e74c3c;margin-right:7px;font-size:1em;vertical-align:middle;">${article.likes || 0} <i class='fas fa-heart'></i></span>
-                    <a href="#" class="trending-article-link" data-pmid="${article.pmid}" style="color:#0056a3;font-weight:600;text-decoration:underline;font-size:1em;vertical-align:middle;">${firstAuthor} et al. "${article.title}"</a> article
+                    <span style="color:#0056a3;font-weight:600;font-size:1em;vertical-align:middle;">${firstAuthor} et al. \"${article.title}\"</span> article
                 `;
-                li.querySelector('a').addEventListener('click', function(e) {
-                    e.preventDefault();
-                    scrollToArticle(article.pmid);
-                });
                 list.appendChild(li);
             });
         }).catch(() => {
