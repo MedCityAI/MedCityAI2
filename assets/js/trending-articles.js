@@ -134,10 +134,19 @@
 
             trending = trending.slice(0, 5);
 
+            // Hide loading spinner
+            const loadingSpinner = document.getElementById('trending-loading');
+            if (loadingSpinner) {
+                loadingSpinner.style.display = 'none';
+            }
+
             if (!trending.length) {
                 emptyMsg.style.display = '';
+                list.style.display = 'none';
                 return;
             }
+            
+            list.style.display = 'block';
             list.innerHTML = '';
             trending.forEach(article => {
                 // Get first author last name
@@ -196,6 +205,11 @@
                 });
             }
         }).catch(() => {
+            // Hide loading spinner on error
+            const loadingSpinner = document.getElementById('trending-loading');
+            if (loadingSpinner) {
+                loadingSpinner.style.display = 'none';
+            }
             emptyMsg.style.display = '';
         });
     });
