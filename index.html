@@ -333,20 +333,22 @@
 		}
 		
 		.trending-badge-fire {
-			position: absolute;
-			top: -8px;
-			left: 8px;
+			position: sticky;
+			top: 0;
+			left: 0;
 			background: #e74c3c;
 			color: #fff;
-			font-size: 11px;
+			font-size: 12px;
 			font-weight: bold;
-			padding: 4px 8px;
-			border-radius: 12px;
+			padding: 8px 12px;
+			border-radius: 16px 0 0 0;
 			z-index: 11;
 			pointer-events: none;
 			display: inline-flex;
 			align-items: center;
-			gap: 4px;
+			gap: 6px;
+			height: 36px;
+			line-height: 1;
 		}
 		
 		.trending-badge-title {
