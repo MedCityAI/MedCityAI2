@@ -158,13 +158,17 @@
                     const first = article.authors_display.split(',')[0].trim();
                     firstAuthor = first.split(' ').slice(-1)[0];
                 }
+                
+                // Debug: Log journal field
+                console.log('Article:', article.pmid, 'Journal:', article.journal);
+                
                 const li = document.createElement('li');
                 li.style.marginBottom = '12px';
                 li.style.fontSize = '13px';
                 li.style.listStyle = 'none';
                 li.innerHTML = `
                     <a href="${article.url}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: block; cursor: pointer;">
-                        <div style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; line-height: 1.4;">
+                        <div style="display: -webkit-box; -webkit-line-clamp: 8; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; line-height: 1.4;">
                             <span style="font-weight:700;color:#e74c3c;margin-right:7px;font-size:1em;vertical-align:middle;">${article.likes || 0} <i class='fas fa-heart'></i></span>
                             <span style="color:#0056a3;font-weight:600;font-size:1em;vertical-align:middle;">${firstAuthor} et al. "${article.title}"</span>
                             ${article.journal ? `<span style="color:#888;font-size:0.9em;font-style:italic;margin-left:4px;"> — ${article.journal}</span>` : ''}
