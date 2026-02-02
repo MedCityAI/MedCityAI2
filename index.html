@@ -2970,15 +2970,6 @@ function initializeLikes() {
 		
 		finalHTML += `<div class="all-publications-section"><div class="results">`;
 		
-		// Add featured image at the top
-		finalHTML += `
-			<div class="result-item">
-				<div style="width: 100%; height: 300px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px;">
-					<img src="images/pic01.jpg" alt="Rochester Medical Research" style="width: 100%; height: 100%; object-fit: cover; display: block;">
-				</div>
-			</div>
-		`;
-		
 		displayedOther.forEach(article => {
 			finalHTML += renderArticle(article);
 		});
