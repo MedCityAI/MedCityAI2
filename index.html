@@ -2729,7 +2729,7 @@ function initializeLikes() {
 				const authorsList = article.authors ? article.authors.split('|') : [];
 				const rochesterAuthorsList = article.rochester_authors ? article.rochester_authors.split('|') : [];
 				
-				// Format authors for display with et al. truncation
+				// Format authors for display with new logic
 				let authorsHtml = "";
 				if (article.authors_display) {
 					authorsHtml = article.authors_display;
@@ -2737,23 +2737,40 @@ function initializeLikes() {
 					authorsHtml = authorsList.join(', ');
 				}
 				
-				// Apply et al. truncation by counting commas (more than 7 authors = 8+ commas)
-				if (authorsHtml) {
-					const commaCount = (authorsHtml.match(/,/g) || []).length;
-					if (commaCount > 7) {
-						// Keep first 7 authors (up to 7th comma)
-						let commasSeen = 0;
-						let truncateIndex = 0;
-						for (let i = 0; i < authorsHtml.length; i++) {
-							if (authorsHtml[i] === ',') {
-								commasSeen++;
-								if (commasSeen === 7) {
-									truncateIndex = i;
-									break;
-								}
-							}
+				// New author display logic
+				if (authorsHtml && authorsList.length > 0) {
+					// Split all authors
+					const allAuthors = authorsHtml.split(',').map(a => a.trim());
+					
+					if (allAuthors.length > 6) {
+						// Show first 6 authors
+						let displayAuthors = allAuthors.slice(0, 6);
+						
+						// After 6, only show Rochester authors
+						const remainingAuthors = allAuthors.slice(6);
+						const rochesterAuthorsSet = new Set(rochesterAuthorsList.map(a => a.trim()));
+						const remainingRochesterAuthors = remainingAuthors.filter(author => 
+							rochesterAuthorsSet.has(author)
+						);
+						
+						// Add remaining Rochester authors
+						displayAuthors = displayAuthors.concat(remainingRochesterAuthors);
+						
+						// Check if last author is a Rochester author
+						const lastAuthor = allAuthors[allAuthors.length - 1];
+						const isLastAuthorRochester = rochesterAuthorsSet.has(lastAuthor);
+						
+						// Build final string
+						if (isLastAuthorRochester && !displayAuthors.includes(lastAuthor)) {
+							// Add last author if Rochester and not already included
+							authorsHtml = displayAuthors.join(', ') + ', ' + lastAuthor;
+						} else if (isLastAuthorRochester) {
+							// Last author already included
+							authorsHtml = displayAuthors.join(', ');
+						} else {
+							// No Rochester last author, add et al
+							authorsHtml = displayAuthors.join(', ') + ', et al.';
 						}
-						authorsHtml = authorsHtml.substring(0, truncateIndex) + ', et al.';
 					}
 					
 					// Now make Rochester authors clickable
