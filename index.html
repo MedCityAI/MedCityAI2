@@ -2589,6 +2589,9 @@ function initializeLikes() {
 		const userKeywords = JSON.parse(localStorage.getItem('medcity_keywords') || '[]');
 		const hasUserKeywords = userKeywords.length > 0;
 		
+		// Determine if we should show the "Fresh Off The Press" section (only for "all" specialty)
+		const showFreshOffThePress = (typeof window === 'undefined' || !window.selectedSpecialty || window.selectedSpecialty === 'all');
+		
 		// Separate articles into today, matching, and non-matching
 		const todayArticles = [];
 		const matchingArticles = [];
@@ -2596,9 +2599,6 @@ function initializeLikes() {
 		
 		// Get current date for recency badge logic (reuse 'now' and 'sevenDaysAgo' already declared above)
 		const twoDaysAgo = new Date(now.getTime() - (2 * 24 * 60 * 60 * 1000));
-		
-		// Determine if we're in "all" specialty view
-		const isAllSpecialtyView = typeof window === 'undefined' || !window.selectedSpecialty || window.selectedSpecialty === 'all';
 		
 		// First pass: classify and separate articles
 		filteredArticlesData.forEach(article => {
@@ -2660,23 +2660,21 @@ function initializeLikes() {
 				}
 			}
 			
-			// Check if article is from today (for separating into Fresh off Press section)
-			let isFromToday = false;
-			if (articleDate) {
-				const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1); // yesterday
-				const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);   // tomorrow
-				if (articleDate >= start && articleDate <= end) {
-					isFromToday = true;
-					// Only separate into todayArticles if viewing "all" specialties
-					if (isAllSpecialtyView) {
+			// Only separate "today" articles if showing "Fresh Off The Press" (i.e., "all" specialty selected)
+			const isFromToday = articleDate && articleDate >= twoDaysAgo;
+			if (showFreshOffThePress && isFromToday) {
+				// Only include articles published from two days ago up to one day in the future
+				if (articleDate) {
+					const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1); // yesterday
+					const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);   // tomorrow
+					if (articleDate >= start && articleDate <= end) {
 						todayArticles.push(article);
-						return; // Skip the rest of classification for today articles in all view
+						return; // Skip adding to matching/other articles
 					}
-					// If not all view, continue to regular classification below
 				}
 			}
 			
-			// Classify all remaining articles (today articles in specialty view + non-today articles)
+			// Check if any specialty matches user keywords
 			const hasMatch = specialties.some(spec => userKeywords.includes(spec));
 			if (hasUserKeywords && hasMatch) {
 				matchingArticles.push(article);
@@ -2944,8 +2942,23 @@ function initializeLikes() {
 	let displayedMatching = [];
 	let displayedOther = [];
 	
-	// Only show 'FRESH OFF THE PRESS' if viewing all specialties (Most Recent)
-	if (todayArticles.length > 0 && isAllSpecialtyView) {
+	// Only show 'FRESH OFF THE PRESS' if specialty is 'all' (Most Recent)
+	if (showFreshOffThePress && todayArticles.length > 0) {
+		// Show all today articles (no limit)
+		displayedToday = todayArticles;
+		displayedCount += displayedToday.length;
+    
+		finalHTML += `
+			<div class="new-today-section" style="max-width:1200px;margin:20px auto;padding:15px 20px;border:2px dotted #ccc;border-radius:8px;background-color:#f5f5f5;">
+			<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+			<h3 style="margin:0;color:#555;font-size:13px;font-weight:500;letter-spacing:0.3px;line-height:1.1;"><i class="fas fa-bell" style="margin-right:6px;"></i>FRESH OFF THE PRESS  <span style="color:#3498db;font-weight:600;">(${displayedToday.length})</span></h3>
+			</div>
+			<div class="results">`;
+    
+		displayedToday.forEach(article => {
+			finalHTML += renderArticle(article);
+		});
+    
 		finalHTML += `</div>
 			</div>`;
 	}
