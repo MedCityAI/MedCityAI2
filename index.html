@@ -2927,7 +2927,7 @@ function initializeLikes() {
 		
 	// Limit articles for display
 	const maxRecommended = 15;
-	const maxTotal = 50;
+	const maxTotal = 100;
 	
 	// Calculate total items to display
 	let displayedCount = 0;
@@ -2988,7 +2988,7 @@ function initializeLikes() {
 	const totalAvailable = matchingArticles.length + otherArticles.length;
 	if (totalAvailable > displayedCount) {
 		document.getElementById("pagination-controls").style.display = 'block';
-		document.getElementById("pageInfo").textContent = `Showing ${displayedCount} of ${totalAvailable} articles (limited to first ${maxTotal})`;
+		document.getElementById("pageInfo").textContent = `Showing ${displayedCount} of ${totalAvailable} articles`;
 		document.getElementById("prevPage").style.display = 'none';
 		document.getElementById("nextPage").style.display = 'none';
 	} else {
