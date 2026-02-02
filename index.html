@@ -129,6 +129,8 @@
 			padding: 0;
 			column-count: 3;
 			column-gap: 20px;
+			position: relative;
+			z-index: 1;
 		}
 		.result-item {
 			background: transparent;
@@ -494,11 +496,24 @@
 		}
 		
 		.filter-bar-content #pubmed-results {
-			background: #f5f5f5;
+			background: #f5f5f5 url('images/pic01.jpg') center/cover no-repeat fixed;
+			background-attachment: fixed;
 			padding: 20px 0;
 			margin-top: 0;
 			border-radius: 0;
 			box-shadow: none;
+			position: relative;
+		}
+		
+		.filter-bar-content #pubmed-results::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: rgba(245, 245, 245, 0.92);
+			pointer-events: none;
 		}
 		
 		/* Add side padding only on mobile */
