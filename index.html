@@ -2660,30 +2660,28 @@ function initializeLikes() {
 				}
 			}
 			
-			// Only include articles published from two days ago up to one day in the future
-			const isFromToday = articleDate && articleDate >= twoDaysAgo;
+			// Check if article is from today (for separating into Fresh off Press section)
+			let isFromToday = false;
 			if (articleDate) {
 				const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1); // yesterday
 				const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);   // tomorrow
 				if (articleDate >= start && articleDate <= end) {
+					isFromToday = true;
 					// Only separate into todayArticles if viewing "all" specialties
-					// Otherwise include with regular results
 					if (isAllSpecialtyView) {
 						todayArticles.push(article);
-						return; // Skip the rest of classification for today articles
+						return; // Skip the rest of classification for today articles in all view
 					}
-					// If not all view, fall through to regular classification
+					// If not all view, continue to regular classification below
 				}
 			}
 			
-			// Check if any specialty matches user keywords (exclude today articles that were already added)
-			if (!isFromToday) {
-				const hasMatch = specialties.some(spec => userKeywords.includes(spec));
-				if (hasUserKeywords && hasMatch) {
-					matchingArticles.push(article);
-				} else {
-					otherArticles.push(article);
-				}
+			// Classify all remaining articles (today articles in specialty view + non-today articles)
+			const hasMatch = specialties.some(spec => userKeywords.includes(spec));
+			if (hasUserKeywords && hasMatch) {
+				matchingArticles.push(article);
+			} else {
+				otherArticles.push(article);
 			}
 		});
 		
