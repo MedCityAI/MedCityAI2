@@ -178,46 +178,6 @@
                 `;
                 list.appendChild(li);
             });
-            
-            // Auto-scroll functionality - continuous smooth scrolling
-            const container = document.getElementById('trending-articles');
-            if (container && trending.length > 0) {
-                let isScrolling = true;
-                let animationFrameId;
-                
-                function continuousScroll() {
-                    if (!isScrolling) return;
-                    
-                    const currentScroll = container.scrollTop;
-                    const maxScroll = container.scrollHeight - container.clientHeight;
-                    
-                    if (currentScroll >= maxScroll - 1) {
-                        // At bottom, scroll back to top
-                        container.scrollTop = 0;
-                    } else {
-                        // Scroll by 0.5px per frame for smooth continuous motion
-                        container.scrollTop += 0.5;
-                    }
-                    
-                    animationFrameId = requestAnimationFrame(continuousScroll);
-                }
-                
-                // Start continuous scrolling
-                continuousScroll();
-                
-                // Pause auto-scroll on hover
-                container.addEventListener('mouseenter', () => {
-                    isScrolling = false;
-                    if (animationFrameId) {
-                        cancelAnimationFrame(animationFrameId);
-                    }
-                });
-                
-                container.addEventListener('mouseleave', () => {
-                    isScrolling = true;
-                    continuousScroll();
-                });
-            }
         }).catch(() => {
             // Hide loading spinner on error
             const loadingSpinner = document.getElementById('trending-loading');
