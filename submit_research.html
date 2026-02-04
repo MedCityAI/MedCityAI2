@@ -35,9 +35,58 @@
 		.submit-hero .hero-content {
 			position: relative;
 			z-index: 2;
-			max-width: 900px;
+			max-width: 1100px;
 			margin: 0 auto;
 			padding: 0 20px;
+		}
+
+		.submit-hero .hero-inner {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 24px;
+		}
+
+		.submit-hero .hero-text {
+			flex: 1 1 0;
+			text-align: left;
+		}
+
+		.submit-hero .linkedin-banner {
+			flex: 0 0 auto;
+			background: rgba(255, 255, 255, 0.12);
+			border: 1px solid rgba(255, 255, 255, 0.25);
+			border-radius: 16px;
+			padding: 18px 20px;
+			min-width: 240px;
+			text-align: left;
+			backdrop-filter: blur(6px);
+		}
+
+		.submit-hero .linkedin-banner h3 {
+			margin: 0 0 8px 0;
+			font-size: 1.1em;
+			font-weight: 700;
+		}
+
+		.submit-hero .linkedin-banner p {
+			margin: 0 0 12px 0;
+			font-size: 0.95em;
+			opacity: 0.9;
+		}
+
+		.submit-hero .linkedin-banner a {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			padding: 8px 14px;
+			border-radius: 999px;
+			background: #ffffff;
+			color: #0a66c2;
+			text-decoration: none;
+			font-weight: 700;
+			font-size: 0.95em;
+			box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 		}
 		
 		.submit-hero .subtitle {
@@ -375,6 +424,21 @@
 		
 		/* Responsive */
 		@media (max-width: 768px) {
+			.submit-hero .hero-inner {
+				flex-direction: column;
+				text-align: center;
+			}
+
+			.submit-hero .hero-text {
+				text-align: center;
+			}
+
+			.submit-hero .linkedin-banner {
+				width: 100%;
+				max-width: 360px;
+				text-align: center;
+			}
+
 			.form-row {
 				grid-template-columns: 1fr;
 			}
@@ -432,8 +496,20 @@
 				</svg>
 				
 				<div class="hero-content">
-					<h1>Share Your Work</h1>
-					<p>We want to hear about your research. Share your favorite papers. Thanks for helping build our research community!</p>
+					<div class="hero-inner">
+						<div class="hero-text">
+							<h1>Share Your Work</h1>
+							<p>We want to hear about your research. Share your favorite papers. Thanks for helping build our research community!</p>
+						</div>
+						<div class="linkedin-banner" role="complementary" aria-label="Follow us on LinkedIn">
+							<h3>Follow Us on LinkedIn</h3>
+							<p>Stay updated with the latest Rochester research highlights.</p>
+							<a href="https://www.linkedin.com/company/medcityai/" target="_blank" rel="noopener noreferrer" aria-label="Follow MedCityAI on LinkedIn">
+								<i class="icon brands fa-linkedin" aria-hidden="true"></i>
+								Follow
+							</a>
+						</div>
+					</div>
 				</div>
 			</section>
 			
