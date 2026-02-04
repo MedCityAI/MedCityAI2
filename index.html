@@ -2885,10 +2885,13 @@ function initializeLikes() {
 								</div>
 								<div class="share-buttons" role="group" aria-label="Share on social media" onclick="event.stopPropagation();">
 									<a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}" class="linkedin" target="_blank" aria-label="Share on LinkedIn">
-										Share <i class="icon brands fa-linkedin" aria-hidden="true"></i>
+										<i class="icon brands fa-linkedin" aria-hidden="true"></i>
+									</a>
+									<a href="${url}" target="_blank" onclick="event.stopPropagation();" style="color: #0056a3; text-decoration: none; font-size: 14px; font-weight: 500;" aria-label="View on PubMed">
+										View on PubMed →
 									</a>
 									<button class="like-button" data-pmid="${pmid}" onclick="toggleLike(event, '${pmid}')" aria-label="Like this article" title="Like">
-										Like <i class="icon far fa-heart" aria-hidden="true"></i>
+										<i class="icon far fa-heart" aria-hidden="true"></i>
 									</button>
 								</div>
 							</div>
