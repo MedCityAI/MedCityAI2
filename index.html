@@ -2968,6 +2968,49 @@ function handleLinkedInShare(event, el) {
 		// Build HTML sections
 		let finalHTML = '';
 		
+		// Add instructional panel as first item
+		finalHTML += `
+			<div class="result-item">
+				<div class="card-flip-container" role="region" aria-label="How to use MedCityAI">
+					<div class="card-face card-front" style="cursor: default; background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%); border: 2px solid #3498db;">
+						<div style="padding: 20px; text-align: center;">
+							<div style="color: #3498db; font-size: 24px; margin-bottom: 12px;">
+								<i class="fas fa-lightbulb"></i>
+							</div>
+							<h3 style="color: #1565c0; font-size: 18px; font-weight: 700; margin: 0 0 16px 0;">How to Use MedCityAI</h3>
+							
+							<div style="text-align: left; font-size: 13px; color: #333; line-height: 1.8;">
+								<div style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: 8px;">
+									<i class="fas fa-heart" style="color: #e74c3c; margin-top: 2px; flex-shrink: 0;"></i>
+									<span><strong>Like articles</strong> to celebrate researchers and cool discoveries</span>
+								</div>
+								
+								<div style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: 8px;">
+									<i class="fab fa-linkedin" style="color: #0a66c2; margin-top: 2px; flex-shrink: 0;"></i>
+									<span><strong>Share on LinkedIn</strong> to highlight research (please @mention <strong>@MedCityAI</strong>)</span>
+								</div>
+								
+								<div style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: 8px;">
+									<i class="fas fa-user" style="color: #9b59b6; margin-top: 2px; flex-shrink: 0;"></i>
+									<span><strong>Click author names</strong> to explore their research biography</span>
+								</div>
+								
+								<div style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: 8px;">
+									<i class="fas fa-brain" style="color: #16a085; margin-top: 2px; flex-shrink: 0;"></i>
+									<span><strong>Click the card</strong> to view the AI-generated summary</span>
+								</div>
+								
+								<div style="display: flex; align-items: flex-start; gap: 8px;">
+									<i class="fas fa-external-link-alt" style="color: #0056a3; margin-top: 2px; flex-shrink: 0;"></i>
+									<span><strong>View on PubMed</strong> to read the full article</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		`;
+		
 	// Limit articles for display
 	const maxRecommended = 15;
 	const maxTotal = 200;
