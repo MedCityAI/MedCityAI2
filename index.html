@@ -35,6 +35,13 @@
 		<title>MedCityAI - Rochester MN Biomedical Research</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<meta property="og:site_name" content="MedCityAI" />
+		<meta property="og:title" content="MedCityAI - Rochester MN Biomedical Research" />
+		<meta property="og:description" content="Real-time biomedical research feed for Rochester, Minnesota." />
+		<meta property="og:url" content="https://www.medcityai.com/" />
+		<meta property="og:type" content="website" />
+		<link rel="me" href="https://www.linkedin.com/company/medcityai/" />
+		<meta property="article:publisher" content="https://www.linkedin.com/company/medcityai/" />
 		
 		<!-- Preconnect to Google Fonts for faster loading -->
 		<link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2879,7 +2886,7 @@ function initializeLikes() {
 								<div class="result-authors" onclick="event.stopPropagation();">${authorsHtml}</div>
 								<div class="result-citation"><em>${citation}</em></div>
 								<div class="share-buttons" role="group" aria-label="Share on social media" onclick="event.stopPropagation();" style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 12px;">
-									<a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}" class="linkedin" target="_blank" aria-label="Share on LinkedIn">
+									<a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url + (url.includes('?') ? '&' : '?') + 'utm_source=linkedin&utm_medium=share&utm_campaign=medcityai_share')}" class="linkedin" target="_blank" aria-label="Share on LinkedIn (please @mention MedCityAI)" title="Share on LinkedIn (please @mention MedCityAI)">
 										<i class="icon brands fa-linkedin" aria-hidden="true"></i>
 									</a>
 									<a href="${url}" target="_blank" onclick="event.stopPropagation();" style="color: #0056a3; text-decoration: none; font-size: 14px; font-weight: 500;" aria-label="View on PubMed">
