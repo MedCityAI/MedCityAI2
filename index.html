@@ -2878,11 +2878,6 @@ function initializeLikes() {
 								   aria-label="Click to view AI summary of: ${title}">${title}</a>
 								<div class="result-authors" onclick="event.stopPropagation();">${authorsHtml}</div>
 								<div class="result-citation"><em>${citation}</em></div>
-								<div style="margin-top: 8px; margin-bottom: 10px;">
-									<a href="${url}" target="_blank" onclick="event.stopPropagation();" style="color: #0056a3; text-decoration: none; font-size: 14px; font-weight: 500;">
-										View on PubMed →
-									</a>
-								</div>
 								<div class="share-buttons" role="group" aria-label="Share on social media" onclick="event.stopPropagation();" style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 12px;">
 									<a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}" class="linkedin" target="_blank" aria-label="Share on LinkedIn">
 										<i class="icon brands fa-linkedin" aria-hidden="true"></i>
