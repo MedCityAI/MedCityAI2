@@ -184,6 +184,7 @@
 		top: 0;
 		left: 0;
 		right: 0;
+		bottom: 0;
 		transform: rotateY(180deg);
 		background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%);
 		border: 2px solid #2196f3;
@@ -2210,6 +2211,14 @@ function handleLinkedInShare(event, el) {
 			const cardFront = container.querySelector('.card-front');
 			const cardBack = container.querySelector('.card-back');
 			
+			console.log('flipCard called:', { container, cardFront, cardBack, hasCardBack: !!cardBack });
+			
+			// If there's no back (no summary), don't flip
+			if (!cardBack) {
+				console.log('No card-back found, returning');
+				return;
+			}
+			
 			// Get PMID from like button if available
 			const likeButton = container.querySelector('.like-button');
 			const pmid = likeButton ? likeButton.getAttribute('data-pmid') : null;
@@ -2223,12 +2232,15 @@ function handleLinkedInShare(event, el) {
 				// Flipping to back - capture front height and apply to back
 				const frontHeight = cardFront.offsetHeight;
 				cardBack.style.height = frontHeight + 'px';
+				console.log('Flipping to back, front height:', frontHeight);
 				currentlyFlippedCard = container;
 			} else {
+				console.log('Flipping to front');
 				currentlyFlippedCard = null;
 			}
 			
 			container.classList.toggle('flipped');
+			console.log('Flipped class toggled, flipped:', container.classList.contains('flipped'));
 		}
 
 		// Update publication statistics
