@@ -2174,6 +2174,29 @@ function initializeLikes() {
 	fetchLikeCounts();
 }
 
+// LinkedIn share helper: copy text, then open share dialog
+function handleLinkedInShare(event, el) {
+	event.stopPropagation();
+	event.preventDefault();
+
+	const encodedText = el.getAttribute('data-share-text') || '';
+	const shareText = encodedText ? decodeURIComponent(encodedText) : '';
+	const shareUrl = el.getAttribute('href');
+
+	if (shareText) {
+		if (navigator.clipboard && navigator.clipboard.writeText) {
+			navigator.clipboard.writeText(shareText).catch(() => {
+				window.prompt('Copy this LinkedIn post text:', shareText);
+			});
+		} else {
+			window.prompt('Copy this LinkedIn post text:', shareText);
+		}
+	}
+
+	window.open(shareUrl, '_blank', 'noopener');
+	return false;
+}
+
 		// Function to flip card and match heights (with keyboard support)
 		function flipCard(container, event) {
 			// Support both click and keyboard events
@@ -2899,7 +2922,7 @@ function initializeLikes() {
 								<div class="result-authors" onclick="event.stopPropagation();">${authorsHtml}</div>
 								<div class="result-citation"><em>${citation}</em></div>
 								<div class="share-buttons" role="group" aria-label="Share on social media" onclick="event.stopPropagation();" style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 12px;">
-									<a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(pubmedUrlWithUtm)}&summary=${encodeURIComponent(linkedinShareText)}&source=${encodeURIComponent('medcityai.com')}" class="linkedin" target="_blank" aria-label="Share on LinkedIn (please @mention MedCityAI)" title="Share on LinkedIn (please @mention MedCityAI)">
+									<a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(pubmedUrlWithUtm)}" class="linkedin" target="_blank" aria-label="Share on LinkedIn (please @mention MedCityAI)" title="Share on LinkedIn (please @mention MedCityAI)" data-share-text="${encodeURIComponent(linkedinShareText)}" onclick="return handleLinkedInShare(event, this);">
 										<i class="icon brands fa-linkedin" aria-hidden="true"></i>
 									</a>
 									<a href="${url}" target="_blank" onclick="event.stopPropagation();" style="color: #0056a3; text-decoration: none; font-size: 14px; font-weight: 500;" aria-label="View on PubMed">

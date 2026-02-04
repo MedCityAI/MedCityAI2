@@ -100,8 +100,8 @@
             }).filter(Boolean);
             trending.sort((a, b) => (b.likes || 0) - (a.likes || 0));
 
-            // 2. If fewer than 5, fill with most recent articles from last 14 days (even if 0 likes)
-            if (trending.length < 5) {
+            // 2. If fewer than 10, fill with most recent articles from last 14 days (even if 0 likes)
+            if (trending.length < 10) {
                 // Find all articles from last 14 days not already in trending
                 let recent = articles.filter(a => {
                     const pub = parseDate(a.pubdate);
@@ -117,11 +117,11 @@
                 }));
                 // Sort by pubdate descending
                 recent.sort((a, b) => parseDate(b.pubdate) - parseDate(a.pubdate));
-                trending = trending.concat(recent.slice(0, 5 - trending.length));
+                trending = trending.concat(recent.slice(0, 10 - trending.length));
             }
 
-            // 3. If still fewer than 5, fill with most recent articles overall
-            if (trending.length < 5) {
+            // 3. If still fewer than 10, fill with most recent articles overall
+            if (trending.length < 10) {
                 let recentAll = articles.filter(a => !trending.find(t => t.pmid === a.pmid)).map(a => ({
                     pmid: a.pmid,
                     likes: Number(likeData[a.pmid] || 0),
@@ -132,10 +132,10 @@
                     url: a.url || `https://pubmed.ncbi.nlm.nih.gov/${a.pmid}/`
                 }));
                 recentAll.sort((a, b) => parseDate(b.pubdate) - parseDate(a.pubdate));
-                trending = trending.concat(recentAll.slice(0, 5 - trending.length));
+                trending = trending.concat(recentAll.slice(0, 10 - trending.length));
             }
 
-            trending = trending.slice(0, 5);
+            trending = trending.slice(0, 10);
 
             // Hide loading spinner
             const loadingSpinner = document.getElementById('trending-loading');
