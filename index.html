@@ -2885,7 +2885,7 @@ function initializeLikes() {
 								</div>
 								<div class="share-buttons" role="group" aria-label="Share on social media" onclick="event.stopPropagation();">
 									<a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}" class="linkedin" target="_blank" aria-label="Share on LinkedIn">
-										<i class="icon brands fa-linkedin" aria-hidden="true"></i> 
+										<i class="icon brands fa-linkedin" aria-hidden="true"></i> SHARE
 									</a>
 									<button class="like-button" data-pmid="${pmid}" onclick="toggleLike(event, '${pmid}')" aria-label="Like this article" title="Like">
 										<i class="icon far fa-heart" aria-hidden="true"></i>
@@ -2990,7 +2990,7 @@ function initializeLikes() {
 	const totalAvailable = matchingArticles.length + otherArticles.length;
 	if (totalAvailable > displayedCount) {
 		document.getElementById("pagination-controls").style.display = 'block';
-		document.getElementById("pageInfo").textContent = `Showing ${displayedCount} of ${totalAvailable} articles`;
+		document.getElementById("pageInfo").innerHTML = `<a href="search.html" style="color: #0056a3; text-decoration: none; font-weight: 500;">Search</a> to discover more articles`;
 		document.getElementById("prevPage").style.display = 'none';
 		document.getElementById("nextPage").style.display = 'none';
 	} else {
