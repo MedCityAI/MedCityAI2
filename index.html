@@ -161,114 +161,6 @@
 		transform: rotateY(180deg);
 	}
 	
-	/* Article instructions overlay */
-	.article-instructions-overlay {
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		pointer-events: none;
-		z-index: 100;
-	}
-	
-	.instruction-label {
-		position: absolute;
-		background: rgba(52, 152, 219, 0.95);
-		color: white;
-		padding: 6px 12px;
-		border-radius: 6px;
-		font-size: 12px;
-		font-weight: 600;
-		display: flex;
-		align-items: center;
-		gap: 6px;
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-		animation: fadeInScale 0.5s ease-out forwards;
-		white-space: nowrap;
-	}
-	
-	@keyframes fadeInScale {
-		from {
-			opacity: 0;
-			transform: scale(0.8);
-		}
-		to {
-			opacity: 1;
-			transform: scale(1);
-		}
-	}
-	
-	.instruction-label i {
-		font-size: 14px;
-	}
-	
-	.like-instruction {
-		bottom: 60px;
-		right: 20px;
-		animation-delay: 0.2s;
-	}
-	
-	.share-instruction {
-		bottom: 60px;
-		right: 130px;
-		animation-delay: 0.3s;
-	}
-	
-	.author-instruction {
-		top: 80px;
-		left: 20px;
-		animation-delay: 0.4s;
-	}
-	
-	.summary-instruction {
-		top: 20px;
-		left: 50%;
-		transform: translateX(-50%);
-		animation-delay: 0.1s;
-	}
-	
-	.pubmed-instruction {
-		bottom: 60px;
-		left: 20px;
-		animation-delay: 0.35s;
-	}
-	
-	@media (max-width: 768px) {
-		.instruction-label {
-			font-size: 11px;
-			padding: 4px 8px;
-		}
-		
-		.instruction-label i {
-			font-size: 12px;
-		}
-		
-		.like-instruction {
-			bottom: 50px;
-			right: 15px;
-		}
-		
-		.share-instruction {
-			bottom: 50px;
-			right: 95px;
-		}
-		
-		.author-instruction {
-			top: 70px;
-			left: 15px;
-		}
-		
-		.pubmed-instruction {
-			bottom: 50px;
-			left: 15px;
-		}
-		
-		.summary-instruction {
-			top: 15px;
-		}
-	}
-	
 	.card-face {
 		width: 100%;
 		backface-visibility: hidden;
@@ -3076,9 +2968,6 @@ function handleLinkedInShare(event, el) {
 		// Build HTML sections
 		let finalHTML = '';
 		
-		// Track if this is the first article (for instructional overlay)
-		let isFirstArticle = true;
-		
 	// Limit articles for display
 	const maxRecommended = 15;
 	const maxTotal = 200;
@@ -3119,43 +3008,8 @@ function handleLinkedInShare(event, el) {
 		
 		finalHTML += `<div class="all-publications-section"><div class="results">`;
 		
-		// Add instructional overlay to first article
-		let isFirstInSection = true;
 		displayedOther.forEach(article => {
-			const articleHTML = renderArticle(article);
-			if (isFirstInSection) {
-				// Wrap first article with instructional overlay
-				finalHTML += `
-					<div class="first-article-wrapper" style="position: relative;">
-						${articleHTML}
-						<div class="article-instructions-overlay">
-							<div class="instruction-label like-instruction">
-								<i class="fas fa-heart"></i>
-								<span>Like</span>
-							</div>
-							<div class="instruction-label share-instruction">
-								<i class="fab fa-linkedin"></i>
-								<span>Share</span>
-							</div>
-							<div class="instruction-label author-instruction">
-								<i class="fas fa-user"></i>
-								<span>Author bio</span>
-							</div>
-							<div class="instruction-label summary-instruction">
-								<i class="fas fa-brain"></i>
-								<span>AI Summary</span>
-							</div>
-							<div class="instruction-label pubmed-instruction">
-								<i class="fas fa-external-link-alt"></i>
-								<span>View full</span>
-							</div>
-						</div>
-					</div>
-				`;
-				isFirstInSection = false;
-			} else {
-				finalHTML += articleHTML;
-			}
+			finalHTML += renderArticle(article);
 		});
 		
 		finalHTML += `</div></div>`;
