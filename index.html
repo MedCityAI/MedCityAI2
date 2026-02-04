@@ -2702,6 +2702,19 @@ function initializeLikes() {
 				const pubdate = article.pubdate;
 				const url = article.url;
 				const llmSummary = article.llm_summary || '';
+				const pubmedUrl = url || `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`;
+				const pubmedUrlWithUtm = `${pubmedUrl}${pubmedUrl.includes('?') ? '&' : '?'}utm_source=linkedin&utm_medium=share&utm_campaign=medcityai_share`;
+
+				const getLastTwoSentences = (text) => {
+					const cleaned = (text || '').replace(/\s+/g, ' ').trim();
+					if (!cleaned) return '';
+					const matches = cleaned.match(/[^.!?]+[.!?]+/g);
+					if (!matches || matches.length === 0) return cleaned;
+					const lastTwo = matches.slice(-2).join(' ').trim();
+					return lastTwo || cleaned;
+				};
+				const lastTwoSentences = getLastTwoSentences(llmSummary);
+				const linkedinShareText = `New research worth noting:\n\n${lastTwoSentences}\n\n${pubmedUrl}\nhttps://medcityai.com\n@MedCityAI`;
 				
 				// Parse publication date to check if NEW
 				const year = article.year;
@@ -2886,7 +2899,7 @@ function initializeLikes() {
 								<div class="result-authors" onclick="event.stopPropagation();">${authorsHtml}</div>
 								<div class="result-citation"><em>${citation}</em></div>
 								<div class="share-buttons" role="group" aria-label="Share on social media" onclick="event.stopPropagation();" style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 12px;">
-									<a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url + (url.includes('?') ? '&' : '?') + 'utm_source=linkedin&utm_medium=share&utm_campaign=medcityai_share')}" class="linkedin" target="_blank" aria-label="Share on LinkedIn (please @mention MedCityAI)" title="Share on LinkedIn (please @mention MedCityAI)">
+									<a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(pubmedUrlWithUtm)}&summary=${encodeURIComponent(linkedinShareText)}&source=${encodeURIComponent('medcityai.com')}" class="linkedin" target="_blank" aria-label="Share on LinkedIn (please @mention MedCityAI)" title="Share on LinkedIn (please @mention MedCityAI)">
 										<i class="icon brands fa-linkedin" aria-hidden="true"></i>
 									</a>
 									<a href="${url}" target="_blank" onclick="event.stopPropagation();" style="color: #0056a3; text-decoration: none; font-size: 14px; font-weight: 500;" aria-label="View on PubMed">
