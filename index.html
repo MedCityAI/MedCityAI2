@@ -2622,6 +2622,10 @@ function handleLinkedInShare(event, el) {
 		}
 
 		function closeArticleOverlay() {
+			if (window.top !== window) {
+				window.top.location.href = 'index.html';
+				return;
+			}
 			const overlayBg = document.getElementById('articleOverlayBg');
 			if (overlayBg) {
 				overlayBg.setAttribute('aria-hidden', 'true');
