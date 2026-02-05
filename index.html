@@ -129,7 +129,7 @@
 			color: #333;
 		}
 
-		/* Article overlay modal */
+		/* Article overlay modal (full article view) */
 		.article-overlay-bg {
 			display: none;
 			position: fixed;
@@ -137,12 +137,16 @@
 			left: 0;
 			width: 100vw;
 			height: 100vh;
-			background: rgba(0,0,0,0.55);
-			z-index: 3500;
+			background: rgba(8, 15, 30, 0.65);
+			z-index: 4000;
 			justify-content: center;
 			align-items: center;
-			padding: 24px;
+			padding: 20px;
 			box-sizing: border-box;
+			backdrop-filter: blur(3px);
+		}
+		.article-overlay-bg[aria-hidden="false"] {
+			display: flex;
 		}
 		.article-overlay-content {
 			background: #fff;
@@ -151,61 +155,104 @@
 			width: 100%;
 			max-height: 90vh;
 			overflow-y: auto;
-			box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+			box-shadow: 0 12px 48px rgba(0,0,0,0.25);
 			position: relative;
-			padding: 28px;
-			border: 1px solid rgba(0,0,0,0.08);
+			border: 1px solid rgba(0,0,0,0.06);
 		}
 		.article-overlay-close {
 			position: absolute;
 			top: 12px;
-			right: 16px;
+			right: 14px;
 			font-size: 26px;
 			color: #333;
-			cursor: pointer;
-			font-weight: bold;
-			background: none;
+			background: #fff;
 			border: none;
+			cursor: pointer;
+			font-weight: 700;
+			width: 36px;
+			height: 36px;
+			border-radius: 50%;
+			box-shadow: 0 2px 10px rgba(0,0,0,0.12);
 		}
 		.article-overlay-header {
-			border-bottom: 1px solid #e6e6e6;
-			padding-bottom: 16px;
-			margin-bottom: 18px;
+			padding: 28px 28px 16px 28px;
+			border-bottom: 1px solid #eef1f4;
+		}
+		.article-overlay-kicker {
+			font-size: 12px;
+			letter-spacing: 1px;
+			text-transform: uppercase;
+			color: #5b6b7a;
+			font-weight: 700;
+			margin-bottom: 10px;
 		}
 		.article-overlay-title {
 			font-size: 26px;
-			font-weight: 700;
-			color: #1f2d3d;
-			margin: 0 0 10px 0;
 			line-height: 1.3;
+			margin: 0 0 10px 0;
+			color: #1f2d3d;
+			font-weight: 800;
 		}
 		.article-overlay-meta {
+			color: #4a5b6a;
+			font-size: 14px;
+			margin-bottom: 14px;
+		}
+		.article-overlay-actions {
 			display: flex;
 			flex-wrap: wrap;
 			gap: 12px;
+			align-items: center;
+		}
+		.article-overlay-actions a,
+		.article-overlay-actions button {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			padding: 10px 16px;
+			border-radius: 20px;
+			border: 1px solid #d7dde3;
+			background: #fff;
+			color: #1f2d3d;
+			font-weight: 600;
+			text-decoration: none;
+			cursor: pointer;
 			font-size: 14px;
-			color: #5b6b7a;
+		}
+		.article-overlay-actions .overlay-primary {
+			background: #0056a3;
+			color: #fff;
+			border-color: #0056a3;
+		}
+		.article-overlay-actions .overlay-linkedin {
+			background: #0a66c2;
+			color: #fff;
+			border-color: #0a66c2;
+		}
+		.article-overlay-body {
+			padding: 22px 28px 30px 28px;
 		}
 		.article-overlay-section {
-			margin-top: 18px;
+			margin-bottom: 22px;
 		}
-		.article-overlay-section h4 {
+		.article-overlay-section h3 {
 			font-size: 16px;
 			margin: 0 0 10px 0;
-			color: #0056a3;
+			color: #1f2d3d;
+			font-weight: 700;
 		}
 		.article-overlay-badges {
 			display: flex;
 			flex-wrap: wrap;
-			gap: 10px;
+			gap: 8px;
 		}
 		.article-overlay-badge {
-			background: #e8f0fe;
-			color: #1a4fb3;
-			padding: 6px 12px;
-			border-radius: 999px;
+			background: #e9f0f8;
+			color: #1565c0;
+			font-weight: 700;
+			padding: 6px 10px;
+			border-radius: 14px;
 			font-size: 12px;
-			font-weight: 600;
 		}
 		.article-overlay-authors {
 			display: flex;
@@ -213,65 +260,58 @@
 			gap: 8px;
 		}
 		.article-overlay-author {
-			background: #f3f5f7;
+			background: #f2f4f7;
 			padding: 6px 10px;
-			border-radius: 999px;
+			border-radius: 14px;
 			font-size: 12px;
-		}
-		.article-overlay-author.rochester {
-			background: #e6f7f2;
-			color: #00796b;
-			font-weight: 600;
-		}
-		.article-overlay-abstract,
-		.article-overlay-summary {
-			background: #f8f9fb;
-			padding: 14px;
-			border-radius: 10px;
-			font-size: 14px;
-			line-height: 1.7;
 			color: #2c3e50;
 		}
-		.article-overlay-summary {
-			border-left: 4px solid #ffc107;
-			background: #fff9e6;
+		.article-overlay-author.rochester {
+			background: #e7f6f4;
+			color: #00796b;
+			font-weight: 700;
+		}
+		.article-overlay-block {
+			background: #f8fafc;
+			border: 1px solid #e6edf3;
+			border-radius: 10px;
+			padding: 16px;
+			line-height: 1.6;
+			color: #2f3b4a;
+		}
+		.article-overlay-ai {
+			background: #fff7e6;
+			border: 1px solid #ffe3b0;
+			border-radius: 10px;
+			padding: 16px;
+			line-height: 1.6;
+			color: #3a2f1b;
 		}
 		.article-overlay-disclaimer {
-			margin-top: 10px;
+			margin-top: 12px;
 			font-size: 12px;
-			color: #5b6b7a;
-			font-style: italic;
-		}
-		.article-overlay-actions {
-			display: flex;
-			flex-wrap: wrap;
-			gap: 12px;
-			align-items: center;
-			margin-top: 18px;
-		}
-		.article-overlay-actions a,
-		.article-overlay-actions button {
-			padding: 10px 14px;
-			border-radius: 8px;
-			border: 1px solid #d0d7de;
+			color: #6b5a3d;
 			background: #fff;
-			color: #1f2d3d;
-			font-weight: 600;
-			font-size: 13px;
-			cursor: pointer;
-			text-decoration: none;
+			border-left: 3px solid #f4b400;
+			padding: 10px;
+			border-radius: 6px;
 		}
-		.article-overlay-actions .primary {
-			background: #0a66c2;
-			color: #fff;
-			border-color: #0a66c2;
-		}
+
 		@media (max-width: 768px) {
 			.article-overlay-content {
-				padding: 20px;
+				max-height: 92vh;
 			}
 			.article-overlay-title {
 				font-size: 20px;
+			}
+			.article-overlay-actions {
+				flex-direction: column;
+				align-items: stretch;
+			}
+			.article-overlay-actions a,
+			.article-overlay-actions button {
+				justify-content: center;
+				width: 100%;
 			}
 		}
 
@@ -1197,12 +1237,6 @@
 			scrollbar-width: none;
 		}
 	}		/* Loading spinner */
-		.loading-spinner {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			min-height: 200px;
-		}
 		.spinner {
 			border: 3px solid #f3f3f3;
 			border-top: 3px solid #3498db;
@@ -1895,9 +1929,9 @@
 						</div>
 
 						<!-- Article overlay modal -->
-						<div id="articleOverlay" class="article-overlay-bg" role="dialog" aria-modal="true" aria-labelledby="articleOverlayTitle" aria-hidden="true">
+						<div id="articleOverlayBg" class="article-overlay-bg" role="dialog" aria-modal="true" aria-labelledby="articleOverlayTitle" aria-hidden="true">
 							<div class="article-overlay-content" role="document">
-								<button class="article-overlay-close" id="articleOverlayClose" aria-label="Close article overlay">&times;</button>
+								<button class="article-overlay-close" id="articleOverlayClose" aria-label="Close article">&times;</button>
 								<div id="articleOverlayContent"></div>
 							</div>
 						</div>
@@ -2358,164 +2392,6 @@ function handleLinkedInShare(event, el) {
 	return false;
 }
 
-// Escape HTML to prevent injection
-function escapeHtml(text) {
-	if (!text) return '';
-	const div = document.createElement('div');
-	div.textContent = text;
-	return div.innerHTML;
-}
-
-function getLastTwoSentencesGlobal(text) {
-	if (!text) return '';
-	const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
-	if (sentences.length === 0) return text.substring(0, 150) + '...';
-	return sentences.slice(-2).join(' ').trim();
-}
-
-async function openArticleOverlay(pmid) {
-	const overlay = document.getElementById('articleOverlay');
-	const content = document.getElementById('articleOverlayContent');
-	if (!overlay || !content) return;
-
-	overlay.style.display = 'flex';
-	overlay.setAttribute('aria-hidden', 'false');
-	content.innerHTML = '<div class="loading-spinner"><div class="spinner"></div></div>';
-
-	if (!pmid) {
-		content.innerHTML = '<div class="error-state"><h2>Article not found</h2><p>Missing PMID.</p></div>';
-		return;
-	}
-
-	if (!allArticlesData || allArticlesData.length === 0) {
-		await loadCSVData();
-	}
-
-	const article = allArticlesData.find(a => a.pmid && a.pmid.trim() === pmid.trim());
-	if (!article) {
-		content.innerHTML = `<div class="error-state"><h2>Article not found</h2><p>No article found with PMID: ${escapeHtml(pmid)}</p></div>`;
-		return;
-	}
-
-	content.innerHTML = renderArticleOverlay(article);
-}
-
-function closeArticleOverlay() {
-	const overlay = document.getElementById('articleOverlay');
-	if (!overlay) return;
-	overlay.style.display = 'none';
-	overlay.setAttribute('aria-hidden', 'true');
-}
-
-function copyOverlayShareText(el) {
-	if (!el) return;
-	const encoded = el.getAttribute('data-share-text') || '';
-	const text = encoded ? decodeURIComponent(encoded) : '';
-	if (!text) return;
-	if (navigator.clipboard && navigator.clipboard.writeText) {
-		navigator.clipboard.writeText(text).catch(() => {
-			window.prompt('Copy this text:', text);
-		});
-	} else {
-		window.prompt('Copy this text:', text);
-	}
-}
-
-function renderArticleOverlay(article) {
-	const title = escapeHtml(article.title || 'Untitled');
-	const authors = article.authors_display ? article.authors_display.split('|').map(a => a.trim()).filter(Boolean) : [];
-	const rochesterAuthors = article.rochester_authors ? article.rochester_authors.split('|').map(a => a.trim()).filter(Boolean) : [];
-	const journal = escapeHtml(article.journal || '');
-	const pubdate = escapeHtml(article.pubdate || '');
-	const abstract = escapeHtml(article.abstract || '');
-	const llmSummary = escapeHtml(article.llm_summary || '');
-	const primarySpecialty = escapeHtml(article.primary_specialty || '');
-	const secondarySpecialty = escapeHtml(article.secondary_specialty || '');
-	const pmid = escapeHtml(article.pmid || '');
-	const url = article.url ? article.url : `https://pubmed.ncbi.nlm.nih.gov/${article.pmid}/`;
-
-	const specialties = [primarySpecialty, secondarySpecialty].filter(s => s && s !== '');
-	const specialtiesHtml = specialties.map(s => `<span class="article-overlay-badge">${s}</span>`).join('');
-
-	const authorsHtml = authors.map(a => {
-		const isRochester = rochesterAuthors.includes(a);
-		const cls = isRochester ? 'article-overlay-author rochester' : 'article-overlay-author';
-		return `<span class="${cls}">${escapeHtml(a)}${isRochester ? ' ★' : ''}</span>`;
-	}).join('');
-
-	const pubmedUrlWithUtm = `${url}${url.includes('?') ? '&' : '?'}utm_source=linkedin&utm_medium=share&utm_campaign=medcityai_share`;
-	const lastTwoSentences = getLastTwoSentencesGlobal(article.llm_summary || article.abstract || '');
-	const linkedinShareText = `New research worth noting:\n\n${lastTwoSentences}\n\n${pubmedUrlWithUtm}\nhttps://medcityai.com\n@MedCityAI`;
-
-	const hasSummary = article.llm_summary && article.llm_summary.trim() !== '' && article.llm_summary !== 'No abstract available.';
-
-	return `
-		<div class="article-overlay-header">
-			<h3 id="articleOverlayTitle" class="article-overlay-title">${title}</h3>
-			<div class="article-overlay-meta">
-				<span><strong>Journal:</strong> ${journal || '—'}</span>
-				<span><strong>Date:</strong> ${pubdate || '—'}</span>
-				<span><strong>PMID:</strong> ${pmid || '—'}</span>
-			</div>
-		</div>
-
-		<div class="article-overlay-actions">
-			<a href="${url}" target="_blank" rel="noopener">View on PubMed</a>
-			<a class="primary" href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(pubmedUrlWithUtm)}" data-share-text="${encodeURIComponent(linkedinShareText)}" onclick="return handleLinkedInShare(event, this);">Share on LinkedIn</a>
-			<button type="button" data-share-text="${encodeURIComponent(linkedinShareText)}" onclick="copyOverlayShareText(this)">Copy Share Text</button>
-			<a href="article.html?id=${pmid}" target="_blank" rel="noopener">Open Full Page</a>
-		</div>
-
-		${specialtiesHtml ? `
-		<div class="article-overlay-section">
-			<h4>Specialties</h4>
-			<div class="article-overlay-badges">${specialtiesHtml}</div>
-		</div>
-		` : ''}
-
-		<div class="article-overlay-section">
-			<h4>Authors</h4>
-			<div class="article-overlay-authors">${authorsHtml || '<span>—</span>'}</div>
-		</div>
-
-		${abstract ? `
-		<div class="article-overlay-section">
-			<h4>Abstract</h4>
-			<div class="article-overlay-abstract">${abstract}</div>
-		</div>
-		` : ''}
-
-		${hasSummary ? `
-		<div class="article-overlay-section">
-			<h4>AI Summary</h4>
-			<div class="article-overlay-summary">${llmSummary}</div>
-			<div class="article-overlay-disclaimer">This summary was generated by AI and may contain inaccuracies. Refer to the full publication for accurate information.</div>
-		</div>
-		` : ''}
-	`;
-}
-
-document.addEventListener('keydown', (event) => {
-	if (event.key === 'Escape') {
-		closeArticleOverlay();
-	}
-});
-
-document.addEventListener('click', (event) => {
-	const overlay = document.getElementById('articleOverlay');
-	if (!overlay) return;
-	if (event.target === overlay) {
-		closeArticleOverlay();
-	}
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-	const closeBtn = document.getElementById('articleOverlayClose');
-	if (closeBtn) {
-		closeBtn.addEventListener('click', closeArticleOverlay);
-	}
-});
-
 		// Function to flip card and match heights (with keyboard support)
 		function flipCard(container, event) {
 			// Support both click and keyboard events
@@ -2529,8 +2405,11 @@ document.addEventListener('DOMContentLoaded', () => {
 			const cardFront = container.querySelector('.card-front');
 			const cardBack = container.querySelector('.card-back');
 			
+			console.log('flipCard called:', { container, cardFront, cardBack, hasCardBack: !!cardBack });
+			
 			// If there's no back (no summary), don't flip
 			if (!cardBack) {
+				console.log('No card-back found, returning');
 				return;
 			}
 			
@@ -2547,12 +2426,15 @@ document.addEventListener('DOMContentLoaded', () => {
 				// Flipping to back - capture front height and apply to back
 				const frontHeight = cardFront.offsetHeight;
 				cardBack.style.height = frontHeight + 'px';
+				console.log('Flipping to back, front height:', frontHeight);
 				currentlyFlippedCard = container;
 			} else {
+				console.log('Flipping to front');
 				currentlyFlippedCard = null;
 			}
 			
 			container.classList.toggle('flipped');
+			console.log('Flipped class toggled, flipped:', container.classList.contains('flipped'));
 		}
 
 		// Update publication statistics
@@ -2676,6 +2558,152 @@ document.addEventListener('DOMContentLoaded', () => {
 			result.push(current.replace(/^"|"$/g, '').trim());
 			
 			return result;
+		}
+
+		function getUrlParameter(name) {
+			const url = new URL(window.location.href);
+			return url.searchParams.get(name);
+		}
+
+		function escapeHtml(text) {
+			if (!text) return '';
+			const div = document.createElement('div');
+			div.textContent = text;
+			return div.innerHTML;
+		}
+
+		function getLastTwoSentences(text) {
+			if (!text) return '';
+			const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
+			if (sentences.length === 0) return text.substring(0, 150) + '...';
+			return sentences.slice(-2).join(' ').trim();
+		}
+
+		function closeArticleOverlay() {
+			const overlayBg = document.getElementById('articleOverlayBg');
+			if (overlayBg) {
+				overlayBg.setAttribute('aria-hidden', 'true');
+			}
+			// Remove id param from URL to keep index clean after close
+			const url = new URL(window.location.href);
+			url.searchParams.delete('id');
+			url.searchParams.delete('overlay');
+			history.replaceState({}, '', url.toString());
+		}
+
+		function renderArticleOverlay(article) {
+			const container = document.getElementById('articleOverlayContent');
+			if (!container) return;
+
+			const title = article.title || 'Untitled';
+			const authors = article.authors_display ? article.authors_display.split('|').map(a => a.trim()) : [];
+			const rochesterAuthors = article.rochester_authors ? article.rochester_authors.split('|').map(a => a.trim()) : [];
+			const journal = article.journal || 'Unknown Journal';
+			const pubdate = article.pubdate || 'Unknown Date';
+			const year = article.year || '';
+			const abstract = article.abstract || '';
+			const llmSummary = article.llm_summary || '';
+			const url = article.url || (article.pmid ? `https://pubmed.ncbi.nlm.nih.gov/${article.pmid}/` : '#');
+			const primarySpecialty = article.primary_specialty || '';
+			const secondarySpecialty = article.secondary_specialty || '';
+			const pmid = article.pmid || '';
+
+			const specialties = [primarySpecialty, secondarySpecialty].filter(Boolean);
+			const specialtyBadges = specialties.map(s => `<span class="article-overlay-badge">${escapeHtml(s)}</span>`).join('');
+
+			const authorBadges = authors.map(author => {
+				const isRochester = rochesterAuthors.includes(author);
+				const cls = isRochester ? 'article-overlay-author rochester' : 'article-overlay-author';
+				const label = isRochester ? `${author} ★` : author;
+				return `<span class="${cls}">${escapeHtml(label)}</span>`;
+			}).join('');
+
+			const pubmedUrlWithUtm = url.includes('?')
+				? `${url}&utm_source=linkedin&utm_medium=share&utm_campaign=medcityai_share`
+				: `${url}?utm_source=linkedin&utm_medium=share&utm_campaign=medcityai_share`;
+			const shareText = `New research worth noting:\n\n${getLastTwoSentences(llmSummary || abstract)}\n\n${pubmedUrlWithUtm}\nhttps://medcityai.com\n@MedCityAI`;
+
+			container.innerHTML = `
+				<div class="article-overlay-header">
+					<div class="article-overlay-kicker">MedCityAI Research Spotlight</div>
+					<h2 class="article-overlay-title" id="articleOverlayTitle">${escapeHtml(title)}</h2>
+					<div class="article-overlay-meta">${escapeHtml(journal)} · ${escapeHtml(pubdate)}${year ? ` · ${escapeHtml(year)}` : ''} · PMID ${escapeHtml(pmid)}</div>
+					<div class="article-overlay-actions">
+						<a class="overlay-primary" href="${url}" target="_blank" rel="noopener" aria-label="View on PubMed">
+							<i class="fas fa-external-link-alt"></i> View on PubMed
+						</a>
+						<button class="overlay-linkedin" type="button" onclick="shareOverlayOnLinkedIn('${encodeURIComponent(shareText)}', '${encodeURIComponent(pubmedUrlWithUtm)}')">
+							<i class="fab fa-linkedin"></i> Share on LinkedIn
+						</button>
+						<button type="button" onclick="copyOverlayShareText('${escapeHtml(shareText).replace(/'/g, "\\'")}')">
+							<i class="fas fa-copy"></i> Copy Share Text
+						</button>
+					</div>
+				</div>
+				<div class="article-overlay-body">
+					${specialtyBadges ? `
+					<div class="article-overlay-section">
+						<h3>Specialties</h3>
+						<div class="article-overlay-badges">${specialtyBadges}</div>
+					</div>` : ''}
+					<div class="article-overlay-section">
+						<h3>Authors</h3>
+						<div class="article-overlay-authors">${authorBadges || '<span class="article-overlay-author">No author information available.</span>'}</div>
+					</div>
+					<div class="article-overlay-section">
+						<h3>Citation</h3>
+						<div class="article-overlay-block"><strong>${escapeHtml(journal)}</strong>. ${escapeHtml(pubdate)}${year ? ` (${escapeHtml(year)})` : ''}. PMID: ${escapeHtml(pmid)}</div>
+					</div>
+					${abstract ? `
+					<div class="article-overlay-section">
+						<h3>Abstract</h3>
+						<div class="article-overlay-block">${escapeHtml(abstract)}</div>
+					</div>` : ''}
+					${llmSummary && llmSummary !== 'No abstract available.' ? `
+					<div class="article-overlay-section">
+						<h3>AI Summary</h3>
+						<div class="article-overlay-ai">
+							<div>${escapeHtml(llmSummary)}</div>
+							<div class="article-overlay-disclaimer">
+								<strong>Important Disclaimer:</strong> This summary was generated by AI and may contain inaccuracies. Refer to the full publication for accurate information.
+							</div>
+						</div>
+					</div>` : ''}
+				</div>
+			`;
+		}
+
+		function openArticleOverlay(pmid) {
+			if (!pmid) return;
+			const overlayBg = document.getElementById('articleOverlayBg');
+			if (!overlayBg) return;
+
+			const article = allArticlesData.find(a => a.pmid && a.pmid.trim() === pmid.trim());
+			if (!article) {
+				renderArticleOverlay({ title: 'Article not found', pubdate: '', journal: '', pmid, abstract: '', llm_summary: '' });
+				overlayBg.setAttribute('aria-hidden', 'false');
+				return;
+			}
+
+			renderArticleOverlay(article);
+			overlayBg.setAttribute('aria-hidden', 'false');
+		}
+
+		function shareOverlayOnLinkedIn(shareText, pubmedUrl) {
+			const text = decodeURIComponent(shareText);
+			navigator.clipboard.writeText(text).catch(() => {
+				prompt('Copy this text to share on LinkedIn:', text);
+			});
+			window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${pubmedUrl}`, '_blank');
+		}
+
+		function copyOverlayShareText(text) {
+			const cleanText = text.replace(/\\'/g, "'");
+			navigator.clipboard.writeText(cleanText).then(() => {
+				alert('Share text copied to clipboard!');
+			}).catch(() => {
+				prompt('Copy this text:', cleanText);
+			});
 		}
 
 	// Specialty mapping configuration
@@ -3246,7 +3274,7 @@ document.addEventListener('DOMContentLoaded', () => {
 								<div class="result-authors" onclick="event.stopPropagation();">${authorsHtml}</div>
 								<div class="result-citation"><em>${citation}</em></div>
 								<div class="share-buttons" role="group" aria-label="Share on social media" onclick="event.stopPropagation();" style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 12px;">
-									<a href="article.html?id=${pmid}" onclick="event.preventDefault(); event.stopPropagation(); openArticleOverlay('${pmid}');" style="color: #667eea; text-decoration: none; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 4px;" aria-label="View full article page">
+									<a href="article.html?id=${pmid}" style="color: #667eea; text-decoration: none; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 4px;" aria-label="View full article page">
 										<i class="fas fa-arrow-right"></i>Read Article
 									</a>
 									<a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(pubmedUrlWithUtm)}" class="linkedin" target="_blank" aria-label="Share on LinkedIn (please @mention MedCityAI)" title="Share on LinkedIn (please @mention MedCityAI)" data-share-text="${encodeURIComponent(linkedinShareText)}" onclick="return handleLinkedInShare(event, this);">
@@ -3862,6 +3890,16 @@ document.addEventListener('DOMContentLoaded', () => {
 			modalBg.addEventListener('click', function(e) {
 				if (e.target === modalBg) closeModal();
 			});
+
+			// Set up article overlay modal event listeners
+			const articleOverlayBg = document.getElementById('articleOverlayBg');
+			const articleOverlayClose = document.getElementById('articleOverlayClose');
+			if (articleOverlayClose && articleOverlayBg) {
+				articleOverlayClose.addEventListener('click', closeArticleOverlay);
+				articleOverlayBg.addEventListener('click', function(e) {
+					if (e.target === articleOverlayBg) closeArticleOverlay();
+				});
+			}
 			
 			// Set up author modal close event listener
 			const authorModal = document.getElementById('authorModal');
@@ -3887,6 +3925,10 @@ document.addEventListener('DOMContentLoaded', () => {
 			loadStatistics();
 			loadCSVData().then(() => {
 				fetchPubMedResults('', 1);
+				const pmidFromUrl = getUrlParameter('id');
+				if (pmidFromUrl) {
+					openArticleOverlay(pmidFromUrl);
+				}
 			});
 		});
 		</script>
