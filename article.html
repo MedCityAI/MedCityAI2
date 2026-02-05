@@ -473,7 +473,6 @@
 			// Load and display article
 			async function loadArticle() {
 				const pmid = getUrlParameter('id');
-				console.log('Loading article with PMID:', pmid);
 				
 				if (!pmid) {
 					showError('No article ID provided', 'Please specify a PMID using ?id=PMID', 'question-circle');
@@ -481,18 +480,12 @@
 				}
 
 				try {
-					console.log('Fetching CSV...');
 					const response = await fetch('pubmed_data.csv');
 					if (!response.ok) throw new Error('CSV file not found');
 					
 					const csvText = await response.text();
-					console.log('CSV loaded, size:', csvText.length, 'bytes');
-					
 					const lines = csvText.split('\n');
-					console.log('Total lines:', lines.length);
-					
 					const headers = parseCSVLine(lines[0]);
-					console.log('Headers:', headers.length, headers);
 					
 					// Find the article with matching PMID
 					let article = null;
@@ -507,7 +500,6 @@
 							});
 							
 							if (data.pmid && data.pmid.trim() === pmid.trim()) {
-								console.log('Found article:', data.title);
 								article = data;
 								break;
 							}
@@ -515,7 +507,6 @@
 					}
 					
 					if (!article) {
-						console.log('Article not found for PMID:', pmid);
 						showError('Article not found', `No article found with PMID: ${pmid}`, 'search');
 						return;
 					}
