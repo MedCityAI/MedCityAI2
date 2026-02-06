@@ -1936,18 +1936,22 @@
 				<div class="filter-bar">
 					<div class="filter-bar-content">
 						<!-- Specialty Filter Bar (as text links above results) -->
-						<nav id="specialty-filter" style="max-width:1200px;margin:0 auto 10px auto;padding:10px 0 0 0;display:flex;flex-wrap:nowrap;gap:0;justify-content:center;align-items:center;font-size:15px;">
-							<a href="#" class="specialty-filter-link selected" data-specialty="all" style="color:#000;font-weight:700;text-decoration:underline;">Most Recent</a>
-							<span style="margin: 0 10px; color: #888;">&middot;</span>
-							<a href="#" class="specialty-filter-link" data-specialty="Radiology" style="color:#000;">Radiology</a>
-							<span style="margin: 0 10px; color: #888;">&middot;</span>
-							<a href="#" class="specialty-filter-link" data-specialty="Oncology" style="color:#000;">Oncology</a>
-							<span style="margin: 0 10px; color: #888;">&middot;</span>
-							<a href="#" class="specialty-filter-link" data-specialty="Cardiology" style="color:#000;">Cardiology</a>
-							<span style="margin: 0 10px; color: #888;">&middot;</span>
-							<a href="#" class="specialty-filter-link" data-specialty="Neurology" style="color:#000;">Neurology</a>
-							<span style="margin: 0 10px; color: #888;">&middot;</span>
-							<a href="#" class="specialty-filter-link" data-specialty="AI/ML/DL" style="color:#000;">AI/ML/DL</a>
+						<nav id="specialty-filter" style="max-width:1200px;margin:0 auto 10px auto;padding:10px 0 0 0;display:flex;flex-wrap:nowrap;gap:0;justify-content:space-between;align-items:center;font-size:15px;">
+							<div style="display:flex;flex-wrap:nowrap;gap:0;align-items:center;">
+								<span style="font-weight:700;margin-right:10px;color:#000;">Filter:</span>
+								<a href="#" class="specialty-filter-link selected" data-specialty="all" style="color:#000;font-weight:700;text-decoration:underline;">Most Recent</a>
+								<span style="margin: 0 10px; color: #888;">&middot;</span>
+								<a href="#" class="specialty-filter-link" data-specialty="Radiology" style="color:#000;">Radiology</a>
+								<span style="margin: 0 10px; color: #888;">&middot;</span>
+								<a href="#" class="specialty-filter-link" data-specialty="Oncology" style="color:#000;">Oncology</a>
+								<span style="margin: 0 10px; color: #888;">&middot;</span>
+								<a href="#" class="specialty-filter-link" data-specialty="Cardiology" style="color:#000;">Cardiology</a>
+								<span style="margin: 0 10px; color: #888;">&middot;</span>
+								<a href="#" class="specialty-filter-link" data-specialty="Neurology" style="color:#000;">Neurology</a>
+								<span style="margin: 0 10px; color: #888;">&middot;</span>
+								<a href="#" class="specialty-filter-link" data-specialty="AI/ML/DL" style="color:#000;">AI/ML/DL</a>
+							</div>
+							<a href="#" style="color:#3498db;font-weight:600;text-decoration:none;">Update Preferences</a>
 						</nav>
 						<!-- Results Grid -->
 						<div id="pubmed-results" role="region" aria-live="polite" aria-atomic="false" aria-label="Publication results"></div>
