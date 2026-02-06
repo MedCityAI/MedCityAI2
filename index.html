@@ -3314,8 +3314,7 @@ function handleLinkedInShare(event, el) {
 							<div class="card-face card-front" onclick="flipCard(this.closest('.card-flip-container'), event);" style="cursor: pointer; position: relative;">
 								${recencyBadge ? `<div class="${recencyClass}">${recencyBadge}</div>` : ''}
 								${isInstruction ? `` : specialtyBadgesHtml}
-								${isInstruction ? `<div style="position: absolute; top: 10px; left: 10px; background-color: #ff9800; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 4px;"><i class="fas fa-info-circle"></i>HOW TO</div>` : ''}
-								${isInstruction ? `<div style="position: absolute; top: 10px; right: 10px; background-color: #4caf50; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">Instructions</div>` : ''}
+								${isInstruction ? `<div style="position: absolute; top: 0; left: 0; background: #e74c3c; color: #fff; font-size: 12px; font-weight: bold; padding: 4px 12px; border-radius: 8px 0 8px 0; z-index: 10; display: flex; align-items: center; gap: 4px;"><i class="fas fa-info-circle"></i>HOW TO</div>` : ''}
 								<br>
 								${titleMarkup}
 								${instructionBlock}
@@ -3324,7 +3323,7 @@ function handleLinkedInShare(event, el) {
 								<div class="share-buttons" role="group" aria-label="Share on social media" onclick="event.stopPropagation();" style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 12px;">
 									${isInstruction ? `
 										<span style="font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 4px; color: #333;">
-											Please SHARE <i class="icon brands fa-linkedin" aria-hidden="true" style="color: #0077b5; font-size: 16px;"></i> and LIKE <i class="fas fa-heart" aria-hidden="true" style="color: #e74c3c; font-size: 16px;"></i>, thank you!
+											SHARE <i class="icon brands fa-linkedin" aria-hidden="true" style="color: #0077b5; font-size: 20px;"></i>   LIKE <i class="fas fa-heart" aria-hidden="true" style="color: #e74c3c; font-size: 20px;"></i>
 										</span>
 									` : `
 										<a href="${readArticleHref}" style="color: #667eea; text-decoration: none; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 4px;" aria-label="View full article page">
@@ -3387,11 +3386,10 @@ function handleLinkedInShare(event, el) {
 			url: 'https://pubmed.ncbi.nlm.nih.gov/',
 			llm_summary: `
 				<ul style="margin: 0 0 0 18px; padding: 0;">
-					<li>Automatic query of Rochester publications</li>
-					<li>Click cards to reveal AI summary on back</li>
-					<li>Authors with Rochester affiliation link to publication list</li>
+					<li>Click cards to reveal AI summary</li>
+					<li>Rochester affiliated authors underlined</li>
 					<li>Share and like articles you love</li>
-					<li>View full article on PubMed</li>
+					<li>Link to full article on PubMed</li>
 				</ul>
 			`,
 			authors_display: 'MedCityAI Team',
