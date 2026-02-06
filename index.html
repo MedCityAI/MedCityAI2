@@ -3294,7 +3294,18 @@ function handleLinkedInShare(event, el) {
 				const readArticleHref = isInstruction ? pubmedUrl : `article.html?id=${pmid}`;
 
 				// Build card with flip effect
-				const hasSummary = llmSummary && llmSummary.trim() !== '' && llmSummary !== 'No abstract available.';
+				const hasSummary = !isInstruction && llmSummary && llmSummary.trim() !== '' && llmSummary !== 'No abstract available.';
+				const titleMarkup = isInstruction
+					? `<div class="result-title">${title}</div>`
+					: `<a href="#" class="result-title" 
+					   onclick="event.preventDefault(); event.stopPropagation(); flipCard(this.closest('.card-flip-container'), event);" 
+					   onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flipCard(this.closest('.card-flip-container'), event);}"
+					   tabindex="0"
+					   role="button"
+					   aria-label="Click to view AI summary of: ${title}">${title}</a>`;
+				const instructionBlock = isInstruction
+					? `<div class="card-back-summary" style="color:#1a237e; margin-top: 10px;">${llmSummary}</div>`
+					: '';
 				
 				return `
 					<div class="result-item">
@@ -3304,12 +3315,8 @@ function handleLinkedInShare(event, el) {
 								${recencyBadge ? `<div class="${recencyClass}">${recencyBadge}</div>` : ''}
 								${specialtyBadgesHtml}
 								<br>
-								<a href="#" class="result-title" 
-								   onclick="event.preventDefault(); event.stopPropagation(); flipCard(this.closest('.card-flip-container'), event);" 
-								   onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flipCard(this.closest('.card-flip-container'), event);}"
-								   tabindex="0"
-								   role="button"
-								   aria-label="Click to view AI summary of: ${title}">${title}</a>
+								${titleMarkup}
+								${instructionBlock}
 								<div class="result-authors" onclick="event.stopPropagation();">${authorsHtml}</div>
 								${citation ? `<div class="result-citation"><em>${citation}</em></div>` : ''}
 								<div class="share-buttons" role="group" aria-label="Share on social media" onclick="event.stopPropagation();" style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 12px;">
