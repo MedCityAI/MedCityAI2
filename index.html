@@ -3104,6 +3104,7 @@ function handleLinkedInShare(event, el) {
 		
 		// Build results HTML - function to render a single article
 		const renderArticle = (article) => {
+				const isInstruction = article.isInstruction === true;
 				const pmid = article.pmid;
 				const title = article.title;
 				const abstract = article.abstract;
@@ -3148,7 +3149,7 @@ function handleLinkedInShare(event, el) {
 // Determine recency badge (within last 48 hrs = TODAY, within 30 days = RECENT)
 			let recencyBadge = '';
 			let recencyClass = '';
-			if (articleDate) {
+			if (!isInstruction && articleDate) {
 				if (articleDate >= twoDaysAgo) {
 					recencyBadge = '<i class="fas fa-bell" style="margin-right:4px;"></i>NEW';
 					recencyClass = 'new-tab';
@@ -3284,9 +3285,13 @@ function handleLinkedInShare(event, el) {
 			} else if (displaySpecialties.length === 2) {
 				specialtyBadgesHtml = `<div class="department-badge">${displaySpecialties[0]} · ${displaySpecialties[1]}</div>`;
 			}
+			if (isInstruction) {
+				specialtyBadgesHtml = `<div class="department-badge">INSTRUCTION</div>`;
+			}
 			
 			const rankingScore = article.rankingScore || 0;
-				const citation = `${journal}. ${pubdate}. (${rankingScore})`;
+				const citation = isInstruction ? '' : `${journal}. ${pubdate}. (${rankingScore})`;
+				const readArticleHref = isInstruction ? pubmedUrl : `article.html?id=${pmid}`;
 
 				// Build card with flip effect
 				const hasSummary = llmSummary && llmSummary.trim() !== '' && llmSummary !== 'No abstract available.';
@@ -3306,9 +3311,9 @@ function handleLinkedInShare(event, el) {
 								   role="button"
 								   aria-label="Click to view AI summary of: ${title}">${title}</a>
 								<div class="result-authors" onclick="event.stopPropagation();">${authorsHtml}</div>
-								<div class="result-citation"><em>${citation}</em></div>
+								${citation ? `<div class="result-citation"><em>${citation}</em></div>` : ''}
 								<div class="share-buttons" role="group" aria-label="Share on social media" onclick="event.stopPropagation();" style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 12px;">
-									<a href="article.html?id=${pmid}" style="color: #667eea; text-decoration: none; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 4px;" aria-label="View full article page">
+									<a href="${readArticleHref}" style="color: #667eea; text-decoration: none; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 4px;" aria-label="View full article page">
 										<i class="fas fa-arrow-right"></i>Read Article
 									</a>
 									<a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(pubmedUrlWithUtm)}" class="linkedin" target="_blank" aria-label="Share on LinkedIn (please @mention MedCityAI)" title="Share on LinkedIn (please @mention MedCityAI)" data-share-text="${encodeURIComponent(linkedinShareText)}" onclick="return handleLinkedInShare(event, this);">
@@ -3356,6 +3361,29 @@ function handleLinkedInShare(event, el) {
 		
 		// Build HTML sections
 		let finalHTML = '';
+		
+		const instructionArticle = {
+			isInstruction: true,
+			pmid: 'instruction',
+			title: 'How to use MedCityAI',
+			abstract: '',
+			journal: '',
+			pubdate: '',
+			url: 'https://pubmed.ncbi.nlm.nih.gov/',
+			llm_summary: `
+				<ul style="margin: 0 0 0 18px; padding: 0;">
+					<li>Click on cards to reveal AI summary on back</li>
+					<li>Authors with Rochester affiliation have a link to publications</li>
+					<li>Share and like articles you love</li>
+					<li>View full article on PubMed</li>
+				</ul>
+			`,
+			authors_display: 'MedCityAI Team',
+			authors: '',
+			rochester_authors: ''
+		};
+
+		finalHTML += `<div class="all-publications-section"><div class="results">${renderArticle(instructionArticle)}</div></div>`;
 		
 	// Limit articles for display
 	const maxRecommended = 15;
