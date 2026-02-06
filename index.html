@@ -3390,8 +3390,6 @@ function handleLinkedInShare(event, el) {
 			rochester_authors: ''
 		};
 
-		finalHTML += `<div class="all-publications-section"><div class="results">${renderArticle(instructionArticle)}</div></div>`;
-		
 	// Limit articles for display
 	const maxRecommended = 15;
 	const maxTotal = 200;
@@ -3405,7 +3403,7 @@ function handleLinkedInShare(event, el) {
 	let displayedOther = [];
 	
 	// Only show 'FRESH OFF THE PRESS' if specialty is 'all' (Most Recent)
-	if (showFreshOffThePress && todayArticles.length > 0) {
+	if (showFreshOffThePress) {
 		// Show all today articles (no limit)
 		displayedToday = todayArticles;
 		displayedCount += displayedToday.length;
@@ -3417,6 +3415,8 @@ function handleLinkedInShare(event, el) {
 			</div>
 			<div class="results">`;
     
+		finalHTML += renderArticle(instructionArticle);
+
 		displayedToday.forEach(article => {
 			finalHTML += renderArticle(article);
 		});
