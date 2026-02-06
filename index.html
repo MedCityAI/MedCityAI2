@@ -3352,14 +3352,16 @@ function handleLinkedInShare(event, el) {
 									    tabindex="0"
 									    role="button"
 									    aria-label="Click to return to article details">
-										${isInstruction ? 'MESSAGE' : 'AI SUMMARY'} <span style="font-size: 14px;">↩</span>
+										AI SUMMARY <span style="font-size: 14px;">↩</span>
 									</h4>
 								</div>
 								<div class="card-back-content">
 									${isInstruction ? `
-										<div class="card-back-summary" style="font-size: 16px; font-weight: 500; line-height: 1.6; color: #1a237e;">
-											Thank you for building our Rochester research community!<br><br>
-											- MedCityAI Team
+										<div class="card-back-summary" style="font-size: 15px; font-weight: 400; line-height: 1.8; color: #1a237e; text-align: center; display: flex; align-items: center; justify-content: center; height: 100%;">
+											<div>
+												Thank you for helping build Rochester's biomedical research community. We're grateful to have you here.<br><br>
+												— MedCityAI Team
+											</div>
 										</div>
 									` : `
 										<div class="card-back-summary">${llmSummary}</div>
