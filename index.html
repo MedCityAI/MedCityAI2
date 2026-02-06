@@ -3286,7 +3286,7 @@ function handleLinkedInShare(event, el) {
 				specialtyBadgesHtml = `<div class="department-badge">${displaySpecialties[0]} · ${displaySpecialties[1]}</div>`;
 			}
 			if (isInstruction) {
-				specialtyBadgesHtml = `<div class="department-badge">INSTRUCTION</div>`;
+				specialtyBadgesHtml = `<div class="department-badge"><i class="fas fa-circle-info" style="margin-right: 6px;"></i><strong>HOW TO</strong></div>`;
 			}
 			
 			const rankingScore = article.rankingScore || 0;
@@ -3320,18 +3320,27 @@ function handleLinkedInShare(event, el) {
 								<div class="result-authors" onclick="event.stopPropagation();">${authorsHtml}</div>
 								${citation ? `<div class="result-citation"><em>${citation}</em></div>` : ''}
 								<div class="share-buttons" role="group" aria-label="Share on social media" onclick="event.stopPropagation();" style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 12px;">
-									<a href="${readArticleHref}" style="color: #667eea; text-decoration: none; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 4px;" aria-label="View full article page">
-										<i class="fas fa-arrow-right"></i>Read Article
-									</a>
-									<a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(pubmedUrlWithUtm)}" class="linkedin" target="_blank" aria-label="Share on LinkedIn (please @mention MedCityAI)" title="Share on LinkedIn (please @mention MedCityAI)" data-share-text="${encodeURIComponent(linkedinShareText)}" onclick="return handleLinkedInShare(event, this);">
-										<i class="icon brands fa-linkedin" aria-hidden="true"></i>
-									</a>
-									<a href="${url}" target="_blank" onclick="event.stopPropagation();" style="color: #0056a3; text-decoration: none; font-size: 14px; font-weight: 500;" aria-label="View on PubMed">
-										View on PubMed
-									</a>
-									<button class="like-button" data-pmid="${pmid}" onclick="toggleLike(event, '${pmid}')" aria-label="Like this article" title="Like">
-										<i class="icon far fa-heart" aria-hidden="true"></i>
-									</button>
+									${isInstruction ? `
+										<span style="font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 4px; color: #333;">
+											SHARE: <i class="icon brands fa-linkedin" aria-hidden="true" style="color: #0077b5; font-size: 16px;"></i>
+										</span>
+										<span style="font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 4px; color: #333;">
+											LIKE: <i class="fas fa-heart" aria-hidden="true" style="color: #e74c3c; font-size: 16px;"></i>
+										</span>
+									` : `
+										<a href="${readArticleHref}" style="color: #667eea; text-decoration: none; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 4px;" aria-label="View full article page">
+											<i class="fas fa-arrow-right"></i>Read Article
+										</a>
+										<a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(pubmedUrlWithUtm)}" class="linkedin" target="_blank" aria-label="Share on LinkedIn (please @mention MedCityAI)" title="Share on LinkedIn (please @mention MedCityAI)" data-share-text="${encodeURIComponent(linkedinShareText)}" onclick="return handleLinkedInShare(event, this);">
+											<i class="icon brands fa-linkedin" aria-hidden="true"></i>
+										</a>
+										<a href="${url}" target="_blank" onclick="event.stopPropagation();" style="color: #0056a3; text-decoration: none; font-size: 14px; font-weight: 500;" aria-label="View on PubMed">
+											View on PubMed
+										</a>
+										<button class="like-button" data-pmid="${pmid}" onclick="toggleLike(event, '${pmid}')" aria-label="Like this article" title="Like">
+											<i class="icon far fa-heart" aria-hidden="true"></i>
+										</button>
+									`}
 								</div>
 							</div>
 							
