@@ -3286,7 +3286,7 @@ function handleLinkedInShare(event, el) {
 				specialtyBadgesHtml = `<div class="department-badge">${displaySpecialties[0]} · ${displaySpecialties[1]}</div>`;
 			}
 			if (isInstruction) {
-				specialtyBadgesHtml = `<div class="department-badge"><i class="fas fa-circle-info" style="margin-right: 6px;"></i><strong>HOW TO</strong></div>`;
+				specialtyBadgesHtml = `<div class="department-badge">INSTRUCTION</div>`;
 			}
 			
 			const rankingScore = article.rankingScore || 0;
@@ -3311,9 +3311,11 @@ function handleLinkedInShare(event, el) {
 					<div class="result-item">
 						<div class="card-flip-container" role="group" aria-label="${title.substring(0, 100)}...">
 							<!-- Front of card -->
-							<div class="card-face card-front" onclick="flipCard(this.closest('.card-flip-container'), event);" style="cursor: pointer;">
+							<div class="card-face card-front" onclick="flipCard(this.closest('.card-flip-container'), event);" style="cursor: pointer; position: relative;">
 								${recencyBadge ? `<div class="${recencyClass}">${recencyBadge}</div>` : ''}
-								${specialtyBadgesHtml}
+								${isInstruction ? `` : specialtyBadgesHtml}
+								${isInstruction ? `<div style="position: absolute; top: 10px; left: 10px; background-color: #ff9800; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 4px;"><i class="fas fa-info-circle"></i>HOW TO</div>` : ''}
+								${isInstruction ? `<div style="position: absolute; top: 10px; right: 10px; background-color: #4caf50; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">Instructions</div>` : ''}
 								<br>
 								${titleMarkup}
 								${instructionBlock}
@@ -3322,10 +3324,7 @@ function handleLinkedInShare(event, el) {
 								<div class="share-buttons" role="group" aria-label="Share on social media" onclick="event.stopPropagation();" style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 12px;">
 									${isInstruction ? `
 										<span style="font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 4px; color: #333;">
-											SHARE: <i class="icon brands fa-linkedin" aria-hidden="true" style="color: #0077b5; font-size: 16px;"></i>
-										</span>
-										<span style="font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 4px; color: #333;">
-											LIKE: <i class="fas fa-heart" aria-hidden="true" style="color: #e74c3c; font-size: 16px;"></i>
+											Please SHARE <i class="icon brands fa-linkedin" aria-hidden="true" style="color: #0077b5; font-size: 16px;"></i> and LIKE <i class="fas fa-heart" aria-hidden="true" style="color: #e74c3c; font-size: 16px;"></i>, thank you!
 										</span>
 									` : `
 										<a href="${readArticleHref}" style="color: #667eea; text-decoration: none; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 4px;" aria-label="View full article page">
@@ -3388,8 +3387,9 @@ function handleLinkedInShare(event, el) {
 			url: 'https://pubmed.ncbi.nlm.nih.gov/',
 			llm_summary: `
 				<ul style="margin: 0 0 0 18px; padding: 0;">
-					<li>Click on cards to reveal AI summary on back</li>
-					<li>Authors with Rochester affiliation have a link to publications</li>
+					<li>Automatic query of Rochester publications</li>
+					<li>Click cards to reveal AI summary on back</li>
+					<li>Authors with Rochester affiliation link to publication list</li>
 					<li>Share and like articles you love</li>
 					<li>View full article on PubMed</li>
 				</ul>
