@@ -3444,17 +3444,26 @@ function handleLinkedInShare(event, el) {
 	
 	// All publications section - limit to remaining space up to 100 total
 	const remainingSlots = maxTotal - displayedCount;
-	if (otherArticles.length > 0 && remainingSlots > 0) {
-		displayedOther = otherArticles.slice(0, remainingSlots);
-		
+	
+	// When a specialty is selected (not 'all'), combine matching and other articles in a single section
+	let allRemainingArticles = [];
+	if (!showFreshOffThePress) {
+		// Combine matching and other articles when a specialty filter is active
+		allRemainingArticles = matchingArticles.concat(otherArticles).slice(0, remainingSlots);
+	} else {
+		// When showing 'Fresh Off The Press', only show other articles (matching articles are already in today's or other)
+		allRemainingArticles = otherArticles.slice(0, remainingSlots);
+	}
+	
+	if (allRemainingArticles.length > 0) {
 		finalHTML += `<div class="all-publications-section"><div class="results">`;
 		
-		displayedOther.forEach(article => {
+		allRemainingArticles.forEach(article => {
 			finalHTML += renderArticle(article);
 		});
 		
 		finalHTML += `</div></div>`;
-		displayedCount += displayedOther.length;
+		displayedCount += allRemainingArticles.length;
 	}
 
 	document.getElementById("pubmed-results").innerHTML = finalHTML;        
