@@ -1165,7 +1165,8 @@
 		/* Responsive design */
 		@media (max-width: 900px) {
 			.results { 
-				column-count: 2;
+				column-count: 1;
+				display: block;
 				padding: 0 15px;
 			}
 			.hero-content {
@@ -1188,10 +1189,14 @@
 	@media (max-width: 600px) {
 		.results { 
 			column-count: 1;
+			display: block;
 			padding: 0 10px;
 		}
 		.result-item {
-			margin: 0 0 12px;
+			display: block;
+			margin: 0 0 15px;
+			break-inside: avoid;
+			page-break-inside: avoid;
 		}
 		.recommended-section .results {
 			padding: 0;
@@ -3395,8 +3400,8 @@ function handleLinkedInShare(event, el) {
 				<ul style="margin: 0 0 0 18px; padding: 0;">
 					<li>Click cards to reveal AI summary</li>
 					<li>Rochester affiliated authors are underlined</li>
-					<li>Share and like to celebrate Rochester research</li>
-					<li>Find a link to the full article on PubMed</li>
+					<li>Share and like to celebrate local research progress</li>
+					<li>Find a link to the full publication on PubMed</li>
 				</ul>
 			`,
 			authors_display: '',
