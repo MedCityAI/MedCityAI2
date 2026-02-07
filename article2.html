@@ -423,6 +423,10 @@
 			margin-bottom: 14px;
 		}
 
+		.article-overlay-spacer {
+			height: 12px;
+		}
+
 		.article-overlay-section {
 			margin-bottom: 22px;
 			position: relative;
@@ -829,9 +833,11 @@
 					<img src="images/medcityai_logo1.png" alt="MedCityAI logo" />
 				</a>
 				<div class="article-overlay-section">
+					<div class="article-overlay-spacer"></div>
 					<h2 class="article-overlay-title" id="articleOverlayTitle">${escapeHtml(title)}</h2>
 					<div class="article-overlay-authors-line">${formattedAuthors}</div>
 					<div class="article-overlay-meta">${escapeHtml(journal)} · ${escapeHtml(pubdate)} · PMID ${escapeHtml(pmid)}</div>
+					<div class="article-overlay-spacer"></div>
 				</div>
 				${llmSummary && llmSummary !== 'No abstract available.' ? `
 				<div class="article-overlay-section">
