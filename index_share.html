@@ -1,0 +1,538 @@
+<!DOCTYPE HTML>
+<!--
+	MedCityAI - Real-time research analytics
+	Share Page (Lightweight Version)
+-->
+<html lang="en">
+	<head>
+		<title>MedCityAI - Rochester MN Biomedical Research</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<meta property="og:site_name" content="MedCityAI" />
+		<meta property="og:title" content="MedCityAI - Rochester MN Biomedical Research" />
+		<meta property="og:description" content="Real-time biomedical research feed for Rochester, Minnesota." />
+		<meta property="og:url" content="https://www.medcityai.com/" />
+		<meta property="og:type" content="website" />
+		<link rel="me" href="https://www.linkedin.com/company/medcityai/" />
+		<meta property="article:publisher" content="https://www.linkedin.com/company/medcityai/" />
+		
+		<!-- Preconnect to Google Fonts for faster loading -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		
+		<!-- Load CSS asynchronously to prevent render blocking -->
+		<link rel="stylesheet" href="assets/css/main.css" media="print" onload="this.media='all'">
+		<link rel="stylesheet" href="assets/css/navigation.css" media="print" onload="this.media='all'">
+		<noscript>
+			<link rel="stylesheet" href="assets/css/main.css">
+			<link rel="stylesheet" href="assets/css/navigation.css">
+		</noscript>
+		
+		<!-- Load FontAwesome asynchronously (non-blocking) -->
+		<link rel="stylesheet" href="assets/css/fontawesome-all.min.css" media="print" onload="this.media='all'">
+		<noscript><link rel="stylesheet" href="assets/css/fontawesome-all.min.css"></noscript>
+		
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		
+		<!-- Critical CSS - inline minimum styles for initial render -->
+		<style>
+		/* Basic layout to prevent layout shift */
+		body {
+			margin: 0;
+			padding: 0;
+			font-family: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+			background: #fff;
+		}
+		#page-wrapper {
+			width: 100%;
+		}
+		.top-bar {
+			background: #fff;
+			box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+			position: fixed;
+			top: 0;
+			width: 100%;
+			z-index: 1000;
+		}
+
+		/* Hero section */
+		.hero-section {
+			background: linear-gradient(120deg, #2568BE 0%, #1B4C7D 100%);
+			min-height: 340px;
+			display: flex;
+			align-items: center;
+			position: relative;
+			overflow: hidden;
+			z-index: 1;
+			padding-top: 70px;
+		}
+		
+		.hero-bg-blobs {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			z-index: 0;
+			pointer-events: none;
+			opacity: 1;
+			transition: opacity 0.5s;
+		}
+
+		.hero-content {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 36px 20px;
+			display: grid;
+			grid-template-columns: 1fr;
+			gap: 60px;
+			align-items: center;
+			position: relative;
+			z-index: 2;
+			width: 100%;
+		}
+
+		.hero-left h1 {
+			font-size: 3em;
+			font-weight: 800;
+			color: #2c3e50;
+			margin-bottom: 24px;
+			line-height: 1.1;
+			text-shadow: 0 2px 8px rgba(0,0,0,0.1);
+		}
+
+		.hero-left .subtitle {
+			font-size: 1.2em;
+			color: #7f8c8d;
+			margin-bottom: 16px;
+			font-weight: 500;
+		}
+
+		.hero-left p {
+			font-size: 1.1em;
+			color: #34495e;
+			margin-bottom: 36px;
+			line-height: 1.7;
+		}
+
+		.button-row {
+			display: flex;
+			gap: 16px;
+			flex-wrap: wrap;
+		}
+
+		.btn {
+			padding: 14px 28px;
+			border-radius: 50px;
+			font-weight: 600;
+			text-decoration: none;
+			transition: all 0.3s ease;
+			border: none;
+			cursor: pointer;
+			font-size: 15px;
+		}
+
+		.btn-primary {
+			background: linear-gradient(135deg, #3498db, #2980b9);
+			color: white;
+			box-shadow: 0 4px 16px rgba(52, 152, 219, 0.3);
+		}
+
+		.btn-primary:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+		}
+
+		.btn-secondary {
+			background: rgba(255, 255, 255, 0.1);
+			color: white;
+			border: 2px solid rgba(255, 255, 255, 0.3);
+		}
+
+		.btn-secondary:hover {
+			background: rgba(255, 255, 255, 0.2);
+			border-color: rgba(255, 255, 255, 0.5);
+		}
+
+		/* Hero Buttons */
+		.hero-buttons {
+			display: flex;
+			gap: 8px;
+			flex-wrap: nowrap;
+			margin-top: 32px;
+			width: 100%;
+		}
+
+		.hero-btn {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			gap: 6px;
+			padding: 10px 16px;
+			border-radius: 50px;
+			font-weight: 600;
+			font-size: 13px;
+			border: none;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+			white-space: nowrap;
+			flex: 1;
+		}
+
+		.hero-btn i {
+			font-size: 13px;
+		}
+
+		.hero-btn-primary {
+			background: linear-gradient(135deg, #3498db, #2980b9);
+			color: white;
+		}
+
+		.hero-btn-primary:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+		}
+
+		.hero-btn-secondary {
+			background: rgba(255, 255, 255, 0.95);
+			color: #2c3e50;
+			border: 2px solid rgba(52, 152, 219, 0.3);
+		}
+
+		.hero-btn-secondary:hover {
+			background: white;
+			border-color: #3498db;
+			transform: translateY(-2px);
+			box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
+		}
+
+		/* Responsive design */
+		@media (max-width: 900px) {
+			.hero-content {
+				grid-template-columns: 1fr;
+				gap: 40px;
+				text-align: center;
+			}
+			.hero-left h1 { font-size: 2.4em; }
+			.hero-left p { font-size: 1.1em; }
+			.nav-links {
+				display: none !important;
+			}
+			.menu-icon {
+				display: flex !important;
+			}
+		}
+
+		@media (max-width: 600px) {
+			.hero-section {
+				min-height: 240px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+			.hero-content {
+				padding: 24px 15px 16px 15px;
+				text-align: center;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				width: 100%;
+			}
+			.hero-left {
+				text-align: center;
+				max-width: 100%;
+			}
+			.hero-left h1 { 
+				font-size: 2em;
+				margin: 0;
+			}
+			.hero-left p { 
+				font-size: 1em;
+				margin: 10px 0 0 0;
+			}
+			.button-row {
+				display: none;
+			}
+		}
+
+		/* Skip to main content link */
+		.skip-link {
+			position: absolute;
+			top: -50px;
+			left: 10px;
+			background: #3498db;
+			color: white;
+			padding: 10px 20px;
+			text-decoration: none;
+			z-index: 10001;
+			font-weight: 600;
+			border-radius: 0 0 8px 8px;
+			transition: top 0.3s;
+		}
+
+		.skip-link:focus {
+			top: 0;
+		}
+
+		/* Enhanced focus styles for keyboard navigation */
+		*:focus {
+			outline: 3px solid #3498db;
+			outline-offset: 2px;
+		}
+
+		a:focus {
+			outline: 3px solid #3498db;
+			outline-offset: 3px;
+		}
+
+		button:focus {
+			outline: 3px solid #3498db;
+			outline-offset: 3px;
+		}
+
+		/* Article Overlay Styles */
+		.article-overlay-background {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.5);
+			z-index: 9998;
+			backdrop-filter: blur(3px);
+		}
+
+		.article-overlay-background.active {
+			display: block;
+		}
+
+		.article-overlay-container {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			z-index: 9999;
+			display: none;
+			align-items: center;
+			justify-content: center;
+			padding: 20px;
+			box-sizing: border-box;
+		}
+
+		.article-overlay-container.active {
+			display: flex;
+		}
+
+		.article-overlay-wrapper {
+			position: relative;
+			width: 100%;
+			max-width: 1000px;
+			height: 90vh;
+			background: white;
+			border-radius: 12px;
+			box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+			overflow: hidden;
+		}
+
+		.article-overlay-close {
+			position: absolute;
+			top: 16px;
+			right: 16px;
+			width: 40px;
+			height: 40px;
+			background: white;
+			border: none;
+			border-radius: 50%;
+			font-size: 24px;
+			color: #333;
+			cursor: pointer;
+			z-index: 10000;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+			transition: all 0.2s ease;
+		}
+
+		.article-overlay-close:hover {
+			background: #f5f5f5;
+			transform: scale(1.05);
+		}
+
+		.article-overlay-close:focus {
+			outline: 3px solid #3498db;
+			outline-offset: 2px;
+		}
+
+		#articleIframe {
+			width: 100%;
+			height: 100%;
+			border: none;
+		}
+
+		@media (max-width: 768px) {
+			.article-overlay-container {
+				padding: 10px;
+			}
+
+			.article-overlay-wrapper {
+				height: 95vh;
+				border-radius: 8px;
+			}
+
+			.article-overlay-close {
+				top: 12px;
+				right: 12px;
+				width: 36px;
+				height: 36px;
+				font-size: 20px;
+			}
+		}
+		</style>
+	</head>
+	<body class="landing is-preload">
+		<!-- Skip to main content link for keyboard users -->
+		<a href="#footer" class="skip-link">Skip to footer</a>
+
+		<!-- Article Overlay -->
+		<div class="article-overlay-background" id="articleOverlayBackground"></div>
+		<div class="article-overlay-container" id="articleOverlayContainer">
+			<div class="article-overlay-wrapper">
+				<button class="article-overlay-close" id="articleOverlayClose" aria-label="Close article overlay">&times;</button>
+				<iframe id="articleIframe" title="Article content"></iframe>
+			</div>
+		</div>
+
+		<!-- Page Wrapper -->
+		<div id="page-wrapper">
+			<!-- Modern Medical Navigation Header -->
+			<div id="navigation-placeholder"></div>
+
+			<!-- Hero Section -->
+			<section class="hero-section" aria-label="Hero banner" style="position:relative; overflow:hidden;">
+				<!-- Animated SVG background blobs -->
+				<svg class="hero-bg-blobs" width="100%" height="900" viewBox="0 0 1440 900" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;" aria-hidden="true" role="presentation">
+					<defs>
+						<linearGradient id="blobGradient1" x1="0" y1="0" x2="1" y2="1">
+							<stop offset="0%" stop-color="#3498db" stop-opacity="0.18"/>
+							<stop offset="100%" stop-color="#b6c7e0" stop-opacity="0.12"/>
+						</linearGradient>
+						<linearGradient id="blobGradient2" x1="0" y1="1" x2="1" y2="0">
+							<stop offset="0%" stop-color="#e3eaf3" stop-opacity="0.16"/>
+							<stop offset="100%" stop-color="#2980b9" stop-opacity="0.10"/>
+						</linearGradient>
+					</defs>
+					<g>
+						<circle id="blob1" cx="330" cy="220" r="330" fill="url(#blobGradient1)">
+							<animate attributeName="cx" values="330;1110;330" dur="15s" repeatCount="indefinite"/>
+							<animate attributeName="cy" values="220;680;220" dur="13.125s" repeatCount="indefinite"/>
+						</circle>
+						<circle id="blob2" cx="270" cy="180" r="270" fill="url(#blobGradient2)">
+							<animate attributeName="cx" values="270;1170;270" dur="16.875s" repeatCount="indefinite"/>
+							<animate attributeName="cy" values="180;720;180" dur="11.25s" repeatCount="indefinite"/>
+						</circle>
+						<circle id="blob3" cx="450" cy="450" r="450" fill="url(#blobGradient1)" opacity="0.7">
+							<animate attributeName="cx" values="450;990;450" dur="18.75s" repeatCount="indefinite"/>
+							<animate attributeName="cy" values="450;850;450" dur="15s" repeatCount="indefinite"/>
+						</circle>
+					</g>
+				</svg>
+				<div class="hero-content">
+					<div class="hero-left">
+						<h1 style="color:#fff; text-shadow: 0 4px 18px rgba(0,0,0,0.28);">What's New in Rochester?</h1>
+						<p style="color:#e0e0e0;">Real-time biomedical research feed for Rochester, Minnesota. All information sourced from the National Library of Medicine, PubMed.</p>
+						
+						<!-- Hero Action Buttons -->
+						<div class="hero-buttons">
+							<a href="#" onclick="openArticleOverlay('article.html'); return false;" class="hero-btn hero-btn-primary">
+								<i class="fas fa-arrow-right"></i> View All Research
+							</a>
+							<a href="search.html" class="hero-btn hero-btn-secondary">
+								<i class="fas fa-search"></i> Search
+							</a>
+							<a href="submit_research.html" class="hero-btn hero-btn-secondary">
+								<i class="fas fa-share"></i> Share Research
+							</a>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- Footer -->
+			<footer id="footer">
+				<ul class="icons">
+					<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+					<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+					<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+					<li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
+					<li><a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+				</ul>
+				<ul class="copyright">
+					<li>&copy; MedCityAI</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li><li><a href="terms_of_use.html" style="color: #999;">Terms</a> | <a href="privacy_policy.html" style="color: #999;">Privacy</a> | <a href="cookie_policy.html" style="color: #999;">Cookies</a></li>
+				</ul>
+			</footer>
+		</div>
+
+		<!-- Scripts -->
+		<script src="assets/js/jquery.min.js" defer></script>
+		<script src="assets/js/jquery.scrollex.min.js" defer></script>
+		<script src="assets/js/jquery.scrolly.min.js" defer></script>
+		<script src="assets/js/browser.min.js" defer></script>
+		<script src="assets/js/breakpoints.min.js" defer></script>
+		<script src="assets/js/util.js" defer></script>
+		<script src="assets/js/main.js" defer></script>
+		<script src="assets/js/navigation.js" defer></script>
+
+		<script>
+		// Article Overlay Functions
+		function openArticleOverlay(url) {
+			const overlayBg = document.getElementById('articleOverlayBackground');
+			const overlayContainer = document.getElementById('articleOverlayContainer');
+			const articleIframe = document.getElementById('articleIframe');
+
+			articleIframe.src = url;
+			overlayBg.classList.add('active');
+			overlayContainer.classList.add('active');
+			document.body.style.overflow = 'hidden';
+		}
+
+		function closeArticleOverlay() {
+			const overlayBg = document.getElementById('articleOverlayBackground');
+			const overlayContainer = document.getElementById('articleOverlayContainer');
+			const articleIframe = document.getElementById('articleIframe');
+
+			overlayBg.classList.remove('active');
+			overlayContainer.classList.remove('active');
+			articleIframe.src = '';
+			document.body.style.overflow = '';
+		}
+
+		// Set up event listeners
+		document.addEventListener('DOMContentLoaded', function() {
+			const closeBtn = document.getElementById('articleOverlayClose');
+			const overlayBg = document.getElementById('articleOverlayBackground');
+
+			// Close button
+			if (closeBtn) {
+				closeBtn.addEventListener('click', closeArticleOverlay);
+			}
+
+			// Click outside the iframe to close
+			if (overlayBg) {
+				overlayBg.addEventListener('click', closeArticleOverlay);
+			}
+
+			// Escape key to close
+			document.addEventListener('keydown', function(e) {
+				if (e.key === 'Escape') {
+					closeArticleOverlay();
+				}
+			});
+		});
+		</script>
+	</body>
+</html>
