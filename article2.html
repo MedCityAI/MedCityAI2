@@ -313,6 +313,16 @@
 			flex: 1;
 		}
 
+		.article-overlay-logo {
+			position: absolute;
+			top: 20px;
+			left: 28px;
+			width: 160px;
+			height: auto;
+			opacity: 0.9;
+			z-index: 2;
+		}
+
 		.article-overlay-content::before {
 			content: '';
 			position: absolute;
@@ -622,6 +632,7 @@
 			const shareText = `New research worth noting:\n\n${getLastTwoSentences(llmSummary || abstract)}\n\n${pubmedUrlWithUtm}\nhttps://medcityai.com\n@MedCityAI`;
 
 			return `
+				<img class="article-overlay-logo" src="images/medcityai_logo1.png" alt="MedCityAI logo" />
 				<div class="article-overlay-section">
 					<h2 class="article-overlay-title" id="articleOverlayTitle">${escapeHtml(title)}</h2>
 					<div class="article-overlay-authors-line">${escapeHtml(authors)}</div>
