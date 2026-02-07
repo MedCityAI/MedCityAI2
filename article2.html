@@ -318,9 +318,15 @@
 			top: 20px;
 			left: 28px;
 			width: 180px;
-			height: auto;
 			opacity: 0.9;
 			z-index: 2;
+			display: inline-block;
+		}
+
+		.article-overlay-logo img {
+			display: block;
+			width: 100%;
+			height: auto;
 		}
 
 		.article-overlay-content::before {
@@ -562,6 +568,7 @@
 		<div class="article-overlay-background" id="articleOverlayBackground"></div>
 		<div class="article-overlay-container" id="articleOverlayContainer" role="dialog" aria-modal="true" aria-labelledby="articleOverlayTitle" aria-hidden="true">
 			<div class="article-overlay-wrapper" role="document">
+				<button class="article-overlay-close" id="articleOverlayClose" type="button" aria-label="Close article">&times;</button>
 				<div class="article-overlay-content" id="articleOverlayContent"></div>
 			</div>
 		</div>
@@ -818,7 +825,9 @@
 			const shareText = `New research worth noting:\n\n${getLastTwoSentences(llmSummary || abstract)}\n\n${pubmedUrlWithUtm}\nhttps://medcityai.com\n@MedCityAI`;
 
 			return `
-				<img class="article-overlay-logo" src="images/medcityai_logo1.png" alt="MedCityAI logo" />
+				<a class="article-overlay-logo" href="index.html" aria-label="Back to index">
+					<img src="images/medcityai_logo1.png" alt="MedCityAI logo" />
+				</a>
 				<div class="article-overlay-section">
 					<h2 class="article-overlay-title" id="articleOverlayTitle">${escapeHtml(title)}</h2>
 					<div class="article-overlay-authors-line">${formattedAuthors}</div>
@@ -879,7 +888,7 @@
 		}
 
 		function closeOverlay() {
-			window.location.href = 'index_share.html';
+			window.location.href = 'index.html';
 		}
 
 		async function loadArticleById(pmid) {
@@ -950,10 +959,14 @@
 
 		document.addEventListener('DOMContentLoaded', function() {
 			const overlayBg = document.getElementById('articleOverlayBackground');
+			const overlayClose = document.getElementById('articleOverlayClose');
 			const pmid = new URL(window.location.href).searchParams.get('id');
 
 			if (overlayBg) {
 				overlayBg.addEventListener('click', closeOverlay);
+			}
+			if (overlayClose) {
+				overlayClose.addEventListener('click', closeOverlay);
 			}
 			document.addEventListener('keydown', function(e) {
 				if (e.key === 'Escape') {
