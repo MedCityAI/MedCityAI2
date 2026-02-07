@@ -28,15 +28,24 @@
 			/* Critical styles */
 			html, body {
 				width: 100%;
+				height: 100%;
 				margin: 0;
 				padding: 0;
+				overflow: auto;
 			}
 			body {
 				font-family: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-				background: #f5f7fa;
+				background: white;
 			}
 			#page-wrapper {
 				width: 100%;
+				min-height: 100%;
+			}
+			#indexFrame {
+				width: 100%;
+				height: auto;
+				border: 0;
+				display: block;
 			}
 			.top-bar {
 				background: #fff;
@@ -415,21 +424,16 @@
 	</head>
 	<body>
 		<div id="page-wrapper">
-			<div id="article-content"></div>
+			<iframe id="indexFrame" title="MedCityAI Article Overlay" loading="eager"></iframe>
 		</div>
 
 		<script>
 			(function () {
 				const url = new URL(window.location.href);
 				const pmid = url.searchParams.get('id');
-				
-				if (!pmid) {
-					document.getElementById('article-content').innerHTML = '<p style="text-align:center; padding:40px;">No article ID provided.</p>';
-					return;
-				}
-				
-				// Article content can be loaded here via JavaScript as needed
-				console.log('Article ID:', pmid);
+				const iframe = document.getElementById('indexFrame');
+				const target = pmid ? `index.html?id=${encodeURIComponent(pmid)}&overlay=1` : 'index.html';
+				iframe.src = target;
 			})();
 		</script>
 	</body>
