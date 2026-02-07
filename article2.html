@@ -293,16 +293,17 @@
 			position: absolute;
 			top: 12px;
 			right: 14px;
-			font-size: 26px;
-			color: #333;
-			background: #fff;
+			font-size: 22px;
+			color: #6b7785;
+			background: transparent;
 			border: none;
 			cursor: pointer;
-			font-weight: 700;
-			width: 36px;
-			height: 36px;
-			border-radius: 50%;
-			box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+			font-weight: 600;
+			width: 24px;
+			height: 24px;
+			line-height: 24px;
+			padding: 0;
+			box-shadow: none;
 			z-index: 10000;
 		}
 
@@ -471,9 +472,9 @@
 		.article-overlay-disclaimer {
 			margin-top: 12px;
 			font-size: 12px;
-			color: #6b5a3d;
-			background: #fff;
-			border-left: 3px solid #f4b400;
+			color: #000;
+			background: #e3edf6;
+			border-left: 3px solid #6f8fb3;
 			padding: 10px;
 			border-radius: 6px;
 		}
@@ -807,7 +808,6 @@
 			const formattedAuthors = formatAuthors(authorsRaw, article.rochester_authors || '');
 			const journal = article.journal || 'Unknown Journal';
 			const pubdate = article.pubdate || 'Unknown Date';
-			const year = article.year || '';
 			const abstract = article.abstract || '';
 			const llmSummary = article.llm_summary || '';
 			const url = article.url || (article.pmid ? `https://pubmed.ncbi.nlm.nih.gov/${article.pmid}/` : '#');
@@ -831,7 +831,7 @@
 				<div class="article-overlay-section">
 					<h2 class="article-overlay-title" id="articleOverlayTitle">${escapeHtml(title)}</h2>
 					<div class="article-overlay-authors-line">${formattedAuthors}</div>
-					<div class="article-overlay-meta">${escapeHtml(journal)} · ${escapeHtml(pubdate)}${year ? ` · ${escapeHtml(year)}` : ''} · PMID ${escapeHtml(pmid)}</div>
+					<div class="article-overlay-meta">${escapeHtml(journal)} · ${escapeHtml(pubdate)} · PMID ${escapeHtml(pmid)}</div>
 				</div>
 				${llmSummary && llmSummary !== 'No abstract available.' ? `
 				<div class="article-overlay-section">
