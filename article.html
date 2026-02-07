@@ -25,47 +25,41 @@
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 		
 		<style>
-			/* Critical styles - Full screen layout */
+			/* Critical styles - Full viewport coverage */
 			* {
 				margin: 0;
 				padding: 0;
 				box-sizing: border-box;
 			}
 
-			html {
-				width: 100%;
-				height: 100%;
-				overflow: hidden;
-			}
-
-			body {
+			html, body {
 				width: 100%;
 				height: 100%;
 				margin: 0;
-				padding: 0;
+			}
+
+			body {
 				font-family: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 				background: #222;
 				overflow: hidden;
 			}
 
 			#page-wrapper {
-				width: 100%;
-				height: 100%;
-				display: flex;
-				flex-direction: column;
-				background: #222;
+				position: relative;
+				width: 100vw;
+				height: 100vh;
 				margin: 0;
 				padding: 0;
-				overflow: hidden;
 			}
 
 			#indexFrame {
+				position: absolute;
+				inset: 0;
 				width: 100%;
 				height: 100%;
 				border: none;
 				display: block;
-				flex: 1;
-				background: white;
+				background: transparent;
 			}
 
 			.top-bar {
