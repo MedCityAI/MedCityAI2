@@ -747,9 +747,31 @@
 			target.dataset.tooltipLoaded = 'true';
 		}
 
-		function typewriterEffect(element, text, speed = 20) {
+		function typewriterEffect(element, text, speed = 8) {
 			if (!element) return Promise.resolve();
+			
+			// Measure the full text size
+			const measurement = document.createElement('div');
+			measurement.style.visibility = 'hidden';
+			measurement.style.position = 'absolute';
+			measurement.style.pointerEvents = 'none';
+			measurement.textContent = text;
+			document.body.appendChild(measurement);
+			
+			// Copy relevant styles
+			const styles = window.getComputedStyle(element);
+			['fontSize', 'fontFamily', 'lineHeight', 'width', 'whiteSpace', 'fontWeight', 'letterSpacing'].forEach(prop => {
+				measurement.style[prop] = styles[prop];
+			});
+			
+			// Get the full height
+			const fullHeight = measurement.offsetHeight;
+			measurement.remove();
+			
+			// Set container to full size immediately
+			element.style.minHeight = fullHeight + 'px';
 			element.textContent = '';
+			
 			return new Promise(resolve => {
 				let index = 0;
 				const interval = setInterval(() => {
@@ -758,6 +780,7 @@
 						index++;
 					} else {
 						clearInterval(interval);
+						element.style.minHeight = '';
 						resolve();
 					}
 				}, speed);
