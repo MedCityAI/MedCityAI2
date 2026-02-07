@@ -28,10 +28,8 @@
 			/* Critical styles */
 			html, body {
 				width: 100%;
-				height: 100%;
 				margin: 0;
 				padding: 0;
-				overflow: hidden;
 			}
 			body {
 				font-family: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
@@ -39,13 +37,6 @@
 			}
 			#page-wrapper {
 				width: 100%;
-				height: 100%;
-			}
-			#indexFrame {
-				width: 100%;
-				height: 100%;
-				border: 0;
-				display: block;
 			}
 			.top-bar {
 				background: #fff;
@@ -58,15 +49,17 @@
 
 			/* Article Page Styles */
 			.article-hero {
-				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-				color: white;
-				padding: 80px 20px 60px;
-				margin-top: 50px;
-				text-align: center;
 				position: relative;
+				padding: 0;
+				text-align: center;
 				overflow: hidden;
+				min-height: 300px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				margin-top: 50px;
 			}
-
+			
 			.article-hero::before {
 				content: '';
 				position: absolute;
@@ -74,16 +67,27 @@
 				left: 0;
 				right: 0;
 				bottom: 0;
-				background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120"><path d="M0,50 Q300,0 600,50 T1200,50 L1200,120 L0,120 Z" fill="rgba(255,255,255,0.1)"/></svg>') repeat-x;
-				background-size: 600px 120px;
-				opacity: 0.3;
+				background: url('images/pic01.jpg') center center / cover no-repeat;
+				z-index: 1;
+			}
+			
+			.article-hero::after {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background: linear-gradient(135deg, rgba(52, 152, 219, 0.85) 0%, rgba(44, 62, 80, 0.85) 100%);
+				z-index: 2;
 			}
 
 			.article-hero-content {
 				position: relative;
-				z-index: 1;
+				z-index: 3;
 				max-width: 900px;
 				margin: 0 auto;
+				padding: 0 30px;
 			}
 
 			.article-title {
@@ -91,7 +95,8 @@
 				font-weight: 700;
 				line-height: 1.2;
 				margin: 0 0 30px 0;
-				text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+				text-shadow: 0 4px 18px rgba(0,0,0,0.28);
+				color: white;
 			}
 
 			.article-metadata-bar {
@@ -101,6 +106,7 @@
 				flex-wrap: wrap;
 				margin: 30px 0;
 				font-size: 0.95em;
+				color: rgba(255, 255, 255, 0.95);
 			}
 
 			.metadata-item {
@@ -111,6 +117,7 @@
 				padding: 10px 15px;
 				border-radius: 20px;
 				backdrop-filter: blur(10px);
+				color: rgba(255, 255, 255, 0.95);
 			}
 
 			.metadata-item i {
@@ -423,18 +430,173 @@
 		</style>
 	</head>
 	<body>
+		<!-- Navigation Bar -->
+		<div class="top-bar">
+			<div style="max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center;">
+				<div style="display: flex; align-items: center; gap: 15px;">
+					<a href="index.html" style="text-decoration: none; color: #2c3e50; font-weight: 700; font-size: 1.3em;">MedCityAI</a>
+				</div>
+				<div style="display: flex; gap: 20px; align-items: center;">
+					<a href="index.html" style="text-decoration: none; color: #2c3e50;">Research</a>
+					<a href="about.html" style="text-decoration: none; color: #2c3e50;">About</a>
+					<a href="search.html" style="text-decoration: none; color: white; background: linear-gradient(135deg, #3498db, #2980b9); padding: 8px 20px; border-radius: 20px;">Search</a>
+				</div>
+			</div>
+		</div>
+
 		<div id="page-wrapper">
-			<iframe id="indexFrame" title="MedCityAI Article Overlay" loading="eager"></iframe>
+			<!-- Hero Section -->
+			<div class="article-hero">
+				<div class="article-hero-content">
+					<h1 class="article-title" id="articleTitle">Loading article...</h1>
+					<div class="article-metadata-bar">
+						<div class="metadata-item">
+							<i class="fas fa-calendar"></i>
+							<span id="articleDate">—</span>
+						</div>
+						<div class="metadata-item">
+							<i class="fas fa-book"></i>
+							<span id="articleJournal">—</span>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Main Content -->
+			<div class="article-container">
+				<div class="article-main-card" id="articleContent">
+					<p style="text-align: center; color: #666;">Loading article content...</p>
+				</div>
+			</div>
 		</div>
 
 		<script>
-			(function () {
-				const url = new URL(window.location.href);
-				const pmid = url.searchParams.get('id');
-				const iframe = document.getElementById('indexFrame');
-				const target = pmid ? `index.html?id=${encodeURIComponent(pmid)}&overlay=1` : 'index.html';
-				iframe.src = target;
-			})();
+			// Get PMID from URL
+			const url = new URL(window.location.href);
+			const pmid = url.searchParams.get('id');
+
+			if (!pmid) {
+				document.getElementById('articleContent').innerHTML = '<div class="error-state"><i class="fas fa-warning"></i><h2>Article Not Found</h2><p>No article ID provided. <a href="index.html">Return to home</a></p></div>';
+			} else {
+				// Load article data from CSV
+				loadArticleData(pmid);
+			}
+
+			async function loadArticleData(pmid) {
+				try {
+					const response = await fetch('pubmed_data.csv');
+					const csvText = await response.text();
+					const lines = csvText.split('\n');
+					
+					// Find the article row
+					let article = null;
+					for (let i = 1; i < lines.length; i++) {
+						const line = lines[i];
+						if (line.startsWith(pmid + ',')) {
+							article = parseCSVLine(line, getHeaderIndexMap(lines[0]));
+							break;
+						}
+					}
+					
+					if (!article) {
+						document.getElementById('articleContent').innerHTML = '<div class="error-state"><i class="fas fa-warning"></i><h2>Article Not Found</h2><p>Could not find article with ID ' + pmid + '. <a href="index.html">Return to home</a></p></div>';
+						return;
+					}
+					
+					// Display article
+					displayArticle(article);
+				} catch (error) {
+					console.error('Error loading article:', error);
+					document.getElementById('articleContent').innerHTML = '<div class="error-state"><i class="fas fa-exclamation-circle"></i><h2>Error</h2><p>Failed to load article data: ' + error.message + '</p></div>';
+				}
+			}
+
+			function getHeaderIndexMap(headerLine) {
+				const headers = parseCSVLine(headerLine);
+				const map = {};
+				headers.forEach((header, index) => {
+					map[header] = index;
+				});
+				return map;
+			}
+
+			function parseCSVLine(line, headerMap) {
+				// Simple CSV parser - handle quoted fields
+				const result = {};
+				let currentField = '';
+				let insideQuotes = false;
+				let fieldIndex = 0;
+				const headers = Object.keys(headerMap).sort((a,b) => headerMap[a] - headerMap[b]);
+				
+				for (let i = 0; i < line.length; i++) {
+					const char = line[i];
+					if (char === '"') {
+						insideQuotes = !insideQuotes;
+					} else if (char === ',' && !insideQuotes) {
+						const header = headers[fieldIndex];
+						if (header) result[header] = currentField.replace(/^"|"$/g, '');
+						currentField = '';
+						fieldIndex++;
+					} else {
+						currentField += char;
+					}
+				}
+				const lastHeader = headers[fieldIndex];
+				if (lastHeader) result[lastHeader] = currentField.replace(/^"|"$/g, '');
+				
+				return result;
+			}
+
+			function displayArticle(article) {
+				// Update title
+				document.getElementById('articleTitle').textContent = article.title || 'Untitled';
+				
+				// Update metadata
+				const pubdate = article.pubdate || (article.year ? `${article.month} ${article.day}, ${article.year}`.trim() : '—');
+				document.getElementById('articleDate').textContent = pubdate;
+				document.getElementById('articleJournal').textContent = article.journal || '—';
+
+				// Build content
+				let html = '';
+
+				// Authors section
+				if (article.authors) {
+					html += '<div class="authors-section"><strong>Authors:</strong><div class="authors-list">';
+					const authorList = article.authors.split('|');
+					const rochesterList = (article.rochester_authors || '').split('|');
+					authorList.forEach(author => {
+						const isRochester = rochesterList.includes(author);
+						html += `<span class="author-tag ${isRochester ? 'rochester' : ''}">${author.trim()}</span>`;
+					});
+					html += '</div></div>';
+				}
+
+				// Abstract section
+				if (article.abstract) {
+					html += `<div class="abstract-section"><strong>Abstract:</strong><p>${article.abstract}</p></div>`;
+				}
+
+				// AI Summary section
+				if (article.llm_summary) {
+					html += `<div class="ai-summary-section">
+						<div class="ai-summary-header">
+							<h3><i class="fas fa-brain"></i> AI Summary</h3>
+							<span class="ai-badge">AI POWERED</span>
+						</div>
+						<div class="ai-summary-content">${article.llm_summary}</div>
+						<div class="ai-disclaimer">
+							<strong>Note:</strong> This summary was generated by AI and should be verified against the original article.
+						</div>
+					</div>`;
+				}
+
+				// Action buttons
+				const pubmedUrl = article.url || `https://pubmed.ncbi.nlm.nih.gov/${article.pmid}/`;
+				html += `<div style="display: flex; gap: 15px; margin-top: 30px; flex-wrap: wrap;">
+					<a href="${pubmedUrl}" target="_blank" class="btn" style="padding: 12px 24px; background: #3498db; color: white; text-decoration: none; border-radius: 6px; display: inline-flex; align-items: center; gap: 8px;"><i class="fas fa-external-link-alt"></i> View on PubMed</a>
+				</div>`;
+
+				document.getElementById('articleContent').innerHTML = html;
+			}
 		</script>
-	</body>
 </html>
