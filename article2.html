@@ -317,7 +317,7 @@
 			position: absolute;
 			top: 20px;
 			left: 28px;
-			width: 240px;
+			width: 180px;
 			height: auto;
 			opacity: 0.9;
 			z-index: 2;
@@ -346,16 +346,11 @@
 		}
 
 		.article-overlay-authors-line {
-			font-size: 14px;
-			line-height: 1.6;
+			font-size: 16px;
+			line-height: 1.7;
 			color: #1f2d3d;
-			margin: 12px 0 16px 0;
-			padding: 12px 14px;
-			background: #f4f7fb;
-			border: 1px solid #d7e2f0;
-			border-left: 4px solid #2568be;
-			border-radius: 10px;
-			font-weight: 600;
+			margin: 10px 0 16px 0;
+			font-weight: 700;
 		}
 
 		.article-overlay-meta {
@@ -510,7 +505,6 @@
 		<div class="article-overlay-background" id="articleOverlayBackground"></div>
 		<div class="article-overlay-container" id="articleOverlayContainer" role="dialog" aria-modal="true" aria-labelledby="articleOverlayTitle" aria-hidden="true">
 			<div class="article-overlay-wrapper" role="document">
-				<button class="article-overlay-close" id="articleOverlayClose" aria-label="Close article overlay">&times;</button>
 				<div class="article-overlay-content" id="articleOverlayContent"></div>
 			</div>
 		</div>
@@ -637,7 +631,7 @@
 		}
 
 		function buildOverlayHTML(article) {
-			const title = article.title || 'Untitled';
+			const title = (article.title || 'Untitled').replace(/\.[\s]*$/, '');
 			const authors = article.authors_display || article.authors || 'Authors not available';
 			const journal = article.journal || 'Unknown Journal';
 			const pubdate = article.pubdate || 'Unknown Date';
