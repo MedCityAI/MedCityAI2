@@ -1572,6 +1572,14 @@
 				performSearch();
 			});
 		});
+
+		// Auto-search from URL param (?q=...)
+		const urlParams = new URLSearchParams(window.location.search);
+		const queryParam = urlParams.get('q');
+		if (queryParam && heroSearchBar) {
+			heroSearchBar.value = queryParam;
+			performSearch();
+		}
 	});
 
 	function displayResults() {

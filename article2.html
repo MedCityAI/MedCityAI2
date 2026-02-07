@@ -346,11 +346,67 @@
 		}
 
 		.article-overlay-authors-line {
-			font-size: 16px;
+			font-size: 17px;
 			line-height: 1.7;
 			color: #1f2d3d;
 			margin: 10px 0 16px 0;
+			font-weight: 500;
+		}
+
+		.roch-author {
+			position: relative;
+			color: #0b6b8a;
+			font-weight: 500;
+			text-decoration: underline dotted;
+			text-underline-offset: 3px;
+			cursor: pointer;
+		}
+
+		.roch-tooltip {
+			position: absolute;
+			left: 0;
+			top: calc(100% + 8px);
+			width: 280px;
+			max-width: 70vw;
+			background: #ffffff;
+			border: 1px solid #d7dde3;
+			border-radius: 10px;
+			box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+			padding: 10px 12px;
+			font-size: 12px;
+			line-height: 1.5;
+			color: #1f2d3d;
+			opacity: 0;
+			visibility: hidden;
+			transform: translateY(6px);
+			transition: all 0.2s ease;
+			z-index: 6;
+		}
+
+		.roch-tooltip h5 {
+			margin: 0 0 6px 0;
+			font-size: 12px;
+			color: #0b6b8a;
 			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+		}
+
+		.roch-tooltip ul {
+			margin: 0 0 0 16px;
+			padding: 0;
+		}
+
+		.roch-tooltip li {
+			margin-bottom: 6px;
+		}
+
+		.roch-author:hover .roch-tooltip,
+		.roch-author:focus .roch-tooltip,
+		.roch-author:focus-within .roch-tooltip {
+			opacity: 1;
+			visibility: visible;
+			transform: translateY(0);
 		}
 
 		.article-overlay-meta {
@@ -590,6 +646,8 @@
 		<script src="assets/js/navigation.js" defer></script>
 
 		<script>
+		let allArticlesData = [];
+
 		function parseCSVLine(line) {
 			const result = [];
 			let current = '';
@@ -623,6 +681,72 @@
 			return div.innerHTML;
 		}
 
+		function escapeAttr(text) {
+			return escapeHtml(text).replace(/"/g, '&quot;');
+		}
+
+		function formatAuthors(authorsRaw, rochRaw) {
+			const cleaned = (authorsRaw || '').replace(/\|/g, ', ');
+			const parts = cleaned.split(',').map(a => a.trim()).filter(Boolean);
+			if (parts.length === 0) return 'Authors not available';
+
+			const rochSet = new Set((rochRaw || '').split('|').map(a => a.trim()).filter(Boolean));
+
+			return parts.map(name => {
+				if (rochSet.has(name)) {
+					const safeName = escapeHtml(name);
+					const safeAttr = escapeAttr(name);
+					return `<span class="roch-author" data-author="${safeAttr}" tabindex="0" role="link" aria-label="Search for ${safeName}">${safeName}<span class="roch-tooltip" aria-hidden="true">Loading recent works...</span></span>`;
+				}
+				return escapeHtml(name);
+			}).join(', ');
+		}
+
+		function getArticleDate(article) {
+			const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+			const year = parseInt(article.year, 10);
+			const month = monthNames.indexOf(article.month || '');
+			const day = parseInt(article.day, 10) || 1;
+			if (!year || month < 1) return new Date(0);
+			return new Date(year, month - 1, day);
+		}
+
+		function getRecentWorksForAuthor(authorName) {
+			if (!authorName || allArticlesData.length === 0) return [];
+			const authorLower = authorName.toLowerCase();
+
+			const matches = allArticlesData.filter(article => {
+				const authorsDisplay = (article.authors_display || '').toLowerCase();
+				const authorsList = (article.authors || '').split('|').map(a => a.trim().toLowerCase());
+				return authorsDisplay.includes(authorLower) || authorsList.includes(authorLower);
+			});
+
+			matches.sort((a, b) => getArticleDate(b) - getArticleDate(a));
+			return matches.slice(0, 3);
+		}
+
+		function populateAuthorTooltip(target) {
+			if (!target || target.dataset.tooltipLoaded === 'true') return;
+			const tooltip = target.querySelector('.roch-tooltip');
+			if (!tooltip) return;
+
+			const authorName = target.getAttribute('data-author') || target.textContent || '';
+			const works = getRecentWorksForAuthor(authorName);
+			let listHtml = '<p style="margin:0;">No recent works found.</p>';
+
+			if (works.length > 0) {
+				const items = works.map(work => {
+					const title = escapeHtml(work.title || 'Untitled');
+					const year = escapeHtml(work.year || '');
+					return `<li>${title}${year ? ` (${year})` : ''}</li>`;
+				}).join('');
+				listHtml = `<h5>Recent works</h5><ul>${items}</ul>`;
+			}
+
+			tooltip.innerHTML = listHtml;
+			target.dataset.tooltipLoaded = 'true';
+		}
+
 		function getLastTwoSentences(text) {
 			if (!text) return '';
 			const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
@@ -632,7 +756,8 @@
 
 		function buildOverlayHTML(article) {
 			const title = (article.title || 'Untitled').replace(/\.[\s]*$/, '');
-			const authors = article.authors_display || article.authors || 'Authors not available';
+			const authorsRaw = article.authors_display || article.authors || '';
+			const formattedAuthors = formatAuthors(authorsRaw, article.rochester_authors || '');
 			const journal = article.journal || 'Unknown Journal';
 			const pubdate = article.pubdate || 'Unknown Date';
 			const year = article.year || '';
@@ -656,7 +781,7 @@
 				<img class="article-overlay-logo" src="images/medcityai_logo1.png" alt="MedCityAI logo" />
 				<div class="article-overlay-section">
 					<h2 class="article-overlay-title" id="articleOverlayTitle">${escapeHtml(title)}</h2>
-					<div class="article-overlay-authors-line">${escapeHtml(authors)}</div>
+					<div class="article-overlay-authors-line">${formattedAuthors}</div>
 					<div class="article-overlay-meta">${escapeHtml(journal)} · ${escapeHtml(pubdate)}${year ? ` · ${escapeHtml(year)}` : ''} · PMID ${escapeHtml(pmid)}</div>
 				</div>
 				${llmSummary && llmSummary !== 'No abstract available.' ? `
@@ -728,6 +853,7 @@
 
 				const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
 				let found = null;
+				allArticlesData = [];
 
 				for (let i = 1; i < lines.length; i++) {
 					if (!lines[i].trim()) continue;
@@ -737,9 +863,9 @@
 					headers.forEach((header, index) => {
 						article[header] = row[index];
 					});
-					if (article.pmid && article.pmid.trim() === pmid) {
+					allArticlesData.push(article);
+					if (!found && article.pmid && article.pmid.trim() === pmid) {
 						found = article;
-						break;
 					}
 				}
 
@@ -773,19 +899,52 @@
 		}
 
 		document.addEventListener('DOMContentLoaded', function() {
-			const closeBtn = document.getElementById('articleOverlayClose');
 			const overlayBg = document.getElementById('articleOverlayBackground');
 			const pmid = new URL(window.location.href).searchParams.get('id');
 
-			if (closeBtn) {
-				closeBtn.addEventListener('click', closeOverlay);
-			}
 			if (overlayBg) {
 				overlayBg.addEventListener('click', closeOverlay);
 			}
 			document.addEventListener('keydown', function(e) {
 				if (e.key === 'Escape') {
 					closeOverlay();
+				}
+			});
+
+			document.addEventListener('mouseover', function(e) {
+				const target = e.target.closest('.roch-author');
+				if (target) {
+					populateAuthorTooltip(target);
+				}
+			});
+
+			document.addEventListener('focusin', function(e) {
+				const target = e.target.closest('.roch-author');
+				if (target) {
+					populateAuthorTooltip(target);
+				}
+			});
+
+			document.addEventListener('click', function(e) {
+				const target = e.target.closest('.roch-author');
+				if (target) {
+					e.preventDefault();
+					e.stopPropagation();
+					const authorName = target.getAttribute('data-author') || target.textContent || '';
+					if (authorName) {
+						window.location.href = `search.html?q=${encodeURIComponent(authorName)}`;
+					}
+				}
+			});
+
+			document.addEventListener('keydown', function(e) {
+				if ((e.key === 'Enter' || e.key === ' ') && e.target && e.target.closest('.roch-author')) {
+					e.preventDefault();
+					const target = e.target.closest('.roch-author');
+					const authorName = target.getAttribute('data-author') || target.textContent || '';
+					if (authorName) {
+						window.location.href = `search.html?q=${encodeURIComponent(authorName)}`;
+					}
 				}
 			});
 
