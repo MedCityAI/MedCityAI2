@@ -512,7 +512,24 @@
 			}
 
 			function getHeaderIndexMap(headerLine) {
-				const headers = parseCSVLine(headerLine);
+				// Simple CSV parser for header - split by comma, handling quoted fields
+				const headers = [];
+				let currentField = '';
+				let insideQuotes = false;
+				
+				for (let i = 0; i < headerLine.length; i++) {
+					const char = headerLine[i];
+					if (char === '"') {
+						insideQuotes = !insideQuotes;
+					} else if (char === ',' && !insideQuotes) {
+						headers.push(currentField.trim());
+						currentField = '';
+					} else {
+						currentField += char;
+					}
+				}
+				headers.push(currentField.trim());
+				
 				const map = {};
 				headers.forEach((header, index) => {
 					map[header] = index;
@@ -534,7 +551,7 @@
 						insideQuotes = !insideQuotes;
 					} else if (char === ',' && !insideQuotes) {
 						const header = headers[fieldIndex];
-						if (header) result[header] = currentField.replace(/^"|"$/g, '');
+						if (header) result[header] = currentField.replace(/^"|"$/g, '').trim();
 						currentField = '';
 						fieldIndex++;
 					} else {
@@ -542,7 +559,7 @@
 					}
 				}
 				const lastHeader = headers[fieldIndex];
-				if (lastHeader) result[lastHeader] = currentField.replace(/^"|"$/g, '');
+				if (lastHeader) result[lastHeader] = currentField.replace(/^"|"$/g, '').trim();
 				
 				return result;
 			}
