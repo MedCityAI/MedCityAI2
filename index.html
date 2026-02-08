@@ -2270,7 +2270,64 @@
 	let allArticlesData = [];
 	let filteredArticlesData = [];
 	let currentlyFlippedCard = null;
-	let likeCountsForRanking = {};	// Welcome Modal Functions
+	let likeCountsForRanking = {};
+	let touchMovedDuringScroll = false;
+	let touchStartX = 0;
+	let touchStartY = 0;
+
+	function isResultsTouchTarget(target) {
+		return !!target && !!target.closest('.result-item');
+	}
+
+	document.addEventListener('touchstart', (event) => {
+		if (!isResultsTouchTarget(event.target)) {
+			return;
+		}
+		touchMovedDuringScroll = false;
+		if (event.touches && event.touches.length) {
+			touchStartX = event.touches[0].clientX;
+			touchStartY = event.touches[0].clientY;
+		}
+	}, { passive: true });
+
+	document.addEventListener('touchmove', (event) => {
+		if (!isResultsTouchTarget(event.target)) {
+			return;
+		}
+		if (event.touches && event.touches.length) {
+			const dx = Math.abs(event.touches[0].clientX - touchStartX);
+			const dy = Math.abs(event.touches[0].clientY - touchStartY);
+			if (dx > 6 || dy > 6) {
+				touchMovedDuringScroll = true;
+			}
+		}
+	}, { passive: true });
+
+	document.addEventListener('touchend', (event) => {
+		if (isResultsTouchTarget(event.target)) {
+			touchMovedDuringScroll = false;
+		}
+	}, { passive: true });
+
+	document.addEventListener('touchcancel', (event) => {
+		if (isResultsTouchTarget(event.target)) {
+			touchMovedDuringScroll = false;
+		}
+	}, { passive: true });
+
+	// Prevent taps triggered by a scroll gesture inside results.
+	document.addEventListener('click', (event) => {
+		if (!touchMovedDuringScroll) {
+			return;
+		}
+		const interactive = event.target.closest('a, button, [role="button"]');
+		if (interactive && interactive.closest('.result-item')) {
+			event.preventDefault();
+			event.stopPropagation();
+		}
+	}, true);
+
+	// Welcome Modal Functions
 	function checkFirstVisit() {
 		const hasKeywords = localStorage.getItem('medcity_keywords');
 		if (!hasKeywords) {
@@ -2564,11 +2621,25 @@ function handleLinkedInShare(event, el) {
 	return false;
 }
 
+		function handleTitleTap(event, el) {
+			event.stopPropagation();
+			if (touchMovedDuringScroll) {
+				return false;
+			}
+			event.preventDefault();
+			flipCard(el.closest('.card-flip-container'), event);
+			return false;
+		}
+
 		// Function to flip card and match heights (with keyboard support)
 		function flipCard(container, event) {
 			// Support both click and keyboard events
 			if (event.type === 'keydown' && event.key !== 'Enter' && event.key !== ' ') {
 				return; // Only respond to Enter or Space key
+			}
+			
+			if (event.type === 'click' && touchMovedDuringScroll) {
+				return;
 			}
 			
 			event.stopPropagation();
@@ -3431,7 +3502,7 @@ function handleLinkedInShare(event, el) {
 				const titleMarkup = isInstruction
 					? `<div class="result-title">${title}</div>`
 					: `<a href="#" class="result-title" 
-					   onclick="event.preventDefault(); event.stopPropagation(); flipCard(this.closest('.card-flip-container'), event);" 
+					   onclick="return handleTitleTap(event, this);" 
 					   onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flipCard(this.closest('.card-flip-container'), event);}"
 					   tabindex="0"
 					   role="button"
