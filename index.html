@@ -2666,6 +2666,24 @@ function handleLinkedInShare(event, el) {
 			return sentences.slice(-2).join(' ').trim();
 		}
 
+		function buildArticleShareUrl(pmid) {
+			const fallbackOrigin = 'https://medcityai.com';
+			const origin = window.location.origin && window.location.origin !== 'null'
+				? window.location.origin
+				: fallbackOrigin;
+			let pathname = window.location.pathname || '/index.html';
+			if (!pathname.endsWith('article.html')) {
+				pathname = pathname.replace(/\/[^/]*$/, '/article.html');
+				if (!pathname.endsWith('article.html')) {
+					pathname = '/article.html';
+				}
+			}
+			const normalizedPath = pathname.startsWith('/') ? pathname : `/${pathname}`;
+			const baseUrl = `${origin}${normalizedPath}`;
+			const shareUrl = `${baseUrl}?id=${encodeURIComponent(pmid || '')}`;
+			return `${shareUrl}&utm_source=linkedin&utm_medium=share&utm_campaign=medcityai_share`;
+		}
+
 		function closeArticleOverlay() {
 			if (window.top !== window) {
 				window.top.location.href = 'index.html';
@@ -2698,6 +2716,7 @@ function handleLinkedInShare(event, el) {
 			const primarySpecialty = article.primary_specialty || '';
 			const secondarySpecialty = article.secondary_specialty || '';
 			const pmid = article.pmid || '';
+			const articleShareUrl = buildArticleShareUrl(pmid);
 
 			const specialties = [primarySpecialty, secondarySpecialty].filter(Boolean);
 			const specialtyBadges = specialties.map(s => `<span class="article-overlay-badge">${escapeHtml(s)}</span>`).join('');
@@ -2739,7 +2758,7 @@ function handleLinkedInShare(event, el) {
 							<a class="overlay-primary" href="${url}" target="_blank" rel="noopener" aria-label="View on PubMed">
 								<i class="fas fa-external-link-alt"></i> View on PubMed
 							</a>
-							<button class="overlay-linkedin" type="button" onclick="shareOverlayOnLinkedIn('${encodeURIComponent(shareText)}', '${encodeURIComponent(pubmedUrlWithUtm)}')">
+							<button class="overlay-linkedin" type="button" onclick="shareOverlayOnLinkedIn('${encodeURIComponent(shareText)}', '${encodeURIComponent(articleShareUrl)}')">
 								<i class="fab fa-linkedin"></i> Share on LinkedIn
 							</button>
 							<button type="button" onclick="copyOverlayShareText('${escapeHtml(shareText).replace(/'/g, "\\'")}')">
@@ -2768,12 +2787,12 @@ function handleLinkedInShare(event, el) {
 			overlayBg.setAttribute('aria-hidden', 'false');
 		}
 
-		function shareOverlayOnLinkedIn(shareText, pubmedUrl) {
+		function shareOverlayOnLinkedIn(shareText, articleUrl) {
 			const text = decodeURIComponent(shareText);
 			navigator.clipboard.writeText(text).catch(() => {
 				prompt('Copy this text to share on LinkedIn:', text);
 			});
-			window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${pubmedUrl}`, '_blank');
+			window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${articleUrl}`, '_blank');
 		}
 
 		function copyOverlayShareText(text) {
@@ -3079,6 +3098,7 @@ function handleLinkedInShare(event, el) {
 				const hasAbstract = !!(abstract && abstract.trim());
 				const pubmedUrl = url || `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`;
 				const pubmedUrlWithUtm = `${pubmedUrl}${pubmedUrl.includes('?') ? '&' : '?'}utm_source=linkedin&utm_medium=share&utm_campaign=medcityai_share`;
+				const articleShareUrl = buildArticleShareUrl(pmid);
 
 				const getLastTwoSentences = (text) => {
 					const cleaned = (text || '').replace(/\s+/g, ' ').trim();
@@ -3293,7 +3313,7 @@ function handleLinkedInShare(event, el) {
 											<span style="display: flex; align-items: center; gap: 4px;">LIKE <i class="fas fa-heart" aria-hidden="true" style="color: #e74c3c; font-size: 20px;"></i></span>
 										</span>
 									` : `
-										<a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(pubmedUrlWithUtm)}" class="linkedin" target="_blank" aria-label="Share on LinkedIn (please @mention MedCityAI)" title="Share on LinkedIn (please @mention MedCityAI)" data-share-text="${encodeURIComponent(linkedinShareText)}" onclick="return handleLinkedInShare(event, this);">
+										<a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(articleShareUrl)}" class="linkedin" target="_blank" aria-label="Share on LinkedIn (please @mention MedCityAI)" title="Share on LinkedIn (please @mention MedCityAI)" data-share-text="${encodeURIComponent(linkedinShareText)}" onclick="return handleLinkedInShare(event, this);">
 											<i class="icon brands fa-linkedin" aria-hidden="true"></i>
 										</a>
 										<a href="${url}" target="_blank" onclick="event.stopPropagation();" style="color: #0056a3; text-decoration: none; font-size: 14px; font-weight: 500;" aria-label="View on PubMed">
