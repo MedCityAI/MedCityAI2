@@ -3042,7 +3042,7 @@ function showSharePageLoading() {
 		}
 		
 		// Determine if we should show the "Fresh Off The Press" section (only for "all" specialty)
-		const showFreshOffThePress = (typeof window === 'undefined' || !window.selectedSpecialty || window.selectedSpecialty === 'all');
+		const showFreshOffThePress = (window.selectedSpecialty === 'all');
 		
 		// Separate articles into today and other
 		const todayArticles = [];
