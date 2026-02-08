@@ -129,6 +129,41 @@
 			color: #333;
 		}
 
+		/* Share page loading overlay */
+		.share-loading-overlay {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100vw;
+			height: 100vh;
+			background: rgba(8, 15, 30, 0.65);
+			z-index: 4500;
+			align-items: center;
+			justify-content: center;
+			padding: 20px;
+			box-sizing: border-box;
+			backdrop-filter: blur(3px);
+		}
+		.share-loading-overlay[aria-hidden="false"] {
+			display: flex;
+		}
+		.share-loading-card {
+			background: #fff;
+			border-radius: 14px;
+			padding: 26px 28px;
+			text-align: center;
+			box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+			max-width: 360px;
+			width: 100%;
+		}
+		.share-loading-text {
+			font-size: 15px;
+			font-weight: 700;
+			color: #1f2d3d;
+			letter-spacing: 0.2px;
+		}
+
 		/* Article overlay modal (full article view) */
 		.article-overlay-bg {
 			display: none;
@@ -2065,17 +2100,6 @@
             <main id="main-content" role="main">
 				<div class="filter-bar">
 					<div class="filter-bar-content">
-						<!-- Mobile Specialty Filter Dropdown -->
-						<div id="specialty-filter-mobile-wrapper" style="display: none;">
-							<select id="specialty-filter-mobile">
-								<option value="all">Most Recent</option>
-								<option value="Radiology">Radiology</option>
-								<option value="Oncology">Oncology</option>
-								<option value="Cardiology">Cardiology</option>
-								<option value="Neurology">Neurology</option>
-								<option value="AI/ML/DL">AI/ML/DL</option>
-							</select>
-						</div>
 						<!-- Specialty Filter Bar (as text links above results) -->
 						<nav id="specialty-filter" style="max-width:1200px;margin:0 auto;padding:0;display:flex;flex-wrap:nowrap;gap:0;justify-content:center;align-items:center;font-size:15px;">
 							<span style="font-weight:700;margin-right:10px;color:#000;">Filter:</span>
@@ -2117,6 +2141,14 @@
 							<div class="article-overlay-content" role="document">
 								<button class="article-overlay-close" id="articleOverlayClose" aria-label="Close article">&times;</button>
 								<div id="articleOverlayContent"></div>
+							</div>
+						</div>
+
+						<!-- Share page loading overlay -->
+						<div id="sharePageLoading" class="share-loading-overlay" role="status" aria-live="polite" aria-hidden="true">
+							<div class="share-loading-card">
+								<div class="spinner" aria-hidden="true"></div>
+								<div class="share-loading-text">Generating Share Page...</div>
 							</div>
 						</div>
 						
@@ -2460,6 +2492,13 @@ function handleLinkedInShare(event, el) {
 
 	window.open(shareUrl, '_blank', 'noopener');
 	return false;
+}
+
+function showSharePageLoading() {
+	const overlay = document.getElementById('sharePageLoading');
+	if (!overlay) return;
+	overlay.setAttribute('aria-hidden', 'false');
+	document.body.style.overflow = 'hidden';
 }
 
 		function handleTitleTap(event, el) {
@@ -3313,7 +3352,7 @@ function handleLinkedInShare(event, el) {
 											<span style="display: flex; align-items: center; gap: 4px;">LIKE <i class="fas fa-heart" aria-hidden="true" style="color: #e74c3c; font-size: 20px;"></i></span>
 										</span>
 									` : `
-										<a href="${articleShareUrl}" class="linkedin" target="_blank" aria-label="Open article page" title="Open article page">
+										<a href="${articleShareUrl}" class="linkedin article-link" aria-label="Open article page" title="Open article page">
 											<i class="icon brands fa-linkedin" aria-hidden="true"></i>
 										</a>
 										<a href="${url}" target="_blank" onclick="event.stopPropagation();" style="color: #0056a3; text-decoration: none; font-size: 14px; font-weight: 500;" aria-label="View on PubMed">
@@ -3997,6 +4036,15 @@ function handleLinkedInShare(event, el) {
 				if (currentPage < totalPages) {
 					fetchPubMedResults(currentSearchQuery, currentPage + 1);
 				}
+			});
+
+			document.addEventListener('click', function(e) {
+				const link = e.target.closest('a.article-link');
+				if (!link || e.defaultPrevented) return;
+				if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+				e.preventDefault();
+				showSharePageLoading();
+				window.location.assign(link.href);
 			});
 
 			// Load data and display results
