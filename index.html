@@ -3313,7 +3313,7 @@ function handleLinkedInShare(event, el) {
 											<span style="display: flex; align-items: center; gap: 4px;">LIKE <i class="fas fa-heart" aria-hidden="true" style="color: #e74c3c; font-size: 20px;"></i></span>
 										</span>
 									` : `
-										<a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(articleShareUrl)}" class="linkedin" target="_blank" aria-label="Share on LinkedIn (please @mention MedCityAI)" title="Share on LinkedIn (please @mention MedCityAI)" data-share-text="${encodeURIComponent(linkedinShareText)}" onclick="return handleLinkedInShare(event, this);">
+										<a href="${articleShareUrl}" class="linkedin" target="_blank" aria-label="Open article page" title="Open article page">
 											<i class="icon brands fa-linkedin" aria-hidden="true"></i>
 										</a>
 										<a href="${url}" target="_blank" onclick="event.stopPropagation();" style="color: #0056a3; text-decoration: none; font-size: 14px; font-weight: 500;" aria-label="View on PubMed">
