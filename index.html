@@ -419,6 +419,14 @@
 		overflow: hidden;
 		z-index: 3;
 	}
+
+	.card-flip-container:not(.flipped) .card-back {
+		pointer-events: none;
+	}
+
+	.card-flip-container:not(.flipped) .card-back-content {
+		overflow: hidden;
+	}
 	
 	.card-back::before {
 		content: '';
