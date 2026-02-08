@@ -2152,6 +2152,8 @@
 		let currentSearchQuery = '';
 		const resultsPerPage = 50;
 
+		// Modal functions
+		function showAbstractModal(link) {
 			const modalBg = document.getElementById('modalBg');
 			const modalTitle = document.getElementById('modalTitle');
 			const modalAbstract = document.getElementById('modalAbstract');
@@ -2252,7 +2254,6 @@
 	let allArticlesData = [];
 	let filteredArticlesData = [];
 	let currentlyFlippedCard = null;
-	let likeCountsForRanking = {};
 	let touchMovedDuringScroll = false;
 	let touchStartX = 0;
 	let touchStartY = 0;
@@ -2324,11 +2325,10 @@
 		}
 	}, true);
 
-	// User keyword preferences functionality removed
-
 	// Initialize on page load
 	document.addEventListener('DOMContentLoaded', function() {
-		console.log('DOMContentLoaded - initialized');
+		console.log('DOMContentLoaded - Keywords modal disabled');
+		// checkFirstVisit() - removed to disable welcome screen
 	});
 
 	// Send interaction data to Google Apps Script
@@ -2359,9 +2359,6 @@
 			const data = await response.json();
 			
 			console.log('Received counts:', data);
-			
-			// Store for ranking system
-			likeCountsForRanking = data;
 			
 			// Update all like buttons with counts
 			document.querySelectorAll('.like-button').forEach(button => {
@@ -2917,8 +2914,6 @@ function handleLinkedInShare(event, el) {
 		return [firstSpecialty];
 	}
 
-	// Ranking system removed - articles now sorted by date only
-
 
 
 	// PubMed data display with search and pagination (now using CSV data)
@@ -2965,34 +2960,36 @@ function handleLinkedInShare(event, el) {
 				}
 			}
 			return false; // Exclude articles without valid dates
-	});
+		});
 			
-	// Sort articles by date only (newest first)
-	filteredArticlesData.sort((a, b) => {
-		const dateA = new Date(a.year || 0, (monthNames.indexOf(a.month) || 1) - 1, a.day || 1);
-		const dateB = new Date(b.year || 0, (monthNames.indexOf(b.month) || 1) - 1, b.day || 1);
-		return dateB - dateA;
-	});
-	
-	// Check if we have results
-	if (filteredArticlesData.length === 0) {
+		// Sort articles by date only (newest first)
+		filteredArticlesData.sort((a, b) => {
+			const monthNumA = monthNames.indexOf(a.month);
+			const monthNumB = monthNames.indexOf(b.month);
+			const dateA = new Date(a.year || 0, monthNumA - 1 || 0, a.day || 1);
+			const dateB = new Date(b.year || 0, monthNumB - 1 || 0, b.day || 1);
+			return dateB - dateA; // Newest first
+		});
+			
+		// Check if we have results
+		if (filteredArticlesData.length === 0) {
 			document.getElementById("pubmed-results").innerHTML = "<p style='text-align:center; padding:40px; color:#666;'>No results found. Try a different search term.</p>";
 			document.getElementById("pagination-controls").style.display = 'none';
 			return;
 		}
 		
-	// Determine if we should show the "Fresh Off The Press" section (only for "all" specialty)
-	const showFreshOffThePress = (typeof window === 'undefined' || !window.selectedSpecialty || window.selectedSpecialty === 'all');
-	
-	// Separate articles into today and other
-	const todayArticles = [];
-	const otherArticles = [];
-	
-	// Get current date for recency badge logic
-	const twoDaysAgo = new Date(now.getTime() - (2 * 24 * 60 * 60 * 1000));
-	
-	// First pass: classify and separate articles
-	filteredArticlesData.forEach(article => {
+		// Determine if we should show the "Fresh Off The Press" section (only for "all" specialty)
+		const showFreshOffThePress = (typeof window === 'undefined' || !window.selectedSpecialty || window.selectedSpecialty === 'all');
+		
+		// Separate articles into today and other
+		const todayArticles = [];
+		const otherArticles = [];
+		
+		// Get current date for recency badge logic (reuse 'now' and 'sevenDaysAgo' already declared above)
+		const twoDaysAgo = new Date(now.getTime() - (2 * 24 * 60 * 60 * 1000));
+		
+		// First pass: classify and separate articles
+		filteredArticlesData.forEach(article => {
 			// Parse affiliations for classification
 			const authorsList = article.authors ? article.authors.split('|') : [];
 			const rochesterAuthorsList = article.rochester_authors ? article.rochester_authors.split('|') : [];
@@ -3064,8 +3061,11 @@ function handleLinkedInShare(event, el) {
 				}
 			}
 			
-		// Add to other articles if not in today's section
-		otherArticles.push(article);
+			// All non-today articles go to otherArticles
+			otherArticles.push(article);
+		});
+		
+		// Build results HTML - function to render a single article
 		const renderArticle = (article) => {
 				const isInstruction = article.isInstruction === true;
 				const pmid = article.pmid;
@@ -3254,7 +3254,7 @@ function handleLinkedInShare(event, el) {
 				specialtyBadgesHtml = `<div class="department-badge">INSTRUCTION</div>`;
 			}
 			
-			// Ranking score removed
+			const rankingScore = article.rankingScore || 0;
 				const citation = isInstruction ? '' : `${journal}. ${pubdate}.`;
 				const readArticleHref = isInstruction ? pubmedUrl : `article.html?id=${pmid}`;
 
@@ -3380,7 +3380,6 @@ function handleLinkedInShare(event, el) {
 		};
 
 	// Limit articles for display
-	const maxRecommended = 15;
 	const maxTotal = 200;
 	
 	// Calculate total items to display
@@ -3388,7 +3387,6 @@ function handleLinkedInShare(event, el) {
 	
 	// New Today section (always show if there are today articles)
 	let displayedToday = [];
-	let displayedMatching = [];
 	let displayedOther = [];
 	
 	// Only show 'FRESH OFF THE PRESS' if specialty is 'all' (Most Recent)
@@ -3414,11 +3412,11 @@ function handleLinkedInShare(event, el) {
 			</div>`;
 	}
 	
-	// All publications section - limit to remaining space up to 200 total
+	// All publications section - limit to remaining space up to maxTotal
 	const remainingSlots = maxTotal - displayedCount;
 	
-	// Show remaining articles
-	const allRemainingArticles = otherArticles.slice(0, remainingSlots);
+	// Show remaining articles up to the limit
+	let allRemainingArticles = otherArticles.slice(0, remainingSlots);
 	
 	if (allRemainingArticles.length > 0) {
 		finalHTML += `<div class="all-publications-section"><div class="results">`;
@@ -3443,7 +3441,7 @@ function handleLinkedInShare(event, el) {
 	}
 	
 	// Show pagination message if there are more articles than displayed
-	const totalAvailable = todayArticles.length + otherArticles.length;
+	const totalAvailable = otherArticles.length;
 	if (totalAvailable > displayedCount) {
 		document.getElementById("pagination-controls").style.display = 'block';
 		document.getElementById("pageInfo").innerHTML = `<a href="search.html" style="color: #0056a3; text-decoration: none; font-weight: 500;">Search</a> to discover more articles`;
@@ -3453,9 +3451,9 @@ function handleLinkedInShare(event, el) {
 		document.getElementById("pagination-controls").style.display = 'none';
 	}
 }
-
-// AI Daily Digest Functions
-async function loadAIDailyDigest() {
+	
+	// AI Daily Digest Functions
+	async function loadAIDailyDigest() {
 		try {
 			const response = await fetch('specialty_summaries.csv');
 			const csvText = await response.text();
