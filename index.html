@@ -3310,13 +3310,12 @@ function handleLinkedInShare(event, el) {
 			}
 			
 			// Only separate "today" articles if showing "Fresh Off The Press" (i.e., "all" specialty selected)
-			const isFromToday = articleDate && articleDate >= twoDaysAgo;
+			const isFromToday = articleDate && articleDate >= twoDaysAgo && articleDate <= endOfToday;
 			if (showFreshOffThePress && isFromToday) {
-				// Only include articles published from two days ago up to one day in the future
+				// Only include articles published from two days ago up to today (no future articles)
 				if (articleDate) {
 					const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1); // yesterday
-					const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);   // tomorrow
-					if (articleDate >= start && articleDate <= end) {
+					if (articleDate >= start && articleDate <= endOfToday) {
 						todayArticles.push(article);
 						return; // Skip adding to matching/other articles
 					}
