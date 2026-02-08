@@ -375,8 +375,6 @@
 			position: relative;
 			perspective: 1000px;
 			min-height: 200px;
-			break-inside: avoid;
-			page-break-inside: avoid;
 		}
 		
 	.card-flip-container {
@@ -1166,9 +1164,7 @@
 
 		/* Responsive design */
 		@media (max-width: 900px) {
-			.results { 
-				column-count: 2;
-			}
+			.results { column-count: 2; }
 			.hero-content {
 				grid-template-columns: 1fr;
 				gap: 40px;
@@ -1187,9 +1183,7 @@
 			}
 		}
 	@media (max-width: 600px) {
-		.results { 
-			column-count: 1;
-		}
+		.results { column-count: 1; }
 		.hero-section {
 			min-height: 240px;
 			display: flex;
