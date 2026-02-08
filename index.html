@@ -2151,33 +2151,7 @@
 		let currentPage = 1;
 		let currentSearchQuery = '';
 		const resultsPerPage = 50;
-		let selectedTopics = [];
 
-		// Welcome Modal Functions
-		function checkFirstVisit() {
-			const hasKeywords = localStorage.getItem('medcity_keywords');
-			if (!hasKeywords) {
-				document.getElementById('welcomeModal').classList.add('active');
-			}
-		}
-
-		function skipWelcome() {
-			localStorage.setItem('medcity_keywords', JSON.stringify([]));
-			document.getElementById('welcomeModal').classList.remove('active');
-		}
-
-		function saveTopics() {
-			if (selectedTopics.length === 0) {
-				alert('Please select at least one topic to continue');
-				return;
-			}
-			localStorage.setItem('medcity_keywords', JSON.stringify(selectedTopics));
-			document.getElementById('welcomeModal').classList.remove('active');
-			console.log('Saved topics:', selectedTopics);
-		}
-
-		// Modal functions
-		function showAbstractModal(link) {
 			const modalBg = document.getElementById('modalBg');
 			const modalTitle = document.getElementById('modalTitle');
 			const modalAbstract = document.getElementById('modalAbstract');
@@ -2350,164 +2324,11 @@
 		}
 	}, true);
 
-	// Welcome Modal Functions
-	function checkFirstVisit() {
-		const hasKeywords = localStorage.getItem('medcity_keywords');
-		if (!hasKeywords) {
-			document.getElementById('welcomeModal').classList.add('active');
-			document.body.style.overflow = 'hidden';
-		}
-	}
-
-	function closeKeywordsModal() {
-		document.getElementById('welcomeModal').classList.remove('active');
-		document.body.style.overflow = '';
-		// Save current selections to localStorage
-		localStorage.setItem('medcity_keywords', JSON.stringify(selectedTopics));
-		console.log('Modal closed, saved topics:', selectedTopics);
-	}
-
-	function closeModalOnOutsideClick(event) {
-		// Close modal if clicking on the background (not the content)
-		if (event.target.id === 'welcomeModal') {
-			closeKeywordsModal();
-		}
-	}
-
-	function skipWelcome() {
-		localStorage.setItem('medcity_keywords', JSON.stringify([]));
-		document.getElementById('welcomeModal').classList.remove('active');
-		document.body.style.overflow = '';
-	}
-
-	function saveTopics() {
-		if (selectedTopics.length === 0) {
-			alert('Please select at least one topic to continue');
-			return;
-		}
-		localStorage.setItem('medcity_keywords', JSON.stringify(selectedTopics));
-		document.getElementById('welcomeModal').classList.remove('active');
-		document.body.style.overflow = '';
-		console.log('Saved topics:', selectedTopics);
-	}
-
-	function openKeywordsModal() {
-		// Load existing topics from localStorage
-		const existingTopics = JSON.parse(localStorage.getItem('medcity_keywords') || '[]');
-		selectedTopics = [...existingTopics];
-		
-		// Update UI to show selected topics
-		document.querySelectorAll('.topic-button').forEach(button => {
-			const buttonText = button.textContent.trim();
-			if (selectedTopics.includes(buttonText)) {
-				button.classList.add('selected');
-			} else {
-			button.classList.remove('selected');
-		}
-	});
-	
-	// Update selected keywords display
-	updateSelectedKeywordsDisplay();
-	
-	document.getElementById('welcomeModal').classList.add('active');
-	document.body.style.overflow = 'hidden';
-}	// Toggle topic button and update localStorage immediately
-	function toggleTopic(button, topic) {
-		console.log('Toggle topic clicked:', topic);
-		
-		// Toggle button visual state
-		if (button.classList.contains('selected')) {
-			button.classList.remove('selected');
-			// Remove from array
-			selectedTopics = selectedTopics.filter(t => t !== topic);
-			console.log('Removed:', topic);
-		} else {
-			button.classList.add('selected');
-			// Add to array if not already there
-			if (!selectedTopics.includes(topic)) {
-				selectedTopics.push(topic);
-			}
-			console.log('Added:', topic);
-		}
-		
-		// Immediately save to localStorage
-		localStorage.setItem('medcity_keywords', JSON.stringify(selectedTopics));
-		console.log('Updated medcity_keywords in localStorage:', selectedTopics);
-		
-		// Update the selected keywords display
-		updateSelectedKeywordsDisplay();
-	}
-
-	// Update the selected keywords display section
-	function updateSelectedKeywordsDisplay() {
-		const textDiv = document.getElementById('selectedKeywordsText');
-		
-		if (selectedTopics.length === 0) {
-			textDiv.innerHTML = '';
-			return;
-		}
-		
-		const keywordsList = selectedTopics.join(', ');
-		textDiv.innerHTML = `Selected Keywords: ${keywordsList} <span class="clear-all" onclick="clearAllKeywords()">(clear all)</span>`;
-	}
-
-	// Clear all keywords
-	function clearAllKeywords() {
-		selectedTopics = [];
-		localStorage.setItem('medcity_keywords', JSON.stringify(selectedTopics));
-		
-		// Deselect all buttons
-		document.querySelectorAll('.topic-button').forEach(button => {
-			button.classList.remove('selected');
-		});
-		
-		updateSelectedKeywordsDisplay();
-		console.log('Cleared all keywords');
-	}
-
-	// Remove a keyword from selected topics
-	function removeKeyword(topic) {
-		selectedTopics = selectedTopics.filter(t => t !== topic);
-		localStorage.setItem('medcity_keywords', JSON.stringify(selectedTopics));
-		
-		// Update button state
-		document.querySelectorAll('.topic-button').forEach(button => {
-			if (button.textContent.trim() === topic) {
-				button.classList.remove('selected');
-			}
-		});
-		
-		updateSelectedKeywordsDisplay();
-		console.log('Removed keyword:', topic);
-	}
-
-	// Add custom keyword
-	function addCustomKeyword() {
-		const input = document.getElementById('customKeywordInput');
-		const keyword = input.value.trim();
-		
-		if (!keyword) {
-			alert('Please enter a keyword');
-			return;
-		}
-		
-		if (selectedTopics.includes(keyword)) {
-			alert('This keyword is already selected');
-			return;
-		}
-		
-		selectedTopics.push(keyword);
-		localStorage.setItem('medcity_keywords', JSON.stringify(selectedTopics));
-		input.value = '';
-		
-		updateSelectedKeywordsDisplay();
-		console.log('Added custom keyword:', keyword);
-	}
+	// User keyword preferences functionality removed
 
 	// Initialize on page load
 	document.addEventListener('DOMContentLoaded', function() {
-		console.log('DOMContentLoaded - Keywords modal disabled');
-		// checkFirstVisit() - removed to disable welcome screen
+		console.log('DOMContentLoaded - initialized');
 	});
 
 	// Send interaction data to Google Apps Script
@@ -3096,59 +2917,7 @@ function handleLinkedInShare(event, el) {
 		return [firstSpecialty];
 	}
 
-	// Calculate article ranking score
-	function calculateArticleScore(article, likeCountsData = {}) {
-		let score = 0;
-		
-		// +1 if 51% of authors are from Rochester
-		const totalAuthors = article.authors ? article.authors.split('|').length : 0;
-		const rochesterAuthors = article.rochester_authors ? article.rochester_authors.split('|').length : 0;
-		if (totalAuthors > 0 && (rochesterAuthors / totalAuthors) > 0.5) {
-			score += 1;
-		}
-		
-		// Check recency (+2 if last 24 hours, +1 if last 48 hours)
-		const now = new Date();
-		const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-		if (article.year && article.month && article.day) {
-			const monthNum = monthNames.indexOf(article.month);
-			if (monthNum > 0) {
-				const articleDate = new Date(article.year, monthNum - 1, article.day);
-				const hoursSincePublished = (now - articleDate) / (1000 * 60 * 60);
-				
-				if (hoursSincePublished <= 24) {
-					score += 2;
-				} else if (hoursSincePublished <= 48) {
-					score += 1;
-				}
-			}
-		}
-		
-		// +2 per keyword matching localStorage (search in affiliations field)
-		const userKeywords = JSON.parse(localStorage.getItem('medcity_keywords') || '[]');
-		const affiliationsText = (article.affiliations || '').toLowerCase();
-		userKeywords.forEach(keyword => {
-			const keywordLower = keyword.toLowerCase().trim();
-			if (keywordLower && affiliationsText.includes(keywordLower)) {
-				score += 2;
-			}
-		});
-		
-		// +2 if in the top 10% of liked articles
-		const allLikeCounts = Object.values(likeCountsData);
-		if (allLikeCounts.length > 0) {
-			allLikeCounts.sort((a, b) => b - a);
-			const top10PercentIndex = Math.floor(allLikeCounts.length * 0.1);
-			const top10PercentThreshold = allLikeCounts[top10PercentIndex] || 0;
-			
-			const articleLikes = likeCountsData[article.pmid] || 0;
-			if (articleLikes >= top10PercentThreshold && top10PercentThreshold > 0) {
-				score += 2;
-			}
-		}
-		
-		return score;
-	}
+	// Ranking system removed - articles now sorted by date only
 
 
 
@@ -3196,61 +2965,34 @@ function handleLinkedInShare(event, el) {
 				}
 			}
 			return false; // Exclude articles without valid dates
-		});			// Filter out articles where Rochester authors account for less than 1% of total authors
-			filteredArticlesData = filteredArticlesData.filter(article => {
-				const authorsList = article.authors ? article.authors.split('|') : [];
-				const rochesterAuthorsList = article.rochester_authors ? article.rochester_authors.split('|') : [];
-				
-				// Skip articles with no authors
-				if (authorsList.length === 0) return false;
-				
-				// Calculate percentage of Rochester authors
-				const rochesterPercentage = (rochesterAuthorsList.length / authorsList.length) * 100;
-				
-				// Keep only if Rochester authors are >= 5%
-				return rochesterPercentage >= 5;
-			});
+	});
 			
-			// Apply ranking system and sort articles by score
-			filteredArticlesData.forEach(article => {
-				article.rankingScore = calculateArticleScore(article, likeCountsForRanking);
-			});
-			
-			// Sort by ranking score (highest first), then by date as secondary sort
-			filteredArticlesData.sort((a, b) => {
-				if (b.rankingScore !== a.rankingScore) {
-					return b.rankingScore - a.rankingScore;
-				}
-				// Secondary sort by date if scores are equal
-				const dateA = new Date(a.year || 0, 0, a.day || 1);
-				const dateB = new Date(b.year || 0, 0, b.day || 1);
-				return dateB - dateA;
-			});
-			
-		// Check if we have results
-		if (filteredArticlesData.length === 0) {
+	// Sort articles by date only (newest first)
+	filteredArticlesData.sort((a, b) => {
+		const dateA = new Date(a.year || 0, (monthNames.indexOf(a.month) || 1) - 1, a.day || 1);
+		const dateB = new Date(b.year || 0, (monthNames.indexOf(b.month) || 1) - 1, b.day || 1);
+		return dateB - dateA;
+	});
+	
+	// Check if we have results
+	if (filteredArticlesData.length === 0) {
 			document.getElementById("pubmed-results").innerHTML = "<p style='text-align:center; padding:40px; color:#666;'>No results found. Try a different search term.</p>";
 			document.getElementById("pagination-controls").style.display = 'none';
 			return;
 		}
 		
-		// Get user keywords for filtering
-		const userKeywords = JSON.parse(localStorage.getItem('medcity_keywords') || '[]');
-		const hasUserKeywords = userKeywords.length > 0;
-		
-		// Determine if we should show the "Fresh Off The Press" section (only for "all" specialty)
-		const showFreshOffThePress = (typeof window === 'undefined' || !window.selectedSpecialty || window.selectedSpecialty === 'all');
-		
-		// Separate articles into today, matching, and non-matching
-		const todayArticles = [];
-		const matchingArticles = [];
-		const otherArticles = [];
-		
-		// Get current date for recency badge logic (reuse 'now' and 'sevenDaysAgo' already declared above)
-		const twoDaysAgo = new Date(now.getTime() - (2 * 24 * 60 * 60 * 1000));
-		
-		// First pass: classify and separate articles
-		filteredArticlesData.forEach(article => {
+	// Determine if we should show the "Fresh Off The Press" section (only for "all" specialty)
+	const showFreshOffThePress = (typeof window === 'undefined' || !window.selectedSpecialty || window.selectedSpecialty === 'all');
+	
+	// Separate articles into today and other
+	const todayArticles = [];
+	const otherArticles = [];
+	
+	// Get current date for recency badge logic
+	const twoDaysAgo = new Date(now.getTime() - (2 * 24 * 60 * 60 * 1000));
+	
+	// First pass: classify and separate articles
+	filteredArticlesData.forEach(article => {
 			// Parse affiliations for classification
 			const authorsList = article.authors ? article.authors.split('|') : [];
 			const rochesterAuthorsList = article.rochester_authors ? article.rochester_authors.split('|') : [];
@@ -3322,16 +3064,8 @@ function handleLinkedInShare(event, el) {
 				}
 			}
 			
-			// Check if any specialty matches user keywords
-			const hasMatch = specialties.some(spec => userKeywords.includes(spec));
-			if (hasUserKeywords && hasMatch) {
-				matchingArticles.push(article);
-			} else {
-				otherArticles.push(article);
-			}
-		});
-		
-		// Build results HTML - function to render a single article
+		// Add to other articles if not in today's section
+		otherArticles.push(article);
 		const renderArticle = (article) => {
 				const isInstruction = article.isInstruction === true;
 				const pmid = article.pmid;
@@ -3520,7 +3254,7 @@ function handleLinkedInShare(event, el) {
 				specialtyBadgesHtml = `<div class="department-badge">INSTRUCTION</div>`;
 			}
 			
-			const rankingScore = article.rankingScore || 0;
+			// Ranking score removed
 				const citation = isInstruction ? '' : `${journal}. ${pubdate}.`;
 				const readArticleHref = isInstruction ? pubmedUrl : `article.html?id=${pmid}`;
 
@@ -3680,18 +3414,11 @@ function handleLinkedInShare(event, el) {
 			</div>`;
 	}
 	
-	// All publications section - limit to remaining space up to 100 total
+	// All publications section - limit to remaining space up to 200 total
 	const remainingSlots = maxTotal - displayedCount;
 	
-	// When a specialty is selected (not 'all'), combine matching and other articles in a single section
-	let allRemainingArticles = [];
-	if (!showFreshOffThePress) {
-		// Combine matching and other articles when a specialty filter is active
-		allRemainingArticles = matchingArticles.concat(otherArticles).slice(0, remainingSlots);
-	} else {
-		// When showing 'Fresh Off The Press', only show other articles (matching articles are already in today's or other)
-		allRemainingArticles = otherArticles.slice(0, remainingSlots);
-	}
+	// Show remaining articles
+	const allRemainingArticles = otherArticles.slice(0, remainingSlots);
 	
 	if (allRemainingArticles.length > 0) {
 		finalHTML += `<div class="all-publications-section"><div class="results">`;
@@ -3716,7 +3443,7 @@ function handleLinkedInShare(event, el) {
 	}
 	
 	// Show pagination message if there are more articles than displayed
-	const totalAvailable = matchingArticles.length + otherArticles.length;
+	const totalAvailable = todayArticles.length + otherArticles.length;
 	if (totalAvailable > displayedCount) {
 		document.getElementById("pagination-controls").style.display = 'block';
 		document.getElementById("pageInfo").innerHTML = `<a href="search.html" style="color: #0056a3; text-decoration: none; font-weight: 500;">Search</a> to discover more articles`;
@@ -3725,10 +3452,10 @@ function handleLinkedInShare(event, el) {
 	} else {
 		document.getElementById("pagination-controls").style.display = 'none';
 	}
-	}
-	
-	// AI Daily Digest Functions
-	async function loadAIDailyDigest() {
+}
+
+// AI Daily Digest Functions
+async function loadAIDailyDigest() {
 		try {
 			const response = await fetch('specialty_summaries.csv');
 			const csvText = await response.text();
