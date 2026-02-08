@@ -864,21 +864,17 @@
 				</div>
 				`}
 				<div class="article-overlay-section">
+					<div class="article-overlay-about">
+						<h4>About MedCityAI</h4>
+						<p>MedCityAI is a platform for celebrating research in Rochester, Minnesota. This platform curates recent biomedical publications and provides AI-generated summaries to make discoveries easier to understand and share.</p>
+					</div>
 					<div class="article-overlay-actions">
-						<a class="overlay-primary" href="${url}" target="_blank" rel="noopener" aria-label="View on PubMed">
+						<a class="overlay-linkedin" href="${url}" target="_blank" rel="noopener" aria-label="View on PubMed">
 							<i class="fas fa-external-link-alt"></i> View on PubMed
 						</a>
 						<button class="overlay-linkedin" type="button" onclick="shareOverlayOnLinkedIn('${encodeURIComponent(shareText)}', '${encodeURIComponent(articleShareUrl)}')">
 							<i class="fab fa-linkedin"></i> Share on LinkedIn
 						</button>
-						<button type="button" onclick="copyOverlayShareText('${escapeHtml(shareText).replace(/'/g, "\\'")}')">
-							<i class="fas fa-copy"></i> Copy Share Text
-						</button>
-					</div>
-					<p class="article-overlay-blurb">MedCityAI is a Rochester, MN research platform to celebrate local research progress.</p>
-					<div class="article-overlay-about">
-						<h4>About MedCityAI</h4>
-						<p>MedCityAI is a platform for celebrating research in Rochester, Minnesota. This platform curates recent biomedical publications and provides AI-generated summaries to make discoveries easier to understand and share.</p>
 					</div>
 				</div>
 			`;
