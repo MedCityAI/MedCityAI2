@@ -2300,11 +2300,7 @@
 			return;
 		}
 		if (event.touches && event.touches.length) {
-			const dx = Math.abs(event.touches[0].clientX - touchStartX);
-			const dy = Math.abs(event.touches[0].clientY - touchStartY);
-			if (dx > 2 || dy > 2) {
-				touchMovedDuringScroll = true;
-			}
+			touchMovedDuringScroll = true;
 		}
 	}, { passive: true });
 
