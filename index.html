@@ -3178,6 +3178,8 @@ function handleLinkedInShare(event, el) {
 		
 		// Filter to show only articles from the last 7 days
 		const now = new Date();
+		// Set to end of today to ensure we only show articles up to today
+		const endOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
 		const sevenDaysAgo = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
 		// Filter to show only articles from the last 30 days
 		const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
@@ -3189,7 +3191,8 @@ function handleLinkedInShare(event, el) {
 				const monthNum = monthNames.indexOf(article.month);
 				if (monthNum > 0) {
 					const articleDate = new Date(article.year, monthNum - 1, article.day);
-					return articleDate >= thirtyDaysAgo;
+					// Exclude future articles and only show articles from the last 30 days
+					return articleDate >= thirtyDaysAgo && articleDate <= endOfToday;
 				}
 			}
 			return false; // Exclude articles without valid dates
