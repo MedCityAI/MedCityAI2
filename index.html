@@ -360,8 +360,8 @@
 		/* Research results grid */
 		.results {
 			max-width: 1200px;
-			margin: 10px auto;
-			padding: 0;
+			margin: 40px auto;
+			padding: 0 20px;
 			column-count: 3;
 			column-gap: 20px;
 		}
@@ -375,6 +375,8 @@
 			position: relative;
 			perspective: 1000px;
 			min-height: 200px;
+			break-inside: avoid;
+			page-break-inside: avoid;
 		}
 		
 	.card-flip-container {
@@ -1166,7 +1168,6 @@
 		@media (max-width: 900px) {
 			.results { 
 				column-count: 2;
-				padding: 0 20px;
 			}
 			.hero-content {
 				grid-template-columns: 1fr;
@@ -1188,7 +1189,6 @@
 	@media (max-width: 600px) {
 		.results { 
 			column-count: 1;
-			padding: 0 20px;
 		}
 		.hero-section {
 			min-height: 240px;
@@ -3428,7 +3428,7 @@ function handleLinkedInShare(event, el) {
 			}
 			
 			const rankingScore = article.rankingScore || 0;
-				const citation = isInstruction ? '' : `${journal}. ${pubdate}. (${rankingScore})`;
+				const citation = isInstruction ? '' : `${journal}. ${pubdate}.`;
 				const readArticleHref = isInstruction ? pubmedUrl : `article.html?id=${pmid}`;
 
 				// Build card with flip effect
