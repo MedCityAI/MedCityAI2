@@ -1,0 +1,16 @@
+{
+  "name": "medcityai2",
+  "version": "1.0.0",
+  "description": "MedCityAI - Medical Research Publications Platform",
+  "main": "index.html",
+  "scripts": {
+    "dev": "live-server --port=8080 --host=localhost --open=/ --watch=.",
+    "start": "npm run dev"
+  },
+  "keywords": ["medical", "research", "publications"],
+  "author": "",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}
