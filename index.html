@@ -3339,12 +3339,9 @@ function handleLinkedInShare(event, el) {
 				const pubdate = article.pubdate;
 				const url = article.url;
 				const llmSummary = article.llm_summary || '';
-				const hasLlmSummary = llmSummary.trim() !== '' && llmSummary !== 'No abstract available.';
-				const hasAbstract = !!(abstract && abstract.trim());
-				const pubmedUrl = url || `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`;
-				const pubmedUrlWithUtm = `${pubmedUrl}${pubmedUrl.includes('?') ? '&' : '?'}utm_source=linkedin&utm_medium=share&utm_campaign=medcityai_share`;
-
-				const getLastTwoSentences = (text) => {
+				const trimmedSummary = llmSummary.trim();
+				const placeholderTexts = ['No abstract available.', 'No abstract available', 'Abstract not available', ''];
+				const hasLlmSummary = trimmedSummary !== '' && !placeholderTexts.includes(trimmedSummary);
 					const cleaned = (text || '').replace(/\s+/g, ' ').trim();
 					if (!cleaned) return '';
 					const matches = cleaned.match(/[^.!?]+[.!?]+/g);
