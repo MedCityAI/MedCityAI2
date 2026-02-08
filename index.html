@@ -2572,7 +2572,10 @@ function handleLinkedInShare(event, el) {
 			}
 			
 			event.stopPropagation();
-			event.preventDefault(); // Prevent space from scrolling
+			// Only prevent default for keyboard events to avoid blocking touch/scroll
+			if (event.type === 'keydown') {
+				event.preventDefault(); // Prevent space from scrolling
+			}
 			
 			const cardFront = container.querySelector('.card-front');
 			const cardBack = container.querySelector('.card-back');
