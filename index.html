@@ -2274,6 +2274,7 @@
 	let touchMovedDuringScroll = false;
 	let touchStartX = 0;
 	let touchStartY = 0;
+	let touchResetTimer = null;
 
 	function isResultsTouchTarget(target) {
 		return !!target && !!target.closest('.result-item');
@@ -2284,6 +2285,10 @@
 			return;
 		}
 		touchMovedDuringScroll = false;
+		if (touchResetTimer) {
+			clearTimeout(touchResetTimer);
+			touchResetTimer = null;
+		}
 		if (event.touches && event.touches.length) {
 			touchStartX = event.touches[0].clientX;
 			touchStartY = event.touches[0].clientY;
@@ -2304,15 +2309,29 @@
 	}, { passive: true });
 
 	document.addEventListener('touchend', (event) => {
-		if (isResultsTouchTarget(event.target)) {
-			touchMovedDuringScroll = false;
+		if (!isResultsTouchTarget(event.target)) {
+			return;
+		}
+		if (touchMovedDuringScroll) {
+			if (touchResetTimer) {
+				clearTimeout(touchResetTimer);
+			}
+			touchResetTimer = setTimeout(() => {
+				touchMovedDuringScroll = false;
+				touchResetTimer = null;
+			}, 250);
 		}
 	}, { passive: true });
 
 	document.addEventListener('touchcancel', (event) => {
-		if (isResultsTouchTarget(event.target)) {
-			touchMovedDuringScroll = false;
+		if (!isResultsTouchTarget(event.target)) {
+			return;
 		}
+		if (touchResetTimer) {
+			clearTimeout(touchResetTimer);
+		}
+		touchMovedDuringScroll = false;
+		touchResetTimer = null;
 	}, { passive: true });
 
 	// Prevent taps triggered by a scroll gesture inside results.
