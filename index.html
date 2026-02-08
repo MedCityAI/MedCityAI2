@@ -4104,6 +4104,11 @@ function showSharePageLoading() {
 						}
 					}
 				});
+
+				const freshSections = document.querySelectorAll('.new-today-section');
+				freshSections.forEach(section => {
+					section.style.display = (specialty === 'all') ? '' : 'none';
+				});
 			}
 
 			// Default to 'all' on load
