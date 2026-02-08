@@ -3339,9 +3339,12 @@ function handleLinkedInShare(event, el) {
 				const pubdate = article.pubdate;
 				const url = article.url;
 				const llmSummary = article.llm_summary || '';
-				const trimmedSummary = llmSummary.trim();
-				const placeholderTexts = ['No abstract available.', 'No abstract available', 'Abstract not available', ''];
-				const hasLlmSummary = trimmedSummary !== '' && !placeholderTexts.includes(trimmedSummary);
+				const hasLlmSummary = llmSummary.trim() !== '' && llmSummary !== 'No abstract available.';
+				const hasAbstract = !!(abstract && abstract.trim());
+				const pubmedUrl = url || `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`;
+				const pubmedUrlWithUtm = `${pubmedUrl}${pubmedUrl.includes('?') ? '&' : '?'}utm_source=linkedin&utm_medium=share&utm_campaign=medcityai_share`;
+
+				const getLastTwoSentences = (text) => {
 					const cleaned = (text || '').replace(/\s+/g, ' ').trim();
 					if (!cleaned) return '';
 					const matches = cleaned.match(/[^.!?]+[.!?]+/g);
@@ -3577,7 +3580,7 @@ function handleLinkedInShare(event, el) {
 									    tabindex="0"
 									    role="button"
 									    aria-label="Click to return to article details">
-										${isInstruction || hasLlmSummary ? 'AI SUMMARY' : 'ABSTRACT'} <span style="font-size: 14px;">↩</span>
+										${isInstruction || hasLlmSummary ? 'AI SUMMARY' : ''} <span style="font-size: 14px;">↩</span>
 									</h4>
 								</div>
 								<div class="card-back-content">
@@ -3599,11 +3602,13 @@ function handleLinkedInShare(event, el) {
 											</a>
 										</div>
 									` : `
-										<div class="card-back-summary">${hasAbstract ? escapeHtml(abstract) : 'Summary not available yet.'}</div>
-										<div class="card-back-disclaimer">
-											<a href="${url}" target="_blank" onclick="event.stopPropagation();" style="color: #0056a3; text-decoration: none; font-size: 14px; font-weight: 500;">
-												View on PubMed →
-											</a>
+										<div class="card-back-summary" style="font-size: 15px; font-weight: 400; line-height: 1.8; color: #1a237e; text-align: center; display: flex; align-items: center; justify-content: center; height: 100%;">
+											<div>
+												No AI summary available for this card.<br><br>
+												<a href="${url}" target="_blank" onclick="event.stopPropagation();" style="color: #0056a3; text-decoration: none; font-size: 14px; font-weight: 600;">
+													View on PubMed →
+												</a>
+											</div>
 										</div>
 									`}
 								</div>
