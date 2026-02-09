@@ -119,6 +119,7 @@
     function initializeMobileMenu() {
         const menuIcon = document.querySelector('.menu-icon');
         const mobileMenu = document.getElementById('mobile-menu');
+        const topBar = document.querySelector('.top-bar');
         
         if (!menuIcon || !mobileMenu) return;
         
@@ -129,6 +130,15 @@
             this.setAttribute('aria-expanded', !isExpanded);
             mobileMenu.classList.toggle('active');
             mobileMenu.setAttribute('aria-hidden', isExpanded);
+            
+            // Toggle overflow on top bar
+            if (topBar) {
+                if (!isExpanded) {
+                    topBar.classList.add('mobile-menu-open');
+                } else {
+                    topBar.classList.remove('mobile-menu-open');
+                }
+            }
         });
         
         // Close mobile menu when clicking outside
@@ -138,6 +148,10 @@
                     mobileMenu.classList.remove('active');
                     mobileMenu.setAttribute('aria-hidden', 'true');
                     menuIcon.setAttribute('aria-expanded', 'false');
+                    
+                    if (topBar) {
+                        topBar.classList.remove('mobile-menu-open');
+                    }
                 }
             }
         });
@@ -149,6 +163,10 @@
                 mobileMenu.classList.remove('active');
                 mobileMenu.setAttribute('aria-hidden', 'true');
                 menuIcon.setAttribute('aria-expanded', 'false');
+                
+                if (topBar) {
+                    topBar.classList.remove('mobile-menu-open');
+                }
             });
         });
     }

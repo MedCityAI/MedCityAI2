@@ -14,6 +14,11 @@
 	z-index: 1001;
 	box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 	border-bottom: 1px solid #eee;
+	overflow: visible;
+}
+
+.top-bar.mobile-menu-open {
+	overflow: visible;
 }
 
 .top-bar-content {
@@ -119,13 +124,16 @@
 /* Mobile Menu Dropdown */
 .mobile-menu {
 	display: none;
-	position: absolute;
-	top: 70px;
+	position: fixed;
+	top: 78px;
+	left: 0;
 	right: 0;
 	width: 100%;
 	background: white;
-	box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 	z-index: 1000;
+	border-radius: 0;
+	overflow: hidden;
 }
 
 .mobile-menu.active {
@@ -134,12 +142,13 @@
 
 .mobile-menu a {
 	display: block;
-	padding: 15px 20px;
+	padding: 16px 20px;
 	color: #2c3e50;
 	text-decoration: none;
 	font-weight: 500;
-	border-bottom: 1px solid #eee;
-	transition: background 0.3s ease;
+	border-bottom: 1px solid #f0f0f0;
+	transition: all 0.2s ease;
+	font-size: 15px;
 }
 
 .mobile-menu a:hover {
@@ -147,13 +156,20 @@
 	color: #3498db;
 }
 
+.mobile-menu a:last-child {
+	border-bottom: none;
+}
+
 /* Mobile CTA styling */
 .mobile-menu a.mobile-cta {
 	background: linear-gradient(135deg, #3498db, #2980b9);
 	color: white !important;
-	font-weight: 700;
+	font-weight: 600;
 	text-align: center;
 	border-bottom: none;
+	margin: 8px;
+	width: calc(100% - 16px);
+	border-radius: 8px;
 }
 
 .mobile-menu a.mobile-cta:hover {
