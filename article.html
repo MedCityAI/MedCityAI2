@@ -543,8 +543,15 @@
 		}
 
 		@media (max-width: 768px) {
+			.article-overlay-container {
+				padding: 0;
+			}
 			.article-overlay-wrapper {
-				height: 92vh;
+				height: 100vh;
+				max-width: none;
+				border-radius: 0;
+				border: none;
+				box-shadow: none;
 			}
 			.article-overlay-title {
 				font-size: 20px;
@@ -870,10 +877,10 @@
 					</div>
 					<div class="article-overlay-actions">
 						<a class="overlay-linkedin" href="${url}" target="_blank" rel="noopener" aria-label="View on PubMed">
-							<i class="fas fa-external-link-alt"></i> View on PubMed
+							<i class="fas fa-external-link-alt"></i> VIEW ON PUBMED
 						</a>
 						<button class="overlay-linkedin" type="button" onclick="shareOverlayOnLinkedIn('${encodeURIComponent(shareText)}', '${encodeURIComponent(articleShareUrl)}')">
-							<i class="fab fa-linkedin"></i> Share on LinkedIn
+							<i class="fab fa-linkedin"></i> SHARE ON LINKEDIN
 						</button>
 					</div>
 				</div>
