@@ -572,10 +572,6 @@
 		}
 		
 		.trending-badge-tab {
-			position: absolute;
-			top: 0;
-			left: 0;
-			right: 0;
 			background: rgba(255, 255, 255, 1);
 			color: #e74c3c;
 			font-size: 13px;
@@ -593,9 +589,6 @@
 		}
 		
 		.trending-badge-fire {
-			position: absolute;
-			top: 0;
-			left: 0;
 			background: #e74c3c;
 			color: #fff;
 			font-size: 13px;
@@ -1190,21 +1183,70 @@
 		/* Responsive design */
 		@media (max-width: 900px) {
 			.results { column-count: 2; }
+			.hero-section {
+				min-height: 240px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				overflow: visible !important;
+			}
 			.hero-content {
+				padding: 24px 15px 16px 15px;
 				grid-template-columns: 1fr;
 				gap: 40px;
 				text-align: center;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				width: 100%;
+				overflow: visible !important;
+			}
+			.hero-left {
+				text-align: center;
+				max-width: 100%;
+				overflow: visible !important;
+			}
+			.hero-left h1 { 
+				font-size: 2.4em;
+			}
+			.hero-left p { 
+				font-size: 1.1em;
 			}
 			.featured-carousel {
 				display: none;
 			}
-			.hero-left h1 { font-size: 2.4em; }
-			.hero-left p { font-size: 1.1em; }
+			.button-row {
+				display: none;
+			}
+			.hero-buttons {
+				display: none;
+			}
+			.hero-btn {
+				display: none !important;
+			}
+			.hero-right {
+				display: none;
+			}
+			.trending-articles {
+				display: none;
+			}
+			.stats-container {
+				display: none;
+			}
 			.nav-links {
 				display: none !important;
 			}
 			.menu-icon {
 				display: flex !important;
+			}
+			
+			/* Mobile specialty dropdown width - applies to all mobile sizes */
+			#mobile-specialty-dropdown {
+				width: calc(100vw - 20px) !important;
+				position: relative !important;
+				left: 50% !important;
+				transform: translateX(-50%) !important;
 			}
 		}
 	@media (max-width: 600px) {
@@ -1214,6 +1256,7 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
+			overflow: visible !important;
 		}
 		.hero-content {
 			padding: 24px 15px 16px 15px;
@@ -1223,10 +1266,12 @@
 			align-items: center;
 			justify-content: center;
 			width: 100%;
+			overflow: visible !important;
 		}
 		.hero-left {
 			text-align: center;
 			max-width: 100%;
+			overflow: visible !important;
 		}
 		.hero-left h1 { 
 			display: none;
@@ -1259,15 +1304,17 @@
 		#mobile-specialty-dropdown {
 			display: block !important;
 			margin-top: 25px;
-			width: 100%;
+			width: calc(100vw - 20px);
 			position: relative;
+			left: 50%;
+			transform: translateX(-50%);
 			z-index: 1000;
 		}
 		.hero-section.mobile-dropdown-open {
 			overflow: visible;
 		}
 		#mobile-specialty-btn {
-			width: 100%;
+			width: calc(100vw - 20px);
 			padding: 16px 20px;
 			background: rgba(255, 255, 255, 0.95);
 			color: #2c3e50;
@@ -1307,7 +1354,7 @@
 			transition: max-height 0.3s ease, opacity 0.3s ease;
 			opacity: 0;
 			z-index: 9999;
-			border-radius: 0;
+			border-radius: 12px;
 		}
 		#mobile-specialty-menu.active {
 			max-height: 400px;
@@ -2088,19 +2135,20 @@
 						</div>
 					</div>
 					<div class="hero-right">
-					<div class="trending-articles" id="trending-articles" style="background: #fff; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.15); padding: 36px 12px 24px 12px; max-width: 380px; height: 320px; overflow-y: scroll; scrollbar-gutter: stable; position: relative; overflow-x: hidden;">
-					<div class="trending-badge-fire"><i class="fas fa-fire"></i> TRENDING</div>
-					<div class="trending-badge-tab"><div class="trending-badge-title">TRENDING</div><span class="trending-badge-subtitle">Community Favorites</span></div>
-						<div id="trending-loading" class="trending-loading">
-							<div class="trending-spinner"></div>
+					<div style="position: relative; max-width: 380px;">
+						<div class="trending-badge-fire" style="position: absolute; top: 0; left: 0; z-index: 12;"><i class="fas fa-fire"></i> TRENDING</div>
+						<div class="trending-badge-tab" style="position: absolute; top: 0; left: 0; right: 0; z-index: 10;"><div class="trending-badge-title">TRENDING</div><span class="trending-badge-subtitle">Community Favorites</span></div>
+						<div class="trending-articles" id="trending-articles" style="background: #fff; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.15); padding: 36px 12px 24px 12px; max-width: 380px; height: 320px; overflow-y: scroll; scrollbar-gutter: stable; position: relative; overflow-x: hidden;">
+							<div id="trending-loading" class="trending-loading">
+								<div class="trending-spinner"></div>
+							</div>
+							<ol id="trending-articles-list" style="list-style: none; padding: 12px 0 0 0; margin: 0; display: none;">
+								<!-- Top 5 articles will be inserted here by JS -->
+							</ol>
+							<div id="trending-articles-empty" style="color: #888; font-size: 14px; margin-top: 18px; display: none;">No trending articles in the last 14 days.</div>
 						</div>
-						<ol id="trending-articles-list" style="list-style: none; padding: 0; margin: 0; display: none;">
-							<!-- Top 5 articles will be inserted here by JS -->
-						</ol>
-						<div id="trending-articles-empty" style="color: #888; font-size: 14px; margin-top: 18px; display: none;">No trending articles in the last 14 days.</div>
 					</div>
 					</div>
-				</div>
 			</section>
 			<!-- Specialty filter bar and modal removed -->
             <!-- Results Section -->
