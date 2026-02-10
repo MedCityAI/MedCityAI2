@@ -572,9 +572,9 @@
 		}
 		
 		.trending-badge-tab {
-			position: sticky;
+			position: absolute;
 			top: 0;
-			left: -12px;
+			left: 0;
 			right: 0;
 			background: rgba(255, 255, 255, 1);
 			color: #e74c3c;
@@ -582,21 +582,20 @@
 			font-weight: bold;
 			padding: 6px 12px 6px 12px;
 			min-height: 28px;
-			border-radius: 16px 0 0 0;
+			border-radius: 16px 16px 0 0;
 			z-index: 10;
 			pointer-events: none;
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
-			margin: -28px -12px 12px -12px;
+			margin: 0;
 			box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 		}
 		
 		.trending-badge-fire {
-			position: sticky;
+			position: absolute;
 			top: 0;
-			left: -12px;
-			right:0;
+			left: 0;
 			background: #e74c3c;
 			color: #fff;
 			font-size: 13px;
@@ -609,7 +608,7 @@
 			display: inline-flex;
 			align-items: center;
 			gap: 6px;
-			margin: -28px -12px 12px -12px;
+			margin: 0;
 		}
 		
 		.trending-badge-title {
@@ -675,8 +674,11 @@
 		
 		/* Firefox scrollbar styling */
 		.trending-articles {
+			overflow-y: scroll;
+			scrollbar-gutter: stable;
 			scrollbar-width: thin;
 			scrollbar-color: #ddd transparent;
+			box-sizing: border-box;
 		}
 		
 		.department-badge {
@@ -2002,15 +2004,6 @@
 				<ol id="authorBibliography" class="author-bibliography" aria-label="List of author publications"></ol>
 			</div>
 		</div>
-				<!-- Skip to main content link for keyboard users -->
-				<a href="#main-content" class="skip-link">Skip to main content</a>
-
-				<!-- Page Wrapper -->
-				<div id="page-wrapper">
-					<!-- Modern Medical Navigation Header -->
-					<div id="navigation-placeholder"></div>
-
-					<!-- Hero Section -->
 		<!-- Skip to main content link for keyboard users -->
 		<a href="#main-content" class="skip-link">Skip to main content</a>
 		
@@ -2095,7 +2088,7 @@
 						</div>
 					</div>
 					<div class="hero-right">
-					<div class="trending-articles" id="trending-articles" style="background: #fff; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.15); padding: 0 12px 24px 12px; max-width: 380px; height: 320px; overflow-y: auto; position: relative; overflow-x: hidden;">
+					<div class="trending-articles" id="trending-articles" style="background: #fff; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.15); padding: 36px 12px 24px 12px; max-width: 380px; height: 320px; overflow-y: scroll; scrollbar-gutter: stable; position: relative; overflow-x: hidden;">
 					<div class="trending-badge-fire"><i class="fas fa-fire"></i> TRENDING</div>
 					<div class="trending-badge-tab"><div class="trending-badge-title">TRENDING</div><span class="trending-badge-subtitle">Community Favorites</span></div>
 						<div id="trending-loading" class="trending-loading">
