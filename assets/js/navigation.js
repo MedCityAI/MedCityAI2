@@ -19,7 +19,7 @@
                     <a href="about.html" role="menuitem" data-page="about">About</a>
                 </div>
                 <div style="display: flex; align-items: center; gap: 20px;">
-                    <a href="submit_research.html" class="cta-button" role="button" data-page="submit">Share Your Work</a>
+                    <a href="share.html" class="cta-button" role="button" data-page="submit">Share Your Work</a>
                     <button class="menu-icon" aria-label="Toggle mobile menu" aria-expanded="false" aria-controls="mobile-menu">
                         <span class="sr-only">Menu</span>
                         <div aria-hidden="true"></div>
@@ -35,7 +35,7 @@
             <a href="index.html" data-page="index">New Today</a>
             <a href="search.html" data-page="search">Search</a>
             <a href="about.html" data-page="about">About</a>
-            <a href="submit_research.html" data-page="submit" class="mobile-cta">Share Your Work</a>
+            <a href="share.html" data-page="submit" class="mobile-cta">Share Your Work</a>
         </div>
     `;
     

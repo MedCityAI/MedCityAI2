@@ -119,7 +119,20 @@
 		box-shadow: 0 6px 30px rgba(0, 0, 0, 0.2);
 	}
 	.search-bar::placeholder {
-		color: #6a778f;
+		color: #374151 !important;
+		opacity: 1 !important;
+	}
+	.search-bar::-webkit-input-placeholder {
+		color: #374151 !important;
+		opacity: 1 !important;
+	}
+	.search-bar::-moz-placeholder {
+		color: #374151 !important;
+		opacity: 1 !important;
+	}
+	.search-bar:-ms-input-placeholder {
+		color: #374151 !important;
+		opacity: 1 !important;
 	}
 	.search-icon {
 		position: absolute;
@@ -782,8 +795,13 @@
 				max-width: none;
 				margin: 24px auto 0;
 			}
-			.hero-left h1 { font-size: 2.4em; }
-			.hero-left p { font-size: 1.1em; }
+			.hero-left h1 { 
+				display: none;
+			}
+			.hero-left p { 
+				font-size: 1.4em;
+				font-weight: 400;
+			}
 			.nav-links {
 				display: none !important;
 			}
@@ -795,8 +813,13 @@
 			.hero-content {
 				padding: 40px 15px;
 			}
-			.hero-left h1 { font-size: 2em; }
-			.hero-left p { font-size: 1em; }
+			.hero-left h1 { 
+				display: none;
+			}
+			.hero-left p { 
+				font-size: 1.4em;
+				font-weight: 400;
+			}
 			.search-row {
 				flex-direction: column;
 			}
@@ -1011,7 +1034,7 @@
 					<div class="hero-left">
 	
 						<h1 style="color:#fff; text-shadow: 0 4px 18px rgba(0,0,0,0.28);">Search Rochester Research</h1>
-						<p style="color:#e0e0e0;">Biomedical research publications from Rochester, Minnesota. Information sourced from the National Library of Medicine and PubMed.</p>
+						<p style="color:#e0e0e0;">Explore research published in Rochester, Minnesota. Information sourced from the National Library of Medicine and PubMed.</p>
 						<div class="search-bar-container">
 							<i class="fas fa-search search-icon"></i>
 							<input type="search" id="heroSearchBar" class="search-bar" placeholder="Search by topic or author" aria-label="Search publications">

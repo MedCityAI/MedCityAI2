@@ -38,14 +38,17 @@
 		<!-- Critical CSS - inline minimum styles for initial render -->
 		<style>
 		/* Basic layout to prevent layout shift */
-		body {
+		html, body {
 			margin: 0;
 			padding: 0;
 			font-family: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 			background: #fff;
+			overflow-x: hidden;
+			max-width: 100%;
 		}
 		#page-wrapper {
 			width: 100%;
+			overflow-x: hidden;
 		}
 		.top-bar {
 			background: #fff;
@@ -273,6 +276,7 @@
 			justify-content: center;
 			padding: 20px;
 			box-sizing: border-box;
+			overflow-x: hidden;
 		}
 
 		.article-overlay-container.active {
@@ -288,6 +292,7 @@
 			border-radius: 12px;
 			box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 			overflow: hidden;
+			overflow-x: hidden;
 			border: 1px solid rgba(0,0,0,0.06);
 			display: flex;
 			flex-direction: column;
@@ -313,6 +318,7 @@
 
 		.article-overlay-content {
 			overflow-y: auto;
+			overflow-x: hidden;
 			padding: 70px 28px 30px 28px;
 			position: relative;
 			flex: 1;
@@ -526,6 +532,14 @@
 			text-decoration: none;
 			cursor: pointer;
 			font-size: 14px;
+			font-family: inherit;
+			line-height: 1;
+			transition: opacity 0.2s;
+		}
+
+		.article-overlay-actions a:hover,
+		.article-overlay-actions button:hover {
+			opacity: 0.9;
 		}
 
 		.article-overlay-actions .overlay-primary {
