@@ -17,7 +17,18 @@
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 		<style>
 
-		/* Search Hero Section */
+		@media (max-width: 600px) {
+			body, .hero-section, .results-section, .mobile-menu a, .result-title, .result-authors, .author-bibliography, .search-bar, .search-container, .suggested-term {
+				line-height: 1.5 !important;
+			}
+			.hero-section {
+				min-height: 240px !important;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				overflow: visible !important;
+			}
+		}
 		.hero-section {
 			background: linear-gradient(120deg, #2568BE 0%, #1B4C7D 100%);
 			min-height: 340px;
