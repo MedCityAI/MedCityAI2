@@ -1,0 +1,1278 @@
+<!DOCTYPE HTML>
+<!--
+	MedCityAI - Social Media Post Generator
+-->
+<html lang="en">
+	<head>
+		<title>Post Generator - MedCityAI</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="icon" type="image/png" href="images/medcityai_simple1.png">
+		<link rel="apple-touch-icon" href="images/medcityai_simple1.png">
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<link rel="stylesheet" href="assets/css/navigation.css" />
+		<link rel="stylesheet" href="assets/css/fontawesome-all.min.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<style>
+		/* Hero Section */
+		.generator-hero {
+			background: linear-gradient(120deg, #2568BE 0%, #1B4C7D 100%);
+			color: white;
+			padding: 100px 0 60px 0;
+			text-align: center;
+			position: relative;
+		}
+		
+		.generator-hero h1 {
+			font-size: 2.8em;
+			font-weight: 800;
+			margin-bottom: 15px;
+			text-shadow: 0 4px 18px rgba(0,0,0,0.28);
+		}
+		
+		.generator-hero p {
+			font-size: 1.2em;
+			opacity: 0.9;
+			max-width: 600px;
+			margin: 0 auto;
+		}
+		
+		/* Main Container */
+		.generator-container {
+			max-width: 1500px;
+			margin: 0 auto;
+			padding: 40px 20px;
+			display: grid;
+			grid-template-columns: 450px 1fr;
+			gap: 40px;
+			background: #f8fafc;
+			min-height: calc(100vh - 300px);
+		}
+		
+		/* Controls Panel */
+		.controls-panel {
+			background: white;
+			border-radius: 16px;
+			padding: 30px;
+			box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+			height: fit-content;
+			max-height: calc(100vh - 150px);
+			overflow-y: auto;
+			position: sticky;
+			top: 100px;
+		}
+		
+		.controls-panel h2 {
+			color: #2c3e50;
+			font-size: 1.4em;
+			margin-bottom: 25px;
+			padding-bottom: 15px;
+			border-bottom: 2px solid #e9ecef;
+		}
+		
+		.controls-panel h3 {
+			color: #2c3e50;
+			font-size: 1.1em;
+			margin: 20px 0 15px 0;
+			padding-bottom: 10px;
+			border-bottom: 1px solid #e9ecef;
+		}
+		
+		.control-group {
+			margin-bottom: 20px;
+		}
+		
+		.control-group label {
+			display: block;
+			color: #2c3e50;
+			font-weight: 600;
+			margin-bottom: 8px;
+			font-size: 0.9em;
+		}
+		
+		.control-group input[type="text"],
+		.control-group input[type="number"],
+		.control-group select,
+		.control-group textarea {
+			width: 100%;
+			padding: 10px 12px;
+			border: 2px solid #e9ecef;
+			border-radius: 8px;
+			font-size: 0.95em;
+			transition: border-color 0.3s ease;
+			font-family: inherit;
+			box-sizing: border-box;
+		}
+		
+		.control-group input:focus,
+		.control-group select:focus,
+		.control-group textarea:focus {
+			outline: none;
+			border-color: #3498db;
+		}
+		
+		.control-group textarea {
+			resize: vertical;
+			min-height: 80px;
+		}
+		
+		/* Background Selector */
+		.background-options {
+			display: grid;
+			grid-template-columns: repeat(4, 1fr);
+			gap: 8px;
+		}
+		
+		.bg-option {
+			width: 100%;
+			aspect-ratio: 1;
+			border-radius: 8px;
+			cursor: pointer;
+			border: 3px solid transparent;
+			transition: all 0.3s ease;
+			position: relative;
+		}
+		
+		.bg-option:hover {
+			transform: scale(1.05);
+		}
+		
+		.bg-option.selected {
+			border-color: #2c3e50;
+			box-shadow: 0 0 0 3px rgba(52,152,219,0.3);
+		}
+		
+		.bg-option.selected::after {
+			content: '✓';
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			color: white;
+			font-size: 1.2em;
+			font-weight: bold;
+			text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+		}
+		
+		/* Color Inputs */
+		.color-picker-wrapper {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+		
+		.color-picker-wrapper input[type="color"] {
+			width: 45px;
+			height: 36px;
+			border: none;
+			border-radius: 6px;
+			cursor: pointer;
+			padding: 0;
+		}
+		
+		.color-picker-wrapper input[type="text"] {
+			flex: 1;
+		}
+		
+		/* Size Slider */
+		.size-slider-wrapper {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+		}
+		
+		.size-slider-wrapper input[type="range"] {
+			flex: 1;
+			height: 6px;
+			border-radius: 3px;
+			-webkit-appearance: none;
+			background: #e9ecef;
+		}
+		
+		.size-slider-wrapper input[type="range"]::-webkit-slider-thumb {
+			-webkit-appearance: none;
+			width: 18px;
+			height: 18px;
+			border-radius: 50%;
+			background: #3498db;
+			cursor: pointer;
+		}
+		
+		.size-value {
+			min-width: 50px;
+			text-align: center;
+			font-weight: 600;
+			color: #2c3e50;
+			font-size: 0.9em;
+		}
+		
+		/* Buttons */
+		.btn-load {
+			background: linear-gradient(135deg, #3498db, #2980b9);
+			color: white;
+			padding: 10px 16px;
+			border: none;
+			border-radius: 8px;
+			font-size: 0.95em;
+			font-weight: 600;
+			cursor: pointer;
+			transition: all 0.3s ease;
+		}
+		
+		.btn-load:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 4px 12px rgba(52,152,219,0.4);
+		}
+		
+		.btn-secondary {
+			background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+			color: white;
+			padding: 10px 16px;
+			border: none;
+			border-radius: 8px;
+			font-size: 0.9em;
+			font-weight: 600;
+			cursor: pointer;
+			transition: all 0.3s ease;
+		}
+		
+		.btn-secondary:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+		}
+		
+		.btn-download {
+			background: linear-gradient(135deg, #27ae60, #229954);
+			color: white;
+			padding: 15px 30px;
+			border: none;
+			border-radius: 8px;
+			font-size: 1.1em;
+			font-weight: 700;
+			cursor: pointer;
+			width: 100%;
+			transition: all 0.3s ease;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 10px;
+		}
+		
+		.btn-download:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 6px 20px rgba(39,174,96,0.4);
+		}
+		
+		/* Preview Panel */
+		.preview-panel {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+		
+		.preview-label {
+			color: #7f8c8d;
+			font-size: 0.9em;
+			margin-bottom: 15px;
+			text-transform: uppercase;
+			letter-spacing: 1px;
+		}
+		
+		.canvas-wrapper {
+			background: white;
+			border-radius: 16px;
+			padding: 30px;
+			box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+		}
+		
+		#postCanvas {
+			border-radius: 8px;
+			max-width: 100%;
+			height: auto;
+		}
+		
+		/* PMID Info */
+		.pmid-info {
+			background: #e3f2fd;
+			border-radius: 8px;
+			padding: 12px;
+			margin-top: 12px;
+			font-size: 0.85em;
+			color: #1565c0;
+			display: none;
+		}
+		
+		.pmid-info.visible {
+			display: block;
+		}
+		
+		.pmid-info strong {
+			display: block;
+			margin-bottom: 5px;
+		}
+		
+		/* Section Divider */
+		.section-divider {
+			border: 0;
+			height: 1px;
+			background: #e9ecef;
+			margin: 20px 0;
+		}
+		
+		/* Collapsible Sections */
+		.collapsible-header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			cursor: pointer;
+			padding: 10px 0;
+			border-bottom: 2px solid #e9ecef;
+			margin-bottom: 15px;
+		}
+		
+		.collapsible-header h3 {
+			margin: 0;
+			border: none;
+			padding: 0;
+		}
+		
+		.collapsible-header i {
+			transition: transform 0.3s ease;
+		}
+		
+		.collapsible-header.collapsed i {
+			transform: rotate(-90deg);
+		}
+		
+		.collapsible-content {
+			display: block;
+		}
+		
+		.collapsible-content.collapsed {
+			display: none;
+		}
+		
+		/* File Input */
+		.file-input-wrapper {
+			position: relative;
+		}
+		
+		.file-input-wrapper input[type="file"] {
+			display: none;
+		}
+		
+		.file-input-label {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 8px;
+			padding: 12px 16px;
+			background: #f8f9fa;
+			border: 2px dashed #ccc;
+			border-radius: 8px;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			font-weight: 500;
+			color: #555;
+		}
+		
+		.file-input-label:hover {
+			border-color: #3498db;
+			background: #e3f2fd;
+		}
+		
+		.file-input-label.has-file {
+			border-color: #27ae60;
+			background: #e8f5e9;
+			color: #27ae60;
+		}
+		
+		/* Responsive */
+		@media (max-width: 1024px) {
+			.generator-container {
+				grid-template-columns: 1fr;
+			}
+			
+			.controls-panel {
+				position: static;
+				max-height: none;
+			}
+			
+			.canvas-wrapper {
+				width: 100%;
+				overflow-x: auto;
+			}
+		}
+		
+		@media (max-width: 600px) {
+			.generator-hero h1 {
+				font-size: 2em;
+			}
+			
+			.background-options {
+				grid-template-columns: repeat(4, 1fr);
+			}
+			
+			.controls-panel {
+				padding: 20px;
+			}
+		}
+		
+		/* Checkbox styling */
+		.checkbox-wrapper {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+		
+		.checkbox-wrapper input[type="checkbox"] {
+			width: 18px;
+			height: 18px;
+			cursor: pointer;
+		}
+		
+		.checkbox-wrapper label {
+			margin: 0;
+			cursor: pointer;
+			font-weight: 500;
+		}
+		
+		/* Inline controls */
+		.inline-controls {
+			display: flex;
+			gap: 10px;
+			align-items: center;
+		}
+		
+		.inline-controls .control-group {
+			margin-bottom: 0;
+			flex: 1;
+		}
+		
+		/* Remove image button */
+		.btn-remove {
+			background: #e74c3c;
+			color: white;
+			padding: 8px 12px;
+			border: none;
+			border-radius: 6px;
+			font-size: 0.85em;
+			cursor: pointer;
+			margin-top: 8px;
+		}
+		
+		.btn-remove:hover {
+			background: #c0392b;
+		}
+		</style>
+	</head>
+	<body class="landing is-preload">
+		<div id="page-wrapper">
+			<!-- Navigation -->
+			<div id="navigation-placeholder" data-page="postgenerator"></div>
+			
+			<!-- Hero Section -->
+			<section class="generator-hero">
+				<h1>Social Media Post Generator</h1>
+				<p>Create beautiful 1080x1080 images for your research publications</p>
+			</section>
+			
+			<!-- Main Generator -->
+			<div class="generator-container">
+				<!-- Controls Panel -->
+				<div class="controls-panel">
+					<h2><i class="fas fa-sliders-h" style="margin-right: 10px;"></i>Post Settings</h2>
+					
+					<!-- PMID Input -->
+					<div class="control-group">
+						<label for="pmidInput">PMID (PubMed ID)</label>
+						<div style="display: flex; gap: 10px;">
+							<input type="text" id="pmidInput" placeholder="e.g., 41478859">
+							<button class="btn-load" onclick="loadPMID()" style="width: auto;">
+								<i class="fas fa-search"></i>
+							</button>
+						</div>
+						<div class="pmid-info" id="pmidInfo">
+							<strong>Article Loaded:</strong>
+							<span id="loadedTitle"></span>
+						</div>
+					</div>
+					
+					<hr class="section-divider">
+					
+					<!-- Background Selection -->
+					<div class="collapsible-header" onclick="toggleSection(this)">
+						<h3><i class="fas fa-palette" style="margin-right: 8px;"></i>Background</h3>
+						<i class="fas fa-chevron-down"></i>
+					</div>
+					<div class="collapsible-content">
+						<div class="control-group">
+							<label>Background Style</label>
+							<div class="background-options">
+								<div class="bg-option selected" data-bg="gradient1" style="background: linear-gradient(135deg, #2568BE 0%, #1B4C7D 100%);" title="Primary Blue"></div>
+								<div class="bg-option" data-bg="gradient2" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);" title="Light Blue"></div>
+								<div class="bg-option" data-bg="gradient3" style="background: linear-gradient(135deg, #1B4C7D 0%, #0d2840 100%);" title="Dark Blue"></div>
+								<div class="bg-option" data-bg="gradient4" style="background: linear-gradient(135deg, #0056a3 0%, #003d73 100%);" title="Deep Blue"></div>
+								<div class="bg-option" data-bg="gradient5" style="background: linear-gradient(135deg, #27ae60 0%, #1e8449 100%);" title="Green"></div>
+								<div class="bg-option" data-bg="gradient6" style="background: linear-gradient(135deg, #8e44ad 0%, #6c3483 100%);" title="Purple"></div>
+								<div class="bg-option" data-bg="gradient7" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);" title="Red"></div>
+								<div class="bg-option" data-bg="solid1" style="background: #f8fafc;" title="Light Gray"></div>
+							</div>
+						</div>
+					</div>
+					
+					<hr class="section-divider">
+					
+					<!-- Overlay Image -->
+					<div class="collapsible-header" onclick="toggleSection(this)">
+						<h3><i class="fas fa-image" style="margin-right: 8px;"></i>Overlay Image</h3>
+						<i class="fas fa-chevron-down"></i>
+					</div>
+					<div class="collapsible-content">
+						<div class="control-group">
+							<div class="file-input-wrapper">
+								<input type="file" id="overlayImageInput" accept="image/*" onchange="loadOverlayImage(this)">
+								<label for="overlayImageInput" class="file-input-label" id="overlayImageLabel">
+									<i class="fas fa-upload"></i>
+									<span>Browse for image...</span>
+								</label>
+							</div>
+							<button class="btn-remove" id="removeOverlayBtn" onclick="removeOverlayImage()" style="display: none;">
+								<i class="fas fa-times"></i> Remove Image
+							</button>
+						</div>
+						<div class="control-group">
+							<label>Image Opacity</label>
+							<div class="size-slider-wrapper">
+								<input type="range" id="overlayOpacity" min="0" max="100" value="50">
+								<span class="size-value" id="overlayOpacityValue">50%</span>
+							</div>
+						</div>
+					</div>
+					
+					<hr class="section-divider">
+					
+					<!-- Decorative Circles -->
+					<div class="collapsible-header" onclick="toggleSection(this)">
+						<h3><i class="fas fa-circle" style="margin-right: 8px;"></i>Decorative Circles</h3>
+						<i class="fas fa-chevron-down"></i>
+					</div>
+					<div class="collapsible-content">
+						<div class="control-group">
+							<label>Number of Circles</label>
+							<div class="size-slider-wrapper">
+								<input type="range" id="circleCount" min="0" max="10" value="2">
+								<span class="size-value" id="circleCountValue">2</span>
+							</div>
+						</div>
+						<div class="control-group">
+							<label>Circle Opacity</label>
+							<div class="size-slider-wrapper">
+								<input type="range" id="circleOpacity" min="0" max="30" value="8">
+								<span class="size-value" id="circleOpacityValue">8%</span>
+							</div>
+						</div>
+						<div class="control-group">
+							<button class="btn-secondary" onclick="randomizeCircles()" style="width: 100%;">
+								<i class="fas fa-random"></i> Randomize Circles
+							</button>
+						</div>
+					</div>
+					
+					<hr class="section-divider">
+					
+					<!-- Badge Settings -->
+					<div class="collapsible-header" onclick="toggleSection(this)">
+						<h3><i class="fas fa-tag" style="margin-right: 8px;"></i>Badge</h3>
+						<i class="fas fa-chevron-down"></i>
+					</div>
+					<div class="collapsible-content">
+						<div class="control-group">
+							<div class="checkbox-wrapper">
+								<input type="checkbox" id="showBadge" checked>
+								<label for="showBadge">Show Badge</label>
+							</div>
+						</div>
+						<div class="control-group">
+							<label for="badgeText">Badge Text</label>
+							<input type="text" id="badgeText" value="FEATURED RESEARCH">
+						</div>
+						<div class="control-group">
+							<label>Badge Size</label>
+							<div class="size-slider-wrapper">
+								<input type="range" id="badgeSize" min="10" max="24" value="14">
+								<span class="size-value" id="badgeSizeValue">14px</span>
+							</div>
+						</div>
+						<div class="control-group">
+							<label>Badge Color</label>
+							<div class="color-picker-wrapper">
+								<input type="color" id="badgeColor" value="#ffffff">
+								<input type="text" id="badgeColorText" value="#ffffff" maxlength="7">
+							</div>
+						</div>
+					</div>
+					
+					<hr class="section-divider">
+					
+					<!-- Logo Settings -->
+					<div class="collapsible-header" onclick="toggleSection(this)">
+						<h3><i class="fas fa-star" style="margin-right: 8px;"></i>Logo</h3>
+						<i class="fas fa-chevron-down"></i>
+					</div>
+					<div class="collapsible-content">
+						<div class="control-group">
+							<div class="checkbox-wrapper">
+								<input type="checkbox" id="showLogo" checked>
+								<label for="showLogo">Show MedCityAI Logo</label>
+							</div>
+						</div>
+						<div class="control-group">
+							<label>Logo Tint Color</label>
+							<div class="color-picker-wrapper">
+								<input type="color" id="logoColor" value="#ffffff">
+								<input type="text" id="logoColorText" value="#ffffff" maxlength="7">
+							</div>
+						</div>
+						<div class="control-group">
+							<label>Logo Size</label>
+							<div class="size-slider-wrapper">
+								<input type="range" id="logoSize" min="60" max="200" value="120">
+								<span class="size-value" id="logoSizeValue">120px</span>
+							</div>
+						</div>
+					</div>
+					
+					<hr class="section-divider">
+					
+					<!-- Title Settings -->
+					<div class="collapsible-header" onclick="toggleSection(this)">
+						<h3><i class="fas fa-heading" style="margin-right: 8px;"></i>Title</h3>
+						<i class="fas fa-chevron-down"></i>
+					</div>
+					<div class="collapsible-content">
+						<div class="control-group">
+							<label for="titleText">Title Text</label>
+							<textarea id="titleText" placeholder="Enter article title..."></textarea>
+						</div>
+						<div class="control-group">
+							<label>Title Color</label>
+							<div class="color-picker-wrapper">
+								<input type="color" id="titleColor" value="#ffffff">
+								<input type="text" id="titleColorText" value="#ffffff" maxlength="7">
+							</div>
+						</div>
+						<div class="control-group">
+							<label>Title Size</label>
+							<div class="size-slider-wrapper">
+								<input type="range" id="titleSize" min="20" max="80" value="38">
+								<span class="size-value" id="titleSizeValue">38px</span>
+							</div>
+						</div>
+						<div class="control-group">
+							<label>Title Vertical Position</label>
+							<div class="size-slider-wrapper">
+								<input type="range" id="titleY" min="150" max="600" value="280">
+								<span class="size-value" id="titleYValue">280</span>
+							</div>
+						</div>
+					</div>
+					
+					<hr class="section-divider">
+					
+					<!-- Authors Settings -->
+					<div class="collapsible-header" onclick="toggleSection(this)">
+						<h3><i class="fas fa-users" style="margin-right: 8px;"></i>Authors</h3>
+						<i class="fas fa-chevron-down"></i>
+					</div>
+					<div class="collapsible-content">
+						<div class="control-group">
+							<label for="authorsText">Authors</label>
+							<textarea id="authorsText" placeholder="Enter authors..."></textarea>
+						</div>
+						<div class="control-group">
+							<label>Authors Color</label>
+							<div class="color-picker-wrapper">
+								<input type="color" id="authorsColor" value="#e0e0e0">
+								<input type="text" id="authorsColorText" value="#e0e0e0" maxlength="7">
+							</div>
+						</div>
+						<div class="control-group">
+							<label>Authors Size</label>
+							<div class="size-slider-wrapper">
+								<input type="range" id="authorsSize" min="12" max="48" value="20">
+								<span class="size-value" id="authorsSizeValue">20px</span>
+							</div>
+						</div>
+						<div class="control-group">
+							<label>Authors Vertical Position</label>
+							<div class="size-slider-wrapper">
+								<input type="range" id="authorsY" min="400" max="950" value="830">
+								<span class="size-value" id="authorsYValue">830</span>
+							</div>
+						</div>
+					</div>
+					
+					<hr class="section-divider">
+					
+					<!-- Journal/Date Settings -->
+					<div class="collapsible-header" onclick="toggleSection(this)">
+						<h3><i class="fas fa-book" style="margin-right: 8px;"></i>Journal</h3>
+						<i class="fas fa-chevron-down"></i>
+					</div>
+					<div class="collapsible-content">
+						<div class="control-group">
+							<label for="journalText">Journal & Date</label>
+							<input type="text" id="journalText" placeholder="e.g., Nature Medicine • Jan 2026">
+						</div>
+						<div class="control-group">
+							<label>Journal Color</label>
+							<div class="color-picker-wrapper">
+								<input type="color" id="journalColor" value="#a0d2ff">
+								<input type="text" id="journalColorText" value="#a0d2ff" maxlength="7">
+							</div>
+						</div>
+						<div class="control-group">
+							<label>Journal Size</label>
+							<div class="size-slider-wrapper">
+								<input type="range" id="journalSize" min="14" max="48" value="22">
+								<span class="size-value" id="journalSizeValue">22px</span>
+							</div>
+						</div>
+						<div class="control-group">
+							<label>Journal Vertical Position</label>
+							<div class="size-slider-wrapper">
+								<input type="range" id="journalY" min="900" max="1060" value="1020">
+								<span class="size-value" id="journalYValue">1020</span>
+							</div>
+						</div>
+					</div>
+					
+					<hr class="section-divider">
+					
+					<!-- Download Button -->
+					<button class="btn-download" onclick="downloadImage()">
+						<i class="fas fa-download"></i>
+						Download PNG (1080×1080)
+					</button>
+				</div>
+				
+				<!-- Preview Panel -->
+				<div class="preview-panel">
+					<div class="preview-label">Live Preview</div>
+					<div class="canvas-wrapper">
+						<canvas id="postCanvas" width="1080" height="1080"></canvas>
+					</div>
+				</div>
+			</div>
+			
+			<!-- Footer -->
+			<footer id="footer" style="margin-top: 0;">
+				<ul class="icons">
+					<li><a href="https://www.linkedin.com/company/medcityai" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit;">Follow MedCityAI on LinkedIn <i class="fab fa-linkedin-in" style="font-size: 1.3em; color: #0a66c2;"></i></a></li>
+				</ul>
+				<ul class="copyright">
+					<li>&copy; MedCityAI</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+				</ul>
+			</footer>
+		</div>
+		
+		<!-- Scripts -->
+		<script src="assets/js/jquery.min.js"></script>
+		<script src="assets/js/navigation.js"></script>
+		
+		<script>
+		// CSV Data Storage
+		let pubmedData = [];
+		let logoImage = null;
+		let overlayImage = null;
+		
+		// Circle data for randomization
+		let circles = [];
+		
+		// Background definitions
+		const backgrounds = {
+			'gradient1': { type: 'gradient', colors: ['#2568BE', '#1B4C7D'], angle: 135 },
+			'gradient2': { type: 'gradient', colors: ['#3498db', '#2980b9'], angle: 135 },
+			'gradient3': { type: 'gradient', colors: ['#1B4C7D', '#0d2840'], angle: 135 },
+			'gradient4': { type: 'gradient', colors: ['#0056a3', '#003d73'], angle: 135 },
+			'gradient5': { type: 'gradient', colors: ['#27ae60', '#1e8449'], angle: 135 },
+			'gradient6': { type: 'gradient', colors: ['#8e44ad', '#6c3483'], angle: 135 },
+			'gradient7': { type: 'gradient', colors: ['#e74c3c', '#c0392b'], angle: 135 },
+			'solid1': { type: 'solid', color: '#f8fafc' }
+		};
+		
+		let currentBackground = 'gradient1';
+		
+		// Initialize circles
+		function initCircles() {
+			const count = parseInt(document.getElementById('circleCount').value);
+			circles = [];
+			for (let i = 0; i < count; i++) {
+				circles.push({
+					x: Math.random() * 1080,
+					y: Math.random() * 1080,
+					r: 100 + Math.random() * 200
+				});
+			}
+		}
+		
+		// Randomize circles
+		function randomizeCircles() {
+			const count = parseInt(document.getElementById('circleCount').value);
+			circles = [];
+			for (let i = 0; i < count; i++) {
+				circles.push({
+					x: Math.random() * 1080,
+					y: Math.random() * 1080,
+					r: 80 + Math.random() * 250
+				});
+			}
+			updateCanvas();
+		}
+		
+		// Toggle collapsible sections
+		function toggleSection(header) {
+			header.classList.toggle('collapsed');
+			const content = header.nextElementSibling;
+			content.classList.toggle('collapsed');
+		}
+		
+		// Load CSV Data
+		async function loadCSVData() {
+			try {
+				const response = await fetch('pubmed_data.csv');
+				const text = await response.text();
+				pubmedData = parseCSV(text);
+				console.log(`Loaded ${pubmedData.length} articles from CSV`);
+			} catch (error) {
+				console.error('Error loading CSV:', error);
+			}
+		}
+		
+		// Parse CSV
+		function parseCSV(text) {
+			const lines = text.split('\n');
+			const headers = parseCSVLine(lines[0]);
+			const data = [];
+			
+			for (let i = 1; i < lines.length; i++) {
+				if (lines[i].trim()) {
+					const values = parseCSVLine(lines[i]);
+					const row = {};
+					headers.forEach((header, index) => {
+						row[header.trim()] = values[index] ? values[index].trim() : '';
+					});
+					data.push(row);
+				}
+			}
+			return data;
+		}
+		
+		// Parse CSV line handling quoted fields
+		function parseCSVLine(line) {
+			const result = [];
+			let current = '';
+			let inQuotes = false;
+			
+			for (let i = 0; i < line.length; i++) {
+				const char = line[i];
+				if (char === '"') {
+					inQuotes = !inQuotes;
+				} else if (char === ',' && !inQuotes) {
+					result.push(current);
+					current = '';
+				} else {
+					current += char;
+				}
+			}
+			result.push(current);
+			return result;
+		}
+		
+		// Load PMID
+		function loadPMID() {
+			const pmid = document.getElementById('pmidInput').value.trim();
+			if (!pmid) {
+				alert('Please enter a PMID');
+				return;
+			}
+			
+			const article = pubmedData.find(a => a.pmid === pmid);
+			if (article) {
+				document.getElementById('titleText').value = article.title || '';
+				document.getElementById('authorsText').value = article.authors_display || article.authors || '';
+				document.getElementById('journalText').value = `${article.journal || ''} • ${article.pubdate || ''}`;
+				
+				document.getElementById('loadedTitle').textContent = article.title;
+				document.getElementById('pmidInfo').classList.add('visible');
+				
+				updateCanvas();
+			} else {
+				alert('PMID not found in database. Please try another.');
+				document.getElementById('pmidInfo').classList.remove('visible');
+			}
+		}
+		
+		// Load Logo
+		function loadLogo() {
+			logoImage = new Image();
+			logoImage.crossOrigin = 'anonymous';
+			logoImage.onload = () => {
+				console.log('Logo loaded');
+				updateCanvas();
+			};
+			logoImage.onerror = () => {
+				console.error('Failed to load logo');
+				logoImage = null;
+			};
+			logoImage.src = 'images/medcityai_simple1.png';
+		}
+		
+		// Load Overlay Image
+		function loadOverlayImage(input) {
+			if (input.files && input.files[0]) {
+				const reader = new FileReader();
+				reader.onload = function(e) {
+					overlayImage = new Image();
+					overlayImage.onload = function() {
+						document.getElementById('overlayImageLabel').classList.add('has-file');
+						document.getElementById('overlayImageLabel').querySelector('span').textContent = input.files[0].name;
+						document.getElementById('removeOverlayBtn').style.display = 'block';
+						updateCanvas();
+					};
+					overlayImage.src = e.target.result;
+				};
+				reader.readAsDataURL(input.files[0]);
+			}
+		}
+		
+		// Remove Overlay Image
+		function removeOverlayImage() {
+			overlayImage = null;
+			document.getElementById('overlayImageInput').value = '';
+			document.getElementById('overlayImageLabel').classList.remove('has-file');
+			document.getElementById('overlayImageLabel').querySelector('span').textContent = 'Browse for image...';
+			document.getElementById('removeOverlayBtn').style.display = 'none';
+			updateCanvas();
+		}
+		
+		// Draw Canvas
+		function updateCanvas() {
+			const canvas = document.getElementById('postCanvas');
+			const ctx = canvas.getContext('2d');
+			const width = 1080;
+			const height = 1080;
+			
+			// Clear canvas
+			ctx.clearRect(0, 0, width, height);
+			
+			// Draw background
+			const bg = backgrounds[currentBackground];
+			if (bg.type === 'gradient') {
+				const angle = bg.angle * Math.PI / 180;
+				const x1 = width / 2 - Math.cos(angle) * width;
+				const y1 = height / 2 - Math.sin(angle) * height;
+				const x2 = width / 2 + Math.cos(angle) * width;
+				const y2 = height / 2 + Math.sin(angle) * height;
+				const gradient = ctx.createLinearGradient(x1, y1, x2, y2);
+				gradient.addColorStop(0, bg.colors[0]);
+				gradient.addColorStop(1, bg.colors[1]);
+				ctx.fillStyle = gradient;
+			} else {
+				ctx.fillStyle = bg.color;
+			}
+			ctx.fillRect(0, 0, width, height);
+			
+			// Draw decorative circles
+			drawDecorations(ctx, width, height);
+			
+			// Draw overlay image (behind text)
+			if (overlayImage) {
+				const opacity = parseInt(document.getElementById('overlayOpacity').value) / 100;
+				ctx.globalAlpha = opacity;
+				
+				// Scale and center the image
+				const scale = Math.max(width / overlayImage.width, height / overlayImage.height);
+				const scaledWidth = overlayImage.width * scale;
+				const scaledHeight = overlayImage.height * scale;
+				const x = (width - scaledWidth) / 2;
+				const y = (height - scaledHeight) / 2;
+				
+				ctx.drawImage(overlayImage, x, y, scaledWidth, scaledHeight);
+				ctx.globalAlpha = 1;
+			}
+			
+			// Draw logo (with tint)
+			if (document.getElementById('showLogo').checked && logoImage) {
+				const logoSize = parseInt(document.getElementById('logoSize').value);
+				const logoX = 50;
+				const logoY = 50;
+				const logoColor = document.getElementById('logoColor').value;
+				
+				// Create temporary canvas for tinting
+				const tempCanvas = document.createElement('canvas');
+				tempCanvas.width = logoImage.width;
+				tempCanvas.height = logoImage.height;
+				const tempCtx = tempCanvas.getContext('2d');
+				
+				// Draw original logo
+				tempCtx.drawImage(logoImage, 0, 0);
+				
+				// Apply tint
+				tempCtx.globalCompositeOperation = 'source-atop';
+				tempCtx.fillStyle = logoColor;
+				tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+				
+				ctx.drawImage(tempCanvas, logoX, logoY, logoSize, logoSize);
+			}
+			
+			// Draw badge (top right)
+			if (document.getElementById('showBadge').checked) {
+				const badgeText = document.getElementById('badgeText').value;
+				const badgeSize = parseInt(document.getElementById('badgeSize').value);
+				const badgeColor = document.getElementById('badgeColor').value;
+				
+				ctx.font = `bold ${badgeSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+				const textMetrics = ctx.measureText(badgeText);
+				const badgeWidth = textMetrics.width + 40;
+				const badgeHeight = badgeSize + 22;
+				const badgeX = width - badgeWidth - 50;
+				const badgeY = 50;
+				
+				ctx.fillStyle = 'rgba(255,255,255,0.15)';
+				ctx.beginPath();
+				ctx.roundRect(badgeX, badgeY, badgeWidth, badgeHeight, badgeHeight / 2);
+				ctx.fill();
+				
+				ctx.fillStyle = badgeColor;
+				ctx.textAlign = 'center';
+				ctx.fillText(badgeText, badgeX + badgeWidth / 2, badgeY + badgeHeight / 2 + badgeSize / 3);
+			}
+			
+			// Draw title
+			const titleText = document.getElementById('titleText').value;
+			const titleColor = document.getElementById('titleColor').value;
+			const titleSize = parseInt(document.getElementById('titleSize').value);
+			const titleY = parseInt(document.getElementById('titleY').value);
+			
+			if (titleText) {
+				ctx.fillStyle = titleColor;
+				ctx.font = `bold ${titleSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+				ctx.textAlign = 'left';
+				
+				const maxWidth = width - 100;
+				const lines = wrapText(ctx, titleText, maxWidth);
+				const lineHeight = titleSize * 1.3;
+				let y = titleY;
+				
+				lines.forEach(line => {
+					ctx.fillText(line, 50, y);
+					y += lineHeight;
+				});
+			}
+			
+			// Draw authors
+			const authorsText = document.getElementById('authorsText').value;
+			const authorsColor = document.getElementById('authorsColor').value;
+			const authorsSize = parseInt(document.getElementById('authorsSize').value);
+			const authorsY = parseInt(document.getElementById('authorsY').value);
+			
+			if (authorsText) {
+				ctx.fillStyle = authorsColor;
+				ctx.font = `${authorsSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+				ctx.textAlign = 'left';
+				
+				const maxWidth = width - 100;
+				const lines = wrapText(ctx, authorsText, maxWidth);
+				const lineHeight = authorsSize * 1.4;
+				let y = authorsY;
+				
+				lines.slice(0, 3).forEach(line => {
+					ctx.fillText(line, 50, y);
+					y += lineHeight;
+				});
+			}
+			
+			// Draw journal
+			const journalText = document.getElementById('journalText').value;
+			const journalColor = document.getElementById('journalColor').value;
+			const journalSize = parseInt(document.getElementById('journalSize').value);
+			const journalY = parseInt(document.getElementById('journalY').value);
+			
+			if (journalText) {
+				ctx.fillStyle = journalColor;
+				ctx.font = `600 ${journalSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+				ctx.textAlign = 'left';
+				ctx.fillText(journalText, 50, journalY);
+			}
+		}
+		
+		// Draw decorative elements
+		function drawDecorations(ctx, width, height) {
+			const opacity = parseInt(document.getElementById('circleOpacity').value) / 100;
+			const count = parseInt(document.getElementById('circleCount').value);
+			
+			// Update circles array if count changed
+			while (circles.length < count) {
+				circles.push({
+					x: Math.random() * width,
+					y: Math.random() * height,
+					r: 80 + Math.random() * 250
+				});
+			}
+			circles = circles.slice(0, count);
+			
+			ctx.globalAlpha = opacity;
+			ctx.fillStyle = '#ffffff';
+			
+			circles.forEach(circle => {
+				ctx.beginPath();
+				ctx.arc(circle.x, circle.y, circle.r, 0, Math.PI * 2);
+				ctx.fill();
+			});
+			
+			ctx.globalAlpha = 1;
+		}
+		
+		// Word wrap
+		function wrapText(ctx, text, maxWidth) {
+			const words = text.split(' ');
+			const lines = [];
+			let currentLine = '';
+			
+			words.forEach(word => {
+				const testLine = currentLine + (currentLine ? ' ' : '') + word;
+				const metrics = ctx.measureText(testLine);
+				
+				if (metrics.width > maxWidth && currentLine) {
+					lines.push(currentLine);
+					currentLine = word;
+				} else {
+					currentLine = testLine;
+				}
+			});
+			
+			if (currentLine) {
+				lines.push(currentLine);
+			}
+			
+			return lines;
+		}
+		
+		// Download Image
+		function downloadImage() {
+			const canvas = document.getElementById('postCanvas');
+			const link = document.createElement('a');
+			const pmid = document.getElementById('pmidInput').value.trim();
+			const filename = pmid ? `medcityai_featured_${pmid}.png` : 'medcityai_featured_post.png';
+			
+			link.download = filename;
+			link.href = canvas.toDataURL('image/png');
+			link.click();
+		}
+		
+		// Event Listeners
+		document.addEventListener('DOMContentLoaded', function() {
+			loadCSVData();
+			loadLogo();
+			initCircles();
+			
+			// Background selection
+			document.querySelectorAll('.bg-option').forEach(option => {
+				option.addEventListener('click', function() {
+					document.querySelectorAll('.bg-option').forEach(o => o.classList.remove('selected'));
+					this.classList.add('selected');
+					currentBackground = this.dataset.bg;
+					updateCanvas();
+				});
+			});
+			
+			// Color picker sync for all color inputs
+			['title', 'authors', 'journal', 'badge', 'logo'].forEach(field => {
+				const colorInput = document.getElementById(`${field}Color`);
+				const textInput = document.getElementById(`${field}ColorText`);
+				
+				if (colorInput && textInput) {
+					colorInput.addEventListener('input', function() {
+						textInput.value = this.value;
+						updateCanvas();
+					});
+					
+					textInput.addEventListener('input', function() {
+						if (/^#[0-9A-Fa-f]{6}$/.test(this.value)) {
+							colorInput.value = this.value;
+							updateCanvas();
+						}
+					});
+				}
+			});
+			
+			// Size sliders
+			['title', 'authors', 'journal', 'badge', 'logo'].forEach(field => {
+				const slider = document.getElementById(`${field}Size`);
+				const display = document.getElementById(`${field}SizeValue`);
+				
+				if (slider && display) {
+					slider.addEventListener('input', function() {
+						display.textContent = this.value + 'px';
+						updateCanvas();
+					});
+				}
+			});
+			
+			// Position sliders
+			['titleY', 'authorsY', 'journalY'].forEach(id => {
+				const slider = document.getElementById(id);
+				const display = document.getElementById(id + 'Value');
+				
+				if (slider && display) {
+					slider.addEventListener('input', function() {
+						display.textContent = this.value;
+						updateCanvas();
+					});
+				}
+			});
+			
+			// Circle controls
+			document.getElementById('circleCount').addEventListener('input', function() {
+				document.getElementById('circleCountValue').textContent = this.value;
+				updateCanvas();
+			});
+			
+			document.getElementById('circleOpacity').addEventListener('input', function() {
+				document.getElementById('circleOpacityValue').textContent = this.value + '%';
+				updateCanvas();
+			});
+			
+			// Overlay opacity
+			document.getElementById('overlayOpacity').addEventListener('input', function() {
+				document.getElementById('overlayOpacityValue').textContent = this.value + '%';
+				updateCanvas();
+			});
+			
+			// Text inputs
+			['titleText', 'authorsText', 'journalText', 'badgeText'].forEach(id => {
+				const input = document.getElementById(id);
+				if (input) {
+					input.addEventListener('input', updateCanvas);
+				}
+			});
+			
+			// Checkboxes
+			document.getElementById('showLogo').addEventListener('change', updateCanvas);
+			document.getElementById('showBadge').addEventListener('change', updateCanvas);
+			
+			// PMID enter key
+			document.getElementById('pmidInput').addEventListener('keypress', function(e) {
+				if (e.key === 'Enter') {
+					loadPMID();
+				}
+			});
+			
+			// Initial draw
+			setTimeout(updateCanvas, 500);
+		});
+		</script>
+	</body>
+</html>
