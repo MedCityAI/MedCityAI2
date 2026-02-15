@@ -1001,6 +1001,76 @@
 			position: relative;
 			overflow: hidden;
 		}
+		
+		/* Featured card flip styles */
+		.featured-flip-container {
+			position: relative;
+			width: 100%;
+			height: 100%;
+			transition: transform 0.6s;
+			transform-style: preserve-3d;
+		}
+		
+		.featured-flip-container.flipped {
+			transform: rotateY(180deg);
+		}
+		
+		.featured-card-front {
+			position: relative;
+			z-index: 2;
+			backface-visibility: hidden;
+			-webkit-backface-visibility: hidden;
+		}
+		
+		.featured-card-back {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			transform: rotateY(180deg);
+			background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%);
+			border: 2px solid #2196f3;
+			display: flex;
+			flex-direction: column;
+			overflow: hidden;
+			z-index: 3;
+			backface-visibility: hidden;
+			-webkit-backface-visibility: hidden;
+			padding: 24px;
+			box-sizing: border-box;
+		}
+
+		.featured-flip-container:not(.flipped) .featured-card-back {
+			pointer-events: none;
+		}
+		
+		.featured-summary-content {
+			flex: 1;
+			overflow-y: auto;
+			line-height: 1.7;
+			color: #1a237e;
+			font-size: 14px;
+		}
+		
+		.featured-summary-content::-webkit-scrollbar {
+			width: 6px;
+		}
+		
+		.featured-summary-content::-webkit-scrollbar-track {
+			background: rgba(33, 150, 243, 0.1);
+			border-radius: 3px;
+		}
+		
+		.featured-summary-content::-webkit-scrollbar-thumb {
+			background: #2196f3;
+			border-radius: 3px;
+		}
+		
+		.featured-summary-content::-webkit-scrollbar-thumb:hover {
+			background: #1976d2;
+		}
+		
 		.featured-badge {
 			position: absolute;
 			top: 0;
@@ -1098,6 +1168,52 @@
 			color: #34495e;
 			margin-bottom: 36px;
 			line-height: 1.7;
+		}
+		
+		/* Tablet and medium screens */
+		@media (max-width: 768px) {
+			.hero-left h1 {
+				font-size: 2em;
+				margin-bottom: 16px;
+			}
+			.hero-left .subtitle {
+				font-size: 1em;
+				margin-bottom: 12px;
+			}
+			.hero-left p {
+				font-size: 1em;
+				margin-bottom: 24px;
+			}
+		}
+		
+		/* Small phones */
+		@media (max-width: 480px) {
+			.hero-left h1 {
+				font-size: 1.6em;
+				margin-bottom: 12px;
+			}
+			.hero-left .subtitle {
+				font-size: 0.9em;
+				margin-bottom: 10px;
+			}
+			.hero-left p {
+				font-size: 0.95em;
+				margin-bottom: 20px;
+			}
+		}
+		
+		/* Very small phones */
+		@media (max-width: 360px) {
+			.hero-left h1 {
+				font-size: 1.4em;
+				margin-bottom: 10px;
+			}
+			.hero-left .subtitle {
+				font-size: 0.85em;
+			}
+			.hero-left p {
+				font-size: 0.9em;
+			}
 		}
 		.button-row {
 			display: flex;
@@ -1208,10 +1324,13 @@
 				overflow: visible !important;
 			}
 			.hero-left h1 { 
-				font-size: 2.4em;
+				font-size: 2.2em;
+			}
+			.hero-left .subtitle {
+				font-size: 1.05em;
 			}
 			.hero-left p { 
-				font-size: 1.1em;
+				font-size: 1.05em;
 			}
 			.featured-carousel {
 				display: none;
@@ -2616,6 +2735,35 @@ function showSharePageLoading() {
 			console.log('Flipped class toggled, flipped:', container.classList.contains('flipped'));
 		}
 
+		// Function to flip featured cards
+		function flipFeaturedCard(container, event) {
+			if (!container) return;
+			
+			if (event) {
+				event.stopPropagation();
+				event.preventDefault();
+			}
+			
+			container.classList.toggle('flipped');
+		}
+
+		// Auto-flip featured cards on page load to cue users
+		function autoFlipFeaturedCards() {
+			const featured = document.querySelectorAll('.featured-flip-container');
+			featured.forEach((container, index) => {
+				// Stagger the flips slightly for visual interest
+				setTimeout(() => {
+					// Flip to back
+					container.classList.add('flipped');
+					
+					// Flip back after 1.5 seconds
+					setTimeout(() => {
+						container.classList.remove('flipped');
+					}, 1500);
+				}, index * 200); // Stagger each card by 200ms
+			});
+		}
+
 		// Update publication statistics
 		function updatePublicationStats() {
 			if (allArticlesData.length === 0) return;
@@ -3700,6 +3848,9 @@ function showSharePageLoading() {
 
 		// Start auto-rotation
 		startCarouselRotation(totalSlides);
+		
+		// Auto-flip featured cards to cue users
+		setTimeout(() => autoFlipFeaturedCards(), 500);
 	}		function createFeaturedCard(article) {
 			const title = article.title || 'Untitled';
 			const authors = article.authors_display || article.authors?.replaceAll('|', ', ') || 'Authors unavailable';
@@ -3707,6 +3858,7 @@ function showSharePageLoading() {
 			const pubdate = article.pubdate || '';
 			const pmid = article.pmid || '';
 			const abstract = article.abstract || 'No abstract available.';
+			const llmSummary = article.llm_summary || '';
 			const url = article.url || `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`;
 			
 			// Truncate authors if too long
@@ -3720,19 +3872,41 @@ function showSharePageLoading() {
 			const abstractPreview = abstract.length > 250 ? abstract.substring(0, 247) + '...' : abstract;
 
 			const citation = `${journal}. ${pubdate}. PMID: ${pmid}`;
+			
+			// Check if we have a summary to display
+			const hasSummary = llmSummary && llmSummary.trim() !== '';
 
 			return `
-				<div class="featured-card">
-					<div class="featured-badge">
-						<i class="fas fa-star"></i> FEATURED
+				<div class="featured-flip-container" role="group" aria-label="Featured article: ${title.substring(0, 100)}...">
+					<!-- Front of card -->
+					<div class="featured-card featured-card-front" onclick="flipFeaturedCard(this.closest('.featured-flip-container'), event);" style="cursor: pointer;">
+						<div class="featured-badge">
+							<i class="fas fa-star"></i> FEATURED
+						</div>
+						<i class="fas fa-star featured-star"></i>
+						<a href="${url}" class="result-title" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();">
+							${title}
+						</a>
+						<div class="result-authors">${authorsHtml}</div>
+						<div class="result-citation"><em>${citation}</em></div>
+						<div class="result-abstract">${abstractPreview}</div>
+						${hasSummary ? '<div style="text-align: center; margin-top: 12px; font-size: 12px; color: #999; font-style: italic;">Click to view AI summary</div>' : ''}
 					</div>
-					<i class="fas fa-star featured-star"></i>
-					<a href="${url}" class="result-title" target="_blank" rel="noopener noreferrer">
-						${title}
-					</a>
-					<div class="result-authors">${authorsHtml}</div>
-					<div class="result-citation"><em>${citation}</em></div>
-					<div class="result-abstract">${abstractPreview}</div>
+					
+					<!-- Back of card (AI Summary) -->
+					${hasSummary ? `
+					<div class="featured-card featured-card-back" onclick="flipFeaturedCard(this.closest('.featured-flip-container'), event);" style="cursor: pointer;">
+						<div style="color: #1565c0; margin-bottom: 12px; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px;">
+							<i class="fas fa-brain"></i> AI SUMMARY
+						</div>
+						<div class="featured-summary-content">
+							${llmSummary}
+						</div>
+						<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #bbdefb; font-size: 11px; color: #546e7a; font-style: italic; line-height: 1.4;">
+							<strong>⚠️ Disclaimer:</strong> Generated by AI - refer to full publication for accuracy.
+						</div>
+					</div>
+					` : ''}
 				</div>
 			`;
 		}
