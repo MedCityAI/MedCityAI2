@@ -47,68 +47,13 @@
 		.submit-hero .hero-inner {
 			display: flex;
 			align-items: center;
-			justify-content: space-between;
+			justify-content: center;
 			gap: 24px;
 		}
 
 		.submit-hero .hero-text {
 			flex: 1 1 0;
-			text-align: left;
-		}
-
-		.submit-hero .linkedin-banner {
-			flex: 0 0 auto;
-			background: rgba(255, 255, 255, 0.12);
-			border: 1px solid rgba(255, 255, 255, 0.25);
-			border-radius: 16px;
-			padding: 18px 20px;
-			min-width: 240px;
-			text-align: left;
-			backdrop-filter: blur(6px);
-			display: flex;
-			align-items: center;
-			gap: 20px;
-		}
-
-		.submit-hero .linkedin-banner-content {
-			flex: 1;
-		}
-
-		.submit-hero .linkedin-banner-logo {
-			width: 60px;
-			height: 60px;
-			object-fit: contain;
-			filter: brightness(0) invert(1);
-			opacity: 0.9;
-		}
-
-		.submit-hero .linkedin-banner h3 {
-			margin: 0 0 8px 0;
-			font-size: 1.1em;
-			font-weight: 700;
-		}
-
-		.submit-hero .linkedin-banner p {
-			margin: 0 0 12px 0;
-			font-size: 0.95em;
-			opacity: 0.9;
-		}
-
-		.submit-hero .linkedin-banner a {
-			display: inline-flex;
-			align-items: center;
-			gap: 8px;
-			padding: 8px 14px;
-			border-radius: 999px;
-			background: #ffffff;
-			color: #0a66c2;
-			text-decoration: none;
-			font-weight: 700;
-			font-size: 0.95em;
-			box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-		}
-		
-		.submit-hero .subtitle {
+			text-align: center;
 			color: #e0e0e0;
 			font-size: 14px;
 			font-weight: 600;
@@ -380,23 +325,14 @@
 			cursor: pointer;
 			transition: all 0.3s ease;
 			width: 100%;
+			max-width: 300px;
 			display: flex;
 			align-items: center;
 			justify-content: center;
 			box-shadow: 0 4px 16px rgba(52, 152, 219, 0.3);
-		}
-		
-		.submit-btn:hover {
-			transform: translateY(-2px);
-			box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
-		}
-		
-		.submit-btn:disabled {
-			opacity: 0.6;
-			cursor: not-allowed;
-			transform: none;
-		}
-		
+			margin: 0 auto;
+		}	
+
 		/* Success Message */
 		.success-message {
 			background: linear-gradient(135deg, #27ae60, #229954);
@@ -450,26 +386,6 @@
 
 			.submit-hero .hero-text {
 				text-align: center;
-			}
-
-			.submit-hero .linkedin-banner {
-				width: 100%;
-			max-width: 220px;
-			text-align: center;
-			flex-direction: column;
-		}
-
-		.submit-hero .linkedin-banner-content {
-			text-align: center;
-		}
-
-		.submit-hero .linkedin-banner-logo {
-			width: 45px;
-			height: 45px;
-			}
-			
-			.submit-hero h1 {
-				font-size: 2.5em;
 			}
 			
 			.submit-hero p {
@@ -526,17 +442,7 @@
 							<h1>Let's Connect</h1>
 							<p>We want to hear about your research. Thanks for helping build our research community!</p>
 						</div>
-						<div class="linkedin-banner" role="complementary" aria-label="Follow us on LinkedIn">
-						<div class="linkedin-banner-content">
-							<h3>Follow Us on LinkedIn</h3>
-							<p>Stay updated with the latest Rochester research highlights.</p>
-							<a href="https://www.linkedin.com/company/medcityai/" target="_blank" rel="noopener noreferrer" aria-label="Follow MedCityAI on LinkedIn">
-								<i class="icon brands fa-linkedin" aria-hidden="true"></i>
-								Follow
-							</a>
-						</div>
-						<img src="images/medcityai_simple1.png" alt="MedCityAI Logo" class="linkedin-banner-logo">
-						</div>
+
 					</div>
 				</div>
 			</section>
