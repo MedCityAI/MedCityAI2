@@ -1114,11 +1114,6 @@
 
 				<!-- Results Container -->
 				<div id="resultsContainer" style="display: none;">
-					<div id="topContributorsBlock" style="margin: 16px auto 20px; max-width: 1200px; width: calc(100% - 40px); box-sizing: border-box; background: #f7fbff; border: 1px solid #dbeafe; border-radius: 10px; padding: 14px 16px;">
-						<div id="topContributorsTitle" style="font-size: 0.95em; font-weight: 700; color: #1f4f8a; margin-bottom: 6px;">Top Contributing Authors for this Search</div>
-						<div id="topContributorsMeta" style="font-size: 0.85em; color: #6b7280; margin-bottom: 8px;"></div>
-						<div id="topContributorsList" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
-					</div>
 					<div class="results-header">
 						<div class="results-count">
 							Found <span id="resultCount">0</span> results
@@ -1226,152 +1221,11 @@
 		let currentResults = [];
 		let currentPage = 1;
 		const resultsPerPage = 20;
-		const MAX_PUBMED_RESULTS = 1000;
-		let activeContributorKey = '';
-		let activeContributorLabel = '';
-		let lastTotalCount = 0;
 		let currentCitationArticle = null;
 		let currentCitationStyle = 'mla';
 
-		function normalizeContributorLastName(fullName) {
-			const normalized = (fullName || '')
-				.normalize('NFD')
-				.replace(/[\u0300-\u036f]/g, '')
-				.replace(/[.,'"-]/g, ' ')
-				.replace(/\s+/g, ' ')
-				.trim()
-				.toLowerCase();
-
-			if (!normalized) {
-				return '';
-			}
-
-			const parts = normalized.split(' ');
-			return parts[parts.length - 1];
-		}
-
-		function getContributorNamesForArticle(article) {
-			if (Array.isArray(article.rochesterAuthors) && article.rochesterAuthors.length > 0) {
-				return article.rochesterAuthors;
-			}
-
-			if (typeof article.authors === 'string' && article.authors.trim()) {
-				return article.authors
-					.split(',')
-					.map(name => name.trim())
-					.filter(name => name && name.toLowerCase() !== 'et al.');
-			}
-
-			return [];
-		}
-
-		function computeTopContributors(articles, limit = 10) {
-			const counts = new Map();
-
-			(articles || []).forEach(article => {
-				const names = getContributorNamesForArticle(article);
-				const seenInArticle = new Set();
-
-				names.forEach(name => {
-					const key = normalizeContributorLastName(name);
-					if (!key || seenInArticle.has(key)) {
-						return;
-					}
-					seenInArticle.add(key);
-
-					const existing = counts.get(key);
-					if (existing) {
-						existing.count += 1;
-						if (name.length > existing.displayName.length) {
-							existing.displayName = name;
-						}
-					} else {
-						counts.set(key, {
-							key,
-							displayName: name,
-							count: 1
-						});
-					}
-				});
-			});
-
-			return Array.from(counts.values())
-				.sort((a, b) => b.count - a.count || a.displayName.localeCompare(b.displayName))
-				.slice(0, limit);
-		}
-
-		function renderTopContributors(articles) {
-			const container = document.getElementById('topContributorsList');
-			const meta = document.getElementById('topContributorsMeta');
-			if (!container) {
-				return;
-			}
-
-			const top = computeTopContributors(articles, 10);
-			if (!top.length) {
-				container.innerHTML = '<span style="color: #6b7280; font-size: 0.92em;">No contributor data available for this query.</span>';
-				if (meta) {
-					meta.textContent = '';
-				}
-				return;
-			}
-
-			container.innerHTML = top.map(item => {
-				const isActive = activeContributorKey && activeContributorKey === item.key;
-				const baseStyle = 'display: inline-flex; align-items: center; gap: 6px; background: #ffffff; border: 1px solid #bfdbfe; border-radius: 999px; padding: 6px 12px; color: #1f2937; font-size: 0.82em; cursor: pointer; text-transform: none; letter-spacing: 0;';
-				const activeStyle = isActive ? ' background: #dbeafe; border-color: #60a5fa; color: #1e3a8a;' : '';
-				return `<button type="button" data-key="${item.key}" data-label="${item.displayName}" style="${baseStyle}${activeStyle}">${item.displayName}</button>`;
-			}).join('');
-
-			container.querySelectorAll('button[data-key]').forEach(button => {
-				button.addEventListener('click', () => {
-					const key = button.getAttribute('data-key') || '';
-					const label = button.getAttribute('data-label') || '';
-					if (!key) {
-						return;
-					}
-					if (activeContributorKey === key) {
-						activeContributorKey = '';
-						activeContributorLabel = '';
-					} else {
-						activeContributorKey = key;
-						activeContributorLabel = label;
-					}
-					currentPage = 1;
-					displayResults(false);
-				});
-			});
-
-			if (meta) {
-				if (activeContributorKey) {
-					meta.textContent = 'Click an author to filter results.';
-				} else {
-					meta.textContent = 'Click an author to filter results.';
-				}
-			}
-		}
-
-		function matchesContributorFilter(article, key) {
-			if (!key) {
-				return true;
-			}
-
-			const names = getContributorNamesForArticle(article);
-			return names.some(name => normalizeContributorLastName(name) === key);
-		}
-
-		function getVisibleResults() {
-			if (!activeContributorKey) {
-				return currentResults;
-			}
-
-			return currentResults.filter(article => matchesContributorFilter(article, activeContributorKey));
-		}
-
 		async function performPubMedSearch(searchQuery, skipLocationFilter = false) {
 			if (searchQuery.length < 2) return;
-			activeContributorKey = '';
-			activeContributorLabel = '';
 			
 			// Hide bubble cloud when search is performed
 			const bubbleCloud = document.getElementById('bubbleCloud');
@@ -1401,14 +1255,22 @@
 				const countData = await countResponse.json();
 				const totalCount = parseInt(countData.esearchresult.count);
 
-				const cappedRetMax = Math.min(MAX_PUBMED_RESULTS, Math.max(0, totalCount));
-				const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(fullQuery)}&retmode=json&retmax=${cappedRetMax}&sort=pub+date`;
+				let esearchUrl;
+				let showNarrowNotice = false;
+
+				// If more than 1000 results, limit to most recent 1000
+				if (totalCount > 1000) {
+					showNarrowNotice = true;
+					esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(fullQuery)}&retmode=json&retmax=1000&sort=pub+date`;
+				} else {
+					esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(fullQuery)}&retmode=json&retmax=500&sort=pub+date`;
+				}
 
 				// Fetch article IDs
 				const searchResponse = await fetch(esearchUrl);
 				const searchData = await searchResponse.json();
 				
-				const articleIds = (searchData.esearchresult.idlist || []).slice(0, MAX_PUBMED_RESULTS);
+				const articleIds = searchData.esearchresult.idlist;
 
 				if (articleIds.length === 0) {
 					showNoResults(searchQuery);
@@ -1437,6 +1299,11 @@
 				
 				displayResults();
 
+				// Show narrowed notice if needed
+				if (showNarrowNotice) {
+					showNarrowedSearchNotice(totalCount, articleIds.length);
+				}
+
 			} catch (error) {
 				console.error('PubMed search error:', error);
 				document.getElementById('loadingState').style.display = 'none';
@@ -1447,6 +1314,28 @@
 					<p>An error occurred while searching PubMed. Please try again.</p>
 				`;
 			}
+		}
+
+		function showNarrowedSearchNotice(actualTotal, displayed) {
+			const resultsContainer = document.getElementById('resultsContainer');
+			const existingNotice = document.getElementById('narrowedNotice');
+			if (existingNotice) {
+				existingNotice.remove();
+			}
+
+			const notice = document.createElement('div');
+			notice.id = 'narrowedNotice';
+			notice.style.cssText = 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px 24px; border-radius: 12px; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3); display: flex; align-items: center; gap: 14px; font-size: 15px;';
+			notice.innerHTML = `
+				<i class="fas fa-info-circle" style="font-size: 1.8em; flex-shrink: 0;"></i>
+				<div>
+					<strong style="font-size: 16px;">Search Too Broad</strong><br>
+					<span style="opacity: 0.95;">Found ${actualTotal.toLocaleString()} total results. Displaying the ${displayed.toLocaleString()} most recent publications. Please narrow your search criteria for more targeted results.</span>
+				</div>
+			`;
+			
+			const resultsHeader = document.querySelector('.results-header');
+			resultsContainer.insertBefore(notice, resultsHeader.nextSibling);
 		}
 
 		function showNoResults(query) {
@@ -1579,8 +1468,6 @@
 
 		async function performHeroSearch(query) {
 			if (query.length < 2) return;
-			activeContributorKey = '';
-			activeContributorLabel = '';
 			
 			// Show loading state
 			document.getElementById('loadingState').style.display = 'block';
@@ -1631,7 +1518,6 @@
 				}
 				
 				currentResults = results;
-				lastTotalCount = results.length;
 				totalResults = results.length;
 				currentPage = 1;
 				
@@ -1746,34 +1632,22 @@
 		}
 	});
 
-	function displayResults(shouldScroll = true) {
+	function displayResults() {
 			document.getElementById('loadingState').style.display = 'none';
 			document.getElementById('resultsContainer').style.display = 'block';
 			document.getElementById('emptyState').style.display = 'none';
-			renderTopContributors(currentResults);
-			const visibleResults = getVisibleResults();
 
 			// Update result count
-			const resultCountEl = document.getElementById('resultCount');
-			if (activeContributorKey) {
-				resultCountEl.textContent = visibleResults.length.toLocaleString();
-			} else if (lastTotalCount > MAX_PUBMED_RESULTS && currentResults.length >= MAX_PUBMED_RESULTS) {
-				resultCountEl.textContent = `${MAX_PUBMED_RESULTS}+`;
-			} else {
-				resultCountEl.textContent = visibleResults.length.toLocaleString();
-			}
+			document.getElementById('resultCount').textContent = currentResults.length.toLocaleString();
 
 			// Calculate pagination
-			const totalPages = Math.ceil(visibleResults.length / resultsPerPage);
+			const totalPages = Math.ceil(currentResults.length / resultsPerPage);
 			const startIdx = (currentPage - 1) * resultsPerPage;
-			const endIdx = Math.min(startIdx + resultsPerPage, visibleResults.length);
-			const pageResults = visibleResults.slice(startIdx, endIdx);
+			const endIdx = Math.min(startIdx + resultsPerPage, currentResults.length);
+			const pageResults = currentResults.slice(startIdx, endIdx);
 
 			// Display results
 			let resultsHTML = '';
-			if (pageResults.length === 0) {
-				resultsHTML = '<div style="padding: 24px; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); color: #6b7280;">No results match the selected author filter.</div>';
-			}
 			pageResults.forEach((article, index) => {
 				// Make Rochester authors clickable links
 				let authorsHTML = article.authors;
@@ -1824,9 +1698,7 @@
 			displayPagination(totalPages);
 
 			// Scroll to results
-			if (shouldScroll) {
-				document.getElementById('resultsContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
-			}
+			document.getElementById('resultsContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
 		}
 
 		function displayPagination(totalPages) {
@@ -1956,7 +1828,6 @@
 			const countResponse = await fetch(countUrl);
 			const countData = await countResponse.json();
 			const totalCount = parseInt(countData.esearchresult.count);
-			lastTotalCount = Number.isFinite(totalCount) ? totalCount : 0;
 			
 			if (totalCount === 0) {
 				title.textContent = authorName;
