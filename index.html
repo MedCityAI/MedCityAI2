@@ -2238,8 +2238,8 @@
 							<a href="search.html" class="hero-btn">
 								<i class="fas fa-search"></i> Search
 							</a>
-							<a href="https://www.linkedin.com/company/medcityai" target="_blank" rel="noopener" class="hero-btn">
-								<i class="fab fa-linkedin" style="color: white;"></i> Follow
+							<a href="share.html" class="hero-btn">
+								<i class="fas fa-users" style="color: white;"></i> Connect
 							</a>
 						</div>
 						
@@ -2959,7 +2959,6 @@ function showSharePageLoading() {
 			const primarySpecialty = article.primary_specialty || '';
 			const secondarySpecialty = article.secondary_specialty || '';
 			const pmid = article.pmid || '';
-			const articleShareUrl = buildArticleShareUrl(pmid);
 
 			const specialties = [primarySpecialty, secondarySpecialty].filter(Boolean);
 			const specialtyBadges = specialties.map(s => `<span class="article-overlay-badge">${escapeHtml(s)}</span>`).join('');
@@ -3001,7 +3000,7 @@ function showSharePageLoading() {
 							<a class="overlay-primary" href="${url}" target="_blank" rel="noopener" aria-label="View on PubMed">
 								<i class="fas fa-external-link-alt"></i> View on PubMed
 							</a>
-							<button class="overlay-linkedin" type="button" onclick="shareOverlayOnLinkedIn('${encodeURIComponent(shareText)}', '${encodeURIComponent(articleShareUrl)}')">
+							<button class="overlay-linkedin" type="button" onclick="shareOverlayOnLinkedIn('${encodeURIComponent(shareText)}', '${encodeURIComponent(pubmedUrlWithUtm)}')">
 								<i class="fab fa-linkedin"></i> Share on LinkedIn
 							</button>
 							<button type="button" onclick="copyOverlayShareText('${escapeHtml(shareText).replace(/'/g, "\\'")}')">
@@ -3341,7 +3340,6 @@ function showSharePageLoading() {
 				const hasAbstract = !!(abstract && abstract.trim());
 				const pubmedUrl = url || `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`;
 				const pubmedUrlWithUtm = `${pubmedUrl}${pubmedUrl.includes('?') ? '&' : '?'}utm_source=linkedin&utm_medium=share&utm_campaign=medcityai_share`;
-				const articleShareUrl = buildArticleShareUrl(pmid);
 
 				const getLastTwoSentences = (text) => {
 					const cleaned = (text || '').replace(/\s+/g, ' ').trim();
@@ -3556,7 +3554,7 @@ function showSharePageLoading() {
 											<span style="display: flex; align-items: center; gap: 4px;">LIKE <i class="fas fa-heart" aria-hidden="true" style="color: #e74c3c; font-size: 20px;"></i></span>
 										</span>
 									` : `
-										<a href="${articleShareUrl}" class="linkedin article-link" aria-label="Open article page" title="Open article page">
+										<a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(pubmedUrlWithUtm)}" class="linkedin" target="_blank" rel="noopener" data-share-text="${encodeURIComponent(linkedinShareText)}" onclick="return handleLinkedInShare(event, this);" aria-label="Share on LinkedIn" title="Share on LinkedIn">
 											<i class="icon brands fa-linkedin" aria-hidden="true"></i>
 										</a>
 										<a href="${url}" target="_blank" onclick="event.stopPropagation();" style="color: #0056a3; text-decoration: none; font-size: 14px; font-weight: 500;" aria-label="View on PubMed">
@@ -4266,15 +4264,6 @@ function showSharePageLoading() {
 				if (currentPage < totalPages) {
 					fetchPubMedResults(currentSearchQuery, currentPage + 1);
 				}
-			});
-
-			document.addEventListener('click', function(e) {
-				const link = e.target.closest('a.article-link');
-				if (!link || e.defaultPrevented) return;
-				if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
-				e.preventDefault();
-				showSharePageLoading();
-				window.location.assign(link.href);
 			});
 
 			// Load data and display results
