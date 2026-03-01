@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>MedCityAI Dashboard</title>
+	<link rel="icon" type="image/png" href="images/medcityai_simple1.png?v=1" />
+	<link rel="stylesheet" href="assets/css/main.css" />
+	<style>
+		html, body {
+			height: 100%;
+			margin: 0;
+			overflow: hidden;
+		}
+
+		body {
+			font-family: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+			background: #f7f9fc;
+			color: #1f2d3d;
+			font-size: 20px;
+		}
+
+		.dashboard-shell {
+			height: 100vh;
+			display: grid;
+			grid-template-rows: auto 1fr;
+			gap: 0.75rem;
+			padding: 0.85rem 1.1rem 1.1rem;
+			box-sizing: border-box;
+			font-family: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+		}
+
+		.dashboard-shell,
+		.dashboard-shell * {
+			font-family: inherit;
+		}
+
+		.dashboard-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			gap: 0.8rem;
+			padding: 0;
+		}
+
+		.dashboard-logo {
+			height: clamp(44px, 6vh, 72px);
+			width: auto;
+			object-fit: contain;
+		}
+
+		.dashboard-tagline {
+			margin: 0;
+			font-size: 1.58rem;
+			font-weight: 400;
+			line-height: 1.2;
+			color: #1f2d3d;
+			text-align: right;
+		}
+
+		.dashboard-tagline .tagline-location {
+			font-weight: 700;
+		}
+
+		.article-grid {
+			display: grid;
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+			grid-template-rows: minmax(0, 1fr);
+			gap: 0.85rem;
+			min-height: 0;
+			height: 100%;
+			width: 100%;
+			margin: 0;
+		}
+
+		.article-stack {
+			display: grid;
+			grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+			min-height: 0;
+			gap: 0;
+		}
+
+		.article-tile {
+			background: #ffffff;
+			border: 1px solid #dce6f2;
+			border-radius: 10px 10px 0 0;
+			padding: 1.15rem 0.9rem 0.8rem;
+			display: grid;
+			grid-template-rows: auto auto auto 1fr;
+			gap: 0.45rem;
+			box-shadow: 0 1px 3px rgba(16, 24, 40, 0.06);
+			min-height: 0;
+			overflow: hidden;
+			position: relative;
+		}
+
+		.tile-date {
+			position: absolute;
+			top: 0;
+			left: 0;
+			background: #e74c3c;
+			color: #fff;
+			font-size: 1.12rem;
+			font-weight: 400;
+			padding: 0.28rem 0.72rem;
+			border-radius: 8px 0 8px 0;
+			text-transform: uppercase;
+			letter-spacing: 0.03em;
+			line-height: 1.2;
+			pointer-events: none;
+		}
+
+		.specialty-badges {
+			position: absolute;
+			top: 0.35rem;
+			right: 0.45rem;
+			display: flex;
+			flex-direction: column;
+			align-items: flex-end;
+			gap: 0.2rem;
+			pointer-events: none;
+		}
+
+		.department-badge {
+			background: transparent;
+			color: #2c3e50;
+			font-size: 0.96rem;
+			font-weight: 500;
+			font-style: italic;
+			line-height: 1.2;
+		}
+
+		.department-badge.secondary {
+			opacity: 0.75;
+		}
+
+		.tile-title {
+			margin: 0.7rem 0 0;
+			font-size: 1.52rem;
+			font-weight: 500;
+			line-height: 1.35;
+			color: #0056a3;
+			text-transform: none;
+			letter-spacing: normal;
+			overflow: visible;
+			display: block;
+			line-clamp: unset;
+			-webkit-line-clamp: unset;
+			-webkit-box-orient: initial;
+		}
+
+		.tile-authors,
+		.tile-journal {
+			margin: 0;
+			font-size: 1.08rem;
+			line-height: 1.35;
+			overflow: hidden;
+			white-space: normal;
+			text-overflow: clip;
+		}
+
+		.tile-authors .roch-author {
+			text-decoration: underline;
+			text-decoration-thickness: 1px;
+			text-underline-offset: 2px;
+			text-decoration-color: #687b90;
+		}
+
+		.tile-journal {
+			font-style: italic;
+			color: #4f647d;
+		}
+
+		.ai-summary-panel {
+			border: 1px solid #cfdcf1;
+			border-top: none;
+			border-radius: 0 0 10px 10px;
+			background: #eaf3ff;
+			padding: 0.7rem 0.9rem 0.8rem;
+			min-height: 0;
+			display: grid;
+			grid-template-rows: auto 1fr;
+			gap: 0.45rem;
+		}
+
+		.ai-summary-label {
+			font-size: 0.98rem;
+			font-weight: 700;
+			letter-spacing: 0.04em;
+			text-transform: uppercase;
+			color: #1f4e85;
+		}
+
+		.ai-summary-text {
+			margin: 0;
+			font-size: 1.12rem;
+			line-height: 1.35;
+			color: #2b4057;
+			overflow: hidden;
+			display: -webkit-box;
+			line-clamp: 14;
+			-webkit-line-clamp: 14;
+			-webkit-box-orient: vertical;
+		}
+
+		.tile-spacer {
+			min-height: 0;
+		}
+
+		.status-message {
+			grid-column: 1 / -1;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 1.28rem;
+			font-weight: 600;
+			color: #4f647d;
+			background: #fff;
+			border: 1px solid #dce6f2;
+			border-radius: 10px;
+		}
+	</style>
+</head>
+<body>
+	<main class="dashboard-shell" aria-label="MedCityAI Dashboard">
+		<header class="dashboard-header">
+			<img class="dashboard-logo" src="images/medcityai_logo1.png" alt="MedCityAI" />
+			<p class="dashboard-tagline">a biomedical research feed for <span class="tagline-location">Rochester, MN</span></p>
+		</header>
+
+		<section id="articleGrid" class="article-grid" aria-label="Three most recent articles">
+			<div class="status-message">Loading latest articles...</div>
+		</section>
+	</main>
+
+	<script>
+		function parseCsvRows(csvText) {
+			const rows = [];
+			let currentRow = [];
+			let currentValue = '';
+			let inQuotes = false;
+
+			for (let i = 0; i < csvText.length; i++) {
+				const char = csvText[i];
+				const next = csvText[i + 1];
+
+				if (char === '"') {
+					if (inQuotes && next === '"') {
+						currentValue += '"';
+						i++;
+					} else {
+						inQuotes = !inQuotes;
+					}
+					continue;
+				}
+
+				if (char === ',' && !inQuotes) {
+					currentRow.push(currentValue.trim());
+					currentValue = '';
+					continue;
+				}
+
+				if ((char === '\n' || char === '\r') && !inQuotes) {
+					if (char === '\r' && next === '\n') {
+						i++;
+					}
+					currentRow.push(currentValue.trim());
+					currentValue = '';
+					if (currentRow.some(cell => cell !== '')) {
+						rows.push(currentRow);
+					}
+					currentRow = [];
+					continue;
+				}
+
+				currentValue += char;
+			}
+
+			if (currentValue.length || currentRow.length) {
+				currentRow.push(currentValue.trim());
+				if (currentRow.some(cell => cell !== '')) {
+					rows.push(currentRow);
+				}
+			}
+
+			return rows;
+		}
+
+		function csvToObjects(csvText) {
+			const rows = parseCsvRows(csvText);
+			if (!rows.length) {
+				return [];
+			}
+
+			const headers = rows[0].map(header => header.replace(/^"|"$/g, '').trim());
+			const objects = [];
+
+			for (let i = 1; i < rows.length; i++) {
+				const row = rows[i];
+				if (!row || !row.length) {
+					continue;
+				}
+
+				const article = {};
+				for (let j = 0; j < headers.length; j++) {
+					article[headers[j]] = (row[j] || '').replace(/^"|"$/g, '').trim();
+				}
+				objects.push(article);
+			}
+
+			return objects;
+		}
+
+		function toDate(article) {
+			const queryDate = article.query_date ? Date.parse(article.query_date) : NaN;
+			if (!Number.isNaN(queryDate)) {
+				return queryDate;
+			}
+
+			const pubDate = article.pubdate ? Date.parse(article.pubdate) : NaN;
+			if (!Number.isNaN(pubDate)) {
+				return pubDate;
+			}
+
+			return 0;
+		}
+
+		function escapeHtml(value) {
+			return (value || '')
+				.replace(/&/g, '&amp;')
+				.replace(/</g, '&lt;')
+				.replace(/>/g, '&gt;')
+				.replace(/"/g, '&quot;')
+				.replace(/'/g, '&#39;');
+		}
+
+		function formatDate(article) {
+			const source = article.query_date || article.pubdate || '';
+			const parsed = Date.parse(source);
+			if (Number.isNaN(parsed)) {
+				return source || 'Date unavailable';
+			}
+			return new Date(parsed).toLocaleDateString(undefined, {
+				month: 'short',
+				day: 'numeric'
+			});
+		}
+
+		function formatAuthorsHtml(article) {
+			const rochesterRaw = article.rochester_authors || '';
+			const rochesterAuthors = rochesterRaw
+				.split('|')
+				.map(name => name.trim())
+				.filter(Boolean);
+			const rochesterSet = new Set(rochesterAuthors);
+
+			let authorsList = [];
+			if (article.authors_display && article.authors_display.trim()) {
+				authorsList = article.authors_display.split(',').map(name => name.trim()).filter(Boolean);
+			} else if (article.authors && article.authors.trim()) {
+				authorsList = article.authors.split('|').map(name => name.trim()).filter(Boolean);
+			}
+
+			if (!authorsList.length) {
+				return 'Authors unavailable';
+			}
+
+			return authorsList.map(name => {
+				const safeName = escapeHtml(name);
+				if (rochesterSet.has(name)) {
+					return `<span class="roch-author">${safeName}</span>`;
+				}
+				return safeName;
+			}).join(', ');
+		}
+
+		function renderTiles(articles) {
+			const grid = document.getElementById('articleGrid');
+			if (!grid) return;
+
+			if (!articles.length) {
+				grid.innerHTML = '<div class="status-message">No articles available.</div>';
+				return;
+			}
+
+			grid.innerHTML = articles.map(article => {
+				const title = escapeHtml(article.title || 'Untitled article');
+				const authorsHtml = formatAuthorsHtml(article);
+				const journal = escapeHtml(article.journal || 'Journal unavailable');
+				const summary = escapeHtml(article.llm_summary || 'No AI summary available.');
+				const dateText = escapeHtml(formatDate(article)).toUpperCase();
+				const primarySpecialty = escapeHtml(article.primary_specialty || 'General Medicine');
+				const secondarySpecialty = escapeHtml(article.secondary_specialty || '');
+				const specialtyBadges = secondarySpecialty
+					? `<div class="specialty-badges"><div class="department-badge">${primarySpecialty}</div><div class="department-badge secondary">${secondarySpecialty}</div></div>`
+					: `<div class="specialty-badges"><div class="department-badge">${primarySpecialty}</div></div>`;
+
+				return `
+					<article class="article-stack">
+						<div class="article-tile" aria-label="Article card">
+							<div class="tile-date">${dateText}</div>
+							${specialtyBadges}
+							<h2 class="tile-title">${title}</h2>
+							<p class="tile-authors">${authorsHtml}</p>
+							<p class="tile-journal">${journal}</p>
+							<div class="tile-spacer"></div>
+						</div>
+						<div class="ai-summary-panel" aria-label="AI summary panel">
+							<div class="ai-summary-label">AI Summary</div>
+							<p class="ai-summary-text">${summary}</p>
+						</div>
+					</article>
+				`;
+			}).join('');
+		}
+
+		async function loadDashboardArticles() {
+			const grid = document.getElementById('articleGrid');
+			if (!grid) return;
+
+			try {
+				const response = await fetch('pubmed_data.csv', { cache: 'no-store' });
+				if (!response.ok) {
+					throw new Error('Unable to load CSV');
+				}
+
+				const csvText = await response.text();
+				const allArticles = csvToObjects(csvText)
+					.filter(article => article && article.pmid && article.title)
+					.map((article, index) => ({ ...article, __index: index }));
+
+				allArticles.sort((a, b) => {
+					const dateDiff = toDate(b) - toDate(a);
+					if (dateDiff !== 0) {
+						return dateDiff;
+					}
+					return a.__index - b.__index;
+				});
+
+				renderTiles(allArticles.slice(0, 3));
+			} catch (error) {
+				grid.innerHTML = '<div class="status-message">Could not load recent articles.</div>';
+			}
+		}
+
+		document.addEventListener('DOMContentLoaded', loadDashboardArticles);
+	</script>
+</body>
+</html>
