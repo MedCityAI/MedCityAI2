@@ -15,19 +15,45 @@
 
 		body {
 			font-family: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-			background: #f7f9fc;
+			background: #5f7894;
 			color: #1f2d3d;
 			font-size: 20px;
+			position: relative;
+		}
+
+		body::before {
+			content: '';
+			position: fixed;
+			inset: 0;
+			background: linear-gradient(120deg, rgba(92, 118, 148, 0.58) 0%, rgba(73, 99, 129, 0.62) 100%),
+				url('images/banner3.jpg') center center / cover no-repeat;
+			opacity: 0.68;
+			z-index: 0;
+			pointer-events: none;
+		}
+
+		body::after {
+			content: '';
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			height: calc(clamp(52px, 7vh, 84px) + 0.95rem);
+			background: #ffffff;
+			z-index: 0;
+			pointer-events: none;
 		}
 
 		.dashboard-shell {
 			height: 100vh;
 			display: grid;
-			grid-template-rows: auto 1fr;
-			gap: 0.75rem;
-			padding: 0.85rem 1.1rem 1.1rem;
+			grid-template-rows: auto minmax(0, 1fr);
+			gap: 0;
+			padding: 0.6rem 1.1rem 0;
 			box-sizing: border-box;
 			font-family: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+			position: relative;
+			z-index: 1;
 		}
 
 		.dashboard-shell,
@@ -44,7 +70,7 @@
 		}
 
 		.dashboard-logo {
-			height: clamp(44px, 6vh, 72px);
+			height: clamp(52px, 7vh, 84px);
 			width: auto;
 			object-fit: contain;
 		}
@@ -54,29 +80,59 @@
 			font-size: 1.58rem;
 			font-weight: 400;
 			line-height: 1.2;
-			color: #1f2d3d;
+			color: #556270;
 			text-align: right;
+			display: flex;
+			align-items: center;
+			justify-content: flex-end;
+			height: 100%;
+			transform: translateY(4px);
 		}
 
 		.dashboard-tagline .tagline-location {
 			font-weight: 700;
+			margin-left: 0.3em;
 		}
 
 		.article-grid {
-			display: grid;
-			grid-template-columns: repeat(3, minmax(0, 1fr));
-			grid-template-rows: minmax(0, 1fr);
-			gap: 0.85rem;
+			position: relative;
+			overflow: hidden;
 			min-height: 0;
 			height: 100%;
 			width: 100%;
 			margin: 0;
+			margin-top: 1rem;
+			align-self: stretch;
+		}
+
+		.carousel-track {
+			display: flex;
+			height: 100%;
+			width: 100%;
+			transform: translateX(0%);
+		}
+
+		.carousel-slide {
+			flex: 0 0 100%;
+			height: 100%;
+			min-width: 0;
+			display: block;
+		}
+
+		.carousel-slide-grid {
+			display: grid;
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+			grid-template-rows: minmax(0, 1fr);
+			gap: 1.3rem;
+			height: 100%;
+			align-items: start;
 		}
 
 		.article-stack {
 			display: grid;
-			grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+			grid-template-rows: auto minmax(0, 1fr);
 			min-height: 0;
+			height: auto;
 			gap: 0;
 		}
 
@@ -92,6 +148,8 @@
 			min-height: 0;
 			overflow: hidden;
 			position: relative;
+			height: auto;
+			box-sizing: border-box;
 		}
 
 		.tile-date {
@@ -115,10 +173,11 @@
 			top: 0.35rem;
 			right: 0.45rem;
 			display: flex;
-			flex-direction: column;
-			align-items: flex-end;
-			gap: 0.2rem;
+			flex-direction: row;
+			align-items: center;
+			gap: 0.5rem;
 			pointer-events: none;
+			white-space: nowrap;
 		}
 
 		.department-badge {
@@ -130,13 +189,9 @@
 			line-height: 1.2;
 		}
 
-		.department-badge.secondary {
-			opacity: 0.75;
-		}
-
 		.tile-title {
-			margin: 0.7rem 0 0;
-			font-size: 1.52rem;
+			margin: 1.25rem 0 0;
+			font-size: 1.7rem;
 			font-weight: 500;
 			line-height: 1.35;
 			color: #0056a3;
@@ -157,6 +212,12 @@
 			overflow: hidden;
 			white-space: normal;
 			text-overflow: clip;
+		}
+
+		.tile-authors {
+			border-top: 1px dashed #c6d4e4;
+			padding-top: 0.45rem;
+			margin-top: 0.2rem;
 		}
 
 		.tile-authors .roch-author {
@@ -181,6 +242,8 @@
 			display: grid;
 			grid-template-rows: auto 1fr;
 			gap: 0.45rem;
+			height: auto;
+			box-sizing: border-box;
 		}
 
 		.ai-summary-label {
@@ -197,10 +260,7 @@
 			line-height: 1.35;
 			color: #2b4057;
 			overflow: hidden;
-			display: -webkit-box;
-			line-clamp: 14;
-			-webkit-line-clamp: 14;
-			-webkit-box-orient: vertical;
+			display: block;
 		}
 
 		.tile-spacer {
@@ -219,6 +279,35 @@
 			border: 1px solid #dce6f2;
 			border-radius: 10px;
 		}
+
+		.carousel-indicators {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			gap: 0.5rem;
+			min-height: 26px;
+			position: fixed;
+			left: 0;
+			right: 0;
+			bottom: 8px;
+			z-index: 20;
+			pointer-events: none;
+		}
+
+		.carousel-dot {
+			width: 11px;
+			height: 11px;
+			border-radius: 50%;
+			background: #bfd0e4;
+			opacity: 0.85;
+			transition: transform 0.25s ease, background-color 0.25s ease, opacity 0.25s ease;
+		}
+
+		.carousel-dot.active {
+			background: #0056a3;
+			opacity: 1;
+			transform: scale(1.18);
+		}
 	</style>
 </head>
 <body>
@@ -231,9 +320,17 @@
 		<section id="articleGrid" class="article-grid" aria-label="Three most recent articles">
 			<div class="status-message">Loading latest articles...</div>
 		</section>
+		<div id="carouselIndicators" class="carousel-indicators" aria-label="Article carousel position"></div>
 	</main>
 
 	<script>
+		const SET_SIZE = 3;
+		const MAX_SETS = 4;
+		const ROTATE_INTERVAL_MS = 10000;
+		const SLIDE_DURATION_MS = 750;
+		let carouselTimer = null;
+		let summaryResizeTimer = null;
+
 		function parseCsvRows(csvText) {
 			const rows = [];
 			let currentRow = [];
@@ -334,6 +431,11 @@
 				.replace(/'/g, '&#39;');
 		}
 
+		function normalizeTitle(rawTitle) {
+			const title = (rawTitle || '').trim();
+			return title.replace(/\.$/, '');
+		}
+
 		function formatDate(article) {
 			const source = article.query_date || article.pubdate || '';
 			const parsed = Date.parse(source);
@@ -365,7 +467,31 @@
 				return 'Authors unavailable';
 			}
 
-			return authorsList.map(name => {
+			let displayAuthors = [];
+			if (authorsList.length <= 3) {
+				displayAuthors = [...authorsList];
+			} else {
+				displayAuthors = authorsList.slice(0, 3);
+				const remaining = authorsList.slice(3);
+				const rochesterRemaining = remaining.filter(name => rochesterSet.has(name));
+				displayAuthors = displayAuthors.concat(rochesterRemaining);
+
+				const lastAuthor = authorsList[authorsList.length - 1];
+				if (!displayAuthors.includes(lastAuthor)) {
+					displayAuthors.push(lastAuthor);
+				}
+			}
+
+			const uniqueDisplayAuthors = [];
+			const seen = new Set();
+			for (const name of displayAuthors) {
+				if (!seen.has(name)) {
+					seen.add(name);
+					uniqueDisplayAuthors.push(name);
+				}
+			}
+
+			return uniqueDisplayAuthors.map(name => {
 				const safeName = escapeHtml(name);
 				if (rochesterSet.has(name)) {
 					return `<span class="roch-author">${safeName}</span>`;
@@ -374,17 +500,13 @@
 			}).join(', ');
 		}
 
-		function renderTiles(articles) {
-			const grid = document.getElementById('articleGrid');
-			if (!grid) return;
-
+		function buildArticleTilesHtml(articles) {
 			if (!articles.length) {
-				grid.innerHTML = '<div class="status-message">No articles available.</div>';
-				return;
+				return '';
 			}
 
-			grid.innerHTML = articles.map(article => {
-				const title = escapeHtml(article.title || 'Untitled article');
+			return articles.map(article => {
+				const title = escapeHtml(normalizeTitle(article.title || 'Untitled article'));
 				const authorsHtml = formatAuthorsHtml(article);
 				const journal = escapeHtml(article.journal || 'Journal unavailable');
 				const summary = escapeHtml(article.llm_summary || 'No AI summary available.');
@@ -392,7 +514,7 @@
 				const primarySpecialty = escapeHtml(article.primary_specialty || 'General Medicine');
 				const secondarySpecialty = escapeHtml(article.secondary_specialty || '');
 				const specialtyBadges = secondarySpecialty
-					? `<div class="specialty-badges"><div class="department-badge">${primarySpecialty}</div><div class="department-badge secondary">${secondarySpecialty}</div></div>`
+					? `<div class="specialty-badges"><div class="department-badge">${primarySpecialty} &middot; ${secondarySpecialty}</div></div>`
 					: `<div class="specialty-badges"><div class="department-badge">${primarySpecialty}</div></div>`;
 
 				return `
@@ -407,11 +529,138 @@
 						</div>
 						<div class="ai-summary-panel" aria-label="AI summary panel">
 							<div class="ai-summary-label">AI Summary</div>
-							<p class="ai-summary-text">${summary}</p>
+							<p class="ai-summary-text" data-full-summary="${summary}">${summary}</p>
 						</div>
 					</article>
 				`;
 			}).join('');
+		}
+
+		function clampSummaryTextToSpace() {
+			const summaryNodes = document.querySelectorAll('.ai-summary-text');
+			summaryNodes.forEach(node => {
+				const fullSummary = node.getAttribute('data-full-summary') || '';
+				node.textContent = fullSummary;
+
+				if (node.clientHeight <= 0) {
+					return;
+				}
+
+				if (node.scrollHeight <= node.clientHeight + 1) {
+					return;
+				}
+
+				let low = 0;
+				let high = fullSummary.length;
+				let best = '...';
+
+				while (low <= high) {
+					const mid = Math.floor((low + high) / 2);
+					const candidate = `${fullSummary.slice(0, mid).trimEnd()}...`;
+					node.textContent = candidate;
+
+					if (node.scrollHeight <= node.clientHeight + 1) {
+						best = candidate;
+						low = mid + 1;
+					} else {
+						high = mid - 1;
+					}
+				}
+
+				node.textContent = best;
+			});
+		}
+
+		function toArticleSets(articles, setSize, maxSets) {
+			const output = [];
+			for (let i = 0; i < articles.length && output.length < maxSets; i += setSize) {
+				const chunk = articles.slice(i, i + setSize);
+				if (chunk.length === setSize) {
+					output.push(chunk);
+				}
+			}
+			if (!output.length && articles.length) {
+				output.push(articles.slice(0, Math.min(setSize, articles.length)));
+			}
+			return output;
+		}
+
+		function renderIndicators(count, activeIndex) {
+			const indicators = document.getElementById('carouselIndicators');
+			if (!indicators) return;
+
+			if (!count || count <= 1) {
+				indicators.innerHTML = '';
+				return;
+			}
+
+			indicators.innerHTML = Array.from({ length: count }, (_, index) => (
+				`<span class="carousel-dot${index === activeIndex ? ' active' : ''}" aria-hidden="true"></span>`
+			)).join('');
+		}
+
+		function setActiveIndicator(index) {
+			const indicators = document.getElementById('carouselIndicators');
+			if (!indicators) return;
+			const dots = indicators.querySelectorAll('.carousel-dot');
+			dots.forEach((dot, dotIndex) => {
+				dot.classList.toggle('active', dotIndex === index);
+			});
+		}
+
+		function renderCarousel(articleSets) {
+			const grid = document.getElementById('articleGrid');
+			if (!grid) return;
+			if (carouselTimer) {
+				clearInterval(carouselTimer);
+				carouselTimer = null;
+			}
+
+			if (!articleSets.length) {
+				grid.innerHTML = '<div class="status-message">No articles available.</div>';
+				renderIndicators(0, 0);
+				return;
+			}
+
+			const baseCount = articleSets.length;
+			const setsForTrack = baseCount > 1 ? [...articleSets, articleSets[0]] : articleSets;
+			const trackHtml = setsForTrack.map(set => (
+				`<div class="carousel-slide"><div class="carousel-slide-grid">${buildArticleTilesHtml(set)}</div></div>`
+			)).join('');
+
+			grid.innerHTML = `<div class="carousel-track">${trackHtml}</div>`;
+			renderIndicators(baseCount, 0);
+			requestAnimationFrame(clampSummaryTextToSpace);
+
+			if (baseCount <= 1) {
+				return;
+			}
+
+			const track = grid.querySelector('.carousel-track');
+			if (!track) return;
+
+			let currentIndex = 0;
+			track.style.transition = `transform ${SLIDE_DURATION_MS}ms ease`;
+
+			const advanceSlide = () => {
+				currentIndex += 1;
+				track.style.transform = `translateX(-${currentIndex * 100}%)`;
+				setActiveIndicator(currentIndex >= baseCount ? 0 : currentIndex);
+			};
+
+			track.addEventListener('transitionend', () => {
+				clampSummaryTextToSpace();
+				if (currentIndex === baseCount) {
+					track.style.transition = 'none';
+					currentIndex = 0;
+					track.style.transform = 'translateX(0%)';
+					void track.offsetWidth;
+					track.style.transition = `transform ${SLIDE_DURATION_MS}ms ease`;
+					clampSummaryTextToSpace();
+				}
+			});
+
+			carouselTimer = setInterval(advanceSlide, ROTATE_INTERVAL_MS);
 		}
 
 		async function loadDashboardArticles() {
@@ -437,13 +686,22 @@
 					return a.__index - b.__index;
 				});
 
-				renderTiles(allArticles.slice(0, 3));
+				const rotatingArticles = allArticles.slice(0, SET_SIZE * MAX_SETS);
+				const articleSets = toArticleSets(rotatingArticles, SET_SIZE, MAX_SETS);
+				renderCarousel(articleSets);
 			} catch (error) {
 				grid.innerHTML = '<div class="status-message">Could not load recent articles.</div>';
+				renderIndicators(0, 0);
 			}
 		}
 
 		document.addEventListener('DOMContentLoaded', loadDashboardArticles);
+		window.addEventListener('resize', () => {
+			if (summaryResizeTimer) {
+				clearTimeout(summaryResizeTimer);
+			}
+			summaryResizeTimer = setTimeout(clampSummaryTextToSpace, 120);
+		});
 	</script>
 </body>
 </html>
