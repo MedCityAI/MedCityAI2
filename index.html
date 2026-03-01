@@ -2647,6 +2647,144 @@ function initializeLikes() {
 }
 
 // LinkedIn share helper: copy text, then open share dialog
+function copyTextToClipboard(text) {
+	if (navigator.clipboard && navigator.clipboard.writeText) {
+		return navigator.clipboard.writeText(text).then(() => true).catch(() => {
+			const textArea = document.createElement('textarea');
+			textArea.value = text;
+			textArea.setAttribute('readonly', '');
+			textArea.style.position = 'fixed';
+			textArea.style.opacity = '0';
+			document.body.appendChild(textArea);
+			textArea.focus();
+			textArea.select();
+			let copied = false;
+			try {
+				copied = document.execCommand('copy');
+			} catch (e) {
+				copied = false;
+			}
+			document.body.removeChild(textArea);
+			return copied;
+		});
+	}
+
+	return new Promise((resolve) => {
+		const textArea = document.createElement('textarea');
+		textArea.value = text;
+		textArea.setAttribute('readonly', '');
+		textArea.style.position = 'fixed';
+		textArea.style.opacity = '0';
+		document.body.appendChild(textArea);
+		textArea.focus();
+		textArea.select();
+		let copied = false;
+		try {
+			copied = document.execCommand('copy');
+		} catch (e) {
+			copied = false;
+		}
+		document.body.removeChild(textArea);
+		resolve(copied);
+	});
+}
+
+function showLinkedInCopyDialog(shareText) {
+	return new Promise((resolve) => {
+		const overlay = document.createElement('div');
+		overlay.style.position = 'fixed';
+		overlay.style.inset = '0';
+		overlay.style.background = 'rgba(0, 0, 0, 0.55)';
+		overlay.style.display = 'flex';
+		overlay.style.alignItems = 'center';
+		overlay.style.justifyContent = 'center';
+		overlay.style.padding = '16px';
+		overlay.style.zIndex = '99999';
+
+		const dialog = document.createElement('div');
+		dialog.style.background = '#fff';
+		dialog.style.borderRadius = '10px';
+		dialog.style.maxWidth = '540px';
+		dialog.style.width = '100%';
+		dialog.style.padding = '16px';
+		dialog.style.boxSizing = 'border-box';
+
+		const title = document.createElement('div');
+		title.textContent = 'Copy this LinkedIn post text:';
+		title.style.fontSize = '16px';
+		title.style.fontWeight = '600';
+		title.style.marginBottom = '10px';
+
+		const textBlock = document.createElement('textarea');
+		textBlock.value = shareText;
+		textBlock.readOnly = true;
+		textBlock.style.width = '100%';
+		textBlock.style.minHeight = '140px';
+		textBlock.style.resize = 'vertical';
+		textBlock.style.padding = '10px';
+		textBlock.style.boxSizing = 'border-box';
+		textBlock.style.marginBottom = '12px';
+
+		const actions = document.createElement('div');
+		actions.style.display = 'flex';
+		actions.style.justifyContent = 'flex-end';
+		actions.style.gap = '8px';
+
+		const cancelBtn = document.createElement('button');
+		cancelBtn.type = 'button';
+		cancelBtn.textContent = 'Cancel';
+		cancelBtn.style.padding = '8px 14px';
+
+		const copyBtn = document.createElement('button');
+		copyBtn.type = 'button';
+		copyBtn.textContent = 'Copy';
+		copyBtn.style.padding = '8px 14px';
+
+		actions.appendChild(cancelBtn);
+		actions.appendChild(copyBtn);
+
+		dialog.appendChild(title);
+		dialog.appendChild(textBlock);
+		dialog.appendChild(actions);
+		overlay.appendChild(dialog);
+		document.body.appendChild(overlay);
+		textBlock.focus();
+		textBlock.select();
+		let isClosed = false;
+
+		const onEscape = (event) => {
+			if (event.key === 'Escape') {
+				closeDialog(false);
+			}
+		};
+
+		const closeDialog = (copied) => {
+			if (isClosed) {
+				return;
+			}
+			isClosed = true;
+			document.removeEventListener('keydown', onEscape);
+			if (overlay.parentNode) {
+				overlay.parentNode.removeChild(overlay);
+			}
+			resolve(copied);
+		};
+
+		cancelBtn.addEventListener('click', () => closeDialog(false));
+		copyBtn.addEventListener('click', () => {
+			copyTextToClipboard(shareText).finally(() => closeDialog(true));
+		});
+
+		overlay.addEventListener('click', (event) => {
+			if (event.target === overlay) {
+				closeDialog(false);
+			}
+		});
+
+		document.addEventListener('keydown', onEscape);
+	});
+}
+
 function handleLinkedInShare(event, el) {
 	event.stopPropagation();
 	event.preventDefault();
@@ -2654,18 +2792,18 @@ function handleLinkedInShare(event, el) {
 	const encodedText = el.getAttribute('data-share-text') || '';
 	const shareText = encodedText ? decodeURIComponent(encodedText) : '';
 	const shareUrl = el.getAttribute('href');
+	const openShare = () => {
+		if (shareUrl) {
+			window.open(shareUrl, '_blank', 'noopener');
+		}
+	};
 
 	if (shareText) {
-		if (navigator.clipboard && navigator.clipboard.writeText) {
-			navigator.clipboard.writeText(shareText).catch(() => {
-				window.prompt('Copy this LinkedIn post text:', shareText);
-			});
-		} else {
-			window.prompt('Copy this LinkedIn post text:', shareText);
-		}
+		showLinkedInCopyDialog(shareText).finally(openShare);
+		return false;
 	}
 
-	window.open(shareUrl, '_blank', 'noopener');
+	openShare();
 	return false;
 }
 
