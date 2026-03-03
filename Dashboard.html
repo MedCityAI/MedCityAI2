@@ -32,28 +32,38 @@
 			pointer-events: none;
 		}
 
-		body::after {
-			content: '';
-			position: fixed;
-			top: 0;
-			left: 0;
-			right: 0;
-			height: calc(clamp(52px, 7vh, 84px) + 0.95rem);
-			background: #ffffff;
-			z-index: 0;
-			pointer-events: none;
-		}
-
 		.dashboard-shell {
 			height: 100vh;
 			display: grid;
 			grid-template-rows: auto minmax(0, 1fr);
-			gap: 0;
+			gap: 0.25rem;
 			padding: 0.6rem 1.1rem 0;
 			box-sizing: border-box;
 			font-family: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 			position: relative;
 			z-index: 1;
+		}
+
+		.weather-strip {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			gap: 1rem;
+			padding: 0.35rem 0.65rem;
+			border-radius: 12px;
+			background: rgba(255, 255, 255, 0.7);
+			border: 1px solid rgba(187, 205, 225, 0.62);
+			box-shadow: 0 6px 18px rgba(25, 42, 61, 0.12);
+			backdrop-filter: blur(4px);
+		}
+
+		.weather-meta {
+			font-size: 1.32rem;
+			font-weight: 600;
+			color: #35506a;
+			white-space: nowrap;
+			margin-left: auto;
+			text-align: right;
 		}
 
 		.dashboard-shell,
@@ -66,7 +76,12 @@
 			justify-content: space-between;
 			align-items: center;
 			gap: 0.8rem;
-			padding: 0;
+			padding: 0.35rem 0.65rem;
+			border-radius: 14px;
+			background: rgba(255, 255, 255, 0.72);
+			border: 1px solid rgba(188, 205, 224, 0.65);
+			box-shadow: 0 8px 24px rgba(25, 42, 61, 0.14);
+			backdrop-filter: blur(6px);
 		}
 
 		.dashboard-logo {
@@ -80,7 +95,7 @@
 			font-size: 1.58rem;
 			font-weight: 400;
 			line-height: 1.2;
-			color: #556270;
+			color: #5c6878;
 			text-align: right;
 			display: flex;
 			align-items: center;
@@ -103,6 +118,8 @@
 			margin: 0;
 			margin-top: 1rem;
 			align-self: stretch;
+			padding: 0.15rem 0.05rem;
+			box-sizing: border-box;
 		}
 
 		.carousel-track {
@@ -121,7 +138,7 @@
 
 		.carousel-slide-grid {
 			display: grid;
-			grid-template-columns: repeat(3, minmax(0, 1fr));
+			grid-template-columns: repeat(var(--cards-per-view, 3), minmax(0, 1fr));
 			grid-template-rows: minmax(0, 1fr);
 			gap: 1.3rem;
 			height: 100%;
@@ -137,14 +154,14 @@
 		}
 
 		.article-tile {
-			background: #ffffff;
-			border: 1px solid #dce6f2;
-			border-radius: 10px 10px 0 0;
+			background: linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(247, 251, 255, 0.94) 100%);
+			border: 1px solid #ccdaea;
+			border-radius: 16px 16px 0 0;
 			padding: 1.15rem 0.9rem 0.8rem;
 			display: grid;
 			grid-template-rows: auto auto auto 1fr;
 			gap: 0.45rem;
-			box-shadow: 0 1px 3px rgba(16, 24, 40, 0.06);
+			box-shadow: 0 10px 24px rgba(19, 38, 59, 0.18);
 			min-height: 0;
 			overflow: hidden;
 			position: relative;
@@ -156,12 +173,12 @@
 			position: absolute;
 			top: 0;
 			left: 0;
-			background: #e74c3c;
+			background: linear-gradient(135deg, #ef6a5c 0%, #d94739 100%);
 			color: #fff;
 			font-size: 1.12rem;
 			font-weight: 400;
-			padding: 0.28rem 0.72rem;
-			border-radius: 8px 0 8px 0;
+			padding: 0.6rem 0.9rem;
+			border-radius: 16px 0 14px 0;
 			text-transform: uppercase;
 			letter-spacing: 0.03em;
 			line-height: 1.2;
@@ -182,18 +199,21 @@
 
 		.department-badge {
 			background: transparent;
-			color: #2c3e50;
+			color: #355372;
 			font-size: 0.96rem;
 			font-weight: 500;
 			font-style: italic;
 			line-height: 1.2;
+			padding: 0;
+			border: none;
+			border-radius: 0;
 		}
 
 		.tile-title {
-			margin: 1.25rem 0 0;
+			margin: 1.7rem 0 0;
 			font-size: 1.7rem;
 			font-weight: 500;
-			line-height: 1.35;
+			line-height: 1.28;
 			color: #0056a3;
 			text-transform: none;
 			letter-spacing: normal;
@@ -216,8 +236,9 @@
 
 		.tile-authors {
 			border-top: 1px dashed #c6d4e4;
-			padding-top: 0.45rem;
+			padding-top: 0.55rem;
 			margin-top: 0.2rem;
+			color: #2f3f52;
 		}
 
 		.tile-authors .roch-author {
@@ -233,10 +254,10 @@
 		}
 
 		.ai-summary-panel {
-			border: 1px solid #cfdcf1;
+			border: 1px solid #bfd2eb;
 			border-top: none;
-			border-radius: 0 0 10px 10px;
-			background: #eaf3ff;
+			border-radius: 0 0 16px 16px;
+			background: linear-gradient(180deg, #edf5ff 0%, #e3efff 100%);
 			padding: 0.7rem 0.9rem 0.8rem;
 			min-height: 0;
 			display: grid;
@@ -244,6 +265,7 @@
 			gap: 0.45rem;
 			height: auto;
 			box-sizing: border-box;
+			box-shadow: 0 10px 20px rgba(23, 47, 72, 0.14);
 		}
 
 		.ai-summary-label {
@@ -295,27 +317,28 @@
 		}
 
 		.carousel-dot {
-			width: 11px;
-			height: 11px;
+			width: 12px;
+			height: 12px;
 			border-radius: 50%;
-			background: #bfd0e4;
+			background: #d4e2f1;
 			opacity: 0.85;
 			transition: transform 0.25s ease, background-color 0.25s ease, opacity 0.25s ease;
 		}
 
 		.carousel-dot.active {
-			background: #0056a3;
+			background: #0a5ea8;
 			opacity: 1;
-			transform: scale(1.18);
+			transform: scale(1.22);
+			box-shadow: 0 0 0 4px rgba(10, 94, 168, 0.16);
 		}
 	</style>
 </head>
 <body>
 	<main class="dashboard-shell" aria-label="MedCityAI Dashboard">
-		<header class="dashboard-header">
+		<div class="weather-strip" aria-live="polite" aria-label="Rochester weather and local time">
 			<img class="dashboard-logo" src="images/medcityai_logo1.png" alt="MedCityAI" />
-			<p class="dashboard-tagline">a biomedical research feed for <span class="tagline-location">Rochester, MN</span></p>
-		</header>
+			<div id="weatherMeta" class="weather-meta">--°F &middot; -- &middot; --</div>
+		</div>
 
 		<section id="articleGrid" class="article-grid" aria-label="Three most recent articles">
 			<div class="status-message">Loading latest articles...</div>
@@ -326,10 +349,90 @@
 	<script>
 		const SET_SIZE = 3;
 		const MAX_SETS = 4;
-		const ROTATE_INTERVAL_MS = 10000;
-		const SLIDE_DURATION_MS = 750;
+		const ROTATE_INTERVAL_MS = 14000;
+		const SLIDE_DURATION_MS = 1300;
+		const WEATHER_REFRESH_MS = 15 * 60 * 1000;
+		const ROCHESTER_TIMEZONE = 'America/Chicago';
+		const WEATHER_API_URL = 'https://api.open-meteo.com/v1/forecast?latitude=44.0121&longitude=-92.4802&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,is_day&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=America%2FChicago';
 		let carouselTimer = null;
 		let summaryResizeTimer = null;
+		let layoutResizeTimer = null;
+		let weatherTimer = null;
+		let clockTimer = null;
+		let allDashboardArticles = [];
+		let currentCardsPerView = 3;
+
+		function getCardsPerView() {
+			const width = window.innerWidth || document.documentElement.clientWidth || 0;
+			if (width >= 2400) return 6;
+			if (width >= 1900) return 5;
+			if (width >= 1500) return 4;
+			if (width >= 1100) return 3;
+			return 2;
+		}
+		let latestTemperatureText = '--°F';
+
+		function updateWeatherMeta() {
+			const weatherMetaEl = document.getElementById('weatherMeta');
+			if (!weatherMetaEl) return;
+
+			const now = new Date();
+			const dateText = new Intl.DateTimeFormat('en-US', {
+				timeZone: ROCHESTER_TIMEZONE,
+				weekday: 'short',
+				month: 'short',
+				day: 'numeric'
+			}).format(now);
+
+			const timeText = new Intl.DateTimeFormat('en-US', {
+				timeZone: ROCHESTER_TIMEZONE,
+				hour: 'numeric',
+				minute: '2-digit'
+			}).format(now);
+
+			weatherMetaEl.textContent = `${latestTemperatureText} · ${dateText} · ${timeText}`;
+		}
+
+		async function refreshWeatherStrip() {
+			const weatherMetaEl = document.getElementById('weatherMeta');
+			if (!weatherMetaEl) return;
+
+			try {
+				const response = await fetch(WEATHER_API_URL, { cache: 'no-store' });
+				if (!response.ok) {
+					throw new Error('Weather unavailable');
+				}
+
+				const data = await response.json();
+				const current = data && data.current ? data.current : null;
+				if (!current) {
+					throw new Error('Weather data missing');
+				}
+
+				latestTemperatureText = Number.isFinite(current.temperature_2m)
+					? `${Math.round(current.temperature_2m)}°F`
+					: '--°F';
+				updateWeatherMeta();
+			} catch (error) {
+				latestTemperatureText = '--°F';
+				updateWeatherMeta();
+			}
+		}
+
+		function initWeatherStrip() {
+			if (weatherTimer) {
+				clearInterval(weatherTimer);
+			}
+			if (clockTimer) {
+				clearInterval(clockTimer);
+			}
+
+			updateWeatherMeta();
+			refreshWeatherStrip();
+
+			clockTimer = setInterval(updateWeatherMeta, 1000);
+			weatherTimer = setInterval(refreshWeatherStrip, WEATHER_REFRESH_MS);
+		}
 
 		function parseCsvRows(csvText) {
 			const rows = [];
@@ -623,6 +726,7 @@
 			}
 
 			const baseCount = articleSets.length;
+			grid.style.setProperty('--cards-per-view', String(currentCardsPerView));
 			const setsForTrack = baseCount > 1 ? [...articleSets, articleSets[0]] : articleSets;
 			const trackHtml = setsForTrack.map(set => (
 				`<div class="carousel-slide"><div class="carousel-slide-grid">${buildArticleTilesHtml(set)}</div></div>`
@@ -663,6 +767,15 @@
 			carouselTimer = setInterval(advanceSlide, ROTATE_INTERVAL_MS);
 		}
 
+		function renderResponsiveCarousel() {
+			if (!allDashboardArticles.length) return;
+
+			currentCardsPerView = getCardsPerView();
+			const rotatingArticles = allDashboardArticles.slice(0, currentCardsPerView * MAX_SETS);
+			const articleSets = toArticleSets(rotatingArticles, currentCardsPerView, MAX_SETS);
+			renderCarousel(articleSets);
+		}
+
 		async function loadDashboardArticles() {
 			const grid = document.getElementById('articleGrid');
 			if (!grid) return;
@@ -686,21 +799,33 @@
 					return a.__index - b.__index;
 				});
 
-				const rotatingArticles = allArticles.slice(0, SET_SIZE * MAX_SETS);
-				const articleSets = toArticleSets(rotatingArticles, SET_SIZE, MAX_SETS);
-				renderCarousel(articleSets);
+				allDashboardArticles = allArticles;
+				renderResponsiveCarousel();
 			} catch (error) {
 				grid.innerHTML = '<div class="status-message">Could not load recent articles.</div>';
 				renderIndicators(0, 0);
 			}
 		}
 
-		document.addEventListener('DOMContentLoaded', loadDashboardArticles);
+		document.addEventListener('DOMContentLoaded', () => {
+			initWeatherStrip();
+			loadDashboardArticles();
+		});
 		window.addEventListener('resize', () => {
 			if (summaryResizeTimer) {
 				clearTimeout(summaryResizeTimer);
 			}
 			summaryResizeTimer = setTimeout(clampSummaryTextToSpace, 120);
+
+			if (layoutResizeTimer) {
+				clearTimeout(layoutResizeTimer);
+			}
+			layoutResizeTimer = setTimeout(() => {
+				const nextCardsPerView = getCardsPerView();
+				if (nextCardsPerView !== currentCardsPerView) {
+					renderResponsiveCarousel();
+				}
+			}, 160);
 		});
 	</script>
 </body>
