@@ -32,7 +32,9 @@
 		}
 
 		.dashboard-shell {
+			min-height: 100vh;
 			height: 100vh;
+			max-height: 100vh;
 			display: grid;
 			grid-template-columns: 430px minmax(0, 1fr);
 			gap: 0.9rem;
@@ -95,7 +97,9 @@
 			padding: 0.2rem 0.05rem 0;
 			box-sizing: border-box;
 			min-height: 0;
-			height: 100%;
+			height: calc(100vh - 2.2rem);
+			max-height: calc(100vh - 2.2rem);
+			overflow-y: auto;
 			align-self: stretch;
 		}
 
