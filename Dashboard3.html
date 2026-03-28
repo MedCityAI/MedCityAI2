@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>MedCityAI Dashboard 3</title>
+	<link rel="icon" type="image/png" href="images/medcityai_simple1.png?v=1" />
+	<style>
+		*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+		html, body {
+			height: 100%;
+			overflow: hidden;
+		}
+
+		body {
+			font-family: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+			background: #5f7894;
+			color: #1f2d3d;
+			font-size: 18px;
+			position: relative;
+		}
+
+		body::before {
+			content: '';
+			position: fixed;
+			inset: 0;
+			background: linear-gradient(120deg, rgba(92, 118, 148, 0.58) 0%, rgba(73, 99, 129, 0.62) 100%),
+				url('images/banner3.jpg') center center / cover no-repeat;
+			opacity: 0.68;
+			z-index: 0;
+			pointer-events: none;
+		}
+
+		.dashboard-shell {
+			height: 100vh;
+			display: grid;
+			grid-template-rows: auto minmax(0, 1fr) auto;
+			gap: 0.2rem;
+			padding: 0 0.8rem 0;
+			position: relative;
+			z-index: 1;
+		}
+
+		/* ── Header bar ── */
+		.dashboard-header {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			padding: 1rem 0 2.5rem;
+			margin: 0 -0.8rem;
+			border-radius: 0;
+			background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 60%, rgba(255,255,255,0.95) 75%, rgba(255,255,255,0.7) 88%, rgba(255,255,255,0) 100%);
+			border: none;
+			box-shadow: none;
+			min-height: 0;
+			position: relative;
+			overflow: visible;
+			gap: 0.3rem;
+		}
+
+		.dashboard-header::before {
+			display: none;
+		}
+
+		.dashboard-header::after {
+			display: none;
+		}
+
+		.dashboard-logo {
+			height: clamp(60px, 9vh, 100px);
+			width: auto;
+			object-fit: contain;
+			flex-shrink: 0;
+			position: relative;
+			z-index: 1;
+		}
+
+		.header-title {
+			font-size: clamp(1.3rem, 2.8vh, 2rem);
+			font-weight: 800;
+			color: #2a4a6b;
+			white-space: nowrap;
+			text-align: center;
+			text-shadow: none;
+			position: relative;
+			z-index: 1;
+			letter-spacing: 0.01em;
+			text-transform: none;
+		}
+
+		.specialty-pill {
+			display: inline-block;
+			margin-left: 0.5rem;
+			padding: 0.18rem 0.75rem 0.2rem;
+			border-radius: 3px;
+			background: linear-gradient(135deg, #ef6a5c 0%, #e8523f 100%);
+			color: #ffffff;
+			font-style: normal;
+			font-weight: 800;
+			font-size: 1em;
+			box-shadow: none;
+			letter-spacing: 0.03em;
+			text-transform: uppercase;
+		}
+
+		/* ── Article grid container ── */
+		.article-grid {
+			column-count: 2;
+			column-gap: 1rem;
+			overflow: hidden;
+			min-height: 0;
+			height: 100%;
+			padding: 0.6rem 0 0.2rem;
+		}
+
+		/* ── Single article card ── */
+		.article-card {
+			background: linear-gradient(160deg, rgba(255,255,255,0.92) 0%, rgba(235,245,255,0.88) 100%);
+			border: 1px solid rgba(180,210,240,0.5);
+			border-radius: 12px;
+			padding: 0.7rem 0.8rem 0.6rem 0.8rem;
+			display: flex;
+			flex-direction: column;
+			gap: 0.35rem;
+			box-shadow: 0 4px 18px rgba(10, 40, 80, 0.12), 0 1.5px 4px rgba(10, 60, 120, 0.08);
+			backdrop-filter: blur(4px);
+			overflow: hidden;
+			position: relative;
+			break-inside: avoid;
+			-webkit-column-break-inside: avoid;
+			page-break-inside: avoid;
+			margin-bottom: 1rem;
+			opacity: 1;
+			transform: translateY(0);
+			will-change: transform, opacity;
+		}
+
+		.article-card.swipe-out {
+			animation: cardSwipeOut 1200ms cubic-bezier(0.22, 0.65, 0.2, 1) forwards;
+			animation-delay: var(--card-delay, 0ms);
+		}
+
+		.article-card.swipe-in {
+			opacity: 0;
+			animation: cardSwipeIn 1000ms cubic-bezier(0.16, 0.84, 0.24, 1) forwards;
+			animation-delay: var(--card-delay, 0ms);
+		}
+
+		@keyframes cardSwipeOut {
+			0%   { opacity: 1; transform: translateY(0) scale(1); }
+			100% { opacity: 0; transform: translateY(-120%) scale(0.985); }
+		}
+
+		@keyframes cardSwipeIn {
+			0%   { opacity: 0; transform: translateY(30%); }
+			100% { opacity: 1; transform: translateY(0); }
+		}
+
+		.card-number {
+			position: absolute;
+			top: 0;
+			left: 0;
+			background: linear-gradient(135deg, #ef6a5c 0%, #e8523f 100%);
+			color: #fff;
+			font-size: clamp(0.6rem, 1vh, 0.82rem);
+			font-weight: 600;
+			padding: 0.1rem 0.45rem 0.1rem;
+			border-radius: 12px 0 8px 0;
+			line-height: 1.3;
+			letter-spacing: 0.02em;
+			text-transform: uppercase;
+			text-align: center;
+		}
+
+		.card-date {
+			display: inline;
+			background: none;
+			color: #6a86a3;
+			font-size: clamp(0.65rem, 1vh, 0.88rem);
+			font-weight: inherit;
+			padding: 0;
+			border-radius: 0;
+			text-transform: none;
+			letter-spacing: inherit;
+			line-height: inherit;
+			font-style: italic;
+			margin-left: 0;
+			vertical-align: baseline;
+		}
+
+		.card-specialty {
+			position: absolute;
+			top: 0.18rem;
+			right: 0.4rem;
+			color: #5a7a9a;
+			font-size: clamp(0.58rem, 0.9vh, 0.78rem);
+			font-weight: 500;
+			font-style: italic;
+			letter-spacing: 0.02em;
+		}
+
+		.card-title {
+			margin-top: 1.1rem;
+			font-size: clamp(1rem, 1.8vh, 1.4rem);
+			font-weight: 700;
+			line-height: 1.35;
+			color: #0a4c8a;
+			letter-spacing: -0.01em;
+		}
+
+		.card-authors {
+			font-size: clamp(0.72rem, 1.15vh, 0.98rem);
+			line-height: 1.4;
+			color: #3a4f66;
+			border-top: 1px solid rgba(180,210,240,0.45);
+			padding-top: 0.25rem;
+			margin-top: 0.1rem;
+		}
+
+		.card-authors .roch-author {
+			text-decoration: underline;
+			text-decoration-thickness: 1px;
+			text-underline-offset: 2px;
+			text-decoration-color: #687b90;
+		}
+
+		.card-journal {
+			font-size: clamp(0.65rem, 1vh, 0.88rem);
+			font-style: italic;
+			color: #6a86a3;
+			margin-top: 0.05rem;
+		}
+
+		/* ── Status message ── */
+		.status-message {
+			column-span: all;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			gap: 1rem;
+			font-size: 1.2rem;
+			font-weight: 600;
+			color: #4f647d;
+			background: rgba(255, 255, 255, 0.85);
+			border: 1px solid #dce6f2;
+			border-radius: 12px;
+			padding: 2rem;
+		}
+
+		/* ── Loading spinner ── */
+		.loading-spinner {
+			width: 48px;
+			height: 48px;
+			border: 4px solid #dce6f2;
+			border-top-color: #ef6a5c;
+			border-radius: 50%;
+			animation: spin 0.8s linear infinite;
+		}
+
+		.loading-overlay {
+			position: absolute;
+			inset: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		@keyframes spin {
+			to { transform: rotate(360deg); }
+		}
+
+		/* ── Progress bar ── */
+		.progress-bar-container {
+			width: 100%;
+			height: 18px;
+			background: rgba(255,255,255,0.25);
+			border-radius: 0;
+			overflow: hidden;
+			margin: 0 -0.8rem;
+			width: calc(100% + 1.6rem);
+		}
+
+		.progress-bar-fill {
+			height: 100%;
+			width: 0%;
+			background: linear-gradient(90deg, #ef6a5c, #f0a040, #ef6a5c);
+			background-size: 200% 100%;
+			animation: shimmer 2s ease-in-out infinite;
+			transition: width 0.3s linear;
+			border-radius: 0;
+		}
+
+		@keyframes shimmer {
+			0% { background-position: 200% 0; }
+			100% { background-position: -200% 0; }
+		}
+	</style>
+</head>
+<body>
+	<main class="dashboard-shell" aria-label="MedCityAI Dashboard 3">
+		<header class="dashboard-header">
+			<img class="dashboard-logo" src="images/medcityai_logo1.png" alt="MedCityAI" />
+			<div class="header-title">Rochester's Most Recent in: <span id="specialtyLabel" class="specialty-pill">Radiology</span></div>
+		</header>
+
+		<section id="articleGrid" class="article-grid" aria-label="Recent articles">
+			<div class="status-message">Loading latest articles...</div>
+		</section>
+
+		<div class="progress-bar-container">
+			<div id="progressBar" class="progress-bar-fill"></div>
+		</div>
+	</main>
+
+	<script>
+		const ARTICLES_PER_PAGE = 200;
+		const TOPICS = ['Radiology', 'Oncology', 'Cardiology', 'AI/ML/DL'];
+		const TOPIC_DISPLAY_MS = 10000;
+		const BLANK_SCREEN_MS = 2000;
+
+		let allArticles = [];
+		let topicIndex = 0;
+		let currentSpecialty = TOPICS[topicIndex];
+
+		function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+		/* ── CSV parsing ── */
+		function parseCsvRows(csvText) {
+			const rows = [];
+			let currentRow = [];
+			let currentValue = '';
+			let inQuotes = false;
+			for (let i = 0; i < csvText.length; i++) {
+				const c = csvText[i], n = csvText[i + 1];
+				if (c === '"') { if (inQuotes && n === '"') { currentValue += '"'; i++; } else { inQuotes = !inQuotes; } continue; }
+				if (c === ',' && !inQuotes) { currentRow.push(currentValue.trim()); currentValue = ''; continue; }
+				if ((c === '\n' || c === '\r') && !inQuotes) { if (c === '\r' && n === '\n') i++; currentRow.push(currentValue.trim()); currentValue = ''; if (currentRow.some(v => v !== '')) rows.push(currentRow); currentRow = []; continue; }
+				currentValue += c;
+			}
+			if (currentValue.length || currentRow.length) { currentRow.push(currentValue.trim()); if (currentRow.some(v => v !== '')) rows.push(currentRow); }
+			return rows;
+		}
+
+		function csvToObjects(csvText) {
+			const rows = parseCsvRows(csvText);
+			if (!rows.length) return [];
+			const headers = rows[0].map(h => h.replace(/^"|"$/g, '').trim());
+			const out = [];
+			for (let i = 1; i < rows.length; i++) {
+				const row = rows[i];
+				if (!row || !row.length) continue;
+				const obj = {};
+				for (let j = 0; j < headers.length; j++) obj[headers[j]] = (row[j] || '').replace(/^"|"$/g, '').trim();
+				out.push(obj);
+			}
+			return out;
+		}
+
+		/* ── Helpers ── */
+		function toDate(a) {
+			const q = a.query_date ? Date.parse(a.query_date) : NaN;
+			if (!Number.isNaN(q)) return q;
+			const p = a.pubdate ? Date.parse(a.pubdate) : NaN;
+			if (!Number.isNaN(p)) return p;
+			return 0;
+		}
+
+		function escapeHtml(v) {
+			return (v || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+		}
+
+		function normalizeTitle(t) { return (t || '').trim().replace(/\.$/, ''); }
+
+		function formatDate(a) {
+			const src = a.query_date || a.pubdate || '';
+			const p = Date.parse(src);
+			if (Number.isNaN(p)) return src || '';
+			return new Date(p).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+		}
+
+		function formatAuthorsHtml(article) {
+			const rochesterRaw = article.rochester_authors || '';
+			const rochesterAuthors = rochesterRaw.split('|').map(n => n.trim()).filter(Boolean);
+			const rochesterSet = new Set(rochesterAuthors);
+			let authorsList = [];
+			if (article.authors_display && article.authors_display.trim()) {
+				authorsList = article.authors_display.split(',').map(n => n.trim()).filter(Boolean);
+			} else if (article.authors && article.authors.trim()) {
+				authorsList = article.authors.split('|').map(n => n.trim()).filter(Boolean);
+			}
+			if (!authorsList.length) return 'Authors unavailable';
+			let display = [];
+			if (authorsList.length <= 3) { display = [...authorsList]; }
+			else {
+				display = authorsList.slice(0, 3);
+				const remaining = authorsList.slice(3);
+				display = display.concat(remaining.filter(n => rochesterSet.has(n)));
+				const last = authorsList[authorsList.length - 1];
+				if (!display.includes(last)) display.push(last);
+			}
+			const unique = []; const seen = new Set();
+			for (const n of display) { if (!seen.has(n)) { seen.add(n); unique.push(n); } }
+			return unique.map(n => {
+				const safe = escapeHtml(n);
+				return rochesterSet.has(n) ? `<span class="roch-author">${safe}</span>` : safe;
+			}).join(', ');
+		}
+
+		/* ── Filter articles by specialty ── */
+		function filterBySpecialty(articles, specialty) {
+			return articles.filter(a => {
+				const p = (a.primary_specialty || '').trim();
+				const s = (a.secondary_specialty || '').trim();
+				return p === specialty || s === specialty;
+			});
+		}
+
+		/* ── Render ── */
+		function renderCards(specialty) {
+			const container = document.getElementById('articleGrid');
+			if (!container) return;
+
+			const filtered = filterBySpecialty(allArticles, specialty);
+
+			if (!filtered.length) {
+				container.innerHTML = `<div class="status-message">No ${escapeHtml(specialty)} articles available.</div>`;
+				return;
+			}
+
+			container.innerHTML = '';
+			let cardNum = 0;
+			const maxCards = 10;
+
+			for (const article of filtered) {
+				const title = escapeHtml(normalizeTitle(article.title || 'Untitled'));
+				const authors = formatAuthorsHtml(article);
+				const journal = escapeHtml(article.journal || '');
+				const dateText = escapeHtml(formatDate(article));
+				const primary = escapeHtml(article.primary_specialty || '');
+				const secondary = escapeHtml(article.secondary_specialty || '');
+				const specText = secondary ? `${primary} &middot; ${secondary}` : primary;
+
+				cardNum++;
+				container.insertAdjacentHTML('beforeend', `
+					<article class="article-card">
+						<span class="card-number">${dateText}</span>
+						<span class="card-specialty">${specText}</span>
+						<h2 class="card-title">${title}</h2>
+						<p class="card-authors">${authors}</p>
+						<p class="card-journal">${journal}</p>
+					</article>`);
+
+				if (cardNum >= maxCards) break;
+			}
+		}
+
+		/* ── Swipe animations ── */
+		async function animateCardsOut() {
+			const cards = Array.from(document.querySelectorAll('.article-card'));
+			if (!cards.length) return;
+			cards.forEach((card, idx) => {
+				const delay = (cards.length - 1 - idx) * 70;
+				card.style.setProperty('--card-delay', `${delay}ms`);
+				card.classList.remove('swipe-in');
+				card.classList.add('swipe-out');
+			});
+			await sleep((cards.length - 1) * 70 + 1300);
+		}
+
+		async function animateCardsIn() {
+			const cards = Array.from(document.querySelectorAll('.article-card'));
+			if (!cards.length) return;
+			cards.forEach((card, idx) => {
+				const delay = idx * 55;
+				card.style.setProperty('--card-delay', `${delay}ms`);
+				card.classList.remove('swipe-out');
+				card.classList.add('swipe-in');
+			});
+			await sleep((cards.length - 1) * 55 + 1100);
+		}
+
+		/* ── Progress bar animation ── */
+		function startProgressBar(durationMs) {
+			const bar = document.getElementById('progressBar');
+			if (!bar) return;
+			bar.style.transition = 'none';
+			bar.style.width = '0%';
+			// force reflow
+			bar.offsetWidth;
+			bar.style.transition = `width ${durationMs}ms linear`;
+			bar.style.width = '100%';
+		}
+
+		function resetProgressBar() {
+			const bar = document.getElementById('progressBar');
+			if (!bar) return;
+			bar.style.transition = 'none';
+			bar.style.width = '0%';
+		}
+
+		/* ── Auto-rotating topic loop ── */
+		async function runTopicLoop() {
+			const label = document.getElementById('specialtyLabel');
+			const container = document.getElementById('articleGrid');
+			if (!label || !container) return;
+
+			while (true) {
+				startProgressBar(TOPIC_DISPLAY_MS);
+				await sleep(TOPIC_DISPLAY_MS);
+
+				resetProgressBar();
+
+				/* Update label to next specialty BEFORE animating out */
+				topicIndex = (topicIndex + 1) % TOPICS.length;
+				currentSpecialty = TOPICS[topicIndex];
+				label.textContent = currentSpecialty;
+
+				await animateCardsOut();
+
+				/* Show loading spinner */
+				container.innerHTML = `<div class="loading-overlay"><div class="loading-spinner"></div></div>`;
+				await sleep(BLANK_SCREEN_MS);
+
+				renderCards(currentSpecialty);
+				await animateCardsIn();
+			}
+		}
+
+		/* ── Load data ── */
+		async function loadArticles() {
+			const container = document.getElementById('articleGrid');
+			if (!container) return;
+			try {
+				const res = await fetch('pubmed_data.csv', { cache: 'no-store' });
+				if (!res.ok) throw new Error();
+				const csv = await res.text();
+				const parsed = csvToObjects(csv)
+					.filter(a => a && a.pmid && a.title)
+					.map((a, i) => ({ ...a, __index: i }));
+				parsed.sort((a, b) => { const d = toDate(b) - toDate(a); return d !== 0 ? d : a.__index - b.__index; });
+				allArticles = parsed;
+				renderCards(currentSpecialty);
+				runTopicLoop();
+			} catch {
+				container.innerHTML = '<div class="status-message">Could not load articles.</div>';
+			}
+		}
+
+		document.addEventListener('DOMContentLoaded', () => {
+			loadArticles();
+		});
+	</script>
+</body>
+</html>
