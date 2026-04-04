@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>MedCityAI Dashboard 4</title>
+	<link rel="icon" type="image/png" href="images/medcityai_simple1.png?v=1" />
+	<style>
+		*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+		html, body {
+			height: 100%;
+			overflow: hidden;
+		}
+
+		body {
+			font-family: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+			background: linear-gradient(145deg, #e4edf3 0%, #d4e0e8 48%, #c9d7e1 100%);
+			color: #1f2d3d;
+			font-size: 18px;
+			position: relative;
+		}
+
+		body::before {
+			content: '';
+			position: fixed;
+			inset: 0;
+			background: radial-gradient(circle at 16% 12%, rgba(143, 169, 190, 0.28) 0%, rgba(143, 169, 190, 0) 44%),
+				radial-gradient(circle at 84% 82%, rgba(112, 140, 165, 0.2) 0%, rgba(112, 140, 165, 0) 42%),
+				linear-gradient(125deg, rgba(255, 255, 255, 0.35) 0%, rgba(226, 237, 246, 0.24) 100%);
+			opacity: 1;
+			z-index: 0;
+			pointer-events: none;
+		}
+
+		.dashboard-shell {
+			height: 100vh;
+			display: grid;
+			grid-template-rows: auto auto minmax(0, 1fr) auto;
+			gap: 0.35rem;
+			padding: 0 0.8rem 0;
+			position: relative;
+			z-index: 1;
+		}
+
+		.dashboard-shell::after {
+			content: '';
+			position: absolute;
+			left: 0;
+			right: 0;
+			bottom: clamp(72px, 11vh, 110px);
+			height: clamp(72px, 12vh, 120px);
+			background: linear-gradient(to bottom, rgba(212, 224, 232, 0) 0%, rgba(212, 224, 232, 0.86) 58%, rgba(212, 224, 232, 0.98) 100%);
+			z-index: 4;
+			pointer-events: none;
+		}
+
+		.dashboard-header-image {
+			margin: 0 -0.8rem;
+			height: clamp(140px, 26vh, 240px);
+			position: relative;
+			overflow: hidden;
+		}
+
+		.dashboard-header-image img {
+			display: block;
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			object-position: center;
+		}
+
+		.header-title-row {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			padding: 0.5rem 0.3rem 0.35rem;
+			gap: 0.35rem;
+		}
+
+		.header-title {
+			font-size: clamp(1.3rem, 2.8vh, 2rem);
+			font-weight: 800;
+			color: #244664;
+			text-align: center;
+			letter-spacing: 0.01em;
+			text-shadow: 0 1px 0 rgba(255,255,255,0.4);
+		}
+
+		.specialty-pill {
+			display: inline-block;
+			margin-left: 0.45rem;
+			padding: 0.16rem 0.7rem 0.2rem;
+			border-radius: 3px;
+			background: linear-gradient(135deg, #ef6a5c 0%, #e8523f 100%);
+			color: #ffffff;
+			font-weight: 800;
+			font-size: 0.93em;
+			letter-spacing: 0.03em;
+			text-transform: uppercase;
+			width: 15ch;
+			text-align: center;
+			white-space: nowrap;
+		}
+
+		.topic-dots {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 0.38rem;
+		}
+
+		.topic-dot {
+			width: 9px;
+			height: 9px;
+			border-radius: 50%;
+			background: rgba(69, 102, 130, 0.32);
+			border: 1px solid rgba(53, 87, 116, 0.36);
+			transform: scale(1);
+			transition: transform 260ms ease, background-color 260ms ease, box-shadow 260ms ease;
+		}
+
+		.topic-dot.active {
+			background: #e8523f;
+			border-color: #e8523f;
+			box-shadow: 0 0 0 3px rgba(232, 82, 63, 0.18);
+			transform: scale(1.14);
+		}
+
+		.article-grid {
+			column-count: 2;
+			column-fill: auto;
+			column-gap: 1rem;
+			overflow: visible;
+			min-height: 0;
+			height: auto;
+			padding: 0.3rem 0 0;
+			position: relative;
+			z-index: 2;
+			margin-bottom: -14.5rem;
+			-webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 92%, rgba(0, 0, 0, 0) 100%);
+			mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 92%, rgba(0, 0, 0, 0) 100%);
+		}
+
+		.article-grid.slide-out {
+			animation: specialtySlideOut 180ms cubic-bezier(0.3, 0.64, 0.36, 1) forwards;
+		}
+
+		.article-grid.slide-in {
+			animation: specialtySlideIn 220ms cubic-bezier(0.2, 0.8, 0.24, 1) forwards;
+		}
+
+		@keyframes specialtySlideOut {
+			from { opacity: 1; transform: translateY(0); }
+			to { opacity: 0; transform: translateY(-12px); }
+		}
+
+		@keyframes specialtySlideIn {
+			from { opacity: 0; transform: translateY(14px); }
+			to { opacity: 1; transform: translateY(0); }
+		}
+
+		.article-card {
+			background: linear-gradient(160deg, rgba(255,255,255,0.93) 0%, rgba(235,245,255,0.9) 100%);
+			border: 1px solid rgba(180,210,240,0.5);
+			border-radius: 12px;
+			padding: 0.7rem 0.8rem 0.6rem 0.8rem;
+			display: flex;
+			flex-direction: column;
+			gap: 0.35rem;
+			box-shadow: 0 4px 18px rgba(10, 40, 80, 0.14), 0 1.5px 4px rgba(10, 60, 120, 0.08);
+			backdrop-filter: blur(4px);
+			overflow: hidden;
+			position: relative;
+			break-inside: avoid;
+			-webkit-column-break-inside: avoid;
+			page-break-inside: avoid;
+			margin-bottom: 1rem;
+		}
+
+		.card-number {
+			position: absolute;
+			top: 0;
+			left: 0;
+			background: linear-gradient(135deg, #ef6a5c 0%, #e8523f 100%);
+			color: #fff;
+			font-size: clamp(0.6rem, 1vh, 0.82rem);
+			font-weight: 600;
+			padding: 0.2rem 0.45rem 0.22rem;
+			border-radius: 12px 0 8px 0;
+			line-height: 1.3;
+			letter-spacing: 0.02em;
+			text-transform: uppercase;
+			text-align: center;
+		}
+
+		.card-specialty {
+			position: absolute;
+			top: 0.18rem;
+			right: 0.4rem;
+			color: #5a7a9a;
+			font-size: clamp(0.58rem, 0.9vh, 0.78rem);
+			font-weight: 500;
+			font-style: italic;
+			letter-spacing: 0.02em;
+		}
+
+		.card-title {
+			margin-top: 1.1rem;
+			font-size: clamp(1rem, 1.8vh, 1.4rem);
+			font-weight: 700;
+			line-height: 1.35;
+			color: #0a4c8a;
+			letter-spacing: -0.01em;
+		}
+
+		.card-authors {
+			font-size: clamp(0.72rem, 1.15vh, 0.98rem);
+			line-height: 1.4;
+			color: #3a4f66;
+			border-top: 1px solid rgba(180,210,240,0.45);
+			padding-top: 0.25rem;
+			margin-top: 0.1rem;
+		}
+
+		.card-authors .roch-author {
+			text-decoration: underline;
+			text-decoration-thickness: 1px;
+			text-underline-offset: 2px;
+			text-decoration-color: #687b90;
+		}
+
+		.card-journal {
+			font-size: clamp(0.65rem, 1vh, 0.88rem);
+			font-style: italic;
+			color: #6a86a3;
+			margin-top: 0.05rem;
+		}
+
+		.status-message {
+			column-span: all;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 1.2rem;
+			font-weight: 600;
+			color: #4f647d;
+			background: rgba(255, 255, 255, 0.85);
+			border: 1px solid #dce6f2;
+			border-radius: 12px;
+			padding: 2rem;
+		}
+
+		.dashboard-footer {
+			margin: 0 -0.8rem;
+			position: relative;
+			height: clamp(72px, 11vh, 110px);
+			overflow: hidden;
+			z-index: 6;
+		}
+
+		.footer-image {
+			position: absolute;
+			inset: 0;
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			object-position: center;
+		}
+
+		.footer-overlay {
+			position: absolute;
+			inset: 0;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0.45rem 1.2rem;
+			background: linear-gradient(to right, rgba(26,59,91,0.46) 0%, rgba(26,59,91,0.2) 55%, rgba(26,59,91,0.42) 100%);
+			color: #f4f8fb;
+			font-weight: 600;
+			letter-spacing: 0.02em;
+			text-shadow: 0 1px 2px rgba(0,0,0,0.35);
+			z-index: 2;
+		}
+
+		.footer-left {
+			display: flex;
+			align-items: center;
+			gap: 0;
+		}
+
+		.footer-logo-white {
+			width: clamp(150px, 20vw, 260px);
+			height: auto;
+			filter: brightness(0) invert(1);
+			opacity: 0.94;
+		}
+
+		.footer-right {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			gap: 0;
+		}
+
+		.sponsor-logo {
+			width: clamp(118px, 15vw, 210px);
+			height: auto;
+			filter: brightness(0) invert(1);
+			opacity: 0.96;
+		}
+
+		.footer-indicator {
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			transform: translateX(-50%);
+		}
+
+		.footer-indicator.topic-dots {
+			gap: 0.52rem;
+			transform: translate(-50%, -50%);
+		}
+
+		.footer-indicator .topic-dot {
+			width: 13px;
+			height: 13px;
+		}
+
+		.footer-indicator .topic-dot {
+			background: rgba(255, 255, 255, 0.35);
+			border-color: rgba(255, 255, 255, 0.55);
+		}
+
+		.footer-indicator .topic-dot.active {
+			background: #ffffff;
+			border-color: #ffffff;
+			box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.22);
+		}
+
+		@media (max-width: 900px) {
+			.dashboard-shell::after {
+				height: clamp(64px, 11vh, 100px);
+			}
+
+			.article-grid {
+				column-count: 1;
+				padding-top: 0.15rem;
+				margin-bottom: -11.2rem;
+			}
+
+			.footer-overlay {
+				padding: 0.45rem 0.8rem;
+			}
+
+			.footer-logo-white {
+				width: 170px;
+			}
+
+			.sponsor-logo {
+				width: 132px;
+			}
+
+			.footer-indicator .topic-dot {
+				width: 12px;
+				height: 12px;
+			}
+		}
+	</style>
+</head>
+<body>
+	<main class="dashboard-shell" aria-label="MedCityAI Dashboard 4">
+		<header class="dashboard-header-image" aria-label="HIMSS header image">
+			<img src="images/HIMSS.jpg" alt="HIMSS" />
+		</header>
+
+		<section class="header-title-row" aria-label="Dashboard heading">
+			<h1 class="header-title">Rochester's Most Recent: <span id="specialtyLabel" class="specialty-pill">AI/ML/DL</span></h1>
+		</section>
+
+		<section id="articleGrid" class="article-grid" aria-label="Recent articles">
+			<div class="status-message">Loading latest articles...</div>
+		</section>
+
+		<footer class="dashboard-footer" aria-label="Dashboard footer">
+			<img class="footer-image" src="images/footer_color.jpg" alt="" aria-hidden="true" />
+			<div class="footer-overlay">
+				<div class="footer-left">
+					<img class="footer-logo-white" src="images/medcityai_logo1.png" alt="MedCityAI" />
+				</div>
+				<div class="footer-right">
+					<img class="sponsor-logo" src="images/Phillips-Logo-2008.png" alt="Philips" />
+				</div>
+				<div class="footer-indicator topic-dots" aria-label="Specialty indicator">
+					<span class="topic-dot active" data-topic="AI/ML/DL"></span>
+					<span class="topic-dot" data-topic="Oncology"></span>
+					<span class="topic-dot" data-topic="Radiology"></span>
+				</div>
+			</div>
+		</footer>
+	</main>
+
+	<script>
+		const TOPICS = ['AI/ML/DL', 'Oncology', 'Radiology'];
+		const TOPIC_DISPLAY_MS = 10000;
+		const REPEAT_ROUNDS = 5;
+
+		let allArticles = [];
+		let topicIndex = 0;
+		let currentSpecialty = TOPICS[topicIndex];
+		let isTransitioning = false;
+
+		function sleep(ms) {
+			return new Promise(resolve => setTimeout(resolve, ms));
+		}
+
+		function parseCsvRows(csvText) {
+			const rows = [];
+			let currentRow = [];
+			let currentValue = '';
+			let inQuotes = false;
+			for (let i = 0; i < csvText.length; i++) {
+				const c = csvText[i], n = csvText[i + 1];
+				if (c === '"') { if (inQuotes && n === '"') { currentValue += '"'; i++; } else { inQuotes = !inQuotes; } continue; }
+				if (c === ',' && !inQuotes) { currentRow.push(currentValue.trim()); currentValue = ''; continue; }
+				if ((c === '\n' || c === '\r') && !inQuotes) { if (c === '\r' && n === '\n') i++; currentRow.push(currentValue.trim()); currentValue = ''; if (currentRow.some(v => v !== '')) rows.push(currentRow); currentRow = []; continue; }
+				currentValue += c;
+			}
+			if (currentValue.length || currentRow.length) { currentRow.push(currentValue.trim()); if (currentRow.some(v => v !== '')) rows.push(currentRow); }
+			return rows;
+		}
+
+		function csvToObjects(csvText) {
+			const rows = parseCsvRows(csvText);
+			if (!rows.length) return [];
+			const headers = rows[0].map(h => h.replace(/^"|"$/g, '').trim());
+			const out = [];
+			for (let i = 1; i < rows.length; i++) {
+				const row = rows[i];
+				if (!row || !row.length) continue;
+				const obj = {};
+				for (let j = 0; j < headers.length; j++) obj[headers[j]] = (row[j] || '').replace(/^"|"$/g, '').trim();
+				out.push(obj);
+			}
+			return out;
+		}
+
+		function toDate(a) {
+			const q = a.query_date ? Date.parse(a.query_date) : NaN;
+			if (!Number.isNaN(q)) return q;
+			const p = a.pubdate ? Date.parse(a.pubdate) : NaN;
+			if (!Number.isNaN(p)) return p;
+			return 0;
+		}
+
+		function escapeHtml(v) {
+			return (v || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+		}
+
+		function normalizeTitle(t) {
+			return (t || '').trim().replace(/\.$/, '');
+		}
+
+		function formatDate(a) {
+			const src = a.query_date || a.pubdate || '';
+			const p = Date.parse(src);
+			if (Number.isNaN(p)) return src || '';
+			return new Date(p).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+		}
+
+		function formatAuthorsHtml(article) {
+			const rochesterRaw = article.rochester_authors || '';
+			const rochesterAuthors = rochesterRaw.split('|').map(n => n.trim()).filter(Boolean);
+			const rochesterSet = new Set(rochesterAuthors);
+			let authorsList = [];
+			if (article.authors_display && article.authors_display.trim()) {
+				authorsList = article.authors_display.split(',').map(n => n.trim()).filter(Boolean);
+			} else if (article.authors && article.authors.trim()) {
+				authorsList = article.authors.split('|').map(n => n.trim()).filter(Boolean);
+			}
+			if (!authorsList.length) return 'Authors unavailable';
+			let display = [];
+			if (authorsList.length <= 3) {
+				display = [...authorsList];
+			} else {
+				display = authorsList.slice(0, 3);
+				const remaining = authorsList.slice(3);
+				display = display.concat(remaining.filter(n => rochesterSet.has(n)));
+				const last = authorsList[authorsList.length - 1];
+				if (!display.includes(last)) display.push(last);
+			}
+			const unique = [];
+			const seen = new Set();
+			for (const n of display) {
+				if (!seen.has(n)) {
+					seen.add(n);
+					unique.push(n);
+				}
+			}
+			return unique.map(n => {
+				const safe = escapeHtml(n);
+				return rochesterSet.has(n) ? `<span class="roch-author">${safe}</span>` : safe;
+			}).join(', ');
+		}
+
+		function filterBySpecialty(articles, specialty) {
+			return articles.filter(a => {
+				const p = (a.primary_specialty || '').trim();
+				const s = (a.secondary_specialty || '').trim();
+				return p === specialty || s === specialty;
+			});
+		}
+
+		function renderCards(specialty) {
+			const container = document.getElementById('articleGrid');
+			if (!container) return;
+			const filtered = filterBySpecialty(allArticles, specialty);
+
+			if (!filtered.length) {
+				container.innerHTML = `<div class="status-message">No ${escapeHtml(specialty)} articles available.</div>`;
+				return;
+			}
+
+			container.innerHTML = '';
+			const totalCards = filtered.length * REPEAT_ROUNDS;
+			let cardsHtml = '';
+
+			for (let i = 0; i < totalCards; i++) {
+				const article = filtered[i % filtered.length];
+				const title = escapeHtml(normalizeTitle(article.title || 'Untitled'));
+				const authors = formatAuthorsHtml(article);
+				const journal = escapeHtml(article.journal || '');
+				const dateText = escapeHtml(formatDate(article));
+				const primary = escapeHtml(article.primary_specialty || 'General');
+				const secondary = escapeHtml(article.secondary_specialty || '');
+				const specText = secondary ? `${primary} · ${secondary}` : primary;
+
+				cardsHtml += `
+					<article class="article-card">
+						<span class="card-number">${dateText}</span>
+						<span class="card-specialty">${specText}</span>
+						<h2 class="card-title">${title}</h2>
+						<p class="card-authors">${authors}</p>
+						<p class="card-journal">${journal}</p>
+					</article>`;
+			}
+
+			container.innerHTML = cardsHtml;
+		}
+
+		function updateTopicDots() {
+			const dots = document.querySelectorAll('.topic-dot');
+			dots.forEach(dot => {
+				dot.classList.toggle('active', dot.getAttribute('data-topic') === currentSpecialty);
+			});
+		}
+
+		async function rotateTopic() {
+			if (isTransitioning) return;
+			isTransitioning = true;
+			const label = document.getElementById('specialtyLabel');
+			const container = document.getElementById('articleGrid');
+			if (!label || !container) {
+				isTransitioning = false;
+				return;
+			}
+
+			try {
+				container.classList.remove('slide-in');
+				container.classList.add('slide-out');
+				await sleep(180);
+
+				topicIndex = (topicIndex + 1) % TOPICS.length;
+				currentSpecialty = TOPICS[topicIndex];
+				label.textContent = currentSpecialty;
+				updateTopicDots();
+				renderCards(currentSpecialty);
+
+				container.classList.remove('slide-out');
+				container.classList.add('slide-in');
+				await sleep(220);
+				container.classList.remove('slide-in');
+			} finally {
+				isTransitioning = false;
+			}
+		}
+
+		async function loadArticles() {
+			const container = document.getElementById('articleGrid');
+			if (!container) return;
+			try {
+				const res = await fetch('pubmed_data.csv', { cache: 'no-store' });
+				if (!res.ok) throw new Error();
+				const csv = await res.text();
+				const parsed = csvToObjects(csv)
+					.filter(a => a && a.pmid && a.title)
+					.map((a, i) => ({ ...a, __index: i }));
+				parsed.sort((a, b) => {
+					const d = toDate(b) - toDate(a);
+					return d !== 0 ? d : a.__index - b.__index;
+				});
+				allArticles = parsed;
+				renderCards(currentSpecialty);
+				updateTopicDots();
+			} catch {
+				container.innerHTML = '<div class="status-message">Could not load articles.</div>';
+			}
+		}
+
+		document.addEventListener('DOMContentLoaded', () => {
+			loadArticles();
+			setInterval(rotateTopic, TOPIC_DISPLAY_MS);
+			setInterval(loadArticles, 300000);
+		});
+	</script>
+</body>
+</html>
