@@ -2788,23 +2788,104 @@ function showLinkedInCopyDialog(shareText) {
 function handleLinkedInShare(event, el) {
 	event.stopPropagation();
 	event.preventDefault();
+	const pmid = (el.getAttribute('data-pmid') || '').trim();
+	openLivePreviewPopup(pmid);
+	return false;
+}
 
-	const encodedText = el.getAttribute('data-share-text') || '';
-	const shareText = encodedText ? decodeURIComponent(encodedText) : '';
-	const shareUrl = el.getAttribute('href');
-	const openShare = () => {
-		if (shareUrl) {
-			window.open(shareUrl, '_blank', 'noopener');
-		}
-	};
+function openLivePreviewPopup(pmid) {
+	const cleanPmid = (pmid || '').trim();
+	const url = cleanPmid ? `post.html?pmid=${encodeURIComponent(cleanPmid)}` : 'post.html';
+	let overlay = document.getElementById('livePreviewOverlay');
+	let iframe = document.getElementById('livePreviewFrame');
 
-	if (shareText) {
-		showLinkedInCopyDialog(shareText).finally(openShare);
-		return false;
+	if (!overlay) {
+		overlay = document.createElement('div');
+		overlay.id = 'livePreviewOverlay';
+		overlay.style.position = 'fixed';
+		overlay.style.inset = '0';
+		overlay.style.background = 'rgba(8, 15, 30, 0.72)';
+		overlay.style.zIndex = '5500';
+		overlay.style.display = 'flex';
+		overlay.style.alignItems = 'center';
+		overlay.style.justifyContent = 'center';
+		overlay.style.padding = '20px';
+		overlay.style.boxSizing = 'border-box';
+
+		const panel = document.createElement('div');
+		panel.style.width = 'min(1400px, 96vw)';
+		panel.style.height = 'min(920px, 94vh)';
+		panel.style.background = '#ffffff';
+		panel.style.borderRadius = '14px';
+		panel.style.overflow = 'hidden';
+		panel.style.boxShadow = '0 20px 60px rgba(0, 0, 0, 0.35)';
+		panel.style.position = 'relative';
+
+		const closeBtn = document.createElement('button');
+		closeBtn.type = 'button';
+		closeBtn.setAttribute('aria-label', 'Close live preview');
+		closeBtn.innerHTML = '&times;';
+		closeBtn.style.position = 'absolute';
+		closeBtn.style.top = '14px';
+		closeBtn.style.right = '14px';
+		closeBtn.style.width = '40px';
+		closeBtn.style.height = '40px';
+		closeBtn.style.border = 'none';
+		closeBtn.style.borderRadius = '999px';
+		closeBtn.style.cursor = 'pointer';
+		closeBtn.style.display = 'flex';
+		closeBtn.style.alignItems = 'center';
+		closeBtn.style.justifyContent = 'center';
+		closeBtn.style.padding = '0';
+		closeBtn.style.lineHeight = '1';
+		closeBtn.style.background = 'transparent';
+		closeBtn.style.boxShadow = 'none';
+		closeBtn.style.color = '#1f2d3d';
+		closeBtn.style.fontSize = '28px';
+		closeBtn.style.fontWeight = '700';
+		closeBtn.style.fontFamily = 'Arial, sans-serif';
+		closeBtn.style.textAlign = 'center';
+		closeBtn.style.textIndent = '1px';
+		closeBtn.style.transform = 'translateY(-1px)';
+		closeBtn.style.zIndex = '1';
+		closeBtn.addEventListener('click', closeLivePreviewOverlay);
+
+		iframe = document.createElement('iframe');
+		iframe.id = 'livePreviewFrame';
+		iframe.title = 'Live preview editor';
+		iframe.style.width = '100%';
+		iframe.style.height = '100%';
+		iframe.style.border = '0';
+
+		panel.appendChild(closeBtn);
+		panel.appendChild(iframe);
+		overlay.appendChild(panel);
+		overlay.addEventListener('click', (event) => {
+			if (event.target === overlay) {
+				closeLivePreviewOverlay();
+			}
+		});
+		document.body.appendChild(overlay);
 	}
 
-	openShare();
-	return false;
+	iframe.src = url;
+	document.body.style.overflow = 'hidden';
+	document.addEventListener('keydown', handleLivePreviewEscape);
+}
+
+function handleLivePreviewEscape(event) {
+	if (event.key === 'Escape') {
+		closeLivePreviewOverlay();
+	}
+}
+
+function closeLivePreviewOverlay() {
+	const overlay = document.getElementById('livePreviewOverlay');
+	if (overlay && overlay.parentNode) {
+		overlay.parentNode.removeChild(overlay);
+	}
+	document.body.style.overflow = '';
+	document.removeEventListener('keydown', handleLivePreviewEscape);
 }
 
 function showSharePageLoading() {
@@ -3138,7 +3219,7 @@ function showSharePageLoading() {
 							<a class="overlay-primary" href="${url}" target="_blank" rel="noopener" aria-label="View on PubMed">
 								<i class="fas fa-external-link-alt"></i> View on PubMed
 							</a>
-							<button class="overlay-linkedin" type="button" onclick="shareOverlayOnLinkedIn('${encodeURIComponent(shareText)}', '${encodeURIComponent(pubmedUrlWithUtm)}')">
+							<button class="overlay-linkedin" type="button" onclick="shareOverlayOnLinkedIn('${encodeURIComponent(pmid)}')">
 								<i class="fab fa-linkedin"></i> Share on LinkedIn
 							</button>
 							<button type="button" onclick="copyOverlayShareText('${escapeHtml(shareText).replace(/'/g, "\\'")}')">
@@ -3167,12 +3248,8 @@ function showSharePageLoading() {
 			overlayBg.setAttribute('aria-hidden', 'false');
 		}
 
-		function shareOverlayOnLinkedIn(shareText, articleUrl) {
-			const text = decodeURIComponent(shareText);
-			navigator.clipboard.writeText(text).catch(() => {
-				prompt('Copy this text to share on LinkedIn:', text);
-			});
-			window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${articleUrl}`, '_blank');
+		function shareOverlayOnLinkedIn(pmid) {
+			openLivePreviewPopup(pmid);
 		}
 
 		function copyOverlayShareText(text) {
@@ -3692,7 +3769,7 @@ function showSharePageLoading() {
 											<span style="display: flex; align-items: center; gap: 4px;">LIKE <i class="fas fa-heart" aria-hidden="true" style="color: #e74c3c; font-size: 20px;"></i></span>
 										</span>
 									` : `
-										<a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(pubmedUrlWithUtm)}" class="linkedin" target="_blank" rel="noopener" data-share-text="${encodeURIComponent(linkedinShareText)}" onclick="return handleLinkedInShare(event, this);" aria-label="Share on LinkedIn" title="Share on LinkedIn">
+										<a href="post.html?pmid=${encodeURIComponent(pmid)}" class="linkedin" target="_blank" rel="noopener" data-pmid="${encodeURIComponent(pmid)}" onclick="return handleLinkedInShare(event, this);" aria-label="Share on LinkedIn" title="Share on LinkedIn">
 											<i class="icon brands fa-linkedin" aria-hidden="true"></i>
 										</a>
 										<a href="${url}" target="_blank" onclick="event.stopPropagation();" style="color: #0056a3; text-decoration: none; font-size: 14px; font-weight: 500;" aria-label="View on PubMed">

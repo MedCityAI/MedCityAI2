@@ -10,43 +10,22 @@
 		<link rel="icon" type="image/png" href="images/medcityai_simple1.png">
 		<link rel="apple-touch-icon" href="images/medcityai_simple1.png">
 		<link rel="stylesheet" href="assets/css/main.css" />
-		<link rel="stylesheet" href="assets/css/navigation.css" />
 		<link rel="stylesheet" href="assets/css/fontawesome-all.min.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 		<style>
-		/* Hero Section */
-		.generator-hero {
-			background: linear-gradient(120deg, #2568BE 0%, #1B4C7D 100%);
-			color: white;
-			padding: 100px 0 60px 0;
-			text-align: center;
-			position: relative;
-		}
-		
-		.generator-hero h1 {
-			font-size: 2.8em;
-			font-weight: 800;
-			margin-bottom: 15px;
-			text-shadow: 0 4px 18px rgba(0,0,0,0.28);
-		}
-		
-		.generator-hero p {
-			font-size: 1.2em;
-			opacity: 0.9;
-			max-width: 600px;
-			margin: 0 auto;
+		body {
+			margin: 0;
+			padding: 0;
+			background: #ffffff;
 		}
 		
 		/* Main Container */
 		.generator-container {
-			max-width: 1500px;
+			max-width: 1480px;
 			margin: 0 auto;
-			padding: 40px 20px;
-			display: grid;
-			grid-template-columns: minmax(420px, 1fr) minmax(0, 1fr);
-			gap: 40px;
-			background: #f8fafc;
-			min-height: calc(100vh - 300px);
+			padding: 20px;
+			background: #ffffff;
+			min-height: 100vh;
 		}
 		
 		/* Controls Panel */
@@ -303,7 +282,7 @@
 			flex-direction: column;
 			align-items: center;
 			justify-self: center;
-			width: min(50vw, 760px);
+			width: min(100%, 1440px);
 		}
 
 		.right-merged-box {
@@ -313,7 +292,75 @@
 			box-shadow: 0 10px 40px rgba(0,0,0,0.1);
 			border: 1px solid #e7edf4;
 			width: 100%;
-			max-width: 620px;
+			max-width: 100%;
+		}
+
+		.preview-content-row {
+			--preview-image-size: clamp(260px, 28vw, 380px);
+			display: flex;
+			gap: 18px;
+			align-items: flex-start;
+		}
+
+		.image-column {
+			flex: 0 0 var(--preview-image-size);
+			width: var(--preview-image-size);
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 10px;
+		}
+
+		.image-column .background-options {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+			align-items: center;
+			gap: 6px;
+			width: 100%;
+		}
+
+		.image-column .bg-option {
+			width: 26px;
+			height: 26px;
+			aspect-ratio: auto;
+			border-radius: 6px;
+		}
+
+		.image-column .bg-option.selected::after {
+			font-size: 0.8em;
+		}
+
+		.image-column .custom-bg-option span {
+			display: none;
+		}
+
+		.preview-content-row .merged-canvas-wrapper {
+			flex: none;
+			width: var(--preview-image-size);
+			height: var(--preview-image-size);
+			min-width: 0;
+			aspect-ratio: 1 / 1;
+		}
+
+		.preview-content-row #socialPostText {
+			flex: 1 1 auto;
+			min-width: 0;
+			height: var(--preview-image-size);
+			min-height: var(--preview-image-size);
+			max-height: var(--preview-image-size);
+			resize: none;
+		}
+
+		.action-buttons-row {
+			display: flex;
+			gap: 12px;
+			margin-top: 16px;
+		}
+
+		.action-buttons-row .btn-download {
+			flex: 1;
+			margin: 0;
 		}
 
 		.right-merged-box-title {
@@ -321,6 +368,7 @@
 			font-size: 1.02em;
 			font-weight: 700;
 			color: #000000;
+			text-align: center;
 		}
 
 		.right-merged-box .preview-label {
@@ -355,7 +403,8 @@
 			border-radius: 8px;
 			width: 100%;
 			max-width: 100%;
-			height: auto;
+			height: 100%;
+			display: block;
 		}
 		
 		/* PMID Info */
@@ -458,6 +507,31 @@
 		@media (max-width: 1024px) {
 			.generator-container {
 				grid-template-columns: 1fr;
+			}
+
+			.preview-content-row {
+				flex-direction: column;
+				--preview-image-size: min(100%, 420px);
+			}
+
+			.image-column {
+				flex: none;
+				width: 100%;
+			}
+
+			.image-column .background-options {
+				grid-template-columns: repeat(8, 1fr);
+			}
+
+			.preview-content-row .merged-canvas-wrapper {
+				flex: none;
+				width: var(--preview-image-size);
+				height: var(--preview-image-size);
+			}
+
+			.preview-content-row #socialPostText {
+				height: auto;
+				min-height: 220px;
 			}
 			
 			.controls-panel {
@@ -588,21 +662,15 @@
 		#socialPostText {
 			width: 100%;
 			box-sizing: border-box;
-			min-height: 150px;
+			min-height: 200px;
 			font-size: 0.92em;
 			line-height: 1.5;
 			color: #000000;
-			margin-bottom: 18px;
 		}
 
 		#socialPostText::placeholder {
 			color: #000000;
 			opacity: 0.75;
-		}
-
-		.copy-btn {
-			width: 100%;
-			margin-top: 10px;
 		}
 
 		.advanced-options {
@@ -621,240 +689,68 @@
 
 		.advanced-inner {
 			padding: 0 14px 14px 14px;
+			color: #000000;
+		}
+
+		.advanced-options .collapsible-header h3,
+		.advanced-options .collapsible-header i,
+		.advanced-options .control-group label,
+		.advanced-options .size-value {
+			color: #000000;
 		}
 		</style>
 	</head>
-	<body class="landing is-preload">
-		<div id="page-wrapper">
-			<!-- Navigation -->
-			<div id="navigation-placeholder" data-page="postgenerator"></div>
-			
-			<!-- Hero Section -->
-			<section class="generator-hero">
-				<h1>Social Media Post Generator</h1>
-				<p>Create beautiful 1080x1080 images for your research publications</p>
-			</section>
-			
-			<!-- Main Generator -->
-			<div class="generator-container">
-				<!-- Controls Panel -->
-				<div class="controls-panel">
-					<h2><i class="fas fa-sliders-h" style="margin-right: 10px;"></i>Post Workflow</h2>
-					
-					<!-- PMID Input (hidden: populated from URL) -->
-					<div class="control-group" style="display: none;">
-						<label for="pmidInput">PMID (PubMed ID)</label>
-						<div style="display: flex; gap: 10px;">
-							<input type="text" id="pmidInput" placeholder="e.g., 41478859">
-							<button class="btn-load" onclick="loadPMID()" style="width: auto;">
-								<i class="fas fa-search"></i>
-							</button>
-						</div>
-						<div class="pmid-info" id="pmidInfo">
-							<strong>Article Loaded:</strong>
-							<span id="loadedTitle"></span>
-						</div>
-					</div>
-
-				<div class="step-card">
-					<h3>1. Edit and copy social post text</h3>
-					<button class="btn-download copy-btn" id="copySocialBtn" type="button">
-						<i class="fas fa-copy"></i> Copy Text
-					</button>
+	<body>
+		<!-- Main Generator -->
+		<div class="generator-container">
+				<!-- Hidden inputs required by JS -->
+				<div style="display:none;">
+					<input type="text" id="pmidInput">
+					<textarea id="titleText"></textarea>
+					<textarea id="authorsText"></textarea>
+					<input type="text" id="journalText">
 				</div>
 
-				<div class="step-card">
-					<h3>2. Download social post image</h3>
-					<button class="btn-download" onclick="downloadImage()">
-						<i class="fas fa-download"></i>
-						DOWNLOAD PNG
-					</button>
-				</div>
-
-				<div class="step-card">
-					<h3>3. Share on LinkedIn</h3>
-					<button class="btn-download" id="shareLinkedInBtn" type="button" onclick="openLinkedInShare()">
-						<i class="fab fa-linkedin"></i>
-						OPEN LINKEDIN SHARE
-					</button>
-				</div>
-					
-					<!-- Logo Settings -->
-					<div class="collapsible-header" onclick="toggleSection(this)" style="display: none;">
-						<h3><i class="fas fa-star" style="margin-right: 8px;"></i>Logo</h3>
-						<i class="fas fa-chevron-down"></i>
-					</div>
-					<div class="collapsible-content" style="display: none;">
-						<div class="control-group">
-							<div class="checkbox-wrapper">
-								<input type="checkbox" id="showLogo" checked>
-								<label for="showLogo">Show MedCityAI Logo</label>
-							</div>
-						</div>
-						<div class="control-group">
-							<label>Logo Tint Color</label>
-							<div class="color-picker-wrapper">
-								<input type="color" id="logoColor" value="#ffffff">
-								<input type="text" id="logoColorText" value="#ffffff" maxlength="7">
-							</div>
-						</div>
-						<div class="control-group">
-							<label>Logo Size</label>
-							<div class="size-slider-wrapper">
-								<input type="range" id="logoSize" min="60" max="200" value="200">
-								<span class="size-value" id="logoSizeValue">200px</span>
-							</div>
-						</div>
-					</div>
-					
-					<hr class="section-divider">
-					
-					<!-- Title Settings -->
-					<div class="collapsible-header" onclick="toggleSection(this)" style="display: none;">
-						<h3><i class="fas fa-heading" style="margin-right: 8px;"></i>Title</h3>
-						<i class="fas fa-chevron-down"></i>
-					</div>
-					<div class="collapsible-content" style="display: none;">
-						<div class="control-group">
-							<label for="titleText">Title Text</label>
-							<textarea id="titleText" placeholder="Enter article title..."></textarea>
-						</div>
-						<div class="control-group">
-							<label>Title Color</label>
-							<div class="color-picker-wrapper">
-								<input type="color" id="titleColor" value="#ffffff">
-								<input type="text" id="titleColorText" value="#ffffff" maxlength="7">
-							</div>
-						</div>
-						<div class="control-group">
-							<label>Title Size</label>
-							<div class="size-slider-wrapper">
-								<input type="range" id="titleSize" min="20" max="80" value="60">
-								<span class="size-value" id="titleSizeValue">60px</span>
-							</div>
-						</div>
-						<div class="control-group" style="display:none;">
-							<label>Title Vertical Position</label>
-							<div class="size-slider-wrapper">
-								<input type="range" id="titleY" min="150" max="600" value="280">
-								<span class="size-value" id="titleYValue">280</span>
-							</div>
-						</div>
-					</div>
-					
-					<hr class="section-divider" style="display: none;">
-					
-					<!-- Authors Settings -->
-					<div class="collapsible-header" onclick="toggleSection(this)" style="display: none;">
-						<h3><i class="fas fa-users" style="margin-right: 8px;"></i>Authors</h3>
-						<i class="fas fa-chevron-down"></i>
-					</div>
-					<div class="collapsible-content" style="display: none;">
-						<div class="control-group">
-							<label for="authorsText">Authors</label>
-							<textarea id="authorsText" placeholder="Enter authors..."></textarea>
-						</div>
-						<div class="control-group">
-							<label>Authors Color</label>
-							<div class="color-picker-wrapper">
-								<input type="color" id="authorsColor" value="#e0e0e0">
-								<input type="text" id="authorsColorText" value="#e0e0e0" maxlength="7">
-							</div>
-						</div>
-						<div class="control-group">
-							<label>Authors Size</label>
-							<div class="size-slider-wrapper">
-								<input type="range" id="authorsSize" min="12" max="48" value="35">
-								<span class="size-value" id="authorsSizeValue">35px</span>
-							</div>
-						</div>
-						<div class="control-group">
-							<label>Authors Vertical Position</label>
-							<div class="size-slider-wrapper">
-								<input type="range" id="authorsY" min="400" max="950" value="830">
-								<span class="size-value" id="authorsYValue">830</span>
-							</div>
-						</div>
-					</div>
-					
-					<hr class="section-divider" style="display: none;">
-					
-					<!-- Journal/Date Settings -->
-					<div class="collapsible-header" onclick="toggleSection(this)" style="display: none;">
-						<h3><i class="fas fa-book" style="margin-right: 8px;"></i>Journal</h3>
-						<i class="fas fa-chevron-down"></i>
-					</div>
-					<div class="collapsible-content" style="display: none;">
-						<div class="control-group">
-							<label for="journalText">Journal & Date</label>
-							<input type="text" id="journalText" placeholder="e.g., Nature Medicine • Jan 2026">
-						</div>
-						<div class="control-group">
-							<label>Journal Color</label>
-							<div class="color-picker-wrapper">
-								<input type="color" id="journalColor" value="#bababa">
-								<input type="text" id="journalColorText" value="#bababa" maxlength="7">
-							</div>
-						</div>
-						<div class="control-group">
-							<label>Journal Size</label>
-							<div class="size-slider-wrapper">
-								<input type="range" id="journalSize" min="14" max="48" value="30">
-								<span class="size-value" id="journalSizeValue">30px</span>
-							</div>
-						</div>
-						<div class="control-group">
-							<label>Journal Vertical Position</label>
-							<div class="size-slider-wrapper">
-								<input type="range" id="journalY" min="900" max="1060" value="1020">
-								<span class="size-value" id="journalYValue">1020</span>
-							</div>
-						</div>
-					</div>
-					
-				</div>
-				
 				<!-- Preview Panel -->
 				<div class="preview-panel">
 					<div class="right-merged-box">
 						<h3 class="right-merged-box-title">LIVE PREVIEW: EDIT AND SHARE</h3>
-						<textarea id="socialPostText" placeholder="Social post text will auto-populate from PMID..."></textarea>
-						<div class="preview-label" style="display:none; margin-top: 14px; margin-bottom: 12px;">Live Preview</div>
-						<div class="canvas-wrapper merged-canvas-wrapper">
-							<canvas id="postCanvas" width="1080" height="1080"></canvas>
+					<div class="preview-content-row">
+						<div class="image-column">
+							<div class="canvas-wrapper merged-canvas-wrapper">
+								<canvas id="postCanvas" width="1080" height="1080"></canvas>
+							</div>
+							<div class="background-options" aria-label="Background color options">
+								<div class="bg-option selected" data-bg="gradient1" style="background: linear-gradient(135deg, #2568BE 0%, #1B4C7D 100%);" title="Primary Blue"></div>
+								<div class="bg-option" data-bg="gradient2" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);" title="Light Blue"></div>
+								<div class="bg-option" data-bg="gradient3" style="background: linear-gradient(135deg, #1B4C7D 0%, #0d2840 100%);" title="Dark Blue"></div>
+								<div class="bg-option" data-bg="gradient4" style="background: linear-gradient(135deg, #0056a3 0%, #003d73 100%);" title="Deep Blue"></div>
+								<div class="bg-option" data-bg="gradient5" style="background: linear-gradient(135deg, #27ae60 0%, #1e8449 100%);" title="Green"></div>
+								<div class="bg-option" data-bg="gradient6" style="background: linear-gradient(135deg, #8e44ad 0%, #6c3483 100%);" title="Purple"></div>
+								<div class="bg-option" data-bg="gradient7" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);" title="Red"></div>
+							</div>
 						</div>
+						<textarea id="socialPostText" placeholder="Social post text will auto-populate from PMID..."></textarea>
+					</div>
+					<div class="action-buttons-row">
+						<button class="btn-download" id="downloadPngBtn" onclick="downloadImage()">
+							<i class="fas fa-download"></i> Download PNG
+						</button>
+						<button class="btn-download" id="copySocialBtn" type="button">
+							<i class="fas fa-copy"></i> Copy Text
+						</button>
+						<button class="btn-download" id="shareLinkedInBtn" type="button" onclick="openLinkedInShare()">
+							<i class="fab fa-linkedin"></i> Share on LinkedIn
+						</button>
 					</div>
 
-					<details class="advanced-options" style="width: 100%; max-width: 620px; margin-top: 16px;">
+					<details class="advanced-options" style="width: 100%; margin-top: 16px;">
 						<summary>Advanced edit options</summary>
 						<div class="advanced-inner">
-							<!-- Background Selection -->
-							<div class="collapsible-header" onclick="toggleSection(this)">
-								<h3><i class="fas fa-palette" style="margin-right: 8px;"></i>Background</h3>
-								<i class="fas fa-chevron-down"></i>
-							</div>
-							<div class="collapsible-content">
-								<div class="control-group">
-									<label>Background Style</label>
-									<div class="background-options">
-										<div class="bg-option selected" data-bg="gradient1" style="background: linear-gradient(135deg, #2568BE 0%, #1B4C7D 100%);" title="Primary Blue"></div>
-										<div class="bg-option" data-bg="gradient2" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);" title="Light Blue"></div>
-										<div class="bg-option" data-bg="gradient3" style="background: linear-gradient(135deg, #1B4C7D 0%, #0d2840 100%);" title="Dark Blue"></div>
-										<div class="bg-option" data-bg="gradient4" style="background: linear-gradient(135deg, #0056a3 0%, #003d73 100%);" title="Deep Blue"></div>
-										<div class="bg-option" data-bg="gradient5" style="background: linear-gradient(135deg, #27ae60 0%, #1e8449 100%);" title="Green"></div>
-										<div class="bg-option" data-bg="gradient6" style="background: linear-gradient(135deg, #8e44ad 0%, #6c3483 100%);" title="Purple"></div>
-										<div class="bg-option" data-bg="gradient7" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);" title="Red"></div>
-										<label class="bg-option custom-bg-option" data-bg="custom" id="customBgOption" style="background: #202020;" title="Custom Color">
-											<input type="color" id="customBackgroundColor" value="#202020">
-											<span>Custom</span>
-										</label>
-									</div>
-								</div>
-								<div class="control-group">
-									<button class="btn-secondary" onclick="randomizeCircles()" style="width: 100%;">
-										<i class="fas fa-random"></i> Randomize Circles
-									</button>
-								</div>
+							<div class="control-group">
+								<button class="btn-secondary" onclick="randomizeCircles()" style="width: 100%;">
+									<i class="fas fa-random"></i> Randomize Circles
+								</button>
 							</div>
 
 							<hr class="section-divider">
@@ -888,22 +784,10 @@
 						</div>
 					</details>
 				</div>
-			</div>
-			
-			<!-- Footer -->
-			<footer id="footer" style="margin-top: 0;">
-				<ul class="icons">
-					<li><a href="https://www.linkedin.com/company/medcityai" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit;">Follow MedCityAI on LinkedIn <i class="fab fa-linkedin-in" style="font-size: 1.3em; color: #0a66c2;"></i></a></li>
-				</ul>
-				<ul class="copyright">
-					<li>&copy; MedCityAI</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-				</ul>
-			</footer>
 		</div>
 		
 		<!-- Scripts -->
 		<script src="assets/js/jquery.min.js"></script>
-		<script src="assets/js/navigation.js"></script>
 		
 		<script>
 		// CSV Data Storage
@@ -1369,10 +1253,18 @@
 			const link = document.createElement('a');
 			const pmid = document.getElementById('pmidInput').value.trim();
 			const filename = pmid ? `medcityai_featured_${pmid}.png` : 'medcityai_featured_post.png';
+			const downloadBtn = document.getElementById('downloadPngBtn');
 			
 			link.download = filename;
 			link.href = canvas.toDataURL('image/png');
 			link.click();
+
+			if (downloadBtn) {
+				downloadBtn.innerHTML = '<i class="fas fa-check"></i> Downloaded';
+				setTimeout(() => {
+					downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download PNG';
+				}, 1400);
+			}
 		}
 
 		function openLinkedInShare() {
@@ -1399,17 +1291,6 @@
 					currentBackground = this.dataset.bg;
 					updateCanvas();
 				});
-			});
-
-			const customBackgroundColor = document.getElementById('customBackgroundColor');
-			const customBgOption = document.getElementById('customBgOption');
-			customBackgroundColor.addEventListener('input', function() {
-				backgrounds.custom.color = this.value;
-				customBgOption.style.background = this.value;
-				document.querySelectorAll('.bg-option').forEach(o => o.classList.remove('selected'));
-				customBgOption.classList.add('selected');
-				currentBackground = 'custom';
-				updateCanvas();
 			});
 			
 			// Title/authors/journal options are fixed and hidden.
