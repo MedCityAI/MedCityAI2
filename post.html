@@ -1,0 +1,1446 @@
+<!DOCTYPE HTML>
+<!--
+	MedCityAI - Social Media Post Generator
+-->
+<html lang="en">
+	<head>
+		<title>Post Generator - MedCityAI</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="icon" type="image/png" href="images/medcityai_simple1.png">
+		<link rel="apple-touch-icon" href="images/medcityai_simple1.png">
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<link rel="stylesheet" href="assets/css/navigation.css" />
+		<link rel="stylesheet" href="assets/css/fontawesome-all.min.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<style>
+		/* Hero Section */
+		.generator-hero {
+			background: linear-gradient(120deg, #2568BE 0%, #1B4C7D 100%);
+			color: white;
+			padding: 100px 0 60px 0;
+			text-align: center;
+			position: relative;
+		}
+		
+		.generator-hero h1 {
+			font-size: 2.8em;
+			font-weight: 800;
+			margin-bottom: 15px;
+			text-shadow: 0 4px 18px rgba(0,0,0,0.28);
+		}
+		
+		.generator-hero p {
+			font-size: 1.2em;
+			opacity: 0.9;
+			max-width: 600px;
+			margin: 0 auto;
+		}
+		
+		/* Main Container */
+		.generator-container {
+			max-width: 1500px;
+			margin: 0 auto;
+			padding: 40px 20px;
+			display: grid;
+			grid-template-columns: minmax(420px, 1fr) minmax(0, 1fr);
+			gap: 40px;
+			background: #f8fafc;
+			min-height: calc(100vh - 300px);
+		}
+		
+		/* Controls Panel */
+		.controls-panel {
+			background: white;
+			border-radius: 16px;
+			padding: 30px;
+			box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+			height: fit-content;
+			max-height: calc(100vh - 150px);
+			overflow-y: auto;
+			position: sticky;
+			top: 100px;
+		}
+		
+		.controls-panel h2 {
+			color: #2c3e50;
+			font-size: 1.4em;
+			margin-bottom: 25px;
+			padding-bottom: 15px;
+			border-bottom: 2px solid #e9ecef;
+		}
+		
+		.controls-panel h3 {
+			color: #2c3e50;
+			font-size: 1.1em;
+			margin: 20px 0 15px 0;
+			padding-bottom: 10px;
+			border-bottom: 1px solid #e9ecef;
+		}
+		
+		.control-group {
+			margin-bottom: 20px;
+		}
+		
+		.control-group label {
+			display: block;
+			color: #2c3e50;
+			font-weight: 600;
+			margin-bottom: 8px;
+			font-size: 0.9em;
+		}
+		
+		.control-group input[type="text"],
+		.control-group input[type="number"],
+		.control-group select,
+		.control-group textarea {
+			width: 100%;
+			padding: 10px 12px;
+			border: 2px solid #e9ecef;
+			border-radius: 8px;
+			font-size: 0.95em;
+			transition: border-color 0.3s ease;
+			font-family: inherit;
+			box-sizing: border-box;
+		}
+		
+		.control-group input:focus,
+		.control-group select:focus,
+		.control-group textarea:focus {
+			outline: none;
+			border-color: #3498db;
+		}
+		
+		.control-group textarea {
+			resize: vertical;
+			min-height: 80px;
+		}
+		
+		/* Background Selector */
+		.background-options {
+			display: grid;
+			grid-template-columns: repeat(8, minmax(0, 1fr));
+			gap: 6px;
+			max-width: 100%;
+			margin: 0 auto;
+		}
+		
+		.bg-option {
+			display: block;
+			width: 100%;
+			aspect-ratio: 1;
+			border-radius: 8px;
+			cursor: pointer;
+			border: 2px solid transparent;
+			transition: all 0.3s ease;
+			position: relative;
+		}
+		
+		.bg-option:hover {
+			transform: scale(1.05);
+		}
+		
+		.bg-option.selected {
+			border-color: #2c3e50;
+			box-shadow: 0 0 0 2px rgba(52,152,219,0.3);
+		}
+		
+		.bg-option.selected::after {
+			content: '✓';
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			color: white;
+			font-size: 1.2em;
+			font-weight: bold;
+			text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+		}
+
+		.custom-bg-option {
+			overflow: hidden;
+			aspect-ratio: 1 / 0.98;
+		}
+
+		.custom-bg-option input[type="color"] {
+			position: absolute;
+			inset: 0;
+			width: 100%;
+			height: 100%;
+			opacity: 0;
+			cursor: pointer;
+			border: 0;
+			padding: 0;
+		}
+
+		.custom-bg-option span {
+			position: absolute;
+			bottom: 6px;
+			left: 50%;
+			transform: translateX(-50%);
+			font-size: 0.7em;
+			font-weight: 700;
+			color: #000000;
+			background: rgba(255,255,255,0.78);
+			padding: 2px 6px;
+			border-radius: 999px;
+			pointer-events: none;
+		}
+		
+		/* Color Inputs */
+		.color-picker-wrapper {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+		
+		.color-picker-wrapper input[type="color"] {
+			width: 45px;
+			height: 36px;
+			border: none;
+			border-radius: 6px;
+			cursor: pointer;
+			padding: 0;
+		}
+		
+		.color-picker-wrapper input[type="text"] {
+			flex: 1;
+		}
+		
+		/* Size Slider */
+		.size-slider-wrapper {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+		}
+		
+		.size-slider-wrapper input[type="range"] {
+			flex: 1;
+			height: 6px;
+			border-radius: 3px;
+			appearance: none;
+			-webkit-appearance: none;
+			background: #e9ecef;
+		}
+		
+		.size-slider-wrapper input[type="range"]::-webkit-slider-thumb {
+			-webkit-appearance: none;
+			width: 18px;
+			height: 18px;
+			border-radius: 50%;
+			background: #3498db;
+			cursor: pointer;
+		}
+		
+		.size-value {
+			min-width: 50px;
+			text-align: center;
+			font-weight: 600;
+			color: #2c3e50;
+			font-size: 0.9em;
+		}
+		
+		/* Buttons */
+		.btn-load {
+			background: linear-gradient(135deg, #3498db, #2980b9);
+			color: white;
+			padding: 10px 16px;
+			border: none;
+			border-radius: 8px;
+			font-size: 0.95em;
+			font-weight: 600;
+			cursor: pointer;
+			transition: all 0.3s ease;
+		}
+		
+		.btn-load:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 4px 12px rgba(52,152,219,0.4);
+		}
+		
+		.btn-secondary {
+			background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+			color: white;
+			padding: 10px 16px;
+			border: none;
+			border-radius: 8px;
+			font-size: 0.9em;
+			font-weight: 600;
+			cursor: pointer;
+			transition: all 0.3s ease;
+		}
+		
+		.btn-secondary:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+		}
+		
+		.btn-download {
+			background: linear-gradient(135deg, #27ae60, #229954);
+			color: white;
+			padding: 15px 30px;
+			border: none;
+			border-radius: 8px;
+			font-size: 1.1em;
+			font-weight: 700;
+			cursor: pointer;
+			width: 100%;
+			transition: all 0.3s ease;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 10px;
+		}
+		
+		.btn-download:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 6px 20px rgba(39,174,96,0.4);
+		}
+		
+		/* Preview Panel */
+		.preview-panel {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-self: center;
+			width: min(50vw, 760px);
+		}
+
+		.right-merged-box {
+			background: white;
+			border-radius: 16px;
+			padding: 22px;
+			box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+			border: 1px solid #e7edf4;
+			width: 100%;
+			max-width: 620px;
+		}
+
+		.right-merged-box-title {
+			margin: 0 0 12px 0;
+			font-size: 1.02em;
+			font-weight: 700;
+			color: #000000;
+		}
+
+		.right-merged-box .preview-label {
+			color: #000000;
+		}
+		
+		.preview-label {
+			color: #7f8c8d;
+			font-size: 0.9em;
+			margin-bottom: 15px;
+			text-transform: uppercase;
+			letter-spacing: 1px;
+		}
+		
+		.canvas-wrapper {
+			background: white;
+			border-radius: 16px;
+			padding: 30px;
+			box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+			width: 100%;
+			max-width: 620px;
+		}
+
+		.canvas-wrapper.merged-canvas-wrapper {
+			background: transparent;
+			box-shadow: none;
+			padding: 0;
+			max-width: 100%;
+		}
+		
+		#postCanvas {
+			border-radius: 8px;
+			width: 100%;
+			max-width: 100%;
+			height: auto;
+		}
+		
+		/* PMID Info */
+		.pmid-info {
+			background: #e3f2fd;
+			border-radius: 8px;
+			padding: 12px;
+			margin-top: 12px;
+			font-size: 0.85em;
+			color: #1565c0;
+			display: none;
+		}
+		
+		.pmid-info.visible {
+			display: block;
+		}
+		
+		.pmid-info strong {
+			display: block;
+			margin-bottom: 5px;
+		}
+		
+		/* Section Divider */
+		.section-divider {
+			border: 0;
+			height: 1px;
+			background: #e9ecef;
+			margin: 20px 0;
+		}
+		
+		/* Collapsible Sections */
+		.collapsible-header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			cursor: pointer;
+			padding: 10px 0;
+			border-bottom: 2px solid #e9ecef;
+			margin-bottom: 15px;
+		}
+		
+		.collapsible-header h3 {
+			margin: 0;
+			border: none;
+			padding: 0;
+		}
+		
+		.collapsible-header i {
+			transition: transform 0.3s ease;
+		}
+		
+		.collapsible-header.collapsed i {
+			transform: rotate(-90deg);
+		}
+		
+		.collapsible-content {
+			display: block;
+		}
+		
+		.collapsible-content.collapsed {
+			display: none;
+		}
+		
+		/* File Input */
+		.file-input-wrapper {
+			position: relative;
+		}
+		
+		.file-input-wrapper input[type="file"] {
+			display: none;
+		}
+		
+		.file-input-label {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 8px;
+			padding: 12px 16px;
+			background: #f8f9fa;
+			border: 2px dashed #ccc;
+			border-radius: 8px;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			font-weight: 500;
+			color: #555;
+		}
+		
+		.file-input-label:hover {
+			border-color: #3498db;
+			background: #e3f2fd;
+		}
+		
+		.file-input-label.has-file {
+			border-color: #27ae60;
+			background: #e8f5e9;
+			color: #27ae60;
+		}
+		
+		/* Responsive */
+		@media (max-width: 1024px) {
+			.generator-container {
+				grid-template-columns: 1fr;
+			}
+			
+			.controls-panel {
+				position: static;
+				max-height: none;
+			}
+			
+			.canvas-wrapper {
+				width: 100%;
+				overflow-x: auto;
+			}
+		}
+		
+		@media (max-width: 600px) {
+			.generator-hero h1 {
+				font-size: 2em;
+			}
+			
+			.background-options {
+				grid-template-columns: repeat(4, 1fr);
+			}
+			
+			.controls-panel {
+				padding: 20px;
+			}
+		}
+		
+		/* Checkbox styling */
+		.checkbox-wrapper {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+		
+		.checkbox-wrapper input[type="checkbox"] {
+			width: 18px;
+			height: 18px;
+			cursor: pointer;
+		}
+		
+		.checkbox-wrapper label {
+			margin: 0;
+			cursor: pointer;
+			font-weight: 500;
+		}
+		
+		/* Inline controls */
+		.inline-controls {
+			display: flex;
+			gap: 10px;
+			align-items: center;
+		}
+		
+		.inline-controls .control-group {
+			margin-bottom: 0;
+			flex: 1;
+		}
+		
+		/* Remove image button */
+		.btn-remove {
+			background: #e74c3c;
+			color: white;
+			padding: 8px 12px;
+			border: none;
+			border-radius: 6px;
+			font-size: 0.85em;
+			cursor: pointer;
+			margin-top: 8px;
+		}
+		
+		.btn-remove:hover {
+			background: #c0392b;
+		}
+
+		.steps-panel {
+			background: #f3f7fb;
+			border: 1px solid #d9e6f2;
+			border-radius: 12px;
+			padding: 16px;
+			margin-bottom: 22px;
+		}
+
+		.steps-panel p {
+			margin: 0 0 10px 0;
+			font-size: 0.86em;
+			font-weight: 700;
+			letter-spacing: 0.06em;
+			text-transform: uppercase;
+			color: #56708a;
+		}
+
+		.steps-panel ol {
+			margin: 0;
+			padding-left: 22px;
+			color: #2c3e50;
+		}
+
+		.steps-panel li {
+			margin-bottom: 8px;
+			line-height: 1.45;
+			font-weight: 600;
+		}
+
+		.steps-panel li:last-child {
+			margin-bottom: 0;
+		}
+
+		.step-card {
+			background: #f3f7fb;
+			border: 1px solid #d9e6f2;
+			border-radius: 12px;
+			padding: 16px;
+			margin-bottom: 18px;
+		}
+
+		.step-card h3 {
+			margin: 0 0 12px 0;
+			padding: 0;
+			border: 0;
+			font-size: 1.02em;
+		}
+
+		.step-card.step-one,
+		.step-card.step-one h3 {
+			color: #000000;
+		}
+
+		#socialPostText {
+			width: 100%;
+			box-sizing: border-box;
+			min-height: 150px;
+			font-size: 0.92em;
+			line-height: 1.5;
+			color: #000000;
+			margin-bottom: 18px;
+		}
+
+		#socialPostText::placeholder {
+			color: #000000;
+			opacity: 0.75;
+		}
+
+		.copy-btn {
+			width: 100%;
+			margin-top: 10px;
+		}
+
+		.advanced-options {
+			margin-top: 14px;
+			border: 1px solid #d2dfea;
+			border-radius: 10px;
+			background: #ffffff;
+		}
+
+		.advanced-options summary {
+			padding: 12px 14px;
+			font-weight: 700;
+			cursor: pointer;
+			color: #2c3e50;
+		}
+
+		.advanced-inner {
+			padding: 0 14px 14px 14px;
+		}
+		</style>
+	</head>
+	<body class="landing is-preload">
+		<div id="page-wrapper">
+			<!-- Navigation -->
+			<div id="navigation-placeholder" data-page="postgenerator"></div>
+			
+			<!-- Hero Section -->
+			<section class="generator-hero">
+				<h1>Social Media Post Generator</h1>
+				<p>Create beautiful 1080x1080 images for your research publications</p>
+			</section>
+			
+			<!-- Main Generator -->
+			<div class="generator-container">
+				<!-- Controls Panel -->
+				<div class="controls-panel">
+					<h2><i class="fas fa-sliders-h" style="margin-right: 10px;"></i>Post Workflow</h2>
+					
+					<!-- PMID Input (hidden: populated from URL) -->
+					<div class="control-group" style="display: none;">
+						<label for="pmidInput">PMID (PubMed ID)</label>
+						<div style="display: flex; gap: 10px;">
+							<input type="text" id="pmidInput" placeholder="e.g., 41478859">
+							<button class="btn-load" onclick="loadPMID()" style="width: auto;">
+								<i class="fas fa-search"></i>
+							</button>
+						</div>
+						<div class="pmid-info" id="pmidInfo">
+							<strong>Article Loaded:</strong>
+							<span id="loadedTitle"></span>
+						</div>
+					</div>
+
+				<div class="step-card">
+					<h3>1. Edit and copy social post text</h3>
+					<button class="btn-download copy-btn" id="copySocialBtn" type="button">
+						<i class="fas fa-copy"></i> Copy Text
+					</button>
+				</div>
+
+				<div class="step-card">
+					<h3>2. Download social post image</h3>
+					<button class="btn-download" onclick="downloadImage()">
+						<i class="fas fa-download"></i>
+						DOWNLOAD PNG
+					</button>
+				</div>
+
+				<div class="step-card">
+					<h3>3. Share on LinkedIn</h3>
+					<button class="btn-download" id="shareLinkedInBtn" type="button" onclick="openLinkedInShare()">
+						<i class="fab fa-linkedin"></i>
+						OPEN LINKEDIN SHARE
+					</button>
+				</div>
+					
+					<!-- Logo Settings -->
+					<div class="collapsible-header" onclick="toggleSection(this)" style="display: none;">
+						<h3><i class="fas fa-star" style="margin-right: 8px;"></i>Logo</h3>
+						<i class="fas fa-chevron-down"></i>
+					</div>
+					<div class="collapsible-content" style="display: none;">
+						<div class="control-group">
+							<div class="checkbox-wrapper">
+								<input type="checkbox" id="showLogo" checked>
+								<label for="showLogo">Show MedCityAI Logo</label>
+							</div>
+						</div>
+						<div class="control-group">
+							<label>Logo Tint Color</label>
+							<div class="color-picker-wrapper">
+								<input type="color" id="logoColor" value="#ffffff">
+								<input type="text" id="logoColorText" value="#ffffff" maxlength="7">
+							</div>
+						</div>
+						<div class="control-group">
+							<label>Logo Size</label>
+							<div class="size-slider-wrapper">
+								<input type="range" id="logoSize" min="60" max="200" value="200">
+								<span class="size-value" id="logoSizeValue">200px</span>
+							</div>
+						</div>
+					</div>
+					
+					<hr class="section-divider">
+					
+					<!-- Title Settings -->
+					<div class="collapsible-header" onclick="toggleSection(this)" style="display: none;">
+						<h3><i class="fas fa-heading" style="margin-right: 8px;"></i>Title</h3>
+						<i class="fas fa-chevron-down"></i>
+					</div>
+					<div class="collapsible-content" style="display: none;">
+						<div class="control-group">
+							<label for="titleText">Title Text</label>
+							<textarea id="titleText" placeholder="Enter article title..."></textarea>
+						</div>
+						<div class="control-group">
+							<label>Title Color</label>
+							<div class="color-picker-wrapper">
+								<input type="color" id="titleColor" value="#ffffff">
+								<input type="text" id="titleColorText" value="#ffffff" maxlength="7">
+							</div>
+						</div>
+						<div class="control-group">
+							<label>Title Size</label>
+							<div class="size-slider-wrapper">
+								<input type="range" id="titleSize" min="20" max="80" value="60">
+								<span class="size-value" id="titleSizeValue">60px</span>
+							</div>
+						</div>
+						<div class="control-group" style="display:none;">
+							<label>Title Vertical Position</label>
+							<div class="size-slider-wrapper">
+								<input type="range" id="titleY" min="150" max="600" value="280">
+								<span class="size-value" id="titleYValue">280</span>
+							</div>
+						</div>
+					</div>
+					
+					<hr class="section-divider" style="display: none;">
+					
+					<!-- Authors Settings -->
+					<div class="collapsible-header" onclick="toggleSection(this)" style="display: none;">
+						<h3><i class="fas fa-users" style="margin-right: 8px;"></i>Authors</h3>
+						<i class="fas fa-chevron-down"></i>
+					</div>
+					<div class="collapsible-content" style="display: none;">
+						<div class="control-group">
+							<label for="authorsText">Authors</label>
+							<textarea id="authorsText" placeholder="Enter authors..."></textarea>
+						</div>
+						<div class="control-group">
+							<label>Authors Color</label>
+							<div class="color-picker-wrapper">
+								<input type="color" id="authorsColor" value="#e0e0e0">
+								<input type="text" id="authorsColorText" value="#e0e0e0" maxlength="7">
+							</div>
+						</div>
+						<div class="control-group">
+							<label>Authors Size</label>
+							<div class="size-slider-wrapper">
+								<input type="range" id="authorsSize" min="12" max="48" value="35">
+								<span class="size-value" id="authorsSizeValue">35px</span>
+							</div>
+						</div>
+						<div class="control-group">
+							<label>Authors Vertical Position</label>
+							<div class="size-slider-wrapper">
+								<input type="range" id="authorsY" min="400" max="950" value="830">
+								<span class="size-value" id="authorsYValue">830</span>
+							</div>
+						</div>
+					</div>
+					
+					<hr class="section-divider" style="display: none;">
+					
+					<!-- Journal/Date Settings -->
+					<div class="collapsible-header" onclick="toggleSection(this)" style="display: none;">
+						<h3><i class="fas fa-book" style="margin-right: 8px;"></i>Journal</h3>
+						<i class="fas fa-chevron-down"></i>
+					</div>
+					<div class="collapsible-content" style="display: none;">
+						<div class="control-group">
+							<label for="journalText">Journal & Date</label>
+							<input type="text" id="journalText" placeholder="e.g., Nature Medicine • Jan 2026">
+						</div>
+						<div class="control-group">
+							<label>Journal Color</label>
+							<div class="color-picker-wrapper">
+								<input type="color" id="journalColor" value="#bababa">
+								<input type="text" id="journalColorText" value="#bababa" maxlength="7">
+							</div>
+						</div>
+						<div class="control-group">
+							<label>Journal Size</label>
+							<div class="size-slider-wrapper">
+								<input type="range" id="journalSize" min="14" max="48" value="30">
+								<span class="size-value" id="journalSizeValue">30px</span>
+							</div>
+						</div>
+						<div class="control-group">
+							<label>Journal Vertical Position</label>
+							<div class="size-slider-wrapper">
+								<input type="range" id="journalY" min="900" max="1060" value="1020">
+								<span class="size-value" id="journalYValue">1020</span>
+							</div>
+						</div>
+					</div>
+					
+				</div>
+				
+				<!-- Preview Panel -->
+				<div class="preview-panel">
+					<div class="right-merged-box">
+						<h3 class="right-merged-box-title">LIVE PREVIEW: EDIT AND SHARE</h3>
+						<textarea id="socialPostText" placeholder="Social post text will auto-populate from PMID..."></textarea>
+						<div class="preview-label" style="display:none; margin-top: 14px; margin-bottom: 12px;">Live Preview</div>
+						<div class="canvas-wrapper merged-canvas-wrapper">
+							<canvas id="postCanvas" width="1080" height="1080"></canvas>
+						</div>
+					</div>
+
+					<details class="advanced-options" style="width: 100%; max-width: 620px; margin-top: 16px;">
+						<summary>Advanced edit options</summary>
+						<div class="advanced-inner">
+							<!-- Background Selection -->
+							<div class="collapsible-header" onclick="toggleSection(this)">
+								<h3><i class="fas fa-palette" style="margin-right: 8px;"></i>Background</h3>
+								<i class="fas fa-chevron-down"></i>
+							</div>
+							<div class="collapsible-content">
+								<div class="control-group">
+									<label>Background Style</label>
+									<div class="background-options">
+										<div class="bg-option selected" data-bg="gradient1" style="background: linear-gradient(135deg, #2568BE 0%, #1B4C7D 100%);" title="Primary Blue"></div>
+										<div class="bg-option" data-bg="gradient2" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);" title="Light Blue"></div>
+										<div class="bg-option" data-bg="gradient3" style="background: linear-gradient(135deg, #1B4C7D 0%, #0d2840 100%);" title="Dark Blue"></div>
+										<div class="bg-option" data-bg="gradient4" style="background: linear-gradient(135deg, #0056a3 0%, #003d73 100%);" title="Deep Blue"></div>
+										<div class="bg-option" data-bg="gradient5" style="background: linear-gradient(135deg, #27ae60 0%, #1e8449 100%);" title="Green"></div>
+										<div class="bg-option" data-bg="gradient6" style="background: linear-gradient(135deg, #8e44ad 0%, #6c3483 100%);" title="Purple"></div>
+										<div class="bg-option" data-bg="gradient7" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);" title="Red"></div>
+										<label class="bg-option custom-bg-option" data-bg="custom" id="customBgOption" style="background: #202020;" title="Custom Color">
+											<input type="color" id="customBackgroundColor" value="#202020">
+											<span>Custom</span>
+										</label>
+									</div>
+								</div>
+								<div class="control-group">
+									<button class="btn-secondary" onclick="randomizeCircles()" style="width: 100%;">
+										<i class="fas fa-random"></i> Randomize Circles
+									</button>
+								</div>
+							</div>
+
+							<hr class="section-divider">
+
+							<!-- Overlay Image -->
+							<div class="collapsible-header" onclick="toggleSection(this)">
+								<h3><i class="fas fa-image" style="margin-right: 8px;"></i>Overlay Image</h3>
+								<i class="fas fa-chevron-down"></i>
+							</div>
+							<div class="collapsible-content">
+								<div class="control-group">
+									<div class="file-input-wrapper">
+										<input type="file" id="overlayImageInput" accept="image/*" onchange="loadOverlayImage(this)">
+										<label for="overlayImageInput" class="file-input-label" id="overlayImageLabel">
+											<i class="fas fa-upload"></i>
+											<span>Browse for image...</span>
+										</label>
+									</div>
+									<button class="btn-remove" id="removeOverlayBtn" onclick="removeOverlayImage()" style="display: none;">
+										<i class="fas fa-times"></i> Remove Image
+									</button>
+								</div>
+								<div class="control-group">
+									<label>Image Opacity</label>
+									<div class="size-slider-wrapper">
+										<input type="range" id="overlayOpacity" min="0" max="100" value="30">
+										<span class="size-value" id="overlayOpacityValue">30%</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</details>
+				</div>
+			</div>
+			
+			<!-- Footer -->
+			<footer id="footer" style="margin-top: 0;">
+				<ul class="icons">
+					<li><a href="https://www.linkedin.com/company/medcityai" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit;">Follow MedCityAI on LinkedIn <i class="fab fa-linkedin-in" style="font-size: 1.3em; color: #0a66c2;"></i></a></li>
+				</ul>
+				<ul class="copyright">
+					<li>&copy; MedCityAI</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+				</ul>
+			</footer>
+		</div>
+		
+		<!-- Scripts -->
+		<script src="assets/js/jquery.min.js"></script>
+		<script src="assets/js/navigation.js"></script>
+		
+		<script>
+		// CSV Data Storage
+		let pubmedData = [];
+		let logoImage = null;
+		let overlayImage = null;
+		
+		// Circle data for randomization
+		let circles = [];
+		
+		// Background definitions
+		const backgrounds = {
+			'gradient1': { type: 'gradient', colors: ['#2568BE', '#1B4C7D'], angle: 135 },
+			'gradient2': { type: 'gradient', colors: ['#3498db', '#2980b9'], angle: 135 },
+			'gradient3': { type: 'gradient', colors: ['#1B4C7D', '#0d2840'], angle: 135 },
+			'gradient4': { type: 'gradient', colors: ['#0056a3', '#003d73'], angle: 135 },
+			'gradient5': { type: 'gradient', colors: ['#27ae60', '#1e8449'], angle: 135 },
+			'gradient6': { type: 'gradient', colors: ['#8e44ad', '#6c3483'], angle: 135 },
+			'gradient7': { type: 'gradient', colors: ['#e74c3c', '#c0392b'], angle: 135 },
+			'custom': { type: 'solid', color: '#202020' }
+		};
+		
+		let currentBackground = 'gradient1';
+
+		function randomCircleCount() {
+			return Math.floor(Math.random() * 4) + 2;
+		}
+		
+		// Initialize circles
+		function initCircles() {
+			const count = randomCircleCount();
+			circles = [];
+			for (let i = 0; i < count; i++) {
+				circles.push({
+					x: Math.random() * 1080,
+					y: Math.random() * 1080,
+					r: 100 + Math.random() * 200
+				});
+			}
+		}
+		
+		// Randomize circles
+		function randomizeCircles() {
+			const count = randomCircleCount();
+			circles = [];
+			for (let i = 0; i < count; i++) {
+				circles.push({
+					x: Math.random() * 1080,
+					y: Math.random() * 1080,
+					r: 80 + Math.random() * 250
+				});
+			}
+			updateCanvas();
+		}
+		
+		// Toggle collapsible sections
+		function toggleSection(header) {
+			header.classList.toggle('collapsed');
+			const content = header.nextElementSibling;
+			content.classList.toggle('collapsed');
+		}
+		
+		// Load CSV Data
+		async function loadCSVData() {
+			try {
+				const response = await fetch('pubmed_data.csv');
+				const text = await response.text();
+				pubmedData = parseCSV(text);
+				console.log(`Loaded ${pubmedData.length} articles from CSV`);
+			} catch (error) {
+				console.error('Error loading CSV:', error);
+			}
+		}
+		
+		// Parse CSV
+		function parseCSV(text) {
+			const lines = text.split('\n');
+			const headers = parseCSVLine(lines[0]);
+			const data = [];
+			
+			for (let i = 1; i < lines.length; i++) {
+				if (lines[i].trim()) {
+					const values = parseCSVLine(lines[i]);
+					const row = {};
+					headers.forEach((header, index) => {
+						row[header.trim()] = values[index] ? values[index].trim() : '';
+					});
+					data.push(row);
+				}
+			}
+			return data;
+		}
+		
+		// Parse CSV line handling quoted fields
+		function parseCSVLine(line) {
+			const result = [];
+			let current = '';
+			let inQuotes = false;
+			
+			for (let i = 0; i < line.length; i++) {
+				const char = line[i];
+				if (char === '"') {
+					inQuotes = !inQuotes;
+				} else if (char === ',' && !inQuotes) {
+					result.push(current);
+					current = '';
+				} else {
+					current += char;
+				}
+			}
+			result.push(current);
+			return result;
+		}
+
+		// Get PMID from URL query/hash/path
+		function getPMIDFromURL() {
+			const params = new URLSearchParams(window.location.search);
+			const queryPMID = (params.get('pmid') || params.get('id') || '').trim();
+			if (/^\d{6,10}$/.test(queryPMID)) {
+				return queryPMID;
+			}
+
+			const hashPMID = (window.location.hash || '').replace('#', '').trim();
+			if (/^\d{6,10}$/.test(hashPMID)) {
+				return hashPMID;
+			}
+
+			const pathPart = window.location.pathname.split('/').filter(Boolean).pop() || '';
+			const match = pathPart.match(/(\d{6,10})$/);
+			return match ? match[1] : '';
+		}
+
+		function buildSocialPostText(article, pmid) {
+			const safePMID = (pmid || '').trim();
+			const aiSummary = article && article.llm_summary
+				? article.llm_summary.replace(/^"|"$/g, '').trim()
+				: '[include the AI summary here]';
+
+			return [
+				'New research worth noting:',
+				'',
+				`AI Summary: ${aiSummary}`,
+				'',
+				'@MedCityAI'
+			].join('\n');
+		}
+
+		function updateSocialPostText(article, pmid) {
+			const socialPostText = document.getElementById('socialPostText');
+			if (!socialPostText) {
+				return;
+			}
+			socialPostText.value = buildSocialPostText(article, pmid || document.getElementById('pmidInput').value.trim());
+		}
+
+		async function copySocialText() {
+			const socialPostText = document.getElementById('socialPostText');
+			if (!socialPostText) {
+				return;
+			}
+
+			try {
+				await navigator.clipboard.writeText(socialPostText.value);
+				const copyBtn = document.getElementById('copySocialBtn');
+				if (copyBtn) {
+					copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied';
+					setTimeout(() => {
+						copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy Text';
+					}, 1400);
+				}
+			} catch (_) {
+				socialPostText.select();
+				document.execCommand('copy');
+			}
+		}
+		
+		// Load PMID
+		function loadPMID() {
+			const pmid = document.getElementById('pmidInput').value.trim();
+			if (!pmid) {
+				alert('Please enter a PMID');
+				return;
+			}
+			
+			const article = pubmedData.find(a => a.pmid === pmid);
+			if (article) {
+				document.getElementById('titleText').value = article.title || '';
+				document.getElementById('authorsText').value = article.authors_display || article.authors || '';
+				document.getElementById('journalText').value = `${article.journal || ''} • ${article.pubdate || ''}`;
+				updateSocialPostText(article, pmid);
+				
+				document.getElementById('loadedTitle').textContent = article.title;
+				document.getElementById('pmidInfo').classList.add('visible');
+				
+				updateCanvas();
+			} else {
+				alert('PMID not found in database. Please try another.');
+				document.getElementById('pmidInfo').classList.remove('visible');
+			}
+		}
+		
+		// Load Logo
+		function loadLogo() {
+			logoImage = new Image();
+			logoImage.crossOrigin = 'anonymous';
+			logoImage.onload = () => {
+				console.log('Logo loaded');
+				updateCanvas();
+			};
+			logoImage.onerror = () => {
+				console.error('Failed to load logo');
+				logoImage = null;
+			};
+			logoImage.src = 'images/medcityai_simple1.png';
+		}
+		
+		// Load Overlay Image
+		function loadOverlayImage(input) {
+			if (input.files && input.files[0]) {
+				const reader = new FileReader();
+				reader.onload = function(e) {
+					overlayImage = new Image();
+					overlayImage.onload = function() {
+						document.getElementById('overlayImageLabel').classList.add('has-file');
+						document.getElementById('overlayImageLabel').querySelector('span').textContent = input.files[0].name;
+						document.getElementById('removeOverlayBtn').style.display = 'block';
+						updateCanvas();
+					};
+					overlayImage.src = e.target.result;
+				};
+				reader.readAsDataURL(input.files[0]);
+			}
+		}
+		
+		// Remove Overlay Image
+		function removeOverlayImage() {
+			overlayImage = null;
+			document.getElementById('overlayImageInput').value = '';
+			document.getElementById('overlayImageLabel').classList.remove('has-file');
+			document.getElementById('overlayImageLabel').querySelector('span').textContent = 'Browse for image...';
+			document.getElementById('removeOverlayBtn').style.display = 'none';
+			updateCanvas();
+		}
+		
+		// Draw Canvas
+		function updateCanvas() {
+			const canvas = document.getElementById('postCanvas');
+			const ctx = canvas.getContext('2d');
+			const width = 1080;
+			const height = 1080;
+			
+			// Clear canvas
+			ctx.clearRect(0, 0, width, height);
+			
+			// Draw background
+			const bg = backgrounds[currentBackground];
+			if (bg.type === 'gradient') {
+				const angle = bg.angle * Math.PI / 180;
+				const x1 = width / 2 - Math.cos(angle) * width;
+				const y1 = height / 2 - Math.sin(angle) * height;
+				const x2 = width / 2 + Math.cos(angle) * width;
+				const y2 = height / 2 + Math.sin(angle) * height;
+				const gradient = ctx.createLinearGradient(x1, y1, x2, y2);
+				gradient.addColorStop(0, bg.colors[0]);
+				gradient.addColorStop(1, bg.colors[1]);
+				ctx.fillStyle = gradient;
+			} else {
+				ctx.fillStyle = bg.color;
+			}
+			ctx.fillRect(0, 0, width, height);
+			
+			// Draw decorative circles
+			drawDecorations(ctx, width, height);
+			
+			// Draw overlay image (behind text)
+			if (overlayImage) {
+				const opacity = parseInt(document.getElementById('overlayOpacity').value) / 100;
+				ctx.globalAlpha = opacity;
+				
+				// Scale and center the image
+				const scale = Math.max(width / overlayImage.width, height / overlayImage.height);
+				const scaledWidth = overlayImage.width * scale;
+				const scaledHeight = overlayImage.height * scale;
+				const x = (width - scaledWidth) / 2;
+				const y = (height - scaledHeight) / 2;
+				
+				ctx.drawImage(overlayImage, x, y, scaledWidth, scaledHeight);
+				ctx.globalAlpha = 1;
+			}
+			
+			// Draw logo (fixed)
+			if (logoImage) {
+				const logoSize = 200;
+				const logoX = 50;
+				const logoY = 50;
+				const logoColor = '#ffffff';
+				
+				// Create temporary canvas for tinting
+				const tempCanvas = document.createElement('canvas');
+				tempCanvas.width = logoImage.width;
+				tempCanvas.height = logoImage.height;
+				const tempCtx = tempCanvas.getContext('2d');
+				
+				// Draw original logo
+				tempCtx.drawImage(logoImage, 0, 0);
+				
+				// Apply tint
+				tempCtx.globalCompositeOperation = 'source-atop';
+				tempCtx.fillStyle = logoColor;
+				tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+				
+				ctx.drawImage(tempCanvas, logoX, logoY, logoSize, logoSize);
+			}
+
+			// Draw fixed badge (top right)
+			const badgeText = 'RECENTLY PUBLISHED';
+			const badgeSize = 30;
+			ctx.font = `bold ${badgeSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+			const textMetrics = ctx.measureText(badgeText);
+			const badgeWidth = textMetrics.width + 36;
+			const badgeHeight = badgeSize + 20;
+			const badgeX = width - badgeWidth - 50;
+			const badgeY = 52;
+
+			ctx.fillStyle = 'rgba(255,255,255,0.15)';
+			ctx.beginPath();
+			ctx.roundRect(badgeX, badgeY, badgeWidth, badgeHeight, badgeHeight / 2);
+			ctx.fill();
+
+			ctx.fillStyle = '#ffffff';
+			ctx.textAlign = 'center';
+			ctx.fillText(badgeText, badgeX + badgeWidth / 2, badgeY + badgeHeight / 2 + badgeSize / 3);
+			
+			// Draw title (auto-centred between logo bottom and first authors line)
+			const titleText = document.getElementById('titleText').value.replace(/\.\s*$/, '');
+			const titleColor = '#ffffff';
+			const wordCount = titleText.trim().split(/\s+/).filter(Boolean).length;
+			const titleSize = wordCount < 10 ? 70 : wordCount > 18 ? 45 : 60;
+			
+			if (titleText) {
+				ctx.fillStyle = titleColor;
+				ctx.font = `bold ${titleSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+				ctx.textAlign = 'left';
+				
+				const maxWidth = width - 100;
+				const lines = wrapText(ctx, titleText, maxWidth);
+				const lineHeight = titleSize * 1.3;
+				const titleBlockHeight = lines.length * lineHeight;
+				
+				// Centre zone: between bottom of logo and visual top of first authors line
+				const logoSizeVal = 200;
+				const logoBottom = 50 + logoSizeVal; // logoY is fixed at 50
+				const authorsYVal = 830;
+				const authorsSizeVal = 35;
+				const authorsVisualTop = authorsYVal - authorsSizeVal;
+				const zoneCenter = (logoBottom + authorsVisualTop) / 2;
+				// titleY is baseline of first line; visual top = titleY - titleSize
+				// visual center = titleY - titleSize + titleBlockHeight/2 = zoneCenter
+				const titleY = zoneCenter + titleSize - titleBlockHeight / 2;
+				
+				let y = titleY;
+				lines.forEach(line => {
+					ctx.fillText(line, 50, y);
+					y += lineHeight;
+				});
+			}
+			
+			// Draw authors
+			const authorsText = document.getElementById('authorsText').value;
+			const authorsColor = '#e0e0e0';
+			const authorsSize = 35;
+			const authorsY = 830;
+			
+			if (authorsText) {
+				ctx.fillStyle = authorsColor;
+				ctx.textAlign = 'left';
+				
+				const maxWidth = width - 100;
+				const lineHeight = authorsSize * 1.4;
+				const sansFont = `${authorsSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+				const italicFont = `italic ${authorsSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+
+				// Truncate to max 7 authors
+				const authorList = authorsText.split(',').map(a => a.trim()).filter(Boolean);
+				const needsEtAl = authorList.length > 7;
+				const truncated = needsEtAl ? authorList.slice(0, 7).join(', ') : authorsText;
+				
+				ctx.font = sansFont;
+				const lines = wrapText(ctx, truncated, needsEtAl ? maxWidth - ctx.measureText(', et al.').width : maxWidth);
+				let y = authorsY;
+				
+				lines.forEach((line, i) => {
+					ctx.font = sansFont;
+					ctx.fillText(line, 50, y);
+					// Append italic ", et al." after the final line
+					if (needsEtAl && i === lines.length - 1) {
+						const lineWidth = ctx.measureText(line).width;
+						ctx.font = italicFont;
+						ctx.fillText(', et al.', 50 + lineWidth, y);
+					}
+					y += lineHeight;
+				});
+			}
+			
+			// Draw journal
+			const journalText = document.getElementById('journalText').value;
+			const journalColor = '#bababa';
+			const journalSize = 30;
+			const journalY = 1020;
+			
+			if (journalText) {
+				ctx.fillStyle = journalColor;
+				ctx.font = `600 ${journalSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+				ctx.textAlign = 'left';
+				ctx.fillText(journalText, 50, journalY);
+			}
+		}
+		
+		// Draw decorative elements
+		function drawDecorations(ctx, width, height) {
+			const opacity = 0.10;
+			
+			ctx.globalAlpha = opacity;
+			ctx.fillStyle = '#ffffff';
+			
+			circles.forEach(circle => {
+				ctx.beginPath();
+				ctx.arc(circle.x, circle.y, circle.r, 0, Math.PI * 2);
+				ctx.fill();
+			});
+			
+			ctx.globalAlpha = 1;
+		}
+		
+		// Word wrap
+		function wrapText(ctx, text, maxWidth) {
+			const words = text.split(' ');
+			const lines = [];
+			let currentLine = '';
+			
+			words.forEach(word => {
+				const testLine = currentLine + (currentLine ? ' ' : '') + word;
+				const metrics = ctx.measureText(testLine);
+				
+				if (metrics.width > maxWidth && currentLine) {
+					lines.push(currentLine);
+					currentLine = word;
+				} else {
+					currentLine = testLine;
+				}
+			});
+			
+			if (currentLine) {
+				lines.push(currentLine);
+			}
+			
+			return lines;
+		}
+		
+		// Download Image
+		function downloadImage() {
+			const canvas = document.getElementById('postCanvas');
+			const link = document.createElement('a');
+			const pmid = document.getElementById('pmidInput').value.trim();
+			const filename = pmid ? `medcityai_featured_${pmid}.png` : 'medcityai_featured_post.png';
+			
+			link.download = filename;
+			link.href = canvas.toDataURL('image/png');
+			link.click();
+		}
+
+		function openLinkedInShare() {
+			const pmid = document.getElementById('pmidInput').value.trim();
+			const targetUrl = pmid
+				? `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`
+				: 'https://medcityai.com';
+			const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(targetUrl)}`;
+			window.open(linkedInUrl, '_blank', 'noopener,noreferrer');
+		}
+		
+		// Event Listeners
+		document.addEventListener('DOMContentLoaded', async function() {
+			await loadCSVData();
+			loadLogo();
+			initCircles();
+			updateSocialPostText(null, '');
+			
+			// Background selection
+			document.querySelectorAll('.bg-option').forEach(option => {
+				option.addEventListener('click', function() {
+					document.querySelectorAll('.bg-option').forEach(o => o.classList.remove('selected'));
+					this.classList.add('selected');
+					currentBackground = this.dataset.bg;
+					updateCanvas();
+				});
+			});
+
+			const customBackgroundColor = document.getElementById('customBackgroundColor');
+			const customBgOption = document.getElementById('customBgOption');
+			customBackgroundColor.addEventListener('input', function() {
+				backgrounds.custom.color = this.value;
+				customBgOption.style.background = this.value;
+				document.querySelectorAll('.bg-option').forEach(o => o.classList.remove('selected'));
+				customBgOption.classList.add('selected');
+				currentBackground = 'custom';
+				updateCanvas();
+			});
+			
+			// Title/authors/journal options are fixed and hidden.
+			
+			// Overlay opacity
+			document.getElementById('overlayOpacity').addEventListener('input', function() {
+				document.getElementById('overlayOpacityValue').textContent = this.value + '%';
+				updateCanvas();
+			});
+
+			document.getElementById('copySocialBtn').addEventListener('click', copySocialText);
+			
+			// Checkboxes
+			
+			// PMID enter key
+			document.getElementById('pmidInput').addEventListener('keypress', function(e) {
+				if (e.key === 'Enter') {
+					loadPMID();
+				}
+			});
+
+			// Auto-load PMID from URL if present
+			const urlPMID = getPMIDFromURL();
+			if (urlPMID) {
+				document.getElementById('pmidInput').value = urlPMID;
+				loadPMID();
+			}
+			
+			// Initial draw
+			setTimeout(updateCanvas, 500);
+		});
+		</script>
+	</body>
+</html>
