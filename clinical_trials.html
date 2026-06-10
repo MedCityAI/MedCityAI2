@@ -56,27 +56,33 @@
             .hero-content {
                 max-width: 1200px;
                 margin: 0 auto;
-                padding: 0 20px;
+                padding: 0px 20px;
                 display: grid;
-                grid-template-columns: 1fr 300px;
-                gap: 50px;
+                grid-template-columns: 1fr 350px;
+                gap: 60px;
                 align-items: center;
                 position: relative;
                 z-index: 2;
             }
 
+            .hero-left {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
             .hero-left p {
                 color: #e0e0e0;
-                font-size: 52px;
+                font-size: 55px;
                 font-weight: 350;
                 margin: 0;
                 letter-spacing: 0.2px;
-                line-height: 1.25;
+                line-height: 1.4;
             }
 
             .search-bar-container {
                 position: relative;
-                max-width: 660px;
+                max-width: 600px;
                 margin-top: 24px;
             }
 
@@ -115,17 +121,23 @@
             }
 
             .hero-right {
+                position: relative;
+            }
+
+            .chart-container {
+                position: relative;
+                aspect-ratio: 1;
                 display: flex;
-                justify-content: center;
                 align-items: center;
+                justify-content: center;
+                width: 100%;
             }
 
             .hero-logo {
                 width: auto;
-                height: 145px;
-                border-radius: 10px;
+                height: 70%;
+                border-radius: 8px;
                 filter: brightness(0) invert(1);
-                opacity: 0.9;
             }
 
             .results-section {
@@ -284,48 +296,83 @@
 
             .pagination {
                 max-width: 1200px;
-                margin: 26px auto 0;
+                margin: 50px auto 30px;
+                padding: 20px;
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                gap: 10px;
+                gap: 6px;
+                background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+                border-radius: 12px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.06);
             }
 
-            .page-button {
-                border: 1px solid #d2dfec;
-                background: #fff;
-                color: #2d4762;
+            .pagination button {
+                padding: 10px 16px;
+                border: none;
+                background: white;
                 border-radius: 8px;
-                padding: 9px 16px;
-                font-size: 0.9rem;
-                font-weight: 600;
                 cursor: pointer;
-                transition: all 0.2s ease;
+                font-weight: 500;
+                color: #2c3e50;
+                transition: all 0.3s ease;
+                font-size: 14px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+                min-width: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
             }
 
-            .page-button:hover:not(:disabled) {
-                border-color: var(--ct-accent);
-                color: var(--ct-accent);
+            .pagination button:hover:not(:disabled) {
+                background: #3498db;
+                color: white;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
             }
 
-            .page-button:disabled {
-                opacity: 0.4;
+            .pagination button:disabled {
+                opacity: 0.3;
                 cursor: not-allowed;
+                box-shadow: none;
             }
 
-            .page-indicator {
-                color: #4a5f74;
-                font-size: 0.92rem;
+            .pagination button.active {
+                background: linear-gradient(135deg, #3498db, #2980b9);
+                color: white;
+                box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
                 font-weight: 600;
+            }
+
+            .pagination .page-num {
+                min-width: 44px;
+                text-align: center;
+            }
+
+            .pagination .ellipsis {
+                border: none;
+                background: transparent;
+                cursor: default;
+                box-shadow: none;
+                color: #95a5a6;
+                font-weight: 600;
+            }
+
+            .pagination .nav-btn {
+                padding: 10px 20px;
+                font-weight: 600;
+            }
+
+            .pagination .nav-btn i {
+                font-size: 12px;
             }
 
             @media (max-width: 980px) {
                 .hero-content {
                     grid-template-columns: 1fr;
                     text-align: center;
-                    gap: 30px;
-                    padding-top: 34px;
-                    padding-bottom: 34px;
+                    gap: 40px;
                 }
 
                 .search-bar-container {
@@ -336,13 +383,17 @@
                     font-size: 36px;
                 }
 
-                .hero-logo {
-                    height: 88px;
+                .chart-container {
+                    display: none;
                 }
 
                 .results-header {
                     flex-direction: column;
                     align-items: flex-start;
+                }
+
+                .pagination {
+                    flex-wrap: wrap;
                 }
             }
 
@@ -397,14 +448,16 @@
 
                 <div class="hero-content">
                     <div class="hero-left">
-                        <p>search 5,000+ clinical trials from Rochester, MN</p>
+                        <p>search 5,000+ clinical trials involving <span style="font-weight:650;white-space:nowrap;">Rochester, MN</span></p>
                         <div class="search-bar-container">
                             <i id="search-icon" class="fas fa-search search-icon" aria-hidden="true"></i>
                             <input type="search" id="trial-search-input" class="search-bar" placeholder="Search site-wide clinical trial content" aria-label="Search clinical trials on MedCityAI" />
                         </div>
                     </div>
                     <div class="hero-right">
-                        <img class="hero-logo" src="images/medcityai_simple1.png" alt="MedCityAI logo" />
+                        <div class="chart-container">
+                            <img class="hero-logo" src="images/medcityai_simple1.png" alt="MedCityAI logo" />
+                        </div>
                     </div>
                 </div>
             </section>
@@ -430,11 +483,7 @@
                     <p>Try a broader term, a synonym, or remove extra keywords.</p>
                 </section>
 
-                <nav id="pagination" class="pagination" aria-label="Results pagination" style="display:none;">
-                    <button id="prevPageBtn" class="page-button" type="button">Previous</button>
-                    <span id="pageIndicator" class="page-indicator">Page 1</span>
-                    <button id="nextPageBtn" class="page-button" type="button">Next</button>
-                </nav>
+                <nav id="paginationContainer" class="pagination" aria-label="Results pagination" style="display:none;"></nav>
             </main>
 
             <footer id="footer" style="margin-top: 0;">
