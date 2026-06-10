@@ -1,13 +1,13 @@
 <!DOCTYPE HTML>
 <!--
-    MedCityAI - Clinical Trials
+    MedCityAI - Clinical Trials Search
 -->
 <html lang="en">
     <head>
-        <title>Clinical Trials - MedCityAI</title>
+        <title>Clinical Trials Search - MedCityAI</title>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-        <meta name="description" content="Recent Rochester and Minnesota clinical trials with search by author/sponsor and subject." />
+        <meta name="description" content="Search MedCityAI using an API-key-backed full-site search experience focused on clinical trials topics." />
 
         <link rel="icon" type="image/png" href="images/medcityai_simple1.png" />
         <link rel="apple-touch-icon" href="images/medcityai_simple1.png" />
@@ -18,377 +18,423 @@
         <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 
         <style>
-            .trials-hero {
-                background: linear-gradient(130deg, #0f5a84 0%, #143b66 55%, #1d7fa4 100%);
+            :root {
+                --ct-blue-1: #2568be;
+                --ct-blue-2: #1b4c7d;
+                --ct-accent: #3498db;
+                --ct-accent-dark: #2980b9;
+                --ct-ink: #1f2d3d;
+                --ct-muted: #6b7280;
+                --ct-bg: #f8fafc;
+            }
+
+            body {
+                background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%);
+                min-height: 100vh;
+            }
+
+            .hero-section {
+                background: linear-gradient(120deg, var(--ct-blue-1) 0%, var(--ct-blue-2) 100%);
                 min-height: 340px;
                 display: flex;
                 align-items: center;
                 position: relative;
                 overflow: hidden;
-                padding: 30px 0 36px;
-            }
-
-            .trials-hero::before,
-            .trials-hero::after {
-                content: '';
-                position: absolute;
-                border-radius: 50%;
-                pointer-events: none;
-                filter: blur(0.5px);
-            }
-
-            .trials-hero::before {
-                width: 420px;
-                height: 420px;
-                right: -140px;
-                top: -120px;
-                background: radial-gradient(circle, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.02) 68%, transparent 72%);
-            }
-
-            .trials-hero::after {
-                width: 560px;
-                height: 560px;
-                left: -180px;
-                bottom: -300px;
-                background: radial-gradient(circle, rgba(120, 228, 255, 0.24) 0%, rgba(120, 228, 255, 0.03) 63%, transparent 70%);
-            }
-
-            .trials-hero-content {
-                width: min(1200px, calc(100% - 40px));
-                margin: 0 auto;
-                position: relative;
                 z-index: 1;
-                display: grid;
-                gap: 18px;
             }
 
-            .trials-kicker {
-                color: rgba(255, 255, 255, 0.86);
-                letter-spacing: 0.11em;
-                text-transform: uppercase;
-                font-size: 0.74rem;
-                font-weight: 700;
-                margin-bottom: 4px;
-            }
-
-            .trials-title {
-                margin: 0;
-                color: #ffffff;
-                font-size: clamp(1.8rem, 3.6vw, 2.9rem);
-                line-height: 1.2;
-                max-width: 860px;
-                font-weight: 700;
-                letter-spacing: 0.01em;
-            }
-
-            .trials-subtitle {
-                margin: 0;
-                color: rgba(234, 245, 252, 0.95);
-                max-width: 850px;
-                font-size: 1.02rem;
-                line-height: 1.6;
-                letter-spacing: 0.01em;
-            }
-
-            .search-panel {
-                margin-top: 10px;
-                background: rgba(255, 255, 255, 0.97);
-                border: 1px solid rgba(18, 53, 88, 0.16);
-                border-radius: 18px;
-                display: grid;
-                grid-template-columns: minmax(0, 1fr) auto auto;
-                gap: 12px;
-                align-items: center;
-                padding: 12px;
-                box-shadow: 0 14px 40px rgba(0, 20, 40, 0.28);
-            }
-
-            .search-input-wrap {
-                position: relative;
-            }
-
-            .search-input-wrap i {
+            .hero-bg-blobs {
                 position: absolute;
-                top: 50%;
-                left: 14px;
-                transform: translateY(-50%);
-                color: #1f5e89;
-                font-size: 0.95rem;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 0;
                 pointer-events: none;
             }
 
-            #trial-search-input {
-                width: 100%;
-                border: 1px solid #c7d4df;
-                border-radius: 12px;
-                color: #11324e;
-                background: #fbfdff;
-                padding: 11px 12px 11px 40px;
-                font-size: 0.95rem;
-                letter-spacing: 0;
-                font-family: inherit;
-            }
-
-            #search-mode,
-            #clear-search {
-                border-radius: 12px;
-                font-size: 0.9rem;
-                letter-spacing: 0;
-                font-family: inherit;
-                height: 43px;
-            }
-
-            #search-mode {
-                border: 1px solid #c7d4df;
-                color: #163c5f;
-                background: #f8fbfe;
-                min-width: 188px;
-                padding: 0 12px;
-            }
-
-            #clear-search {
-                border: 1px solid #1d6b95;
-                background: #1d6b95;
-                color: #fff;
-                font-weight: 600;
-                padding: 0 18px;
-                cursor: pointer;
-            }
-
-            #clear-search:hover {
-                background: #16587b;
-                border-color: #16587b;
-            }
-
-            .trials-main {
-                background: linear-gradient(180deg, #f5f9fc 0%, #ffffff 220px);
-                padding: 22px 0 70px;
-            }
-
-            .trials-main-inner {
-                width: min(1200px, calc(100% - 40px));
+            .hero-content {
+                max-width: 1200px;
                 margin: 0 auto;
+                padding: 0 20px;
+                display: grid;
+                grid-template-columns: 1fr 300px;
+                gap: 50px;
+                align-items: center;
+                position: relative;
+                z-index: 2;
             }
 
-            .trials-meta {
+            .hero-left p {
+                color: #e0e0e0;
+                font-size: 52px;
+                font-weight: 350;
+                margin: 0;
+                letter-spacing: 0.2px;
+                line-height: 1.25;
+            }
+
+            .search-bar-container {
+                position: relative;
+                max-width: 660px;
+                margin-top: 24px;
+            }
+
+            .search-bar {
+                width: 100%;
+                padding: 12px 20px 12px 50px;
+                font-size: 16px;
+                border: 2px solid rgba(255, 255, 255, 0.3);
+                border-radius: 50px;
+                background: rgba(255, 255, 255, 0.95);
+                color: #2c3e50;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+                transition: all 0.3s ease;
+            }
+
+            .search-bar:focus {
+                outline: none;
+                border-color: rgba(255, 255, 255, 0.8);
+                background: #fff;
+                box-shadow: 0 6px 30px rgba(0, 0, 0, 0.2);
+            }
+
+            .search-icon {
+                position: absolute;
+                left: 20px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #3498db;
+                font-size: 18px;
+                cursor: pointer;
+                transition: color 0.2s ease;
+            }
+
+            .search-icon:hover {
+                color: #2980b9;
+            }
+
+            .hero-right {
                 display: flex;
-                flex-wrap: wrap;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .hero-logo {
+                width: auto;
+                height: 145px;
+                border-radius: 10px;
+                filter: brightness(0) invert(1);
+                opacity: 0.9;
+            }
+
+            .results-section {
+                width: 100%;
+                margin: 0;
+                padding: 46px 20px 30px;
+                background: var(--ct-bg);
+                min-height: 55vh;
+            }
+
+            .results-header {
+                max-width: 1200px;
+                margin: 0 auto 20px;
+                display: flex;
                 justify-content: space-between;
                 align-items: center;
                 gap: 12px;
-                margin-bottom: 18px;
+                border-bottom: 1px solid #dbe5f0;
+                padding-bottom: 12px;
             }
 
-            .trials-count {
-                color: #143b5e;
-                font-size: 0.95rem;
-                letter-spacing: 0.01em;
+            .results-count {
+                font-size: 1.15em;
+                color: #2c3e50;
+                font-weight: 600;
             }
 
-            .trials-count strong {
-                font-size: 1.2rem;
-                color: #0d2b45;
-                margin-right: 6px;
+            .results-count span {
+                color: var(--ct-accent);
             }
 
-            .source-badge {
+            .results-source {
+                color: #4b5d73;
+                font-size: 0.92rem;
+                background: #eef4fa;
+                border: 1px solid #d4e0ec;
+                border-radius: 999px;
+                padding: 6px 12px;
+            }
+
+            .status-message {
+                max-width: 1200px;
+                margin: 0 auto 18px;
+                color: #3c4f63;
+                font-size: 0.93rem;
+            }
+
+            .status-message.error {
+                color: #b42318;
+            }
+
+            .results-list {
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            .result-item {
+                background: #fff;
+                margin-bottom: 16px;
+                padding: 24px;
+                border-radius: 12px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+                transition: all 0.2s ease;
+            }
+
+            .result-item:hover {
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+            }
+
+            .result-title {
+                font-size: 1.2em;
+                font-weight: 600;
+                color: #0056a3;
+                text-decoration: none;
+                line-height: 1.45;
+                transition: color 0.2s ease;
+            }
+
+            .result-title:hover {
+                color: #3498db;
+            }
+
+            .result-snippet {
+                margin: 10px 0 14px;
+                font-size: 0.96rem;
+                line-height: 1.65;
+                color: #41566c;
+            }
+
+            .result-meta {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 18px;
+                margin-bottom: 10px;
+                font-size: 0.84rem;
+                color: #697b8f;
+            }
+
+            .result-meta-item {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .result-meta-item i {
+                color: #3498db;
+                font-size: 0.78rem;
+            }
+
+            .result-link {
                 display: inline-flex;
                 align-items: center;
                 gap: 8px;
-                border: 1px solid #c8d8e6;
-                background: #eef5fb;
-                color: #225479;
-                border-radius: 999px;
-                font-size: 0.78rem;
-                padding: 7px 12px;
-                letter-spacing: 0;
-                text-transform: none;
-            }
-
-            .trial-grid {
-                display: grid;
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-                gap: 16px;
-            }
-
-            .trial-card {
-                background: #ffffff;
-                border: 1px solid #deebf5;
-                border-radius: 14px;
-                padding: 16px;
-                box-shadow: 0 7px 24px rgba(16, 46, 73, 0.08);
-                display: grid;
-                gap: 10px;
-            }
-
-            .trial-card-top {
-                display: flex;
-                justify-content: space-between;
-                gap: 10px;
-                align-items: center;
-            }
-
-            .trial-status {
-                background: #e8f4ff;
-                color: #14598a;
-                border-radius: 999px;
-                font-size: 0.71rem;
-                font-weight: 700;
-                letter-spacing: 0.03em;
-                padding: 5px 9px;
-                text-transform: uppercase;
-            }
-
-            .trial-updated {
-                font-size: 0.73rem;
-                color: #51677a;
-                letter-spacing: 0;
-            }
-
-            .trial-title {
-                margin: 0;
-                color: #0f2f48;
-                line-height: 1.35;
-                font-size: 1rem;
-                letter-spacing: 0;
-            }
-
-            .trial-subject,
-            .trial-author,
-            .trial-location {
-                margin: 0;
-                color: #365066;
-                font-size: 0.86rem;
-                line-height: 1.55;
-                letter-spacing: 0;
-            }
-
-            .trial-subject strong,
-            .trial-author strong,
-            .trial-location strong {
-                color: #113553;
-            }
-
-            .trial-card-bottom {
-                margin-top: 6px;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                gap: 10px;
-                border-top: 1px solid #edf3f8;
-                padding-top: 10px;
-            }
-
-            .trial-id {
-                font-size: 0.78rem;
-                color: #43627b;
-                font-weight: 700;
-                letter-spacing: 0.01em;
-            }
-
-            .trial-link {
-                font-size: 0.78rem;
+                color: #0056a3;
                 text-decoration: none;
-                color: #0d5a8a;
-                font-weight: 700;
+                font-size: 0.88rem;
+                font-weight: 600;
             }
 
-            .trial-link:hover {
-                text-decoration: underline;
+            .result-link:hover {
+                color: #3498db;
+            }
+
+            .loading {
+                text-align: center;
+                padding: 60px 20px;
+            }
+
+            .spinner {
+                border: 4px solid #f0f0f0;
+                border-top: 4px solid #3498db;
+                border-radius: 50%;
+                width: 50px;
+                height: 50px;
+                animation: spin 1s linear infinite;
+                margin: 0 auto 16px;
+            }
+
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
             }
 
             .empty-state {
-                display: none;
-                margin-top: 12px;
-                background: #ffffff;
-                border: 1px solid #dbe9f4;
-                border-radius: 14px;
                 text-align: center;
-                color: #1c3f5d;
-                padding: 36px 22px;
+                padding: 20px;
+                color: #708397;
+                display: none;
             }
 
             .empty-state i {
-                font-size: 1.4rem;
-                margin-bottom: 12px;
-                color: #1f6a98;
-                display: block;
+                font-size: 2.8rem;
+                margin-bottom: 10px;
+                color: #a5b6c6;
+            }
+
+            .pagination {
+                max-width: 1200px;
+                margin: 26px auto 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .page-button {
+                border: 1px solid #d2dfec;
+                background: #fff;
+                color: #2d4762;
+                border-radius: 8px;
+                padding: 9px 16px;
+                font-size: 0.9rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+
+            .page-button:hover:not(:disabled) {
+                border-color: var(--ct-accent);
+                color: var(--ct-accent);
+            }
+
+            .page-button:disabled {
+                opacity: 0.4;
+                cursor: not-allowed;
+            }
+
+            .page-indicator {
+                color: #4a5f74;
+                font-size: 0.92rem;
+                font-weight: 600;
             }
 
             @media (max-width: 980px) {
-                .search-panel {
+                .hero-content {
                     grid-template-columns: 1fr;
+                    text-align: center;
+                    gap: 30px;
+                    padding-top: 34px;
+                    padding-bottom: 34px;
                 }
 
-                .trial-grid {
-                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                .search-bar-container {
+                    margin: 20px auto 0;
                 }
 
-                #search-mode,
-                #clear-search {
-                    width: 100%;
+                .hero-left p {
+                    font-size: 36px;
+                }
+
+                .hero-logo {
+                    height: 88px;
+                }
+
+                .results-header {
+                    flex-direction: column;
+                    align-items: flex-start;
                 }
             }
 
-            @media (max-width: 680px) {
-                .trials-hero {
-                    min-height: 300px;
-                    padding-top: 22px;
+            @media (max-width: 640px) {
+                .hero-left p {
+                    font-size: 28px;
+                    line-height: 1.3;
                 }
 
-                .trials-main-inner,
-                .trials-hero-content {
-                    width: calc(100% - 24px);
+                .results-section {
+                    padding: 30px 12px 24px;
                 }
 
-                .trial-grid {
-                    grid-template-columns: 1fr;
+                .result-item {
+                    padding: 16px;
                 }
             }
         </style>
     </head>
+
     <body class="landing is-preload">
         <div id="page-wrapper">
             <div id="navigation-placeholder" data-page="clinical_trials"></div>
 
-            <section class="trials-hero" aria-label="Clinical trials search">
-                <div class="trials-hero-content">
-                    <div class="trials-kicker">Clinical Trials</div>
-                    <h1 class="trials-title">Recent Rochester and Minnesota Clinical Trials</h1>
-                    <p class="trials-subtitle">Browse 25 recent trial records sourced from ClinicalTrials.gov. Search by author/sponsor, subject, or both using the controls below.</p>
+            <section class="hero-section" aria-label="Clinical trials search hero">
+                <svg class="hero-bg-blobs" width="100%" height="900" viewBox="0 0 1440 900" aria-hidden="true" role="presentation">
+                    <defs>
+                        <linearGradient id="blobGradient1" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#3498db" stop-opacity="0.18" />
+                            <stop offset="100%" stop-color="#b6c7e0" stop-opacity="0.12" />
+                        </linearGradient>
+                        <linearGradient id="blobGradient2" x1="0" y1="1" x2="1" y2="0">
+                            <stop offset="0%" stop-color="#e3eaf3" stop-opacity="0.16" />
+                            <stop offset="100%" stop-color="#2980b9" stop-opacity="0.10" />
+                        </linearGradient>
+                    </defs>
+                    <g>
+                        <circle cx="330" cy="220" r="330" fill="url(#blobGradient1)">
+                            <animate attributeName="cx" values="330;1110;330" dur="15s" repeatCount="indefinite" />
+                            <animate attributeName="cy" values="220;680;220" dur="13.125s" repeatCount="indefinite" />
+                        </circle>
+                        <circle cx="270" cy="180" r="270" fill="url(#blobGradient2)">
+                            <animate attributeName="cx" values="270;1170;270" dur="16.875s" repeatCount="indefinite" />
+                            <animate attributeName="cy" values="180;720;180" dur="11.25s" repeatCount="indefinite" />
+                        </circle>
+                        <circle cx="450" cy="450" r="450" fill="url(#blobGradient1)" opacity="0.7">
+                            <animate attributeName="cx" values="450;990;450" dur="18.75s" repeatCount="indefinite" />
+                            <animate attributeName="cy" values="450;850;450" dur="15s" repeatCount="indefinite" />
+                        </circle>
+                    </g>
+                </svg>
 
-                    <div class="search-panel" role="search" aria-label="Clinical trials search bar">
-                        <label class="search-input-wrap" for="trial-search-input">
-                            <i class="fas fa-search" aria-hidden="true"></i>
-                            <input id="trial-search-input" type="search" placeholder="Search trial author/sponsor or subject" aria-label="Search clinical trials" />
-                        </label>
-
-                        <select id="search-mode" aria-label="Search mode">
-                            <option value="all">Author + Subject</option>
-                            <option value="author">Author/Sponsor only</option>
-                            <option value="subject">Subject only</option>
-                        </select>
-
-                        <button id="clear-search" type="button">Clear Search</button>
+                <div class="hero-content">
+                    <div class="hero-left">
+                        <p>search 5,000+ clinical trials from Rochester, MN</p>
+                        <div class="search-bar-container">
+                            <i id="search-icon" class="fas fa-search search-icon" aria-hidden="true"></i>
+                            <input type="search" id="trial-search-input" class="search-bar" placeholder="Search site-wide clinical trial content" aria-label="Search clinical trials on MedCityAI" />
+                        </div>
+                    </div>
+                    <div class="hero-right">
+                        <img class="hero-logo" src="images/medcityai_simple1.png" alt="MedCityAI logo" />
                     </div>
                 </div>
             </section>
 
-            <main class="trials-main" id="main-content">
-                <div class="trials-main-inner">
-                    <div class="trials-meta">
-                        <p class="trials-count"><strong id="trial-count">0</strong> trials shown</p>
-                        <p class="source-badge"><i class="fas fa-database" aria-hidden="true"></i><span id="data-source-badge">Loading snapshot...</span></p>
-                    </div>
-
-                    <section id="trial-grid" class="trial-grid" aria-live="polite" aria-label="Clinical trials results grid"></section>
-
-                    <section id="empty-state" class="empty-state" aria-live="polite">
-                        <i class="fas fa-search"></i>
-                        <h3>No matching trials found</h3>
-                        <p>Try a different author/sponsor name or subject keyword.</p>
-                    </section>
+            <main id="main-content" class="results-section" role="main">
+                <div class="results-header">
+                    <div class="results-count"><span id="resultCount">0</span> results</div>
+                    <div id="sourceBadge" class="results-source">ClinicalTrials.gov API</div>
                 </div>
+
+                <div id="statusBar" class="status-message" aria-live="polite"></div>
+
+                <section id="loadingState" class="loading" style="display:none;" aria-live="polite">
+                    <div class="spinner" aria-hidden="true"></div>
+                    <p>Searching MedCityAI...</p>
+                </section>
+
+                <section id="resultsList" class="results-list" aria-live="polite" aria-label="Search results list"></section>
+
+                <section id="emptyState" class="empty-state" aria-live="polite">
+                    <i class="fas fa-search"></i>
+                    <h3>No results found</h3>
+                    <p>Try a broader term, a synonym, or remove extra keywords.</p>
+                </section>
+
+                <nav id="pagination" class="pagination" aria-label="Results pagination" style="display:none;">
+                    <button id="prevPageBtn" class="page-button" type="button">Previous</button>
+                    <span id="pageIndicator" class="page-indicator">Page 1</span>
+                    <button id="nextPageBtn" class="page-button" type="button">Next</button>
+                </nav>
             </main>
 
             <footer id="footer" style="margin-top: 0;">

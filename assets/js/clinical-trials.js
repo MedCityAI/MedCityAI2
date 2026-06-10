@@ -1,12 +1,21 @@
 (function () {
     'use strict';
 
-    const CSV_PATH = 'assets/data/clinical_trials_recent.csv';
-    const API_URL = 'https://clinicaltrials.gov/api/v2/studies?query.locn=Rochester,%20Minnesota&pageSize=100&format=json';
+    const CLINICAL_TRIALS_API = {
+        endpoint: window.CLINICALTRIALS_API_ENDPOINT || 'https://clinicaltrials.gov/api/v2/studies',
+        apiKey: window.CLINICALTRIALS_API_KEY || window.CTGOV_API_KEY || '',
+        defaultLocation: 'Rochester, Minnesota',
+        pageSize: 20
+    };
 
     const state = {
-        allTrials: [],
-        filteredTrials: []
+        query: '',
+        page: 1,
+        totalResults: 0,
+        totalPages: 0,
+        items: [],
+        pageTokens: { 1: '' },
+        nextPageToken: ''
     };
 
     function byId(id) {
@@ -22,81 +31,84 @@
             .replace(/'/g, '&#39;');
     }
 
-    function parseCsvLine(line) {
-        const out = [];
-        let current = '';
-        let inQuotes = false;
+    function formatCount(value) {
+        const number = Number(value || 0);
+        if (!Number.isFinite(number)) {
+            return '0';
+        }
+        return number.toLocaleString();
+    }
 
-        for (let i = 0; i < line.length; i++) {
-            const ch = line[i];
-            const next = line[i + 1];
+    function setStatus(message, isError) {
+        const bar = byId('statusBar');
+        bar.textContent = message || '';
+        bar.classList.toggle('error', Boolean(isError));
+    }
 
-            if (ch === '"') {
-                if (inQuotes && next === '"') {
-                    current += '"';
-                    i++;
-                } else {
-                    inQuotes = !inQuotes;
-                }
-            } else if (ch === ',' && !inQuotes) {
-                out.push(current);
-                current = '';
-            } else {
-                current += ch;
+    function showLoading(on) {
+        byId('loadingState').style.display = on ? 'block' : 'none';
+    }
+
+    function showEmpty(on) {
+        byId('emptyState').style.display = on ? 'block' : 'none';
+    }
+
+    function updateResultCount(total) {
+        byId('resultCount').textContent = formatCount(total);
+    }
+
+    function getNested(obj, path, fallback) {
+        const parts = path.split('.');
+        let current = obj;
+
+        for (let i = 0; i < parts.length; i++) {
+            if (!current || typeof current !== 'object' || !(parts[i] in current)) {
+                return fallback;
+            }
+            current = current[parts[i]];
+        }
+
+        return current;
+    }
+
+    function firstNonEmpty() {
+        for (let i = 0; i < arguments.length; i++) {
+            const value = arguments[i];
+            if (value === null || value === undefined) {
+                continue;
+            }
+            const text = String(value).trim();
+            if (text) {
+                return text;
             }
         }
-
-        out.push(current);
-        return out;
+        return '';
     }
 
-    function parseCsv(csvText) {
-        const lines = csvText
-            .replace(/^\uFEFF/, '')
-            .split(/\r?\n/)
-            .filter((line) => line.trim().length > 0);
+    function updateUrlParams() {
+        const params = new URLSearchParams(window.location.search);
 
-        if (lines.length < 2) {
-            return [];
+        if (state.query) {
+            params.set('q', state.query);
+        } else {
+            params.delete('q');
         }
 
-        const headers = parseCsvLine(lines[0]).map((h) => h.trim());
+        params.set('page', String(state.page));
 
-        return lines.slice(1).map((line) => {
-            const cols = parseCsvLine(line);
-            const row = {};
-            headers.forEach((header, idx) => {
-                row[header] = (cols[idx] || '').trim();
-            });
-            return normalizeTrial(row);
-        });
+        const next = window.location.pathname + '?' + params.toString();
+        window.history.replaceState({}, '', next);
     }
 
-    function normalizeTrial(trial) {
-        return {
-            nct_id: trial.nct_id || '',
-            title: trial.title || 'Untitled trial',
-            subject: trial.subject || 'Not specified',
-            author: trial.author || 'Unknown sponsor',
-            status: trial.status || 'UNKNOWN',
-            last_update: trial.last_update || '',
-            city: trial.city || '',
-            state: trial.state || '',
-            facility: trial.facility || '',
-            study_url: trial.study_url || ''
-        };
-    }
-
-    function formatDate(isoDate) {
-        if (!isoDate) {
+    function parseDate(value) {
+        const raw = String(value || '').trim();
+        if (!raw) {
             return 'Date unavailable';
         }
-
-        const date = new Date(isoDate);
+        const date = new Date(raw);
         if (Number.isNaN(date.getTime())) {
-            return isoDate;
+            return raw;
         }
-
         return date.toLocaleDateString(undefined, {
             year: 'numeric',
             month: 'short',
@@ -104,184 +116,246 @@
         });
     }
 
-    function statusLabel(raw) {
-        return String(raw || '')
-            .toLowerCase()
-            .split('_')
-            .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-            .join(' ');
+    function hasRochesterMinnesotaLocation(study) {
+        const locations = getNested(study, 'protocolSection.contactsLocationsModule.locations', []);
+        if (!Array.isArray(locations)) {
+            return false;
+        }
+
+        for (let i = 0; i < locations.length; i++) {
+            const city = String(locations[i].city || '').trim().toLowerCase();
+            const stateName = String(locations[i].state || '').trim().toLowerCase();
+            if (city === 'rochester' && (stateName === 'mn' || stateName === 'minnesota')) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
-    function sortMostRecent(trials) {
-        return [...trials].sort((a, b) => {
-            const aTs = Date.parse(a.last_update || '') || 0;
-            const bTs = Date.parse(b.last_update || '') || 0;
-            return bTs - aTs;
+    function mapStudy(study) {
+        const ident = getNested(study, 'protocolSection.identificationModule', {});
+        const status = getNested(study, 'protocolSection.statusModule', {});
+        const cond = getNested(study, 'protocolSection.conditionsModule', {});
+        const sponsor = getNested(study, 'protocolSection.sponsorCollaboratorsModule', {});
+        const design = getNested(study, 'protocolSection.designModule', {});
+
+        const nctId = firstNonEmpty(ident.nctId, 'NCT unavailable');
+        const title = firstNonEmpty(ident.briefTitle, ident.officialTitle, 'Untitled clinical trial');
+        const leadSponsor = firstNonEmpty(getNested(sponsor, 'leadSponsor.name', ''), 'Sponsor unavailable');
+        const conditions = Array.isArray(cond.conditions) ? cond.conditions.join(', ') : '';
+        const phase = Array.isArray(design.phases) ? design.phases.join(', ') : firstNonEmpty(design.phase, '');
+        const overallStatus = firstNonEmpty(status.overallStatus, 'Status unavailable');
+        const updatedDate = firstNonEmpty(getNested(status, 'lastUpdatePostDateStruct.date', ''), status.lastUpdatePostDate, '');
+
+        return {
+            title,
+            nctId,
+            leadSponsor,
+            conditions: firstNonEmpty(conditions, 'Condition unavailable'),
+            phase: firstNonEmpty(phase, 'Phase not specified'),
+            overallStatus,
+            updatedDate: parseDate(updatedDate),
+            url: ident.nctId
+                ? 'https://clinicaltrials.gov/study/' + encodeURIComponent(ident.nctId)
+                : 'https://clinicaltrials.gov/'
+        };
+    }
+
+    async function requestSearch(query, pageToken) {
+        const headers = {};
+
+        const params = new URLSearchParams({
+            format: 'json',
+            pageSize: String(CLINICAL_TRIALS_API.pageSize),
+            'query.locn': CLINICAL_TRIALS_API.defaultLocation
         });
+
+        const cleanQuery = String(query || '').trim();
+        if (cleanQuery) {
+            params.set('query.term', cleanQuery);
+        }
+
+        const cleanToken = String(pageToken || '').trim();
+        if (cleanToken) {
+            params.set('pageToken', cleanToken);
+        }
+
+        if (CLINICAL_TRIALS_API.apiKey) {
+            params.set('apiKey', CLINICAL_TRIALS_API.apiKey);
+            headers['x-api-key'] = CLINICAL_TRIALS_API.apiKey;
+        }
+
+        const url = CLINICAL_TRIALS_API.endpoint + '?' + params.toString();
+        const response = await fetch(url, { headers: headers });
+
+        if (!response.ok) {
+            throw new Error(`Search request failed (${response.status})`);
+        }
+
+        return response.json();
     }
 
-    function renderGrid(trials) {
-        const grid = byId('trial-grid');
-        const empty = byId('empty-state');
+    function renderPagination() {
+        const holder = byId('pagination');
+        const prevBtn = byId('prevPageBtn');
+        const nextBtn = byId('nextPageBtn');
+        const indicator = byId('pageIndicator');
 
-        if (!trials.length) {
-            grid.innerHTML = '';
-            empty.style.display = 'block';
+        holder.style.display = 'flex';
+        prevBtn.disabled = state.page <= 1;
+        nextBtn.disabled = !state.nextPageToken;
+        indicator.textContent = state.totalPages > 0
+            ? `Page ${state.page} of ${state.totalPages}`
+            : `Page ${state.page}`;
+
+        if (state.page === 1 && !state.nextPageToken && state.items.length === 0) {
+            holder.style.display = 'none';
+        }
+    }
+
+    function renderResults() {
+        const resultsEl = byId('resultsList');
+
+        if (!state.items.length) {
+            resultsEl.innerHTML = '';
+            showEmpty(true);
+            renderPagination();
             return;
         }
 
-        empty.style.display = 'none';
+        showEmpty(false);
 
-        grid.innerHTML = trials.map((trial) => {
-            const subjectPreview = trial.subject.length > 280
-                ? trial.subject.slice(0, 277) + '...'
-                : trial.subject;
+        resultsEl.innerHTML = state.items.map((item, index) => {
+            const position = ((state.page - 1) * CLINICAL_TRIALS_API.pageSize) + index + 1;
+            const title = escapeHtml(item.title || 'Untitled clinical trial');
+            const link = escapeHtml(item.url || 'https://clinicaltrials.gov/');
+            const snippet = escapeHtml(`Condition: ${item.conditions}. Sponsor: ${item.leadSponsor}.`);
+            const nct = escapeHtml(item.nctId || 'NCT unavailable');
+            const status = escapeHtml(item.overallStatus || 'Status unavailable');
+            const updated = escapeHtml(item.updatedDate || 'Date unavailable');
+            const phase = escapeHtml(item.phase || 'Phase not specified');
 
-            return `
-                <article class="trial-card">
-                    <div class="trial-card-top">
-                        <span class="trial-status">${escapeHtml(statusLabel(trial.status))}</span>
-                        <span class="trial-updated">Updated ${escapeHtml(formatDate(trial.last_update))}</span>
-                    </div>
-                    <h3 class="trial-title">${escapeHtml(trial.title)}</h3>
-                    <p class="trial-subject"><strong>Subject:</strong> ${escapeHtml(subjectPreview)}</p>
-                    <p class="trial-author"><strong>Author/Sponsor:</strong> ${escapeHtml(trial.author)}</p>
-                    <p class="trial-location"><strong>Location:</strong> ${escapeHtml(trial.city)}, ${escapeHtml(trial.state)}${trial.facility ? ' - ' + escapeHtml(trial.facility) : ''}</p>
-                    <div class="trial-card-bottom">
-                        <span class="trial-id">${escapeHtml(trial.nct_id)}</span>
-                        <a class="trial-link" href="${escapeHtml(trial.study_url)}" target="_blank" rel="noopener noreferrer">View on ClinicalTrials.gov</a>
-                    </div>
-                </article>
-            `;
+            return [
+                '<article class="result-item">',
+                `  <a class="result-title" href="${link}" target="_blank" rel="noopener noreferrer">${position}. ${title}</a>`,
+                `  <p class="result-snippet">${snippet}</p>`,
+                '  <div class="result-meta">',
+                `      <span class="result-meta-item"><i class="fas fa-hashtag"></i>${nct}</span>`,
+                `      <span class="result-meta-item"><i class="fas fa-wave-square"></i>${status}</span>`,
+                `      <span class="result-meta-item"><i class="fas fa-vials"></i>${phase}</span>`,
+                `      <span class="result-meta-item"><i class="fas fa-calendar"></i>${updated}</span>`,
+                '  </div>',
+                `  <a class="result-link" href="${link}" target="_blank" rel="noopener noreferrer">Open on ClinicalTrials.gov <i class="fas fa-external-link-alt" aria-hidden="true"></i></a>`,
+                '</article>'
+            ].join('');
         }).join('');
+
+        renderPagination();
     }
 
-    function updateCount(count) {
-        byId('trial-count').textContent = String(count);
-    }
-
-    function applyFilters() {
-        const input = byId('trial-search-input').value.trim().toLowerCase();
-        const mode = byId('search-mode').value;
-
-        state.filteredTrials = state.allTrials.filter((trial) => {
-            if (!input) {
-                return true;
-            }
-
-            const author = (trial.author || '').toLowerCase();
-            const subject = (trial.subject || '').toLowerCase();
-
-            if (mode === 'author') {
-                return author.includes(input);
-            }
-
-            if (mode === 'subject') {
-                return subject.includes(input);
-            }
-
-            return author.includes(input) || subject.includes(input);
-        });
-
-        renderGrid(state.filteredTrials);
-        updateCount(state.filteredTrials.length);
-    }
-
-    function mapApiStudy(study) {
-        const protocol = study.protocolSection || {};
-        const ident = protocol.identificationModule || {};
-        const cond = protocol.conditionsModule || {};
-        const sponsor = protocol.sponsorCollaboratorsModule || {};
-        const status = protocol.statusModule || {};
-        const locationsModule = protocol.contactsLocationsModule || {};
-        const locations = Array.isArray(locationsModule.locations) ? locationsModule.locations : [];
-
-        const mnLocations = locations.filter((loc) => /^(mn|minnesota)$/i.test(String(loc.state || '').trim()));
-        if (!mnLocations.length) {
-            return null;
+    function readTotalResults(json) {
+        const total = Number(json && json.totalCount ? json.totalCount : 0);
+        if (!Number.isFinite(total) || total < 0) {
+            return 0;
         }
-
-        const first = mnLocations[0];
-
-        return normalizeTrial({
-            nct_id: ident.nctId,
-            title: ident.briefTitle,
-            subject: Array.isArray(cond.conditions) ? cond.conditions.join('; ') : '',
-            author: sponsor.leadSponsor && sponsor.leadSponsor.name ? sponsor.leadSponsor.name : 'Unknown sponsor',
-            status: status.overallStatus,
-            last_update: status.lastUpdatePostDateStruct && status.lastUpdatePostDateStruct.date ? status.lastUpdatePostDateStruct.date : '',
-            city: first.city || '',
-            state: first.state || '',
-            facility: first.facility || '',
-            study_url: ident.nctId ? `https://clinicaltrials.gov/study/${ident.nctId}` : ''
-        });
+        return total;
     }
 
-    async function loadFromApiFallback() {
-        const response = await fetch(API_URL);
-        if (!response.ok) {
-            throw new Error(`API request failed with status ${response.status}`);
-        }
+    async function runSearch(pageOverride) {
+        const input = byId('trial-search-input');
+        const query = input.value.trim();
 
-        const json = await response.json();
-        const studies = Array.isArray(json.studies) ? json.studies : [];
-
-        const mapped = studies
-            .map(mapApiStudy)
-            .filter(Boolean);
-
-        const dedup = [];
-        const seen = new Set();
-
-        mapped.forEach((trial) => {
-            if (trial.nct_id && !seen.has(trial.nct_id)) {
-                seen.add(trial.nct_id);
-                dedup.push(trial);
-            }
-        });
-
-        return sortMostRecent(dedup).slice(0, 25);
-    }
-
-    async function loadTrials() {
-        const sourceBadge = byId('data-source-badge');
+        state.query = query;
+        state.page = Number(pageOverride || 1);
+        const pageToken = state.pageTokens[state.page] || '';
+        showLoading(true);
+        setStatus('Searching Rochester, Minnesota clinical trials...', false);
 
         try {
-            const response = await fetch(CSV_PATH, { cache: 'no-store' });
-            if (!response.ok) {
-                throw new Error(`CSV load failed with status ${response.status}`);
+            const json = await requestSearch(state.query, pageToken);
+            const rawStudies = Array.isArray(json.studies) ? json.studies : [];
+            const items = rawStudies
+                .filter(hasRochesterMinnesotaLocation)
+                .map(mapStudy);
+            const total = readTotalResults(json);
+            const nextToken = String(json && json.nextPageToken ? json.nextPageToken : '').trim();
+
+            state.items = items;
+            state.totalResults = total;
+            state.nextPageToken = nextToken;
+            state.totalPages = total > 0
+                ? Math.ceil(total / CLINICAL_TRIALS_API.pageSize)
+                : (nextToken ? state.page + 1 : state.page);
+
+            if (nextToken) {
+                state.pageTokens[state.page + 1] = nextToken;
             }
 
-            const text = await response.text();
-            const rows = parseCsv(text);
-            state.allTrials = sortMostRecent(rows).slice(0, 25);
-            sourceBadge.textContent = 'Loaded from local CSV snapshot (API-derived)';
-        } catch (error) {
-            console.warn('CSV unavailable. Falling back to API fetch.', error);
-            state.allTrials = await loadFromApiFallback();
-            sourceBadge.textContent = 'Live API fallback (not persisted)';
-        }
+            updateResultCount(total);
+            renderResults();
+            updateUrlParams();
 
-        state.filteredTrials = [...state.allTrials];
-        renderGrid(state.filteredTrials);
-        updateCount(state.filteredTrials.length);
+            const queryPart = state.query ? ` for "${state.query}"` : '';
+            const keyPart = CLINICAL_TRIALS_API.apiKey ? ' (public API key enabled).' : ' (public endpoint).';
+            setStatus(`Showing ${items.length} Rochester, MN trials${queryPart}${keyPart}`, false);
+        } catch (error) {
+            state.items = [];
+            state.totalResults = 0;
+            state.totalPages = 0;
+            state.nextPageToken = '';
+            updateResultCount(0);
+            renderResults();
+            setStatus(error && error.message ? error.message : 'Search failed. Try again.', true);
+        } finally {
+            showLoading(false);
+        }
     }
 
     function bindEvents() {
-        byId('trial-search-input').addEventListener('input', applyFilters);
-        byId('search-mode').addEventListener('change', applyFilters);
+        byId('search-icon').addEventListener('click', function () {
+            runSearch(1);
+        });
 
-        byId('clear-search').addEventListener('click', function () {
-            byId('trial-search-input').value = '';
-            byId('search-mode').value = 'all';
-            applyFilters();
+        byId('trial-search-input').addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                runSearch(1);
+            }
+        });
+
+        byId('prevPageBtn').addEventListener('click', function () {
+            if (state.page > 1) {
+                runSearch(state.page - 1);
+            }
+        });
+
+        byId('nextPageBtn').addEventListener('click', function () {
+            if (state.nextPageToken) {
+                runSearch(state.page + 1);
+            }
         });
     }
 
-    async function init() {
-        byId('trial-year').textContent = new Date().getFullYear();
+    function initFromQueryString() {
+        const params = new URLSearchParams(window.location.search);
+        const q = (params.get('q') || '').trim();
+        const page = Number(params.get('page') || '1');
+
+        if (q) {
+            byId('trial-search-input').value = q;
+        }
+
+        runSearch(Number.isFinite(page) && page > 0 ? page : 1);
+    }
+
+    function init() {
+        byId('trial-year').textContent = String(new Date().getFullYear());
+        byId('sourceBadge').textContent = CLINICAL_TRIALS_API.apiKey
+            ? 'ClinicalTrials.gov API (Public Key)'
+            : 'ClinicalTrials.gov API';
         bindEvents();
-        await loadTrials();
+        initFromQueryString();
     }
 
     if (document.readyState === 'loading') {
