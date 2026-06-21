@@ -1,0 +1,18 @@
+# Normalize text files in the repository and keep LF in working tree.
+* text=auto
+
+# Web/source files
+*.html text eol=lf
+*.css text eol=lf
+*.scss text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.csv text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# Windows shell scripts can stay CRLF when needed.
+*.bat text eol=crlf
+*.cmd text eol=crlf
