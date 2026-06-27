@@ -36,6 +36,351 @@
 		<noscript><link rel="stylesheet" href="assets/css/fontawesome-all.min.css"></noscript>
 		
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+
+		<style>
+			:root {
+				--pt-blue-1: #2568be;
+				--pt-blue-2: #1b4c7d;
+				--pt-accent: #3498db;
+				--pt-accent-dark: #2980b9;
+				--pt-ink: #1f2d3d;
+				--pt-muted: #6b7280;
+				--pt-bg: #f8fafc;
+			}
+
+			body {
+				background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%);
+				min-height: 100vh;
+			}
+
+			.hero-section {
+				background: linear-gradient(120deg, var(--pt-blue-1) 0%, var(--pt-blue-2) 100%);
+				min-height: 340px;
+				display: flex;
+				align-items: center;
+				position: relative;
+				overflow: hidden;
+				z-index: 1;
+			}
+
+			.hero-bg-blobs {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				z-index: 0;
+				pointer-events: none;
+				opacity: 1;
+				transition: opacity 0.5s;
+			}
+
+			.hero-section::before {
+				content: '';
+				position: absolute;
+				top: 0;
+				right: 0;
+				width: 50%;
+				height: 100%;
+				background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" fill="rgba(52,152,219,0.05)"><circle cx="300" cy="150" r="100"/><circle cx="350" cy="400" r="80"/><path d="M200,100 Q300,200 400,300" stroke="rgba(52,152,219,0.1)" stroke-width="3" fill="none"/></svg>') center/cover;
+				z-index: 1;
+			}
+
+			.hero-content {
+				max-width: 1200px;
+				margin: 0 auto;
+				padding: 0 20px;
+				display: grid;
+				grid-template-columns: 1fr 350px;
+				gap: 60px;
+				align-items: center;
+				position: relative;
+				z-index: 2;
+			}
+
+			.hero-left {
+				display: flex;
+				flex-direction: column;
+				gap: 20px;
+			}
+
+			.hero-left p {
+				color: #e0e0e0;
+				font-size: 55px;
+				font-weight: 350;
+				margin: 0;
+				letter-spacing: 0.2px;
+				line-height: 1.4;
+			}
+
+			.search-bar-container {
+				position: relative;
+				max-width: 600px;
+				margin-top: 24px;
+			}
+
+			.search-bar {
+				width: 100%;
+				padding: 12px 20px 12px 50px;
+				font-size: 16px;
+				border: 2px solid rgba(255, 255, 255, 0.3);
+				border-radius: 50px;
+				background: rgba(255, 255, 255, 0.95);
+				color: #2c3e50;
+				box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+				transition: all 0.3s ease;
+			}
+
+			.search-bar:focus {
+				outline: none;
+				border-color: rgba(255, 255, 255, 0.8);
+				background: #fff;
+				box-shadow: 0 6px 30px rgba(0, 0, 0, 0.2);
+			}
+
+			.search-icon {
+				position: absolute;
+				left: 20px;
+				top: 50%;
+				transform: translateY(-50%);
+				color: #3498db;
+				font-size: 18px;
+				cursor: pointer;
+				transition: color 0.2s ease;
+			}
+
+			.search-icon:hover {
+				color: #2980b9;
+			}
+
+			.hero-right {
+				position: relative;
+			}
+
+			.chart-container {
+				position: relative;
+				aspect-ratio: 1;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				width: 100%;
+			}
+
+			.hero-logo {
+				width: auto;
+				height: 70%;
+				border-radius: 8px;
+				filter: brightness(0) invert(1);
+			}
+
+			.results-section {
+				width: 100%;
+				margin: 0;
+				padding: 46px 20px 30px;
+				background: var(--pt-bg);
+				min-height: 55vh;
+			}
+
+			.results-header {
+				max-width: 1200px;
+				margin: 0 auto 20px;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				gap: 12px;
+				border-bottom: 1px solid #dbe5f0;
+				padding-bottom: 12px;
+			}
+
+			.results-count {
+				font-size: 1.15em;
+				color: #2c3e50;
+				font-weight: 600;
+			}
+
+			.results-count span {
+				color: var(--pt-accent);
+			}
+
+			.results-source {
+				color: #4b5d73;
+				font-size: 0.92rem;
+				background: #eef4fa;
+				border: 1px solid #d4e0ec;
+				border-radius: 999px;
+				padding: 6px 12px;
+			}
+
+			.status-message {
+				max-width: 1200px;
+				margin: 0 auto 18px;
+				color: #3c4f63;
+				font-size: 0.93rem;
+			}
+
+			.loading {
+				text-align: center;
+				padding: 60px 20px;
+			}
+
+			.spinner {
+				border: 4px solid #f0f0f0;
+				border-top: 4px solid #3498db;
+				border-radius: 50%;
+				width: 50px;
+				height: 50px;
+				animation: spin 1s linear infinite;
+				margin: 0 auto 16px;
+			}
+
+			@keyframes spin {
+				0% { transform: rotate(0deg); }
+				100% { transform: rotate(360deg); }
+			}
+
+			.empty-state {
+				text-align: center;
+				padding: 20px;
+				color: #708397;
+				display: none;
+			}
+
+			.empty-state i {
+				font-size: 2.8rem;
+				margin-bottom: 10px;
+				color: #a5b6c6;
+			}
+
+			.pagination {
+				max-width: 1200px;
+				margin: 50px auto 30px;
+				padding: 20px;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				gap: 6px;
+				background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+				border-radius: 12px;
+				box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+			}
+
+			.pagination button {
+				padding: 10px 16px;
+				border: none;
+				background: white;
+				border-radius: 8px;
+				cursor: pointer;
+				font-weight: 500;
+				color: #2c3e50;
+				transition: all 0.3s ease;
+				font-size: 14px;
+				box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+				min-width: 44px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				gap: 6px;
+			}
+
+			.pagination button:hover:not(:disabled) {
+				background: #3498db;
+				color: white;
+				transform: translateY(-2px);
+				box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+			}
+
+			.pagination button:disabled {
+				opacity: 0.3;
+				cursor: not-allowed;
+				box-shadow: none;
+			}
+
+			.pagination button.active {
+				background: linear-gradient(135deg, #3498db, #2980b9);
+				color: white;
+				box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+				font-weight: 600;
+			}
+
+			.pagination .page-num {
+				min-width: 44px;
+				text-align: center;
+			}
+
+			.pagination .ellipsis {
+				border: none;
+				background: transparent;
+				cursor: default;
+				box-shadow: none;
+				color: #95a5a6;
+				font-weight: 600;
+			}
+
+			.pagination .nav-btn {
+				padding: 10px 20px;
+				font-weight: 600;
+			}
+
+			.pagination .nav-btn i {
+				font-size: 12px;
+			}
+
+			.results {
+				max-width: 1200px;
+				margin: 20px auto;
+				padding: 0;
+				column-count: 1;
+				column-gap: 0;
+			}
+
+			.result-item {
+				break-inside: avoid;
+			}
+
+			@media (max-width: 980px) {
+				.hero-content {
+					grid-template-columns: 1fr;
+					text-align: center;
+					gap: 40px;
+				}
+
+				.search-bar-container {
+					margin: 20px auto 0;
+				}
+
+				.hero-left p {
+					font-size: 36px;
+				}
+
+				.chart-container {
+					display: none;
+				}
+
+				.results-header {
+					flex-direction: column;
+					align-items: flex-start;
+				}
+
+				.pagination {
+					flex-wrap: wrap;
+				}
+			}
+
+			@media (max-width: 640px) {
+				.hero-left p {
+					font-size: 28px;
+					line-height: 1.3;
+				}
+
+				.results-section {
+					padding: 30px 12px 24px;
+				}
+
+				.result-item {
+					padding: 0;
+				}
+			}
+		</style>
 		
 		<!-- Critical CSS - inline minimum styles for initial render -->
 		<style>
@@ -164,96 +509,6 @@
 			border-radius: 12px;
 			max-width: 980px;
 			width: 100%;
-			max-height: 90vh;
-			overflow-y: auto;
-			box-shadow: 0 12px 48px rgba(0,0,0,0.25);
-			position: relative;
-			border: 1px solid rgba(0,0,0,0.06);
-		}
-		.article-overlay-content::before {
-			content: '';
-			position: absolute;
-			right: -200px;
-			bottom: -350px;
-			width: 1000px;
-			height: 1000px;
-			background: url('images/medcityai_simple1.png') no-repeat;
-			background-size: 800px 800px;
-			opacity: 0.08;
-			pointer-events: none;
-			z-index: 0;
-		}
-		.article-overlay-close {
-			position: absolute;
-			top: 12px;
-			right: 14px;
-			font-size: 26px;
-			color: #333;
-			background: #fff;
-			border: none;
-			cursor: pointer;
-			font-weight: 700;
-			width: 36px;
-			height: 36px;
-			border-radius: 50%;
-			box-shadow: 0 2px 10px rgba(0,0,0,0.12);
-		}
-		.article-overlay-header {
-			padding: 80px 28px 20px 28px;
-			border-bottom: 1px solid #eef1f4;
-			position: relative;
-			z-index: 1;
-		}
-		.article-overlay-logo {
-			position: absolute;
-			top: 20px;
-			left: 28px;
-			width: 160px;
-			height: auto;
-			opacity: 0.9;
-		}
-		.article-overlay-kicker {
-			font-size: 12px;
-			letter-spacing: 1px;
-			text-transform: uppercase;
-			color: #5b6b7a;
-			font-weight: 700;
-			margin-bottom: 10px;
-		}
-		.article-overlay-title {
-			font-size: 26px;
-			line-height: 1.3;
-			margin: 0 0 10px 0;
-			color: #1f2d3d;
-			font-weight: 800;
-		}
-		.article-overlay-authors-line {
-			font-size: 14px;
-			line-height: 1.5;
-			color: #2f3b4a;
-			margin-bottom: 10px;
-		}
-		.article-overlay-meta {
-			color: #4a5b6a;
-			font-size: 14px;
-			margin-bottom: 14px;
-		}
-		.article-overlay-body {
-			padding: 22px 28px 30px 28px;
-			position: relative;
-			z-index: 1;
-		}
-		.article-overlay-section {
-			margin-bottom: 22px;
-		}
-		.article-overlay-section h3 {
-			font-size: 16px;
-			margin: 0 0 10px 0;
-			color: #1f2d3d;
-			font-weight: 700;
-		}
-		.article-overlay-badges {
-			display: flex;
 			flex-wrap: wrap;
 			gap: 8px;
 		}
@@ -2057,95 +2312,77 @@
 			<!-- Modern Medical Navigation Header -->
 			<div id="navigation-placeholder"></div>
 
-			<!-- Hero Section -->
-			<section class="hero-section" aria-label="Hero banner" style="position:relative;">
-				<!-- Animated SVG background blobs -->
-				   <svg class="hero-bg-blobs" width="100%" height="900" viewBox="0 0 1440 900" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;" aria-hidden="true" role="presentation">
-					   <defs>
-						   <linearGradient id="blobGradient1" x1="0" y1="0" x2="1" y2="1">
-							   <stop offset="0%" stop-color="#3498db" stop-opacity="0.18"/>
-							   <stop offset="100%" stop-color="#b6c7e0" stop-opacity="0.12"/>
-						   </linearGradient>
-						   <linearGradient id="blobGradient2" x1="0" y1="1" x2="1" y2="0">
-							   <stop offset="0%" stop-color="#e3eaf3" stop-opacity="0.16"/>
-							   <stop offset="100%" stop-color="#2980b9" stop-opacity="0.10"/>
-						   </linearGradient>
-					   </defs>
-					   <g>
-						   <circle id="blob1" cx="330" cy="220" r="330" fill="url(#blobGradient1)">
-							   <animate attributeName="cx" values="330;1110;330" dur="15s" repeatCount="indefinite"/>
-							   <animate attributeName="cy" values="220;680;220" dur="13.125s" repeatCount="indefinite"/>
-						   </circle>
-						   <circle id="blob2" cx="270" cy="180" r="270" fill="url(#blobGradient2)">
-							   <animate attributeName="cx" values="270;1170;270" dur="16.875s" repeatCount="indefinite"/>
-							   <animate attributeName="cy" values="180;720;180" dur="11.25s" repeatCount="indefinite"/>
-						   </circle>
-						   <circle id="blob3" cx="450" cy="450" r="450" fill="url(#blobGradient1)" opacity="0.7">
-							   <animate attributeName="cx" values="450;990;450" dur="18.75s" repeatCount="indefinite"/>
-							   <animate attributeName="cy" values="450;850;450" dur="15s" repeatCount="indefinite"/>
-						   </circle>
-					   </g>
-				   </svg>
+			<section class="hero-section" aria-label="Patent search hero">
+				<svg class="hero-bg-blobs" width="100%" height="900" viewBox="0 0 1440 900" aria-hidden="true" role="presentation">
+					<defs>
+						<linearGradient id="blobGradient1" x1="0" y1="0" x2="1" y2="1">
+							<stop offset="0%" stop-color="#3498db" stop-opacity="0.18"/>
+							<stop offset="100%" stop-color="#b6c7e0" stop-opacity="0.12"/>
+						</linearGradient>
+						<linearGradient id="blobGradient2" x1="0" y1="1" x2="1" y2="0">
+							<stop offset="0%" stop-color="#e3eaf3" stop-opacity="0.16"/>
+							<stop offset="100%" stop-color="#2980b9" stop-opacity="0.10"/>
+						</linearGradient>
+					</defs>
+					<g>
+						<circle cx="330" cy="220" r="330" fill="url(#blobGradient1)">
+							<animate attributeName="cx" values="330;1110;330" dur="15s" repeatCount="indefinite"/>
+							<animate attributeName="cy" values="220;680;220" dur="13.125s" repeatCount="indefinite"/>
+						</circle>
+						<circle cx="270" cy="180" r="270" fill="url(#blobGradient2)">
+							<animate attributeName="cx" values="270;1170;270" dur="16.875s" repeatCount="indefinite"/>
+							<animate attributeName="cy" values="180;720;180" dur="11.25s" repeatCount="indefinite"/>
+						</circle>
+						<circle cx="450" cy="450" r="450" fill="url(#blobGradient1)" opacity="0.7">
+							<animate attributeName="cx" values="450;990;450" dur="18.75s" repeatCount="indefinite"/>
+							<animate attributeName="cy" values="450;850;450" dur="15s" repeatCount="indefinite"/>
+						</circle>
+					</g>
+				</svg>
+
 				<div class="hero-content">
 					<div class="hero-left">
-							<p style="color:#e0e0e0;;font-size:55px;font-weight:350;letter-spacing:0.2px;line-height:1.4;">a real-time patent feed for <span style="font-weight:650;">Rochester, MN</span></p>
-						
-						<!-- Hero Action Buttons -->
-						<div class="hero-buttons">
-							<a href="#pubmed-results" class="hero-btn">
-								<i class="fas fa-arrow-down"></i> Latest Patents
-							</a>
-							<a href="search.html" class="hero-btn">
-								<i class="fas fa-search"></i> Search
-							</a>
-							<a href="share.html" class="hero-btn">
-								<i class="fas fa-users" style="color: white;"></i> Connect
-							</a>
-						</div>
-						
-						<div class="stats-container">
-							<div class="stat-card ytd">
-								<div class="ai-digest" id="aiDailyDigest" style="display: none;">
-									<div class="ai-digest-label">
-										<i class="fas fa-brain"></i> AI Daily Digest
-									</div>
-									<div class="ai-digest-text" id="aiDigestText"></div>
-								</div>
-							</div>
+						<p>search patent applications involving <span style="font-weight:650;white-space:nowrap;">Rochester, MN</span></p>
+						<div class="search-bar-container">
+							<i id="search-icon" class="fas fa-search search-icon" aria-hidden="true"></i>
+							<input type="search" id="patent-search-input" class="search-bar" placeholder="Search patents by title, inventor, or keyword" aria-label="Search patents on MedCityAI" />
 						</div>
 					</div>
 					<div class="hero-right">
-					<div style="position: relative; max-width: 380px;">
-						<div class="trending-badge-fire" style="position: absolute; top: 0; left: 0; z-index: 12;"><i class="fas fa-fire"></i> TRENDING</div>
-						<div class="trending-badge-tab" style="position: absolute; top: 0; left: 0; right: 0; z-index: 10;"><div class="trending-badge-title">TRENDING</div><span class="trending-badge-subtitle">Community Favorites</span></div>
-						<div class="trending-articles" id="trending-articles" style="background: #fff; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.15); padding: 36px 12px 24px 12px; max-width: 380px; height: 230px; overflow-y: scroll; scrollbar-gutter: stable; position: relative; overflow-x: hidden;">
-							<div id="trending-loading" class="trending-loading">
-								<div class="trending-spinner"></div>
-							</div>
-							<ol id="trending-articles-list" style="list-style: none; padding: 12px 0 0 0; margin: 0; display: none;">
-								<!-- Top 5 articles will be inserted here by JS -->
-							</ol>
-							<div id="trending-articles-empty" style="color: #888; font-size: 14px; margin-top: 18px; display: none;">No trending articles in the last 14 days.</div>
+						<div class="chart-container">
+							<img class="hero-logo" src="images/medcityai_simple1.png" alt="MedCityAI logo" />
 						</div>
 					</div>
-					</div>
-			</section>
-			<!-- Specialty filter bar and modal removed -->
-            <!-- Results Section -->
-            <main id="main-content" role="main">
-				<div class="filter-bar">
-					<div class="filter-bar-content">
-						<!-- Results Grid -->
-						<div id="pubmed-results" role="region" aria-live="polite" aria-atomic="false" aria-label="Publication results"></div>
-						
-						<!-- Pagination Controls -->
-						<nav id="pagination-controls" style="display:none; text-align:center; margin: 30px 0; padding: 20px;" role="navigation" aria-label="Pagination">
-							<button id="prevPage" aria-label="Go to previous page" style="padding:12px 24px; margin:0 10px; border-radius:25px; border:1px solid #3498db; background:white; color:#3498db; cursor:pointer; font-weight:600;">← Previous</button>
-							<span id="pageInfo" role="status" aria-live="polite" style="margin:0 20px; font-size:16px; color:#2c3e50; font-weight:500;">Page 1</span>
-							<button id="nextPage" aria-label="Go to next page" style="padding:12px 24px; margin:0 10px; border-radius:25px; border:1px solid #3498db; background:white; color:#3498db; cursor:pointer; font-weight:600;">Next →</button>
-						</nav>
-					</div>
 				</div>
+			</section>
+
+			<main id="main-content" class="results-section" role="main">
+				<div class="results-header">
+					<div class="results-count"><span id="resultCount">0</span> results</div>
+					<div id="sourceBadge" class="results-source">Patent CSV</div>
+				</div>
+
+				<div id="statusBar" class="status-message" aria-live="polite"></div>
+
+				<section id="loadingState" class="loading" style="display:none;" aria-live="polite">
+					<div class="spinner" aria-hidden="true"></div>
+					<p>Searching patents...</p>
+				</section>
+
+				<div id="pubmed-results" role="region" aria-live="polite" aria-atomic="false" aria-label="Patent results"></div>
+
+				<section id="emptyState" class="empty-state" aria-live="polite">
+					<i class="fas fa-search"></i>
+					<h3>No results found</h3>
+					<p>Try a broader term, a synonym, or remove extra keywords.</p>
+				</section>
+
+				<nav id="pagination-controls" class="pagination" style="display:none;" role="navigation" aria-label="Pagination">
+					<button id="prevPage" aria-label="Go to previous page">← Previous</button>
+					<span id="pageInfo" role="status" aria-live="polite">Page 1</span>
+					<button id="nextPage" aria-label="Go to next page">Next →</button>
+				</nav>
+			</main>
 
 						<!-- Modal for abstracts -->
 						<div id="modalBg" class="modal-bg" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
@@ -2927,6 +3164,15 @@
 	async function fetchPubMedResults(searchQuery = '', page = 1) {
 		currentSearchQuery = searchQuery;
 		currentPage = page;
+		const resultCountEl = document.getElementById('resultCount');
+		const statusBarEl = document.getElementById('statusBar');
+		const emptyStateEl = document.getElementById('emptyState');
+		const loadingStateEl = document.getElementById('loadingState');
+		const sourceBadgeEl = document.getElementById('sourceBadge');
+
+		if (loadingStateEl) {
+			loadingStateEl.style.display = 'none';
+		}
 		
 		// Ensure data is loaded
 		if (allArticlesData.length === 0) {
@@ -2947,27 +3193,9 @@
 			filteredArticlesData = [...allArticlesData];
 		}
 		
-		// Filter to show only articles from the last 7 days
+		// Keep the full CSV dataset and paginate it directly.
 		const now = new Date();
-		// Set to end of today to ensure we only show articles up to today
-		const endOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
-		const sevenDaysAgo = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
-		// Filter to show only articles from the last 30 days
-		const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
-
 		const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-		
-		filteredArticlesData = filteredArticlesData.filter(article => {
-			if (article.year && article.month && article.day) {
-				const monthNum = monthNames.indexOf(article.month);
-				if (monthNum > 0) {
-					const articleDate = new Date(article.year, monthNum - 1, article.day);
-					// Exclude future articles and only show articles from the last 30 days
-					return articleDate >= thirtyDaysAgo && articleDate <= endOfToday;
-				}
-			}
-			return false; // Exclude articles without valid dates
-		});
 			
 		// Sort articles by date only (newest first)
 		filteredArticlesData.sort((a, b) => {
@@ -2980,7 +3208,15 @@
 			
 		// Check if we have results
 		if (filteredArticlesData.length === 0) {
-			document.getElementById("pubmed-results").innerHTML = "<p style='text-align:center; padding:40px; color:#666;'>No results found. Try a different search term.</p>";
+			document.getElementById("pubmed-results").innerHTML = '';
+			if (resultCountEl) resultCountEl.textContent = '0';
+			if (sourceBadgeEl) sourceBadgeEl.textContent = 'Patent CSV';
+			if (statusBarEl) {
+				statusBarEl.textContent = searchQuery && searchQuery.trim()
+					? `No patent results found for "${searchQuery.trim()}".`
+					: 'No patent results available.';
+			}
+			if (emptyStateEl) emptyStateEl.style.display = 'block';
 			document.getElementById("pagination-controls").style.display = 'none';
 			return;
 		}
@@ -3346,48 +3582,52 @@
 		
 		// Build HTML sections
 		let finalHTML = '';
-		
+		const totalAvailable = otherArticles.length;
+		const totalPages = Math.max(1, Math.ceil(totalAvailable / resultsPerPage));
+		currentPage = Math.min(Math.max(1, page), totalPages);
+		const startIndex = (currentPage - 1) * resultsPerPage;
+		const pageArticles = otherArticles.slice(startIndex, startIndex + resultsPerPage);
+		const endIndex = Math.min(startIndex + pageArticles.length, totalAvailable);
+		if (resultCountEl) resultCountEl.textContent = totalAvailable.toLocaleString();
+		if (sourceBadgeEl) sourceBadgeEl.textContent = 'CSV feed';
+		if (statusBarEl) {
+			statusBarEl.textContent = searchQuery && searchQuery.trim()
+				? `Showing patent results for "${searchQuery.trim()}" from the MedCityAI CSV feed.`
+				: 'Latest Rochester-area patent applications from the MedCityAI CSV feed.';
+		}
+		if (emptyStateEl) emptyStateEl.style.display = 'none';
 
-
-	// Limit articles for display
-	const maxTotal = 200;
-	
-	// Calculate total items to display
-	let displayedCount = 0;
-	
-	// All publications section - limit to remaining space up to maxTotal
-	const remainingSlots = maxTotal - displayedCount;
-	
-	// Show remaining articles up to the limit
-	let allRemainingArticles = otherArticles.slice(0, remainingSlots);
-	
-	if (allRemainingArticles.length > 0) {
+		if (pageArticles.length > 0) {
 		finalHTML += `<div class="all-publications-section"><div class="results">`;
 		
-		allRemainingArticles.forEach(article => {
+			pageArticles.forEach(article => {
 			finalHTML += renderArticle(article);
 		});
 		
 		finalHTML += `</div></div>`;
-		displayedCount += allRemainingArticles.length;
 	}
 
-	document.getElementById("pubmed-results").innerHTML = finalHTML;        
+		document.getElementById("pubmed-results").innerHTML = finalHTML;
+		const paginationControls = document.getElementById('pagination-controls');
+		const prevPageButton = document.getElementById('prevPage');
+		const nextPageButton = document.getElementById('nextPage');
+		const pageInfo = document.getElementById('pageInfo');
     
 	// Store selected specialty globally for conditional rendering
 	if (typeof window !== 'undefined') {
 		window.selectedSpecialty = 'all';
 	}
 	
-	// Show pagination message if there are more articles than displayed
-	const totalAvailable = otherArticles.length;
-	if (totalAvailable > displayedCount) {
-		document.getElementById("pagination-controls").style.display = 'block';
-		document.getElementById("pageInfo").innerHTML = `<a href="search.html" style="color: #0056a3; text-decoration: none; font-weight: 500;">Search</a> to discover more patents`;
-		document.getElementById("prevPage").style.display = 'none';
-		document.getElementById("nextPage").style.display = 'none';
+		// Show pagination controls when there is more than one page of patents
+		if (totalAvailable > 0 && totalPages > 1) {
+			paginationControls.style.display = 'block';
+			prevPageButton.style.display = 'inline-block';
+			nextPageButton.style.display = 'inline-block';
+			prevPageButton.disabled = currentPage === 1;
+			nextPageButton.disabled = currentPage >= totalPages;
+			pageInfo.textContent = `Page ${currentPage} of ${totalPages} · Showing ${startIndex + 1}-${endIndex} of ${totalAvailable} patents`;
 	} else {
-		document.getElementById("pagination-controls").style.display = 'none';
+			paginationControls.style.display = 'none';
 	}
 }
 	
@@ -3929,6 +4169,33 @@
 			authorModal.addEventListener('click', function(e) {
 				if (e.target === authorModal) closeAuthorModal();
 			});
+
+			const patentSearchInput = document.getElementById('patent-search-input');
+			const searchIcon = document.getElementById('search-icon');
+			function runPatentSearch() {
+				const query = patentSearchInput ? patentSearchInput.value.trim() : '';
+				fetchPubMedResults(query, 1);
+				const resultsSection = document.getElementById('pubmed-results');
+				if (resultsSection) {
+					const headerHeight = 70;
+					const elementPosition = resultsSection.getBoundingClientRect().top;
+					const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
+					window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+				}
+			}
+
+			if (patentSearchInput) {
+				patentSearchInput.addEventListener('keypress', function(e) {
+					if (e.key === 'Enter') {
+						e.preventDefault();
+						runPatentSearch();
+					}
+				});
+			}
+
+			if (searchIcon) {
+				searchIcon.addEventListener('click', runPatentSearch);
+			}
 
 			// Set up pagination event listeners
 			document.getElementById('prevPage').addEventListener('click', function() {
