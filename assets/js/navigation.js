@@ -16,8 +16,7 @@
                 <div class="nav-links" role="menubar">
                     <a href="index.html" role="menuitem" data-page="index">New Today</a>
                     <a href="search.html" role="menuitem" data-page="search">Publications</a>
-                    <a href="clinical_trials.html" role="menuitem" data-page="clinical_trials">Clinical Trials</a>
-                    <a href="Patents.html" role="menuitem" data-page="Patents">Patents</a>
+                    <a href="explore.html" role="menuitem" data-page="explore">Explore</a>
                     <a href="about.html" role="menuitem" data-page="about">About</a>
                 </div>
                 <div style="display: flex; align-items: center; gap: 20px;">
@@ -36,8 +35,7 @@
         <div id="mobile-menu" class="mobile-menu" aria-hidden="true">
             <a href="index.html" data-page="index">New Today</a>
             <a href="search.html" data-page="search">Publications</a>
-            <a href="clinical_trials.html" data-page="clinical_trials">Clinical Trials</a>
-            <a href="Patents.html" data-page="Patents">Patents</a>
+            <a href="explore.html" data-page="explore">Explore</a>
             <a href="about.html" data-page="about">About</a>
             <a href="share.html" data-page="submit" class="mobile-cta">Share Your Work</a>
         </div>

@@ -1,0 +1,459 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <title>Explore - MedCityAI Intelligence Review</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="icon" type="image/png" href="images/medcityai_simple1.png" />
+    <link rel="apple-touch-icon" href="images/medcityai_simple1.png" />
+
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="assets/css/navigation.css" />
+    <link rel="stylesheet" href="assets/css/fontawesome-all.min.css" />
+    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+
+    <style>
+        :root {
+            --explore-bg: #f4f8fb;
+            --explore-panel: #ffffff;
+            --explore-primary: #0b5ea8;
+            --explore-secondary: #12a2a8;
+            --explore-ink: #16324a;
+            --explore-muted: #5f768b;
+            --explore-border: #dbe7f1;
+            --explore-shadow: 0 16px 40px rgba(10, 42, 70, 0.12);
+        }
+
+        body {
+            background: radial-gradient(circle at 0% 0%, #e9f5ff 0%, #f6fbff 35%, #f4f8fb 100%);
+        }
+
+        .explore-shell {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 110px 18px 70px;
+        }
+
+        .explore-hero {
+            background: linear-gradient(125deg, #0b5ea8 0%, #12a2a8 55%, #39b26d 100%);
+            border-radius: 24px;
+            color: #ffffff;
+            padding: 34px 30px;
+            box-shadow: var(--explore-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .explore-hero::after {
+            content: '';
+            position: absolute;
+            right: -85px;
+            top: -95px;
+            width: 270px;
+            height: 270px;
+            background: radial-gradient(circle, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.02) 70%);
+            border-radius: 50%;
+        }
+
+        .explore-hero h1 {
+            margin: 0 0 8px;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .explore-hero p {
+            margin: 0;
+            font-size: 1.03rem;
+            opacity: 0.92;
+            max-width: 880px;
+        }
+
+        .query-panel {
+            margin-top: 18px;
+            background: var(--explore-panel);
+            border: 1px solid var(--explore-border);
+            border-radius: 18px;
+            padding: 20px;
+            box-shadow: 0 10px 24px rgba(8, 37, 66, 0.08);
+        }
+
+        .query-controls {
+            display: grid;
+            grid-template-columns: 1.4fr 1.1fr 0.5fr 0.5fr auto auto;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .control-label {
+            font-size: 0.74rem;
+            color: #4e6980;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .query-input {
+            width: 100%;
+            border: 2px solid #d6e4f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            color: #12344d;
+            padding: 12px 14px;
+            background: #f8fcff;
+        }
+
+        .query-input:focus {
+            outline: none;
+            border-color: #1980c7;
+            background: #ffffff;
+        }
+
+        .explore-btn {
+            border: 0;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-weight: 700;
+            font-size: 0.94rem;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .explore-btn.primary {
+            color: #ffffff;
+            background: linear-gradient(135deg, #005fad 0%, #0088d1 100%);
+            box-shadow: 0 8px 18px rgba(0, 106, 184, 0.28);
+        }
+
+        .explore-btn.secondary {
+            color: #0b4f84;
+            background: linear-gradient(135deg, #ddf4ff 0%, #c6ebff 100%);
+        }
+
+        .explore-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .status-bar {
+            margin-top: 12px;
+            color: var(--explore-muted);
+            font-size: 0.95rem;
+            min-height: 1.4em;
+        }
+
+        .status-bar.error {
+            color: #b61f2b;
+        }
+
+        .quick-tags {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .quick-tag {
+            border: 1px solid #c8dfee;
+            border-radius: 999px;
+            padding: 6px 12px;
+            font-size: 0.84rem;
+            font-weight: 600;
+            color: #0f6094;
+            background: #f3faff;
+            cursor: pointer;
+        }
+
+        .metrics-grid {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(8, minmax(120px, 1fr));
+            gap: 12px;
+        }
+
+        .metric-card {
+            background: #ffffff;
+            border: 1px solid var(--explore-border);
+            border-radius: 14px;
+            padding: 14px;
+        }
+
+        .metric-label {
+            font-size: 0.82rem;
+            color: #5e7a90;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 700;
+        }
+
+        .metric-value {
+            margin-top: 4px;
+            color: var(--explore-ink);
+            font-size: 1.45rem;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .insights-panel {
+            margin-top: 16px;
+            background: #ffffff;
+            border: 1px solid var(--explore-border);
+            border-radius: 14px;
+            padding: 14px 16px;
+        }
+
+        .insights-panel h3 {
+            margin: 0 0 8px;
+            color: var(--explore-ink);
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .insights-panel ul {
+            margin: 0;
+            padding-left: 18px;
+            color: #355168;
+        }
+
+        .charts-grid {
+            margin-top: 18px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .chart-card {
+            background: #ffffff;
+            border: 1px solid var(--explore-border);
+            border-radius: 16px;
+            box-shadow: 0 7px 18px rgba(7, 39, 70, 0.08);
+            padding: 14px;
+            min-height: 340px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-card h3 {
+            margin: 0;
+            color: #1f435d;
+            font-size: 0.98rem;
+            font-weight: 700;
+        }
+
+        .chart-wrap {
+            margin-top: 8px;
+            position: relative;
+            flex: 1;
+            min-height: 265px;
+        }
+
+        .tables-grid {
+            margin-top: 14px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .table-card {
+            background: #ffffff;
+            border: 1px solid var(--explore-border);
+            border-radius: 16px;
+            padding: 14px;
+            box-shadow: 0 7px 18px rgba(7, 39, 70, 0.08);
+        }
+
+        .table-card h3 {
+            margin: 0 0 10px;
+            color: #1f435d;
+            font-size: 0.98rem;
+            font-weight: 700;
+        }
+
+        .table-scroll {
+            max-height: 300px;
+            overflow: auto;
+            border: 1px solid #deebf4;
+            border-radius: 10px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            font-size: 0.9rem;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #e6eff7;
+        }
+
+        th {
+            position: sticky;
+            top: 0;
+            background: #f2f8fc;
+            color: #38556c;
+            font-size: 0.78rem;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+
+        .footnote {
+            margin-top: 14px;
+            color: #6e8598;
+            font-size: 0.84rem;
+        }
+
+        @media (max-width: 1100px) {
+            .query-controls {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+
+            .metrics-grid {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 860px) {
+            .query-controls {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-grid,
+            .tables-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .metrics-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .explore-shell {
+                padding-top: 96px;
+            }
+
+            .explore-hero h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body class="is-preload">
+    <div id="navigation-placeholder" data-page="explore"></div>
+
+    <main class="explore-shell">
+        <section class="explore-hero" aria-label="Explore research analytics hero">
+            <h1>Explore Topic Intelligence</h1>
+            <p>
+                Enter a biomedical interest and generate a deep analytical review across authorship, publication trends,
+                geography, specialties, and key themes. Export everything to a chart-rich Word report.
+            </p>
+        </section>
+
+        <section class="query-panel" aria-label="Query and export controls">
+            <div class="query-controls">
+                <div class="control-group">
+                    <label class="control-label" for="keywordsInput">Keywords (comma-separated)</label>
+                    <input id="keywordsInput" class="query-input" type="search" placeholder="Example: glioblastoma, immunotherapy, pediatric oncology" aria-label="Keywords of interest" />
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="authorsInput">Authors (comma-separated)</label>
+                    <input id="authorsInput" class="query-input" type="search" placeholder="Optional: Lieske, Kamath, Wens" aria-label="Authors of interest" />
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="yearStartInput">Start Year</label>
+                    <input id="yearStartInput" class="query-input" type="number" min="1900" max="2100" step="1" aria-label="Start year" />
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="yearEndInput">End Year</label>
+                    <input id="yearEndInput" class="query-input" type="number" min="1900" max="2100" step="1" aria-label="End year" />
+                </div>
+                <button id="runExploreBtn" class="explore-btn primary" type="button"><i class="fas fa-chart-network"></i> Analyze Topic</button>
+                <button id="exportWordBtn" class="explore-btn secondary" type="button"><i class="fas fa-file-word"></i> Export Word Report</button>
+            </div>
+            <div class="quick-tags" aria-label="Suggested queries">
+                <button class="quick-tag" type="button" data-query="glioblastoma, immunotherapy">glioblastoma + immunotherapy</button>
+                <button class="quick-tag" type="button" data-query="heart failure, machine learning">heart failure + machine learning</button>
+                <button class="quick-tag" type="button" data-query="type 1 diabetes, beta cell">type 1 diabetes + beta cell</button>
+                <button class="quick-tag" type="button" data-query="rare kidney disease, genomics">rare kidney disease + genomics</button>
+                <button class="quick-tag" type="button" data-query="robotic surgery, computer vision">robotic surgery + computer vision</button>
+            </div>
+            <div id="statusBar" class="status-bar" aria-live="polite"></div>
+        </section>
+
+        <section class="metrics-grid" aria-label="High-level metrics">
+            <div class="metric-card"><div class="metric-label">Matched Publications</div><div class="metric-value" id="metricCount">0</div></div>
+            <div class="metric-card"><div class="metric-label">Filter Window</div><div class="metric-value" id="metricDateRange">-</div></div>
+            <div class="metric-card"><div class="metric-label">Observed Years</div><div class="metric-value" id="metricObservedYears">-</div></div>
+            <div class="metric-card"><div class="metric-label">Unique Authors</div><div class="metric-value" id="metricAuthors">0</div></div>
+            <div class="metric-card"><div class="metric-label">Unique Journals</div><div class="metric-value" id="metricJournals">0</div></div>
+            <div class="metric-card"><div class="metric-label">Avg Authors / Paper</div><div class="metric-value" id="metricAuthorsPerPaper">0</div></div>
+            <div class="metric-card"><div class="metric-label">Top 10 Author Share</div><div class="metric-value" id="metricAuthorShare">0%</div></div>
+            <div class="metric-card"><div class="metric-label">Latest YoY Growth</div><div class="metric-value" id="metricYoY">0%</div></div>
+        </section>
+
+        <section class="insights-panel" aria-label="Generated insights">
+            <h3>Auto Insights</h3>
+            <ul id="insightsList">
+                <li>Run a topic analysis to see detailed insights.</li>
+            </ul>
+        </section>
+
+        <section class="charts-grid" aria-label="Analytical charts">
+            <article class="chart-card"><h3>Publication Volume Over Time</h3><div class="chart-wrap"><canvas id="chartTimeline"></canvas></div></article>
+            <article class="chart-card"><h3>Most Frequent Authors</h3><div class="chart-wrap"><canvas id="chartAuthors"></canvas></div></article>
+            <article class="chart-card"><h3>Top Journals</h3><div class="chart-wrap"><canvas id="chartJournals"></canvas></div></article>
+            <article class="chart-card"><h3>Specialty Mix</h3><div class="chart-wrap"><canvas id="chartSpecialties"></canvas></div></article>
+            <article class="chart-card"><h3>Country Distribution (Excluding US)</h3><div class="chart-wrap"><canvas id="chartCountries"></canvas></div></article>
+            <article class="chart-card"><h3>US State Distribution (Excluding MN)</h3><div class="chart-wrap"><canvas id="chartStates"></canvas></div></article>
+            <article class="chart-card"><h3>Top Technical Terms</h3><div class="chart-wrap"><canvas id="chartKeywords"></canvas></div></article>
+            <article class="chart-card"><h3>Co-Author Depth Distribution</h3><div class="chart-wrap"><canvas id="chartCollaboration"></canvas></div></article>
+            <article class="chart-card"><h3>Top Institutions</h3><div class="chart-wrap"><canvas id="chartInstitutions"></canvas></div></article>
+            <article class="chart-card"><h3>Year-over-Year Growth %</h3><div class="chart-wrap"><canvas id="chartYoY"></canvas></div></article>
+        </section>
+
+        <section class="tables-grid" aria-label="Analytical tables">
+            <article class="table-card">
+                <h3>Top Authors Table</h3>
+                <div class="table-scroll"><table id="authorsTable"></table></div>
+            </article>
+            <article class="table-card">
+                <h3>Geography Table</h3>
+                <div class="table-scroll"><table id="geoTable"></table></div>
+            </article>
+            <article class="table-card">
+                <h3>Author Interest Coverage</h3>
+                <div class="table-scroll"><table id="authorCoverageTable"></table></div>
+            </article>
+            <article class="table-card">
+                <h3>Institution and Journal Concentration</h3>
+                <div class="table-scroll"><table id="concentrationTable"></table></div>
+            </article>
+        </section>
+
+        <p class="footnote">
+            Data source: live PubMed E-utilities queries at analysis time. Geographic distribution derives from affiliation text and is heuristic.
+        </p>
+    </main>
+
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/navigation.js"></script>
+    <script src="assets/js/pubmed-client.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-docx-js/0.3.1/html-docx.min.js"></script>
+    <script src="assets/js/explore.js"></script>
+</body>
+</html>
