@@ -35,7 +35,9 @@
         'Kenya', 'Ethiopia', 'Ghana', 'Iran', 'Iraq', 'Ukraine', 'Russia'
     ];
 
-    const palette = ['#0b5ea8', '#14a2a8', '#f28c28', '#e23a62', '#7e57c2', '#28a745', '#d16b00', '#00a7d0', '#7f8c8d', '#f39c12', '#16a085'];
+    const INDEX_SPECIALTY_CATEGORIES = ['Radiology', 'Oncology', 'Cardiology', 'Neurology', 'AI/ML/DL'];
+
+    const palette = ['#0b5ea8', '#1f75bf', '#2f8cd0', '#45a2de', '#5ab5ea', '#76c4f0', '#8ecff4', '#a4daf8', '#bddff7', '#d4eafc', '#2a6fa6'];
 
     const appState = {
         rows: [],
@@ -361,6 +363,37 @@
         return topEntries(counts, 16);
     }
 
+    function assignIndexSpecialtyCategory(row) {
+        const sourceText = normalizeText([
+            row.primary_specialty,
+            row.secondary_specialty,
+            row.title,
+            row.abstract
+        ].join(' '));
+
+        if (!sourceText) {
+            return '';
+        }
+
+        if (/(ai\/ml\/dl|artificial intelligence|machine learning|deep learning|neural network|transformer|large language model|llm)\b/.test(sourceText)) {
+            return 'AI/ML/DL';
+        }
+        if (/(radiology|radiologic|imaging|mri\b|ct\b|pet\b|ultrasound|sonography|interventional radiology|nuclear medicine)\b/.test(sourceText)) {
+            return 'Radiology';
+        }
+        if (/(oncology|cancer|tumou?r|neoplasm|carcinoma|sarcoma|melanoma|leukemia|lymphoma|metastatic)\b/.test(sourceText)) {
+            return 'Oncology';
+        }
+        if (/(cardiology|cardiac|cardiovascular|heart\b|coronary|arrhythmia|myocardial|heart failure|atrial fibrillation)\b/.test(sourceText)) {
+            return 'Cardiology';
+        }
+        if (/(neurology|neurologic|neuroscience|brain\b|stroke|seizure|epilepsy|alzheimer|parkinson|dementia|multiple sclerosis)\b/.test(sourceText)) {
+            return 'Neurology';
+        }
+
+        return '';
+    }
+
     function buildBins(authorCounts) {
         const bins = {
             '1-3 authors': 0,
@@ -396,7 +429,6 @@
         const allSpecialties = [];
         const allCountries = [];
         const allStates = [];
-        const allInstitutions = [];
         const authorsPerPaper = [];
         const keywordCoverageMap = new Map();
         const authorCoverageMap = new Map();
@@ -434,19 +466,14 @@
 
             const primary = String(row.primary_specialty || '').trim();
             const secondary = String(row.secondary_specialty || '').trim();
-            if (primary) {
-                allSpecialties.push(primary);
-            }
-            if (secondary) {
-                allSpecialties.push(secondary);
+            if (primary || secondary || row.title || row.abstract) {
+                const indexCategory = assignIndexSpecialtyCategory(row);
+                if (indexCategory) {
+                    allSpecialties.push(indexCategory);
+                }
             }
 
             splitPipe(row.affiliations).forEach((aff) => {
-                const firstPart = aff.split(',')[0] ? aff.split(',')[0].trim() : '';
-                if (firstPart) {
-                    allInstitutions.push(firstPart);
-                }
-
                 const country = detectCountry(aff);
                 const state = detectUSState(aff);
 
@@ -463,10 +490,12 @@
         const sortedYears = Array.from(yearMap.entries()).sort((a, b) => Number(a[0]) - Number(b[0]));
         const topAuthors = topEntries(toCountMap(allAuthors), 20);
         const topJournals = topEntries(toCountMap(allJournals), 15);
-        const topSpecialties = topEntries(toCountMap(allSpecialties), 12);
+        const specialtyMap = toCountMap(allSpecialties);
+        const topSpecialties = INDEX_SPECIALTY_CATEGORIES
+            .map((category) => [category, specialtyMap.get(category) || 0])
+            .filter((entry) => entry[1] > 0);
         const topCountries = topEntries(toCountMap(allCountries), 12);
         const topStates = topEntries(toCountMap(allStates), 12);
-        const topInstitutions = topEntries(toCountMap(allInstitutions), 15);
         const topKeywords = extractKeywords(rows, queryTokens);
         const keywordCoverage = topEntries(keywordCoverageMap, 30);
         const authorCoverage = topEntries(authorCoverageMap, 30);
@@ -488,10 +517,6 @@
             })()
             : 0;
 
-        const top10AuthorTotal = topAuthors.slice(0, 10).reduce((acc, item) => acc + item[1], 0);
-        const totalAuthorMentions = allAuthors.length || 1;
-        const top10AuthorSharePct = (top10AuthorTotal / totalAuthorMentions) * 100;
-
         const dateWindow = sortedYears.length
             ? `${sortedYears[0][0]}-${sortedYears[sortedYears.length - 1][0]}`
             : 'N/A';
@@ -504,7 +529,47 @@
             yoyGrowth.push([sortedYears[i][0], growth]);
         }
 
-        const latestYoY = yoyGrowth.length ? yoyGrowth[yoyGrowth.length - 1][1] : 0;
+        const tenYearAnnualGrowthPct = (() => {
+            if (!sortedYears.length) {
+                return 0;
+            }
+
+            const latestYear = Number(sortedYears[sortedYears.length - 1][0]);
+            const minYear = latestYear - 10;
+            const windowed = sortedYears.filter((entry) => Number(entry[0]) >= minYear);
+            if (windowed.length < 2) {
+                return 0;
+            }
+
+            const points = windowed
+                .map((entry) => ({ year: Number(entry[0]), count: Number(entry[1]) }))
+                .filter((entry) => Number.isFinite(entry.year) && Number.isFinite(entry.count));
+
+            if (points.length < 2) {
+                return 0;
+            }
+
+            const n = points.length;
+            const sumX = points.reduce((acc, p) => acc + p.year, 0);
+            const sumY = points.reduce((acc, p) => acc + p.count, 0);
+            const sumXY = points.reduce((acc, p) => acc + (p.year * p.count), 0);
+            const sumXX = points.reduce((acc, p) => acc + (p.year * p.year), 0);
+
+            const denominator = (n * sumXX) - (sumX * sumX);
+            if (denominator === 0) {
+                return 0;
+            }
+
+            // Linear fit slope in publications/year.
+            const slopePerYear = ((n * sumXY) - (sumX * sumY)) / denominator;
+            const avgCount = sumY / n;
+            if (!Number.isFinite(avgCount) || avgCount <= 0) {
+                return 0;
+            }
+
+            // Convert slope to an annualized percentage relative to average volume.
+            return (slopePerYear / avgCount) * 100;
+        })();
 
         const collaborationBins = buildBins(authorsPerPaper);
 
@@ -518,18 +583,16 @@
             filterWindowText,
             timeline: sortedYears,
             yoyGrowth,
-            latestYoY,
+            tenYearAnnualGrowthPct,
             topAuthors,
             topJournals,
             topSpecialties,
             topCountries,
             topStates,
-            topInstitutions,
             topKeywords,
             keywordCoverage,
             authorCoverage,
-            collaborationBins,
-            top10AuthorSharePct
+            collaborationBins
         };
     }
 
@@ -644,12 +707,10 @@
     function renderMetrics(a) {
         byId('metricCount').textContent = String(a.total);
         byId('metricDateRange').textContent = a.filterWindowText;
-        byId('metricObservedYears').textContent = a.dateWindow;
         byId('metricAuthors').textContent = String(a.uniqueAuthors);
         byId('metricJournals').textContent = String(a.uniqueJournals);
         byId('metricAuthorsPerPaper').textContent = a.avgAuthorsPerPaper.toFixed(1);
-        byId('metricAuthorShare').textContent = percent(a.top10AuthorSharePct);
-        byId('metricYoY').textContent = percent(a.latestYoY);
+        byId('metricTenYearGrowth').textContent = percent(a.tenYearAnnualGrowthPct);
     }
 
     function renderTable(id, headers, rows) {
@@ -673,7 +734,7 @@
             return list;
         }
 
-        list.push(`Filter window is ${a.filterWindowText}; observed publication years in results are ${a.dateWindow}.`);
+        list.push(`Filter window is ${a.filterWindowText}.`);
 
         const peakYear = a.timeline.length
             ? a.timeline.reduce((best, row) => (row[1] > best[1] ? row : best), a.timeline[0])
@@ -687,14 +748,8 @@
             list.push(`Most frequent author is ${a.topAuthors[0][0]} (${a.topAuthors[0][1]} publications).`);
         }
 
-        list.push(`Top 10 authors account for ${percent(a.top10AuthorSharePct)} of all author mentions in this result set.`);
-
         if (a.topJournals[0]) {
             list.push(`Top outlet is ${a.topJournals[0][0]} with ${a.topJournals[0][1]} records.`);
-        }
-
-        if (a.topInstitutions[0]) {
-            list.push(`Most represented institution segment is ${a.topInstitutions[0][0]} (${a.topInstitutions[0][1]} affiliation mentions).`);
         }
 
         if (a.topCountries[0]) {
@@ -711,8 +766,8 @@
 
         list.push(`Average team size is ${a.avgAuthorsPerPaper.toFixed(1)} authors per publication (median ${a.medianAuthorsPerPaper.toFixed(1)}).`);
 
-        if (a.yoyGrowth.length) {
-            list.push(`Latest year-over-year publication growth is ${percent(a.latestYoY)}.`);
+        if (a.timeline.length >= 2) {
+            list.push(`10-year annual publication growth rate is ${percent(a.tenYearAnnualGrowthPct)}.`);
         }
 
         if (keywords.length) {
@@ -827,18 +882,6 @@
             false
         ));
 
-        const topInstitutions = ensureSeries(
-            capLabels(a.topInstitutions.slice(0, 12).map(item => item[0]), 32),
-            a.topInstitutions.slice(0, 12).map(item => item[1]),
-            'No data'
-        );
-        upsertChart('chartInstitutions', barConfig(
-            topInstitutions.labels,
-            topInstitutions.values,
-            'Affiliation mentions',
-            true
-        ));
-
         const yoy = ensureSeries(
             a.yoyGrowth.map(item => item[0]),
             a.yoyGrowth.map(item => Number(item[1].toFixed(1))),
@@ -869,23 +912,6 @@
 
         renderTable('geoTable', ['Type/Rank', 'Location', 'Count'], geoRows);
 
-        renderTable(
-            'authorCoverageTable',
-            ['Rank', 'Input Author', 'Matched Publications'],
-            a.authorCoverage.length
-                ? a.authorCoverage.map((item, idx) => [idx + 1, item[0], item[1]])
-                : [['-', 'No author filter provided', '-']]
-        );
-
-        const concentrationRows = [];
-        a.topInstitutions.slice(0, 10).forEach((item, idx) => {
-            concentrationRows.push([`Institution ${idx + 1}`, item[0], item[1]]);
-        });
-        a.topJournals.slice(0, 10).forEach((item, idx) => {
-            concentrationRows.push([`Journal ${idx + 1}`, item[0], item[1]]);
-        });
-
-        renderTable('concentrationTable', ['Type/Rank', 'Name', 'Count'], concentrationRows);
     }
 
     function queryRows(rows, keywordList, authorList, yearStart, yearEnd) {
@@ -1137,45 +1163,40 @@
             '</head>',
             '<body>',
             `<h1>MedCityAI Explore Report</h1>`,
-            `<div class="meta">Query Summary: <strong>${query}</strong><br/>Keywords: ${keywordLine}<br/>Authors of Interest: ${authorLine}<br/>Date Filter: ${a.filterWindowText}<br/>Observed Years: ${a.dateWindow}<br/>Generated: ${today}<br/>Data Source: PubMed E-utilities (live query)</div>`,
+            `<div class="meta">Query Summary: <strong>${query}</strong><br/>Keywords: ${keywordLine}<br/>Authors of Interest: ${authorLine}<br/>Date Filter: ${a.filterWindowText}<br/>Generated: ${today}<br/>Data Source: PubMed E-utilities (live query)</div>`,
             `<div class="kpi"><strong>Matched Publications</strong><br/>${a.total}</div>`,
             `<div class="kpi"><strong>Filter Window</strong><br/>${a.filterWindowText}</div>`,
-            `<div class="kpi"><strong>Observed Years</strong><br/>${a.dateWindow}</div>`,
             `<div class="kpi"><strong>Unique Authors</strong><br/>${a.uniqueAuthors}</div>`,
             `<div class="kpi"><strong>Unique Journals</strong><br/>${a.uniqueJournals}</div>`,
             `<div class="kpi"><strong>Avg Authors/Paper</strong><br/>${a.avgAuthorsPerPaper.toFixed(1)}</div>`,
             `<div class="kpi"><strong>Median Authors/Paper</strong><br/>${a.medianAuthorsPerPaper.toFixed(1)}</div>`,
-            `<div class="kpi"><strong>Top 10 Author Share</strong><br/>${percent(a.top10AuthorSharePct)}</div>`,
-            `<div class="kpi"><strong>Latest YoY Growth</strong><br/>${percent(a.latestYoY)}</div>`,
+            `<div class="kpi"><strong>10-Year Annual Growth Rate</strong><br/>${percent(a.tenYearAnnualGrowthPct)}</div>`,
             '<h2>Executive Insights</h2>',
             `<ul>${insights.map(i => `<li>${i}</li>`).join('')}</ul>`,
             '<h2>Visual Analytics</h2>',
             `<div class="chart"><h3>Publication Volume Over Time</h3><img src="${chartImage('chartTimeline')}"/></div>`,
             `<div class="chart"><h3>Most Frequent Authors</h3><img src="${chartImage('chartAuthors')}"/></div>`,
             `<div class="chart"><h3>Top Journals</h3><img src="${chartImage('chartJournals')}"/></div>`,
-            `<div class="chart"><h3>Specialty Mix</h3><img src="${chartImage('chartSpecialties')}"/></div>`,
+            `<div class="chart"><h3>Specialty Mix (Index Categories)</h3><img src="${chartImage('chartSpecialties')}"/></div>`,
             `<div class="chart"><h3>Country Distribution (Excluding US)</h3><img src="${chartImage('chartCountries')}"/></div>`,
             `<div class="chart"><h3>US State Distribution (Excluding MN)</h3><img src="${chartImage('chartStates')}"/></div>`,
             `<div class="chart"><h3>Top Technical Terms</h3><img src="${chartImage('chartKeywords')}"/></div>`,
             `<div class="chart"><h3>Co-Author Depth Distribution</h3><img src="${chartImage('chartCollaboration')}"/></div>`,
-            `<div class="chart"><h3>Top Institutions</h3><img src="${chartImage('chartInstitutions')}"/></div>`,
             `<div class="chart"><h3>Year-over-Year Growth %</h3><img src="${chartImage('chartYoY')}"/></div>`,
             '<h2>Top Author Table</h2>',
             formatTableRows(a.topAuthors.slice(0, 30).map((item, idx) => [idx + 1, item[0], item[1]]), ['Rank', 'Author', 'Publication Count']),
             '<h2>Top Journals Table</h2>',
             formatTableRows(a.topJournals.slice(0, 25).map((item, idx) => [idx + 1, item[0], item[1]]), ['Rank', 'Journal', 'Publication Count']),
-            '<h2>Keyword and Author Coverage</h2>',
+            '<h2>Keyword Coverage</h2>',
             formatTableRows(a.keywordCoverage.map((item, idx) => [idx + 1, item[0], item[1]]), ['Rank', 'Keyword', 'Matched Publications']),
-            formatTableRows(a.authorCoverage.map((item, idx) => [idx + 1, item[0], item[1]]), ['Rank', 'Author', 'Matched Publications']),
             '<h2>Geography Table</h2>',
             formatTableRows(
                 a.topCountries.slice(0, 20).map((item, idx) => [`Country ${idx + 1}`, item[0], item[1]])
                     .concat(a.topStates.slice(0, 20).map((item, idx) => [`State ${idx + 1}`, item[0], item[1]])),
                 ['Type/Rank', 'Location', 'Count']
             ),
-            '<h2>Specialty and Institution Table</h2>',
+            '<h2>Specialty Table</h2>',
             formatTableRows(a.topSpecialties.slice(0, 20).map((item, idx) => [idx + 1, item[0], item[1]]), ['Rank', 'Specialty', 'Count']),
-            formatTableRows(a.topInstitutions.slice(0, 20).map((item, idx) => [idx + 1, item[0], item[1]]), ['Rank', 'Institution Segment', 'Count']),
             '<p style="font-size:11px;color:#6b7d8c;">Geographic parsing is based on affiliation-string heuristics and may include minor normalization errors.</p>',
             '</body>',
             '</html>'
@@ -1237,12 +1258,6 @@
             }
         });
 
-        document.querySelectorAll('.quick-tag').forEach((button) => {
-            button.addEventListener('click', () => {
-                byId('keywordsInput').value = button.getAttribute('data-query') || '';
-                runAnalysis();
-            });
-        });
     }
 
     function initializeDefaultDateWindow() {

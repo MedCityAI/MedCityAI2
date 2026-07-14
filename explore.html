@@ -17,7 +17,7 @@
             --explore-bg: #f4f8fb;
             --explore-panel: #ffffff;
             --explore-primary: #0b5ea8;
-            --explore-secondary: #12a2a8;
+            --explore-secondary: #2a7fc6;
             --explore-ink: #16324a;
             --explore-muted: #5f768b;
             --explore-border: #dbe7f1;
@@ -35,7 +35,7 @@
         }
 
         .explore-hero {
-            background: linear-gradient(125deg, #0b5ea8 0%, #12a2a8 55%, #39b26d 100%);
+            background: linear-gradient(125deg, #0b5ea8 0%, #1f75bf 55%, #4aa2df 100%);
             border-radius: 24px;
             color: #ffffff;
             padding: 34px 30px;
@@ -153,28 +153,10 @@
             color: #b61f2b;
         }
 
-        .quick-tags {
-            margin-top: 10px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .quick-tag {
-            border: 1px solid #c8dfee;
-            border-radius: 999px;
-            padding: 6px 12px;
-            font-size: 0.84rem;
-            font-weight: 600;
-            color: #0f6094;
-            background: #f3faff;
-            cursor: pointer;
-        }
-
         .metrics-grid {
             margin-top: 20px;
             display: grid;
-            grid-template-columns: repeat(8, minmax(120px, 1fr));
+            grid-template-columns: repeat(6, minmax(120px, 1fr));
             gap: 12px;
         }
 
@@ -362,7 +344,7 @@
             <div class="query-controls">
                 <div class="control-group">
                     <label class="control-label" for="keywordsInput">Keywords (comma-separated)</label>
-                    <input id="keywordsInput" class="query-input" type="search" placeholder="Example: glioblastoma, immunotherapy, pediatric oncology" aria-label="Keywords of interest" />
+                    <input id="keywordsInput" class="query-input" type="search" placeholder="Enter keywords separated by commas" aria-label="Keywords of interest" />
                 </div>
                 <div class="control-group">
                     <label class="control-label" for="authorsInput">Authors (comma-separated)</label>
@@ -379,25 +361,16 @@
                 <button id="runExploreBtn" class="explore-btn primary" type="button"><i class="fas fa-chart-network"></i> Analyze Topic</button>
                 <button id="exportWordBtn" class="explore-btn secondary" type="button"><i class="fas fa-file-word"></i> Export Word Report</button>
             </div>
-            <div class="quick-tags" aria-label="Suggested queries">
-                <button class="quick-tag" type="button" data-query="glioblastoma, immunotherapy">glioblastoma + immunotherapy</button>
-                <button class="quick-tag" type="button" data-query="heart failure, machine learning">heart failure + machine learning</button>
-                <button class="quick-tag" type="button" data-query="type 1 diabetes, beta cell">type 1 diabetes + beta cell</button>
-                <button class="quick-tag" type="button" data-query="rare kidney disease, genomics">rare kidney disease + genomics</button>
-                <button class="quick-tag" type="button" data-query="robotic surgery, computer vision">robotic surgery + computer vision</button>
-            </div>
             <div id="statusBar" class="status-bar" aria-live="polite"></div>
         </section>
 
         <section class="metrics-grid" aria-label="High-level metrics">
             <div class="metric-card"><div class="metric-label">Matched Publications</div><div class="metric-value" id="metricCount">0</div></div>
             <div class="metric-card"><div class="metric-label">Filter Window</div><div class="metric-value" id="metricDateRange">-</div></div>
-            <div class="metric-card"><div class="metric-label">Observed Years</div><div class="metric-value" id="metricObservedYears">-</div></div>
             <div class="metric-card"><div class="metric-label">Unique Authors</div><div class="metric-value" id="metricAuthors">0</div></div>
             <div class="metric-card"><div class="metric-label">Unique Journals</div><div class="metric-value" id="metricJournals">0</div></div>
             <div class="metric-card"><div class="metric-label">Avg Authors / Paper</div><div class="metric-value" id="metricAuthorsPerPaper">0</div></div>
-            <div class="metric-card"><div class="metric-label">Top 10 Author Share</div><div class="metric-value" id="metricAuthorShare">0%</div></div>
-            <div class="metric-card"><div class="metric-label">Latest YoY Growth</div><div class="metric-value" id="metricYoY">0%</div></div>
+            <div class="metric-card"><div class="metric-label">10-Year Annual Growth Rate</div><div class="metric-value" id="metricTenYearGrowth">0%</div></div>
         </section>
 
         <section class="insights-panel" aria-label="Generated insights">
@@ -411,12 +384,11 @@
             <article class="chart-card"><h3>Publication Volume Over Time</h3><div class="chart-wrap"><canvas id="chartTimeline"></canvas></div></article>
             <article class="chart-card"><h3>Most Frequent Authors</h3><div class="chart-wrap"><canvas id="chartAuthors"></canvas></div></article>
             <article class="chart-card"><h3>Top Journals</h3><div class="chart-wrap"><canvas id="chartJournals"></canvas></div></article>
-            <article class="chart-card"><h3>Specialty Mix</h3><div class="chart-wrap"><canvas id="chartSpecialties"></canvas></div></article>
+            <article class="chart-card"><h3>Specialty Mix (Index Categories)</h3><div class="chart-wrap"><canvas id="chartSpecialties"></canvas></div></article>
             <article class="chart-card"><h3>Country Distribution (Excluding US)</h3><div class="chart-wrap"><canvas id="chartCountries"></canvas></div></article>
             <article class="chart-card"><h3>US State Distribution (Excluding MN)</h3><div class="chart-wrap"><canvas id="chartStates"></canvas></div></article>
             <article class="chart-card"><h3>Top Technical Terms</h3><div class="chart-wrap"><canvas id="chartKeywords"></canvas></div></article>
             <article class="chart-card"><h3>Co-Author Depth Distribution</h3><div class="chart-wrap"><canvas id="chartCollaboration"></canvas></div></article>
-            <article class="chart-card"><h3>Top Institutions</h3><div class="chart-wrap"><canvas id="chartInstitutions"></canvas></div></article>
             <article class="chart-card"><h3>Year-over-Year Growth %</h3><div class="chart-wrap"><canvas id="chartYoY"></canvas></div></article>
         </section>
 
@@ -428,14 +400,6 @@
             <article class="table-card">
                 <h3>Geography Table</h3>
                 <div class="table-scroll"><table id="geoTable"></table></div>
-            </article>
-            <article class="table-card">
-                <h3>Author Interest Coverage</h3>
-                <div class="table-scroll"><table id="authorCoverageTable"></table></div>
-            </article>
-            <article class="table-card">
-                <h3>Institution and Journal Concentration</h3>
-                <div class="table-scroll"><table id="concentrationTable"></table></div>
             </article>
         </section>
 
