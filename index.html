@@ -60,6 +60,11 @@
 		}
 		</style>
 		<style>
+		:root {
+			--layout-max-width: 1400px;
+			--layout-side-padding: 28px;
+		}
+
 		/* Modal for abstracts */
 		.modal-bg {
 			display: none;
@@ -376,9 +381,9 @@
 
 		/* Research results grid */ 
 		.results {
-			max-width: 1200px;
+			max-width: var(--layout-max-width);
 			margin: 20px auto;
-			padding: 0 4px;       /* Mason grid padding setting */
+			padding: 0 var(--layout-side-padding);       /* Mason grid padding setting */
 			column-count: 3;
 			column-gap: 20px;
 		}
@@ -741,9 +746,35 @@
 		}
 		
 		.filter-bar-content {
-			max-width: 1200px;
+			max-width: var(--layout-max-width);
 			margin: 0 auto;
-			padding: 0;
+			padding: 0 var(--layout-side-padding);
+			box-sizing: border-box;
+		}
+
+		.top-bar-content {
+			max-width: var(--layout-max-width) !important;
+			padding-left: var(--layout-side-padding);
+			padding-right: var(--layout-side-padding);
+		}
+
+		#specialty-filter {
+			max-width: var(--layout-max-width) !important;
+			padding-left: var(--layout-side-padding) !important;
+			padding-right: var(--layout-side-padding) !important;
+		}
+
+		.new-today-section {
+			max-width: var(--layout-max-width) !important;
+		}
+
+		#footer .icons,
+		#footer .copyright {
+			max-width: var(--layout-max-width);
+			margin-left: auto;
+			margin-right: auto;
+			padding-left: var(--layout-side-padding);
+			padding-right: var(--layout-side-padding);
 		}
 		
 		.filter-bar-content #pubmed-results {
@@ -816,6 +847,7 @@
 		.result-authors { 
 			color: #333; 
 			font-size: 14px; 
+			line-height: 1.6;
 			margin-bottom: 6px; 
 		}
 		
@@ -842,9 +874,80 @@
 			margin-bottom: 10px; 
 		}
 
+		.card-summary-preview-wrap {
+			position: relative;
+			margin: 8px 0 0;
+		}
+
+		.card-summary-prefix {
+			color: #1565c0;
+			font-weight: 700;
+			margin-right: 4px;
+		}
+
+		.card-summary-preview {
+			padding: 10px 12px;
+			border-left: 3px solid #90caf9;
+			background: #f6faff;
+			border-radius: 6px;
+			font-size: 13px;
+			line-height: 1.5;
+			color: #355274;
+			max-height: 7.5em;
+			overflow: hidden;
+			transition: opacity 0.2s ease;
+			position: relative;
+		}
+
+		.card-summary-preview::after {
+			content: '';
+			position: absolute;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			height: 2.1em;
+			background: linear-gradient(to bottom, rgba(246, 250, 255, 0) 0%, #f6faff 95%);
+			pointer-events: none;
+		}
+
+		.card-summary-hover-hint {
+			position: absolute;
+			top: 0;
+			left: 12px;
+			right: 12px;
+			bottom: 0;
+			border-radius: 6px;
+			background: linear-gradient(180deg, rgba(246, 250, 255, 0.2) 0%, rgba(246, 250, 255, 0.95) 100%);
+			opacity: 0;
+			transition: opacity 0.2s ease;
+			pointer-events: none;
+			font-size: 12px;
+			font-weight: 700;
+			letter-spacing: 0.04em;
+			text-transform: uppercase;
+			color: #1565c0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 6px;
+		}
+
+		.card-summary-preview-wrap:hover .card-summary-preview,
+		.card-summary-preview-wrap:focus-within .card-summary-preview {
+			opacity: 0.35;
+		}
+
+		.card-summary-preview-wrap:hover .card-summary-hover-hint,
+		.card-summary-preview-wrap:focus-within .card-summary-hover-hint {
+			opacity: 1;
+		}
+
 		/* Share buttons */
 		.share-buttons { 
-			margin-top: 10px;
+			margin-top: 0;
+			margin-bottom: 0;
+			padding-top: 0;
+			padding-bottom: 0;
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
@@ -868,21 +971,24 @@
 			justify-content: center;
 			font-size: 20px;
 			color: #999;
-			padding: 0px 10px;
-			margin-left: auto;
+			padding: 0 4px;
+			margin: 0 0 0 auto;
 			background: transparent;
 			border: none;
 			cursor: pointer;
 			transition: all 0.3s ease;
 			outline: none;
 			flex-direction: row-reverse;
+			line-height: 1;
+			height: 20px;
+			min-height: 20px;
+		}
+		.like-button i {
+			line-height: 1;
+			display: block;
 		}
 		.like-count {
-			font-size: 14px;
-			color: #3a3a3a;
-			margin-right: 5px;
-			font-weight: 700;
-			letter-spacing: -0.25px;
+			display: none !important;
 		}
 		.like-button:hover {
 			color: #e74c3c;
@@ -906,6 +1012,41 @@
 			font-family: "Font Awesome 5 Free" !important;
 			font-weight: 900 !important;
 			outline: none;
+		}
+
+		.heart-bubble-layer {
+			position: fixed;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			height: 100vh;
+			pointer-events: none;
+			overflow: hidden;
+			z-index: 5000;
+		}
+
+		.heart-bubble {
+			position: absolute;
+			bottom: 8px;
+			font-size: 26px;
+			color: #e74c3c;
+			text-shadow: 0 2px 8px rgba(231, 76, 60, 0.35);
+			animation: heartBubbleRise 1.8s ease-out forwards;
+			will-change: transform, opacity;
+		}
+
+		@keyframes heartBubbleRise {
+			0% {
+				opacity: 0;
+				transform: translate3d(-50%, 0, 0) scale(0.5);
+			}
+			12% {
+				opacity: 1;
+			}
+			100% {
+				opacity: 0;
+				transform: translate3d(calc(-50% + var(--drift, 0px)), -140vh, 0) scale(1.75);
+			}
 		}
 
 		/* Top Navigation Bar */
@@ -949,9 +1090,9 @@
 			z-index: 1;
 		}
 		.hero-content {
-			max-width: 1200px;
+			max-width: var(--layout-max-width);
 			margin: 0 auto;
-			   padding: 36px 20px;
+			   padding: 36px var(--layout-side-padding);
 			display: grid;
 			grid-template-columns: 1fr 350px;
 			gap: 60px;
@@ -2153,7 +2294,7 @@
 				<div class="filter-bar">
 					<div class="filter-bar-content">
 						<!-- Specialty Filter Bar (as text links above results) -->
-						<nav id="specialty-filter" style="max-width:1200px;margin:0 auto;padding:0;display:flex;flex-wrap:nowrap;gap:0;justify-content:center;align-items:center;font-size:15px;">
+						<nav id="specialty-filter" style="max-width:var(--layout-max-width);margin:0 auto;padding:0;display:flex;flex-wrap:nowrap;gap:0;justify-content:center;align-items:center;font-size:15px;">
 							<span style="font-weight:700;margin-right:10px;color:#000;">Filter:</span>
 							<a href="#" class="specialty-filter-link selected" data-specialty="all" style="color:#000;font-weight:700;text-decoration:underline;">Most Recent</a>
 							<span style="margin: 0 10px; color: #888;">&middot;</span>
@@ -2498,33 +2639,8 @@
 			const data = await response.json();
 			
 			console.log('Received counts:', data);
-			
-			// Update all like buttons with counts
-			document.querySelectorAll('.like-button').forEach(button => {
-				const pmid = button.getAttribute('data-pmid');
-				const count = data[pmid] || 0;
-				
-				// Add or update count span
-				let countSpan = button.querySelector('.like-count');
-				if (!countSpan) {
-					countSpan = document.createElement('span');
-					countSpan.className = 'like-count';
-					button.appendChild(countSpan);
-				}
-				countSpan.textContent = count;
-			});
 		} catch (error) {
 			console.error('Error fetching like counts:', error);
-			// Set all counts to 0 on error
-			document.querySelectorAll('.like-button').forEach(button => {
-				let countSpan = button.querySelector('.like-count');
-				if (!countSpan) {
-					countSpan = document.createElement('span');
-					countSpan.className = 'like-count';
-					button.appendChild(countSpan);
-				}
-				countSpan.textContent = '0';
-			});
 		}
 	}		// Like button functionality
 		function toggleLike(event, pmid) {
@@ -2533,20 +2649,11 @@
 			
 			const button = event.currentTarget;
 			const isLiked = button.classList.contains('liked');
-			
-		// Get count span
-		const countSpan = button.querySelector('.like-count');
-		const currentCount = parseInt(countSpan?.textContent) || 0;
 		
 		if (isLiked) {
 			// Unlike: remove liked state
 			button.classList.remove('liked');
 			localStorage.removeItem(`liked_${pmid}`);
-			
-			// Decrement count display
-			if (countSpan) {
-				countSpan.textContent = Math.max(0, currentCount - 1);
-			}
 			
 			// Send unlike action to Google Sheets
 			sendClick(pmid, 'unliked', -1);
@@ -2555,14 +2662,48 @@
 			button.classList.add('liked');
 			localStorage.setItem(`liked_${pmid}`, 'true');
 			
-			// Increment count display
-			if (countSpan) {
-				countSpan.textContent = currentCount + 1;
-			}
-			
 			// Send like action to Google Sheets
 			sendClick(pmid, 'liked', 1);
 		}
+
+		triggerHeartBubbleBurst(button);
+}
+
+function triggerHeartBubbleBurst(button) {
+	const layerId = 'heartBubbleLayer';
+	let layer = document.getElementById(layerId);
+	if (!layer) {
+		layer = document.createElement('div');
+		layer.id = layerId;
+		layer.className = 'heart-bubble-layer';
+		document.body.appendChild(layer);
+	}
+
+	const heartCount = 10;
+	const heartGlyphs = ['\u2665', '\u2665', '\u2665', '\u2665'];
+
+	for (let index = 0; index < heartCount; index++) {
+		const heart = document.createElement('span');
+		heart.className = 'heart-bubble';
+		heart.textContent = heartGlyphs[index % heartGlyphs.length];
+		const baseX = 20 + Math.random() * (window.innerWidth - 40);
+		const offsetX = (Math.random() - 0.5) * 80;
+		const drift = (Math.random() - 0.5) * 90;
+		const size = 24 + Math.random() * 18;
+		const delay = index * 70;
+		heart.style.left = `${baseX + offsetX}px`;
+		heart.style.fontSize = `${size}px`;
+		heart.style.setProperty('--drift', `${drift}px`);
+		heart.style.animationDelay = `${delay}ms`;
+		layer.appendChild(heart);
+		window.setTimeout(() => heart.remove(), 2200 + delay);
+	}
+
+	window.setTimeout(() => {
+		if (layer && layer.childElementCount === 0) {
+			layer.remove();
+		}
+	}, 2600);
 }
 
 // Initialize like buttons from local storage
@@ -2574,8 +2715,7 @@ function initializeLikes() {
 		}
 	});
 	
-	// Fetch and display counts from Google Sheet
-	fetchLikeCounts();
+	// Keep liked state visual only (no numeric counters)
 }
 
 // LinkedIn share helper: copy text, then open share dialog
@@ -3496,7 +3636,21 @@ function showSharePageLoading() {
 					const lastTwo = matches.slice(-2).join(' ').trim();
 					return lastTwo || cleaned;
 				};
+				const getSummaryPreview = (text) => {
+					const cleaned = (text || '')
+						.replace(/<br\s*\/?\s*>/gi, '\n')
+						.replace(/<\/p>/gi, '\n')
+						.replace(/<[^>]*>/g, '')
+						.replace(/\r/g, '')
+						.trim();
+					if (!cleaned) return '';
+					const lines = cleaned.split('\n').map(line => line.trim()).filter(Boolean);
+					return (lines.length ? lines.slice(0, 5).join(' ') : cleaned).replace(/\s+/g, ' ').trim();
+				};
 				const lastTwoSentences = getLastTwoSentences(llmSummary);
+				const frontSummaryPreview = hasLlmSummary && !isInstruction
+					? getSummaryPreview(llmSummary)
+					: '';
 				const linkedinShareText = `New research worth noting:\n\n${lastTwoSentences}\n\n${pubmedUrl}\nhttps://medcityai.com\n@MedCityAI`;
 				
 				// Parse publication date to check if NEW
@@ -3694,6 +3848,12 @@ function showSharePageLoading() {
 								${instructionBlock}
 								<div class="result-authors" onclick="event.stopPropagation();">${authorsHtml}</div>
 								${citation ? `<div class="result-citation"><em>${citation}</em></div>` : ''}
+								${frontSummaryPreview ? `
+									<div class="card-summary-preview-wrap">
+										<div class="card-summary-preview"><span class="card-summary-prefix">AI Summary:</span>${escapeHtml(frontSummaryPreview)}</div>
+										<div class="card-summary-hover-hint"><i class="fas fa-mouse-pointer" aria-hidden="true"></i> Click for full AI summary</div>
+									</div>
+								` : ''}
 								<div class="share-buttons" role="group" aria-label="Share on social media" onclick="event.stopPropagation();" style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 12px;">
 									${isInstruction ? `
 										<span style="font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 15px; color: #333;">
@@ -3804,7 +3964,7 @@ function showSharePageLoading() {
 		displayedCount += displayedToday.length;
     
 		finalHTML += `
-			<div class="new-today-section" style="max-width:1200px;margin:20px auto;padding:15px 20px;border:2px dotted #ccc;border-radius:8px;background-color:#f5f5f5;">
+			<div class="new-today-section" style="max-width:var(--layout-max-width);margin:20px auto;padding:15px 20px;border:2px dotted #ccc;border-radius:8px;background-color:#f5f5f5;">
 			<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
 			<h3 style="margin:0;color:#555;font-size:18px;font-weight:600;letter-spacing:0.3px;line-height:1.1;"><i class="fas fa-bell" style="margin-right:6px;"></i>FRESH OFF THE PRESS  <span style="color:#3498db;font-weight:600;">(${displayedToday.length})</span></h3>
 			</div>
