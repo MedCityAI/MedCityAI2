@@ -1,0 +1,162 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <title>MedCityAI | Index2</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <meta name="description" content="A fun and simple research feed for Rochester, MN biomedical publications." />
+
+    <link rel="icon" type="image/png" href="images/medcityai_simple1.png?v=1" />
+    <link rel="shortcut icon" type="image/png" href="images/medcityai_simple1.png?v=1" />
+    <link rel="apple-touch-icon" href="images/medcityai_simple1.png?v=1" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="assets/css/navigation.css" />
+    <link rel="stylesheet" href="assets/css/fontawesome-all.min.css" />
+    <link rel="stylesheet" href="assets/css/index2.css" />
+    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+</head>
+<body class="landing is-preload index2-body">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <div id="page-wrapper">
+        <div id="navigation-placeholder"></div>
+
+        <section class="index2-hero" aria-label="Home banner">
+            <div class="index2-hero-bg" aria-hidden="true">
+                <div class="orb orb-a"></div>
+                <div class="orb orb-b"></div>
+                <div class="orb orb-c"></div>
+            </div>
+
+            <div class="index2-shell">
+                <p class="index2-eyebrow">MedCityAI / Index2</p>
+                <h1>Big ideas. Simple feed.</h1>
+                <p class="index2-subcopy">
+                    Fun, fast discovery for Rochester biomedical research. Filter quickly and jump into AI summaries.
+                </p>
+
+                <div class="adventure-panel" aria-label="Choose your own adventure mode">
+                    <p class="adventure-label">Choose your adventure</p>
+                    <div class="adventure-actions">
+                        <button id="modeRotate" type="button" class="adventure-btn">
+                            Auto Explore
+                        </button>
+                        <button id="modeZoom" type="button" class="adventure-btn is-active">
+                            Zoom In
+                        </button>
+                    </div>
+                    <p id="adventureCaption" class="adventure-caption">
+                        Zoom into a specialty node or concept chip to focus your feed.
+                    </p>
+                </div>
+
+                <div class="index2-controls" role="search" aria-label="Search and filter publications">
+                    <label for="queryInput" class="sr-only">Search by topic, author, or journal</label>
+                    <input id="queryInput" type="search" placeholder="Search topic, author, journal" />
+
+                    <label for="specialtyFilter" class="sr-only">Filter by specialty</label>
+                    <select id="specialtyFilter">
+                        <option value="all">All specialties</option>
+                    </select>
+
+                    <button id="surpriseMe" type="button" class="ghost-btn ghost-btn-accent">Surprise Me</button>
+                    <button id="resetFilters" type="button" class="ghost-btn">Reset</button>
+                </div>
+            </div>
+        </section>
+
+        <main id="main-content" class="index2-main" role="main">
+            <section class="index2-shell">
+                <div class="neural-section reveal-up" aria-label="Neural map of connected research topics">
+                    <div class="neural-header">
+                        <h2>Neural Research Map</h2>
+                        <p>Tap a node to zoom in. Let Auto Explore rotate through major specialties.</p>
+                    </div>
+                    <div id="neuralMap" class="neural-map" aria-live="polite"></div>
+                </div>
+
+                <section class="launchpad reveal-up" aria-label="Scientist launchpad">
+                    <div class="launchpad-head">
+                        <h2>Scientist Launchpad</h2>
+                        <p>Pick a mission, build momentum, and discover where your curiosity leads next.</p>
+                    </div>
+
+                    <div class="launchpad-grid">
+                        <article class="launch-card mission-card">
+                            <p class="launch-label">Today&apos;s Mission</p>
+                            <h3 id="missionTitle">Loading mission...</h3>
+                            <p id="missionPrompt">Preparing a guided challenge from the latest Rochester feed.</p>
+                            <button id="missionAction" type="button" class="launch-btn">Start Mission</button>
+                        </article>
+
+                        <article class="launch-card momentum-card">
+                            <p class="launch-label">Your Momentum</p>
+                            <p class="momentum-value"><strong id="momentumValue">0</strong> explorations</p>
+                            <p id="momentumNote" class="momentum-note">Every click builds your research intuition.</p>
+                        </article>
+
+                        <article class="launch-card stats-card">
+                            <p class="launch-label">Live Scope</p>
+                            <ul class="quick-stats">
+                                <li><span>Specialties</span><strong id="statSpecialties">0</strong></li>
+                                <li><span>Concepts</span><strong id="statConcepts">0</strong></li>
+                                <li><span>Journals</span><strong id="statJournals">0</strong></li>
+                            </ul>
+                        </article>
+                    </div>
+
+                    <div class="pathways-wrap">
+                        <p class="launch-label">Quick Start Pathways</p>
+                        <div id="pathwayButtons" class="pathway-buttons"></div>
+                    </div>
+                </section>
+
+                <div class="index2-summary reveal-up" id="summaryRow" aria-live="polite">
+                    <p class="simple-count">
+                        Showing <strong id="visibleCount">0</strong> of <strong id="loadedCount">0</strong> articles
+                    </p>
+                    <p class="feed-status" id="feedStatus">Live Rochester feed initializing...</p>
+                </div>
+
+                <div class="results-header reveal-up">
+                    <h2>Specialty Feed</h2>
+                    <p id="activeFiltersText">Start typing to narrow results.</p>
+                </div>
+
+                <div id="specialtySections" aria-live="polite"></div>
+
+                <div class="results-empty" id="emptyState" hidden>
+                    <h3>No matches found</h3>
+                    <p>Try a broader query or clear one of the filters.</p>
+                </div>
+            </section>
+        </main>
+
+        <footer id="footer">
+            <ul class="icons">
+                <li><a href="https://www.linkedin.com/company/medcityai" aria-label="Follow MedCityAI on LinkedIn" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit;">Follow MedCityAI on LinkedIn <i class="fab fa-linkedin-in" style="font-size: 1.3em; color: #0a66c2;"></i></a></li>
+            </ul>
+            <ul class="copyright">
+                <li>&copy; MedCityAI</li>
+                <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+                <li><a href="terms_of_use.html" style="color: #999;">Terms</a> | <a href="privacy_policy.html" style="color: #999;">Privacy</a> | <a href="cookie_policy.html" style="color: #999;">Cookies</a></li>
+            </ul>
+        </footer>
+    </div>
+
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/jquery.scrollex.min.js"></script>
+    <script src="assets/js/jquery.scrolly.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/navigation.js"></script>
+    <script src="assets/js/index2.js"></script>
+</body>
+</html>
