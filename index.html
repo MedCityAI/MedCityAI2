@@ -61,7 +61,7 @@
 		</style>
 		<style>
 		:root {
-			--layout-max-width: 90vw;
+			--layout-max-width: min(1600px, 90vw);
 			--layout-side-padding: 28px;
 		}
 
@@ -798,6 +798,9 @@
 		
 		/* Add side padding only on mobile */
 		@media (max-width: 768px) {
+			:root {
+				--layout-max-width: 100vw;
+			}
 			.filter-bar-content {
 				padding: 0 10px;
 			}
@@ -2033,19 +2036,19 @@
 			align-items: center;
 			margin-bottom: 24px;
 			padding-bottom: 16px;
-			border-bottom: 2px solid #e0e0e0;
+			border-bottom: 2px solid rgba(37, 104, 190, 0.22);
 		}
 		.author-modal-header h3 {
 			margin: 0;
-			color: #2c3e50;
+			color: #1b4c7d;
 			font-size: 1.6em;
 		}
 		.author-stats {
-			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			background: linear-gradient(120deg, #2568BE 0%, #1B4C7D 100%);
 			color: white;
 			padding: 24px;
 			border-radius: 12px 12px 0 0;
-			box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+			box-shadow: 0 8px 24px rgba(27, 76, 125, 0.28);
 		}
 		.author-stats h4 {
 			margin: 0 0 16px 0;
@@ -2088,7 +2091,7 @@
 			background: none;
 			border: none;
 			font-size: 28px;
-			color: #95a5a6;
+			color: #2568be;
 			cursor: pointer;
 			transition: color 0.2s ease;
 			padding: 0;
@@ -2099,7 +2102,7 @@
 			justify-content: center;
 		}
 		.author-modal-close:hover {
-			color: #2c3e50;
+			color: #1b4c7d;
 		}
 		.author-modal-loading {
 			text-align: center;
@@ -2194,7 +2197,7 @@
 					<button class="author-modal-close" id="authorModalCloseBtn" aria-label="Close author publications modal">&times;</button>
 				</div>
 				<div id="authorStats" class="author-stats" style="display: none;">
-					<h4 id="authorFullName" style="font-size: 1.5em; margin-bottom: 20px; color: #2c3e50;"></h4>
+					<h4 id="authorFullName" style="font-size: 1.5em; margin-bottom: 20px; color: #ffffff;"></h4>
 					<div class="author-stats-grid">
 						<div class="author-stat-item">
 							<div class="author-stat-label">Total Publications</div>
@@ -2253,7 +2256,10 @@
 				   </svg>
 				<div class="hero-content">
 					<div class="hero-left">
-							<p style="color:#e0e0e0;;font-size:55px;font-weight:350;letter-spacing:0.2px;line-height:1.4;">a real-time biomedical research feed for <span style="font-weight:650;">Rochester, MN</span></p>
+							<p style="color:#e0e0e0;font-size:55px;font-weight:350;letter-spacing:0.2px;line-height:1.4;text-align:left;">
+								<span style="display:block;">a real-time biomedical research feed for</span>
+								<span style="display:block;font-weight:700;white-space:nowrap;">Rochester,&nbsp;MN</span>
+							</p>
 						
 						<!-- Mobile Specialty Dropdown (only visible on mobile) -->
 						<div id="mobile-specialty-dropdown" style="display: none;">
@@ -3539,8 +3545,9 @@ function showSharePageLoading() {
 			return;
 		}
 		
-		// Determine if we should show the "Fresh Off The Press" section (only for "all" specialty)
-		const showFreshOffThePress = (window.selectedSpecialty === 'all');
+		// Show the separate Fresh box only for "all" on non-mobile screens.
+		const isMobileViewport = window.matchMedia('(max-width: 768px)').matches;
+		const showFreshOffThePress = (window.selectedSpecialty === 'all') && !isMobileViewport;
 		
 		// Separate articles into today and other
 		const todayArticles = [];
@@ -3609,7 +3616,7 @@ function showSharePageLoading() {
 				}
 			}
 			
-			// Only separate "today" articles if showing "Fresh Off The Press" (i.e., "all" specialty selected)
+			// Only separate "today" articles when the dedicated Fresh section is visible.
 			const isFromToday = articleDate && articleDate >= twoDaysAgo && articleDate <= endOfToday;
 			if (showFreshOffThePress && isFromToday) {
 				// Only include articles published from two days ago up to today (no future articles)
@@ -3919,7 +3926,7 @@ function showSharePageLoading() {
 											</a>
 										</div>
 									` : `
-										<div class="card-back-summary" style="font-size: 15px; font-weight: 400; line-height: 1.8; color: #1a237e; text-align: center; display: flex; align-items: center; justify-content: center; height: 100%;">
+										<dfiv class="card-back-summary" style="font-size: 15px; font-weight: 400; line-height: 1.8; color: #1a237e; text-align: center; display: flex; align-items: center; justify-content: center; height: 100%;">
 											<div>
 												No AI summary available for this card.<br><br>
 												<a href="${url}" target="_blank" onclick="event.stopPropagation();" style="color: #0056a3; text-decoration: none; font-size: 14px; font-weight: 600;">
@@ -4440,7 +4447,7 @@ function showSharePageLoading() {
 				   let bibliographyHTML = '';
 				   articles.forEach((article, index) => {
 					   const citation = generateMLACitation(article);
-					   bibliographyHTML += `<li><strong style="color: #3498db; margin-right: 8px;">${index + 1}.</strong>${citation}</li>`;
+					   bibliographyHTML += `<li><strong style="color: #2568be; margin-right: 8px;">${index + 1}.</strong>${citation}</li>`;
 				   });
                
 				   bibliography.innerHTML = bibliographyHTML;
@@ -4456,7 +4463,7 @@ function showSharePageLoading() {
 		   function generateMLACitation(article) {
 			   // Format: Authors. "Title." Journal, Month Year.
 			   const dateStr = article.pubdate || article.year || 'n.d.';
-			   return `${article.authors}. "${article.title}" <span class="pub-journal">${article.journal}</span>, <span class="pub-year">${dateStr}</span>. <a href="${article.url}" target="_blank" style="color: #3498db;">PubMed</a>`;
+			   return `${article.authors}. "${article.title}" <span class="pub-journal">${article.journal}</span>, <span class="pub-year">${dateStr}</span>. <a href="${article.url}" target="_blank" style="color: #2568be;">PubMed</a>`;
 		   }       
 		   function closeAuthorModal() {
 			   document.getElementById('authorModal').style.display = 'none';
@@ -4602,9 +4609,38 @@ function showSharePageLoading() {
 		<script>
 		document.addEventListener('DOMContentLoaded', function() {
 			const filterLinks = document.querySelectorAll('.specialty-filter-link');
+			let specialtyRenderRequest = 0;
+
+			function applySpecialtyToCards(specialty) {
+				// Show/hide cards
+				const cards = document.querySelectorAll('.result-item');
+				cards.forEach(card => {
+					const badge = card.querySelector('.department-badge');
+					if (!badge) {
+						card.style.display = (specialty === 'all') ? '' : 'none';
+						return;
+					}
+					if (specialty === 'all') {
+						card.style.display = '';
+					} else {
+						const badgeText = badge.textContent;
+						if (badgeText === specialty || badgeText.split('·').map(s => s.trim()).includes(specialty)) {
+							card.style.display = '';
+						} else {
+							card.style.display = 'none';
+						}
+					}
+				});
+
+				const freshSections = document.querySelectorAll('.new-today-section');
+				freshSections.forEach(section => {
+					section.style.display = (specialty === 'all') ? '' : 'none';
+				});
+			}
 
 			// Helper to select a specialty in the filter bar
-			function selectSpecialty(specialty) {
+			async function selectSpecialty(specialty, options = {}) {
+				const { rerender = true } = options;
 				window.selectedSpecialty = specialty;
 				filterLinks.forEach(l => {
 					l.classList.remove('selected');
@@ -4619,34 +4655,24 @@ function showSharePageLoading() {
 					selected.style.fontWeight = '700';
 					selected.style.textDecoration = 'underline';
 				}
-				// Show/hide cards
-				const cards = document.querySelectorAll('.result-item');
-				cards.forEach(card => {
-					const badge = card.querySelector('.department-badge');
-					if (!badge) {
-						card.style.display = (specialty === 'all') ? '' : 'none';
+
+				if (rerender && typeof fetchPubMedResults === 'function') {
+					const requestId = ++specialtyRenderRequest;
+					try {
+						await fetchPubMedResults(currentSearchQuery || '', 1);
+					} catch (error) {
+						console.error('Error re-rendering results for specialty filter:', error);
+					}
+					if (requestId !== specialtyRenderRequest) {
 						return;
 					}
-					if (specialty === 'all') {
-						card.style.display = '';
-					} else {
-						const badgeText = badge.textContent;
-						if (badgeText === specialty || badgeText.split('·').map(s=>s.trim()).includes(specialty)) {
-							card.style.display = '';
-						} else {
-							card.style.display = 'none';
-						}
-					}
-				});
+				}
 
-				const freshSections = document.querySelectorAll('.new-today-section');
-				freshSections.forEach(section => {
-					section.style.display = (specialty === 'all') ? '' : 'none';
-				});
+				applySpecialtyToCards(specialty);
 			}
 
 			// Default to 'all' on load
-			selectSpecialty('all');
+			selectSpecialty('all', { rerender: false });
 
 			// When user clicks a filter, update selection
 			filterLinks.forEach(link => {
