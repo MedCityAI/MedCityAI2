@@ -61,7 +61,7 @@
 		</style>
 		<style>
 		:root {
-			--layout-max-width: 1400px;
+			--layout-max-width: 90vw;
 			--layout-side-padding: 28px;
 		}
 
@@ -390,7 +390,7 @@
 		.result-item {
 			background: transparent;
 			border-radius: 10px;
-			margin: 0 0 16px;
+			margin: 0 0 20px;
 			display: inline-block;
 			width: 100%;
 			box-sizing: border-box;
@@ -766,6 +766,17 @@
 
 		.new-today-section {
 			max-width: var(--layout-max-width) !important;
+			margin: 20px auto;
+			padding: 15px 20px;
+			border: 1px solid rgba(41, 128, 185, 0.35);
+			border-left: 6px solid #2980b9;
+			border-radius: 12px;
+			background-color: #f4f9ff;
+			background-image:
+				radial-gradient(circle at 1px 1px, rgba(52, 152, 219, 0.16) 1px, transparent 0),
+				linear-gradient(135deg, rgba(52, 152, 219, 0.16), rgba(41, 128, 185, 0.1));
+			background-size: 14px 14px, 100% 100%;
+			box-shadow: 0 8px 24px rgba(41, 128, 185, 0.15);
 		}
 
 		#footer .icons,
@@ -1105,6 +1116,14 @@
 		}
 		.hero-right {
 			position: relative;
+		}
+
+		.chart-container {
+			position: relative;
+			aspect-ratio: 1;
+			display: flex;
+			align-items: center;
+			justify-content: center;
 		}
 
 		/* Featured Carousel Styles */
@@ -1517,7 +1536,7 @@
 		}
 	@media (max-width: 600px) {
 		.results { column-count: 1; padding: 0 6px; }
-		.result-item { margin: 0 0 22px; }
+		.result-item { margin: 0 0 20px; }
 		.hero-section {
 			min-height: 240px;
 			display: flex;
@@ -2277,19 +2296,9 @@
 						</div>
 					</div>
 					<div class="hero-right">
-					<div style="position: relative; max-width: 380px;">
-						<div class="trending-badge-fire" style="position: absolute; top: 0; left: 0; z-index: 12;"><i class="fas fa-fire"></i> TRENDING</div>
-						<div class="trending-badge-tab" style="position: absolute; top: 0; left: 0; right: 0; z-index: 10;"><div class="trending-badge-title">TRENDING</div><span class="trending-badge-subtitle">Community Favorites</span></div>
-						<div class="trending-articles" id="trending-articles" style="background: #fff; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.15); padding: 36px 12px 24px 12px; max-width: 380px; height: 230px; overflow-y: scroll; scrollbar-gutter: stable; position: relative; overflow-x: hidden;">
-							<div id="trending-loading" class="trending-loading">
-								<div class="trending-spinner"></div>
-							</div>
-							<ol id="trending-articles-list" style="list-style: none; padding: 12px 0 0 0; margin: 0; display: none;">
-								<!-- Top 5 articles will be inserted here by JS -->
-							</ol>
-							<div id="trending-articles-empty" style="color: #888; font-size: 14px; margin-top: 18px; display: none;">No trending articles in the last 14 days.</div>
+						<div class="chart-container">
+							<img src="images/medcityai_simple1.png" alt="MedCityAI Logo" style="width: auto; height: 70%; border-radius: 8px; filter: brightness(0) invert(1);" />
 						</div>
-					</div>
 					</div>
 			</section>
 			<!-- Specialty filter bar and modal removed -->
@@ -2542,6 +2551,7 @@
 	let touchStartX = 0;
 	let touchStartY = 0;
 	let touchResetTimer = null;
+	const TOUCH_SCROLL_GUARD_MS = 700;
 
 	function isResultsTouchTarget(target) {
 		return !!target && !!target.closest('.result-item');
@@ -2582,7 +2592,7 @@
 			touchResetTimer = setTimeout(() => {
 				touchMovedDuringScroll = false;
 				touchResetTimer = null;
-			}, 250);
+			}, TOUCH_SCROLL_GUARD_MS);
 		}
 	}, { passive: true });
 
@@ -3967,9 +3977,9 @@ function showSharePageLoading() {
 		displayedCount += displayedToday.length;
     
 		finalHTML += `
-			<div class="new-today-section" style="max-width:var(--layout-max-width);margin:20px auto;padding:15px 20px;border:2px dotted #ccc;border-radius:8px;background-color:#f5f5f5;">
+			<div class="new-today-section">
 			<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
-			<h3 style="margin:0;color:#555;font-size:18px;font-weight:600;letter-spacing:0.3px;line-height:1.1;"><i class="fas fa-bell" style="margin-right:6px;"></i>FRESH OFF THE PRESS  <span style="color:#3498db;font-weight:600;">(${displayedToday.length})</span></h3>
+			<h3 style="margin:0;color:#1b4c7d;font-size:18px;font-weight:600;letter-spacing:0.3px;line-height:1.1;"><i class="fas fa-bell" style="margin-right:6px;color:#2980b9;"></i>FRESH OFF THE PRESS  <span style="color:#3498db;font-weight:600;">(${displayedToday.length})</span></h3>
 			</div>
 			<div class="results">`;
     
@@ -4727,6 +4737,5 @@ function showSharePageLoading() {
 		});
 		</script>
 		<script src="assets/js/navigation.js" defer></script>
-		<script src="assets/js/trending-articles.js" defer></script>
 	</body>
 </html>

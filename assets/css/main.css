@@ -2914,14 +2914,14 @@ input, select, textarea {
 	}
 
 		.wrapper > .inner {
-			width: 60em;
+			width: 80%;
 			margin: 0 auto;
 		}
 
 			@media screen and (max-width: 1280px) {
 
 				.wrapper > .inner {
-					width: 90%;
+					width: 80%;
 				}
 
 			}
@@ -2929,7 +2929,7 @@ input, select, textarea {
 			@media screen and (max-width: 980px) {
 
 				.wrapper > .inner {
-					width: 100%;
+					width: 80%;
 				}
 
 			}
