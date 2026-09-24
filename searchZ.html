@@ -1,0 +1,628 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <title>SearchZ - MedCityAI</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="icon" type="image/png" href="images/medcityai_simple1.png">
+    <link rel="apple-touch-icon" href="images/medcityai_simple1.png">
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="assets/css/navigation.css" />
+    <link rel="stylesheet" href="assets/css/fontawesome-all.min.css" />
+    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+    <style>
+        .hero-section {
+            background: linear-gradient(120deg, #2568BE 0%, #1B4C7D 100%);
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 24px 20px;
+            color: #fff;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-content h1 {
+            margin: 0 0 8px;
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            color: #fff;
+        }
+
+        .hero-content p {
+            margin: 0;
+            color: #e8edf5;
+            font-size: 1.05rem;
+        }
+
+        .searchz-wrap {
+            max-width: 1200px;
+            margin: 28px auto 56px;
+            padding: 0 20px;
+        }
+
+        .searchz-card {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.12);
+            padding: 24px;
+        }
+
+        .field-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .field label {
+            font-weight: 600;
+            color: #24364b;
+            font-size: 0.95rem;
+        }
+
+        .field input {
+            border: 2px solid #d6deea;
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 0.98rem;
+            color: #203246;
+        }
+
+        .field input:focus {
+            outline: none;
+            border-color: #3277bd;
+            box-shadow: 0 0 0 3px rgba(50, 119, 189, 0.12);
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        .actions {
+            margin-top: 18px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-search {
+            border: none;
+            border-radius: 999px;
+            padding: 11px 20px;
+            background: linear-gradient(135deg, #3277bd 0%, #1f4f85 100%);
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-clear {
+            border: 2px solid #c5d2e5;
+            border-radius: 999px;
+            padding: 9px 18px;
+            background: #fff;
+            color: #2a425e;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .status {
+            margin-top: 16px;
+            font-size: 0.95rem;
+            color: #34495e;
+            min-height: 24px;
+        }
+
+        .status.error {
+            color: #b42318;
+        }
+
+        .strategy-box {
+            margin-top: 14px;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #d8e2f0;
+            background: #f7faff;
+            display: none;
+        }
+
+        .strategy-box h3 {
+            margin: 0 0 8px;
+            font-size: 0.95rem;
+            color: #24364b;
+        }
+
+        .strategy-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .strategy-pill {
+            font-size: 0.8rem;
+            border-radius: 999px;
+            background: #e7f0fb;
+            color: #1f4f85;
+            padding: 6px 10px;
+            border: 1px solid #c6d8ef;
+        }
+
+        .results-list {
+            margin-top: 22px;
+            display: grid;
+            gap: 14px;
+        }
+
+        .result-card {
+            border: 1px solid #dbe4f1;
+            border-radius: 12px;
+            padding: 16px;
+            background: #fff;
+        }
+
+        .result-card h4 {
+            margin: 0 0 8px;
+            line-height: 1.35;
+        }
+
+        .result-card h4 a {
+            color: #1f4f85;
+            text-decoration: none;
+            border: none;
+        }
+
+        .result-card h4 a:hover {
+            text-decoration: underline;
+        }
+
+        .meta {
+            color: #5d6f84;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .abstract {
+            color: #34495e;
+            margin: 0;
+            line-height: 1.55;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 900px) {
+            .field-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="landing is-preload">
+    <div id="page-wrapper">
+        <div id="navigation-placeholder"></div>
+
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1>SearchZ</h1>
+                <p>Adaptive PubMed search that starts strict and broadens automatically when results are limited.</p>
+            </div>
+        </section>
+
+        <section class="searchz-wrap">
+            <div class="searchz-card">
+                <form id="searchZForm" autocomplete="off">
+                    <div class="field-grid">
+                        <div class="field full">
+                            <label for="searchTerms">Search terms (comma-separated)</label>
+                            <input id="searchTerms" name="searchTerms" type="text" placeholder="Enter search terms" required>
+                        </div>
+
+                        <div class="field full">
+                            <label for="authors">Authors (comma-separated)</label>
+                            <input id="authors" name="authors" type="text" placeholder="Optional">
+                        </div>
+
+                        <div class="field">
+                            <label for="startYear">Start year</label>
+                            <input id="startYear" name="startYear" type="number" min="1900" max="2200" step="1">
+                        </div>
+
+                        <div class="field">
+                            <label for="endYear">End year</label>
+                            <input id="endYear" name="endYear" type="number" min="1900" max="2200" step="1">
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <button type="submit" class="btn-search">Run Search</button>
+                        <button type="button" class="btn-clear" id="clearBtn">Clear</button>
+                    </div>
+                </form>
+
+                <div class="status" id="statusLine"></div>
+
+                <div class="strategy-box" id="strategyBox">
+                    <h3>Search broadening steps used</h3>
+                    <div class="strategy-list" id="strategyList"></div>
+                </div>
+
+                <div class="results-list" id="resultsList"></div>
+            </div>
+        </section>
+    </div>
+
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/jquery.scrollex.min.js"></script>
+    <script src="assets/js/jquery.scrolly.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/navigation.js"></script>
+    <script src="assets/js/pubmed-client.js"></script>
+
+    <script>
+        (function () {
+            'use strict';
+
+            const MIN_DESIRED_RESULTS = 20;
+            const MAX_RESULT_IDS = 60;
+            const ROCHESTER_SCOPE = '(Rochester[AD] AND (Minnesota[AD] OR MN[AD]))';
+
+            const form = document.getElementById('searchZForm');
+            const termsInput = document.getElementById('searchTerms');
+            const authorsInput = document.getElementById('authors');
+            const startYearInput = document.getElementById('startYear');
+            const endYearInput = document.getElementById('endYear');
+            const clearBtn = document.getElementById('clearBtn');
+            const statusLine = document.getElementById('statusLine');
+            const resultsList = document.getElementById('resultsList');
+            const strategyBox = document.getElementById('strategyBox');
+            const strategyList = document.getElementById('strategyList');
+
+            function defaultYears() {
+                const current = new Date().getFullYear();
+                startYearInput.value = String(current);
+                endYearInput.value = String(current - 10);
+            }
+
+            function parseCsv(value) {
+                return String(value || '')
+                    .split(',')
+                    .map((part) => part.trim())
+                    .filter(Boolean);
+            }
+
+            function escapeHtml(text) {
+                return String(text || '')
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            }
+
+            function setStatus(message, isError) {
+                statusLine.textContent = message || '';
+                statusLine.classList.toggle('error', Boolean(isError));
+            }
+
+            function yearRangeClause(startYear, endYear) {
+                const low = Math.min(startYear, endYear);
+                const high = Math.max(startYear, endYear);
+                return `(${low}:${high}[dp])`;
+            }
+
+            function firstText(parent, selector) {
+                const node = parent.querySelector(selector);
+                return node ? (node.textContent || '').trim() : '';
+            }
+
+            function authorLabel(articleNode) {
+                const names = [];
+                articleNode.querySelectorAll('Author').forEach((authorNode) => {
+                    const fore = firstText(authorNode, 'ForeName');
+                    const last = firstText(authorNode, 'LastName');
+                    const coll = firstText(authorNode, 'CollectiveName');
+                    const full = `${fore} ${last}`.trim() || coll;
+                    if (full) {
+                        names.push(full);
+                    }
+                });
+
+                if (!names.length) {
+                    return 'Author information unavailable';
+                }
+
+                if (names.length <= 8) {
+                    return names.join(', ');
+                }
+
+                return `${names.slice(0, 8).join(', ')}, et al.`;
+            }
+
+            function parsePubmedXml(xmlText) {
+                const xml = new DOMParser().parseFromString(xmlText, 'application/xml');
+                const articles = [];
+
+                xml.querySelectorAll('PubmedArticle').forEach((articleNode) => {
+                    const pmid = firstText(articleNode, 'PMID');
+                    const title = firstText(articleNode, 'ArticleTitle') || 'Untitled publication';
+
+                    const abstractChunks = [];
+                    articleNode.querySelectorAll('AbstractText').forEach((abs) => {
+                        const chunk = (abs.textContent || '').trim();
+                        if (chunk) {
+                            abstractChunks.push(chunk);
+                        }
+                    });
+
+                    const journal =
+                        firstText(articleNode, 'Journal > Title') ||
+                        firstText(articleNode, 'ISOAbbreviation') ||
+                        'Journal unavailable';
+
+                    const year = firstText(articleNode, 'PubDate > Year');
+                    const month = firstText(articleNode, 'PubDate > Month');
+                    const day = firstText(articleNode, 'PubDate > Day');
+                    const dateText = [month, day, year].filter(Boolean).join(' ') || year || 'Date unavailable';
+
+                    articles.push({
+                        pmid,
+                        title,
+                        journal,
+                        authors: authorLabel(articleNode),
+                        dateText,
+                        abstract: abstractChunks.join(' ')
+                    });
+                });
+
+                return articles;
+            }
+
+            function buildStrategies(terms, authors, yearClause) {
+                const termClauses = terms.map((term) => `(${term}[Title/Abstract])`);
+                const authorClauses = authors.map((author) => `(${author}[Author])`);
+                const strategies = [];
+
+                const allTerms = termClauses.length ? `(${termClauses.join(' AND ')})` : '';
+                const allAuthorsAnd = authorClauses.length ? `(${authorClauses.join(' AND ')})` : '';
+                const allAuthorsOr = authorClauses.length ? `(${authorClauses.join(' OR ')})` : '';
+
+                function joinParts(parts) {
+                    return parts.filter(Boolean).join(' AND ');
+                }
+
+                strategies.push({
+                    label: 'Strict: all terms + all authors',
+                    query: joinParts([allTerms, allAuthorsAnd, ROCHESTER_SCOPE, yearClause])
+                });
+
+                if (authorClauses.length > 1) {
+                    strategies.push({
+                        label: 'Broaden: all terms + any author',
+                        query: joinParts([allTerms, allAuthorsOr, ROCHESTER_SCOPE, yearClause])
+                    });
+                }
+
+                strategies.push({
+                    label: 'Broaden: all terms only',
+                    query: joinParts([allTerms, ROCHESTER_SCOPE, yearClause])
+                });
+
+                for (let keep = termClauses.length - 1; keep >= 1; keep--) {
+                    const reducedTerms = `(${termClauses.slice(0, keep).join(' AND ')})`;
+                    strategies.push({
+                        label: `Broaden: first ${keep} term(s) + any author`,
+                        query: joinParts([reducedTerms, allAuthorsOr, ROCHESTER_SCOPE, yearClause])
+                    });
+                    strategies.push({
+                        label: `Broaden: first ${keep} term(s) only`,
+                        query: joinParts([reducedTerms, ROCHESTER_SCOPE, yearClause])
+                    });
+                }
+
+                if (authorClauses.length) {
+                    strategies.push({
+                        label: 'Fallback: authors only',
+                        query: joinParts([allAuthorsOr, ROCHESTER_SCOPE, yearClause])
+                    });
+                }
+
+                strategies.push({
+                    label: 'Fallback: Rochester + date only',
+                    query: joinParts([ROCHESTER_SCOPE, yearClause])
+                });
+
+                const seen = new Set();
+                return strategies.filter((item) => {
+                    if (!item.query || seen.has(item.query)) {
+                        return false;
+                    }
+                    seen.add(item.query);
+                    return true;
+                });
+            }
+
+            async function pubmedJson(path, params) {
+                if (window.PubMedClient && typeof window.PubMedClient.requestJson === 'function') {
+                    return window.PubMedClient.requestJson(path, params);
+                }
+                const q = new URLSearchParams(params || {});
+                const url = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/${path}?${q.toString()}`;
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`PubMed request failed (${response.status})`);
+                }
+                return response.json();
+            }
+
+            async function pubmedText(path, params) {
+                if (window.PubMedClient && typeof window.PubMedClient.requestText === 'function') {
+                    return window.PubMedClient.requestText(path, params);
+                }
+                const q = new URLSearchParams(params || {});
+                const url = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/${path}?${q.toString()}`;
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`PubMed request failed (${response.status})`);
+                }
+                return response.text();
+            }
+
+            async function fetchIds(query, retmax) {
+                const json = await pubmedJson('esearch.fcgi', {
+                    db: 'pubmed',
+                    term: query,
+                    retmode: 'json',
+                    sort: 'pub+date',
+                    retmax: retmax
+                });
+
+                const result = (json && json.esearchresult) || {};
+                const ids = Array.isArray(result.idlist) ? result.idlist : [];
+                const count = Number(result.count || 0);
+                return { ids, count };
+            }
+
+            async function fetchArticlesByIds(ids) {
+                if (!ids.length) {
+                    return [];
+                }
+
+                const xml = await pubmedText('efetch.fcgi', {
+                    db: 'pubmed',
+                    id: ids.join(','),
+                    retmode: 'xml'
+                });
+
+                return parsePubmedXml(xml);
+            }
+
+            function renderStrategies(stepsUsed) {
+                if (!stepsUsed.length) {
+                    strategyBox.style.display = 'none';
+                    strategyList.innerHTML = '';
+                    return;
+                }
+
+                strategyList.innerHTML = stepsUsed
+                    .map((step) => `<span class="strategy-pill">${escapeHtml(step)}</span>`)
+                    .join('');
+                strategyBox.style.display = 'block';
+            }
+
+            function renderResults(articles) {
+                if (!articles.length) {
+                    resultsList.innerHTML = '<div class="result-card"><h4>No results found</h4><p class="abstract">Try broader terms or fewer author constraints.</p></div>';
+                    return;
+                }
+
+                resultsList.innerHTML = articles.map((item) => {
+                    const abstractText = item.abstract ? item.abstract.slice(0, 420) + (item.abstract.length > 420 ? '...' : '') : 'No abstract available.';
+                    const url = item.pmid ? `https://pubmed.ncbi.nlm.nih.gov/${encodeURIComponent(item.pmid)}/` : 'https://pubmed.ncbi.nlm.nih.gov/';
+
+                    return [
+                        '<article class="result-card">',
+                        `  <h4><a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.title)}</a></h4>`,
+                        `  <div class="meta">${escapeHtml(item.journal)} | ${escapeHtml(item.dateText)} | PMID ${escapeHtml(item.pmid || 'N/A')}</div>`,
+                        `  <div class="meta">${escapeHtml(item.authors)}</div>`,
+                        `  <p class="abstract">${escapeHtml(abstractText)}</p>`,
+                        '</article>'
+                    ].join('\n');
+                }).join('');
+            }
+
+            async function runAdaptiveSearch(rawTerms, rawAuthors, startYear, endYear) {
+                const terms = parseCsv(rawTerms);
+                const authors = parseCsv(rawAuthors);
+
+                if (!terms.length) {
+                    throw new Error('Please enter at least one search term.');
+                }
+
+                const yearClause = yearRangeClause(startYear, endYear);
+                const strategies = buildStrategies(terms, authors, yearClause);
+                const idsSeen = new Set();
+                const usedSteps = [];
+
+                for (const strategy of strategies) {
+                    const remaining = MAX_RESULT_IDS - idsSeen.size;
+                    if (remaining <= 0) {
+                        break;
+                    }
+
+                    const { ids, count } = await fetchIds(strategy.query, Math.min(25, remaining));
+
+                    if (ids.length || count > 0) {
+                        usedSteps.push(`${strategy.label} (${count} found)`);
+                    }
+
+                    ids.forEach((id) => idsSeen.add(id));
+
+                    if (idsSeen.size >= MIN_DESIRED_RESULTS) {
+                        break;
+                    }
+                }
+
+                const finalIds = Array.from(idsSeen).slice(0, MAX_RESULT_IDS);
+                const articles = await fetchArticlesByIds(finalIds);
+                return { articles, usedSteps };
+            }
+
+            form.addEventListener('submit', async function (event) {
+                event.preventDefault();
+                resultsList.innerHTML = '';
+                renderStrategies([]);
+                setStatus('Searching PubMed with strict criteria first, then broadening as needed...', false);
+
+                const startYear = Number(startYearInput.value);
+                const endYear = Number(endYearInput.value);
+
+                if (!Number.isFinite(startYear) || !Number.isFinite(endYear)) {
+                    setStatus('Please enter valid years.', true);
+                    return;
+                }
+
+                try {
+                    const { articles, usedSteps } = await runAdaptiveSearch(
+                        termsInput.value,
+                        authorsInput.value,
+                        startYear,
+                        endYear
+                    );
+
+                    renderStrategies(usedSteps);
+                    renderResults(articles);
+                    setStatus(`Loaded ${articles.length} result(s).`, false);
+                } catch (error) {
+                    setStatus(error && error.message ? error.message : 'Search failed. Please try again.', true);
+                    resultsList.innerHTML = '';
+                }
+            });
+
+            clearBtn.addEventListener('click', function () {
+                termsInput.value = '';
+                authorsInput.value = '';
+                defaultYears();
+                resultsList.innerHTML = '';
+                renderStrategies([]);
+                setStatus('', false);
+                termsInput.focus();
+            });
+
+            defaultYears();
+        })();
+    </script>
+</body>
+</html>
