@@ -161,32 +161,44 @@
 	.search-icon:hover {
 		color: #2980b9;
 	}
+	.advanced-subbar {
+		position: relative;
+		margin-top: -1px;
+		background: #f1f6fd;
+		border-top: 1px solid #d7e2f1;
+		border-bottom: 1px solid #d7e2f1;
+		z-index: 5;
+	}
+	.advanced-subbar-inner {
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 10px 20px;
+	}
 	.advanced-toggle {
-		margin-top: 12px;
 		display: inline-flex;
 		align-items: center;
 		gap: 8px;
-		padding: 8px 14px;
+		padding: 7px 12px;
 		border-radius: 999px;
-		border: 1px solid rgba(255, 255, 255, 0.45);
-		background: rgba(255, 255, 255, 0.12);
-		color: #fff;
-		font-size: 13px;
-		font-weight: 600;
+		border: 1px solid #b8c9df;
+		background: #ffffff;
+		color: #1f4f85;
+		font-size: 12px;
+		font-weight: 700;
 		cursor: pointer;
-		transition: all 0.25s ease;
+		transition: all 0.2s ease;
 	}
 	.advanced-toggle:hover {
-		background: rgba(255, 255, 255, 0.2);
-		border-color: rgba(255, 255, 255, 0.7);
+		background: #f8fbff;
+		border-color: #8aacd3;
 	}
 	.advanced-panel {
-		margin-top: 12px;
-		max-width: 780px;
-		padding: 16px;
-		border-radius: 14px;
-		background: rgba(255, 255, 255, 0.92);
-		box-shadow: 0 8px 28px rgba(0, 0, 0, 0.14);
+		margin-top: 10px;
+		padding: 12px;
+		border-radius: 12px;
+		background: #ffffff;
+		box-shadow: 0 4px 16px rgba(31, 79, 133, 0.12);
+		border: 1px solid #d7e2f1;
 		display: none;
 	}
 	.advanced-panel.open {
@@ -194,19 +206,19 @@
 	}
 	.advanced-grid {
 		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 12px;
+		grid-template-columns: minmax(220px, 2.1fr) minmax(220px, 2.1fr) minmax(120px, 1fr) minmax(120px, 1fr);
+		gap: 8px;
 	}
 	.advanced-field {
 		display: flex;
 		flex-direction: column;
-		gap: 6px;
+		gap: 4px;
 	}
 	.advanced-field.full {
-		grid-column: 1 / -1;
+		grid-column: auto;
 	}
 	.advanced-field label {
-		font-size: 12px;
+		font-size: 11px;
 		font-weight: 700;
 		text-transform: uppercase;
 		letter-spacing: 0.4px;
@@ -214,10 +226,10 @@
 	}
 	.advanced-field input {
 		width: 100%;
-		padding: 10px 12px;
+		padding: 8px 10px;
 		border: 1px solid #cfd9e7;
-		border-radius: 8px;
-		font-size: 14px;
+		border-radius: 7px;
+		font-size: 13px;
 		color: #2c3e50;
 		background: #fff;
 		box-sizing: border-box;
@@ -228,8 +240,8 @@
 		box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
 	}
 	.advanced-note {
-		margin-top: 8px;
-		font-size: 12px;
+		margin-top: 6px;
+		font-size: 11px;
 		color: #5b6c7f;
 	}
 	
@@ -880,8 +892,11 @@
 				max-width: none;
 				margin: 24px auto 0;
 			}
+			.advanced-subbar-inner {
+				padding: 10px;
+			}
 			.advanced-grid {
-				grid-template-columns: 1fr;
+				grid-template-columns: 1fr 1fr;
 			}
 			.hero-left h1 { 
 				display: none;
@@ -912,6 +927,9 @@
 			}
 			.search-row {
 				flex-direction: column;
+			}
+			.advanced-grid {
+				grid-template-columns: 1fr;
 			}
 			.search-field-small {
 				flex: 1;
@@ -1135,36 +1153,41 @@
 							<i class="fas fa-search search-icon"></i>
 							<input type="search" id="heroSearchBar" class="search-bar" placeholder="Search by topic or author" aria-label="Search publications">
 						</div>
-						<button type="button" id="advancedToggle" class="advanced-toggle" aria-expanded="false" aria-controls="advancedPanel">
-							<i class="fas fa-sliders-h" aria-hidden="true"></i>
-							Advanced Search
-						</button>
-						<div id="advancedPanel" class="advanced-panel" aria-hidden="true">
-							<div class="advanced-grid">
-								<div class="advanced-field full">
-									<label for="advancedTopics">Comma-separated topics</label>
-									<input type="text" id="advancedTopics" placeholder="e.g. oncology, immunotherapy, radiomics">
-								</div>
-								<div class="advanced-field full">
-									<label for="advancedAuthors">Comma-separated authors</label>
-									<input type="text" id="advancedAuthors" placeholder="e.g. Smith J, Doe A">
-								</div>
-								<div class="advanced-field">
-									<label for="advancedStartYear">Start year</label>
-									<input type="number" id="advancedStartYear" min="1900" max="2200" step="1">
-								</div>
-								<div class="advanced-field">
-									<label for="advancedEndYear">End year</label>
-									<input type="number" id="advancedEndYear" min="1900" max="2200" step="1">
-								</div>
-							</div>
-							<p class="advanced-note">When Advanced Search is open, topics/authors are added to the single-bar query and the year window is applied.</p>
-						</div>
 					</div>
 					<div class="hero-right">
 						<div class="chart-container">
 							<img src="images/medcityai_simple1.png" alt="MedCityAI Logo" style="width: auto; height: 70%; border-radius: 8px; filter: brightness(0) invert(1);" />
 						</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="advanced-subbar" aria-label="Advanced search filters">
+				<div class="advanced-subbar-inner">
+					<button type="button" id="advancedToggle" class="advanced-toggle" aria-expanded="false" aria-controls="advancedPanel">
+						<i class="fas fa-sliders-h" aria-hidden="true"></i>
+						Advanced Search
+					</button>
+					<div id="advancedPanel" class="advanced-panel" aria-hidden="true">
+						<div class="advanced-grid">
+							<div class="advanced-field full">
+								<label for="advancedTopics">Comma-separated topics</label>
+								<input type="text" id="advancedTopics" placeholder="oncology, immunotherapy, radiomics">
+							</div>
+							<div class="advanced-field full">
+								<label for="advancedAuthors">Comma-separated authors</label>
+								<input type="text" id="advancedAuthors" placeholder="Smith J, Doe A">
+							</div>
+							<div class="advanced-field">
+								<label for="advancedStartYear">Start year</label>
+								<input type="number" id="advancedStartYear" min="1900" max="2200" step="1">
+							</div>
+							<div class="advanced-field">
+								<label for="advancedEndYear">End year</label>
+								<input type="number" id="advancedEndYear" min="1900" max="2200" step="1">
+							</div>
+						</div>
+						<p class="advanced-note">Filters are optional and apply to the main search bar when this panel is open.</p>
 					</div>
 				</div>
 			</section>

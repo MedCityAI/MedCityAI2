@@ -1111,8 +1111,8 @@
 			margin: 0 auto;
 			   padding: 36px var(--layout-side-padding);
 			display: grid;
-			grid-template-columns: 1fr 350px;
-			gap: 60px;
+			grid-template-columns: minmax(0, 1fr) minmax(280px, 350px);
+			gap: clamp(24px, 3vw, 48px);
 			align-items: center;
 			position: relative;
 			z-index: 2;
@@ -1337,12 +1337,19 @@
 		}
 		.hero-left p.hero-tagline {
 			color: #e0e0e0;
-			font-size: clamp(2.8rem, 7vw, 84px);
+			font-size: clamp(2rem, 4.2vw, 56px);
 			font-weight: 350;
 			letter-spacing: 0.2px;
-			line-height: 1.18;
+			line-height: 1.22;
 			text-align: left;
 			margin-bottom: 36px;
+		}
+
+		@media (max-width: 1200px) and (min-width: 901px) {
+			.hero-left p.hero-tagline {
+				font-size: clamp(1.9rem, 3.8vw, 48px);
+				line-height: 1.24;
+			}
 		}
 		.hero-tagline-line {
 			display: block;
@@ -1535,7 +1542,7 @@
 				font-size: 1.05em;
 			}
 			.hero-left p.hero-tagline {
-				font-size: clamp(2.3rem, 6.4vw, 58px);
+				font-size: clamp(1.9rem, 5.4vw, 46px);
 				line-height: 1.18;
 			}
 			.featured-carousel {
