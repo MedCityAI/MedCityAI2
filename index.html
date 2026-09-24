@@ -1335,6 +1335,27 @@
 			margin-bottom: 36px;
 			line-height: 1.7;
 		}
+		.hero-tagline {
+			color: #e0e0e0;
+			font-size: clamp(2rem, 4.6vw, 55px);
+			font-weight: 350;
+			letter-spacing: 0.2px;
+			line-height: 1.25;
+			text-align: left;
+			margin-bottom: 36px;
+		}
+		.hero-tagline-line {
+			display: block;
+		}
+		.hero-tagline .rochester-bold {
+			font-weight: 700;
+		}
+
+		@media (min-width: 601px) {
+			.hero-tagline-line {
+				white-space: nowrap;
+			}
+		}
 		
 		/* Tablet and medium screens */
 		@media (max-width: 768px) {
@@ -1350,6 +1371,10 @@
 				font-size: 38px !important;
 				margin-bottom: 24px;
 				line-height: 1.35 !important;
+			}
+			.hero-left p.hero-tagline {
+				font-size: clamp(2rem, 5vw, 38px) !important;
+				line-height: 1.25 !important;
 			}
 		}
 		
@@ -1368,6 +1393,10 @@
 				margin-bottom: 20px;
 				line-height: 1.3 !important;
 			}
+			.hero-left p.hero-tagline {
+				font-size: 32px !important;
+				line-height: 1.3 !important;
+			}
 		}
 		
 		/* Very small phones */
@@ -1380,6 +1409,10 @@
 				font-size: 0.85em;
 			}
 			.hero-left p {
+				font-size: 28px !important;
+				line-height: 1.2 !important;
+			}
+			.hero-left p.hero-tagline {
 				font-size: 28px !important;
 				line-height: 1.2 !important;
 			}
@@ -1569,6 +1602,9 @@
 			font-size: 1.4em;
 			margin: 10px 0 0 0;
 			font-weight: 400;
+		}
+		.hero-left p.hero-tagline {
+			text-align: center;
 		}
 		.button-row {
 			display: none;
@@ -2256,9 +2292,9 @@
 				   </svg>
 				<div class="hero-content">
 					<div class="hero-left">
-							<p style="color:#e0e0e0;font-size:55px;font-weight:350;letter-spacing:0.2px;line-height:1.4;text-align:left;">
-								<span style="display:block;">a real-time biomedical research feed for</span>
-								<span style="display:block;font-weight:700;white-space:nowrap;">Rochester,&nbsp;MN</span>
+							<p class="hero-tagline">
+								<span class="hero-tagline-line">a real-time biomedical research</span>
+								<span class="hero-tagline-line">feed for <span class="rochester-bold">Rochester,&nbsp;MN</span></span>
 							</p>
 						
 						<!-- Mobile Specialty Dropdown (only visible on mobile) -->
