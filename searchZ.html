@@ -109,105 +109,20 @@
 			line-height: 1.4;
 		}
 		
-	/* Search Bar Styling */
-	.search-bar-container {
-		position: relative;
-		max-width: 600px;
-		margin-top: 24px;
-	}
-	.search-bar {
-		width: 100%;
-		padding: 12px 20px 12px 50px;
-		font-size: 16px;
-		border: 2px solid rgba(255, 255, 255, 0.3);
-		border-radius: 50px;
-		background: rgba(255, 255, 255, 0.95);
-		color: #2c3e50;
-		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-		transition: all 0.3s ease;
-	}
-	.search-bar:focus {
-		outline: none;
-		border-color: rgba(255, 255, 255, 0.8);
-		background: #fff;
-		box-shadow: 0 6px 30px rgba(0, 0, 0, 0.2);
-	}
-	.search-bar::placeholder {
-		color: #374151 !important;
-		opacity: 1 !important;
-	}
-	.search-bar::-webkit-input-placeholder {
-		color: #374151 !important;
-		opacity: 1 !important;
-	}
-	.search-bar::-moz-placeholder {
-		color: #374151 !important;
-		opacity: 1 !important;
-	}
-	.search-bar:-ms-input-placeholder {
-		color: #374151 !important;
-		opacity: 1 !important;
-	}
-	.search-icon {
-		position: absolute;
-		left: 20px;
-		top: 50%;
-		transform: translateY(-50%);
-		color: #3498db;
-		font-size: 18px;
-		cursor: pointer;
-		transition: color 0.2s ease;
-	}
-	.search-icon:hover {
-		color: #2980b9;
-	}
-	.advanced-subbar {
-		position: relative;
-		margin-top: -1px;
-		background: #f1f6fd;
-		border-top: 1px solid #d7e2f1;
-		border-bottom: 1px solid #d7e2f1;
-		z-index: 5;
-	}
-	.advanced-subbar-inner {
-		max-width: 1200px;
-		margin: 0 auto;
-		padding: 10px 20px;
-	}
-	.advanced-toggle {
-		display: inline-flex;
-		align-items: center;
-		gap: 8px;
-		padding: 7px 12px;
-		border-radius: 999px;
-		border: 1px solid #b8c9df;
-		background: #ffffff;
-		color: #1f4f85;
-		font-size: 12px;
-		font-weight: 700;
-		cursor: pointer;
-		transition: all 0.2s ease;
-	}
-	.advanced-toggle:hover {
-		background: #f8fbff;
-		border-color: #8aacd3;
-	}
 	.advanced-panel {
-		margin-top: 10px;
+		margin-top: 14px;
 		padding: 12px;
 		border-radius: 12px;
 		background: #ffffff;
 		box-shadow: 0 4px 16px rgba(31, 79, 133, 0.12);
 		border: 1px solid #d7e2f1;
-		display: none;
-	}
-	.advanced-panel.open {
 		display: block;
 	}
 	.advanced-grid {
 		display: grid;
-		grid-template-columns: minmax(220px, 2.1fr) minmax(220px, 2.1fr) minmax(120px, 1fr) minmax(120px, 1fr);
+		grid-template-columns: minmax(220px, 2fr) minmax(220px, 2fr) minmax(120px, 0.9fr) minmax(120px, 0.9fr) auto;
 		gap: 8px;
+		align-items: end;
 	}
 	.advanced-field {
 		display: flex;
@@ -243,6 +158,24 @@
 		margin-top: 6px;
 		font-size: 11px;
 		color: #5b6c7f;
+	}
+	.advanced-action {
+		display: flex;
+		align-items: flex-end;
+	}
+	.advanced-search-btn {
+		width: 100%;
+		padding: 8px 14px;
+		border: none;
+		border-radius: 8px;
+		background: linear-gradient(135deg, #3498db, #2980b9);
+		color: #fff;
+		font-size: 13px;
+		font-weight: 700;
+		cursor: pointer;
+	}
+	.advanced-search-btn:hover {
+		filter: brightness(0.98);
 	}
 	
 	/* Suggested Search Terms - Results Section */
@@ -887,14 +820,6 @@
 			.chart-container {
 				display: none;
 			}
-			.search-bar-container {
-				width: min(100%, calc(100vw - 20px));
-				max-width: none;
-				margin: 24px auto 0;
-			}
-			.advanced-subbar-inner {
-				padding: 10px;
-			}
 			.advanced-grid {
 				grid-template-columns: 1fr 1fr;
 			}
@@ -930,6 +855,9 @@
 			}
 			.advanced-grid {
 				grid-template-columns: 1fr;
+			}
+			.advanced-action {
+				align-items: stretch;
 			}
 			.search-field-small {
 				flex: 1;
@@ -1149,45 +1077,35 @@
 					<div class="hero-left">
 	
 						<p style="color:#e0e0e0;">search 100,000+ publications from <span style="font-weight:650;white-space:nowrap;">Rochester,&nbsp;MN</span></p>
-						<div class="search-bar-container">
-							<i class="fas fa-search search-icon"></i>
-							<input type="search" id="heroSearchBar" class="search-bar" placeholder="Search by topic or author" aria-label="Search publications">
+						<div id="advancedPanel" class="advanced-panel" aria-hidden="false">
+							<div class="advanced-grid">
+								<div class="advanced-field full">
+									<label for="advancedTopics">Comma-separated topics</label>
+									<input type="text" id="advancedTopics" placeholder="oncology, immunotherapy, radiomics">
+								</div>
+								<div class="advanced-field full">
+									<label for="advancedAuthors">Comma-separated authors</label>
+									<input type="text" id="advancedAuthors" placeholder="Smith J, Doe A">
+								</div>
+								<div class="advanced-field">
+									<label for="advancedStartYear">Start year</label>
+									<input type="number" id="advancedStartYear" min="1900" max="2200" step="1">
+								</div>
+								<div class="advanced-field">
+									<label for="advancedEndYear">End year</label>
+									<input type="number" id="advancedEndYear" min="1900" max="2200" step="1">
+								</div>
+								<div class="advanced-action">
+									<button type="button" id="advancedSearchBtn" class="advanced-search-btn">Search</button>
+								</div>
+							</div>
+							<p class="advanced-note">Enter one or more filters, then search.</p>
 						</div>
 					</div>
 					<div class="hero-right">
 						<div class="chart-container">
 							<img src="images/medcityai_simple1.png" alt="MedCityAI Logo" style="width: auto; height: 70%; border-radius: 8px; filter: brightness(0) invert(1);" />
 						</div>
-					</div>
-				</div>
-			</section>
-
-			<section class="advanced-subbar" aria-label="Advanced search filters">
-				<div class="advanced-subbar-inner">
-					<button type="button" id="advancedToggle" class="advanced-toggle" aria-expanded="false" aria-controls="advancedPanel">
-						<i class="fas fa-sliders-h" aria-hidden="true"></i>
-						Advanced Search
-					</button>
-					<div id="advancedPanel" class="advanced-panel" aria-hidden="true">
-						<div class="advanced-grid">
-							<div class="advanced-field full">
-								<label for="advancedTopics">Comma-separated topics</label>
-								<input type="text" id="advancedTopics" placeholder="oncology, immunotherapy, radiomics">
-							</div>
-							<div class="advanced-field full">
-								<label for="advancedAuthors">Comma-separated authors</label>
-								<input type="text" id="advancedAuthors" placeholder="Smith J, Doe A">
-							</div>
-							<div class="advanced-field">
-								<label for="advancedStartYear">Start year</label>
-								<input type="number" id="advancedStartYear" min="1900" max="2200" step="1">
-							</div>
-							<div class="advanced-field">
-								<label for="advancedEndYear">End year</label>
-								<input type="number" id="advancedEndYear" min="1900" max="2200" step="1">
-							</div>
-						</div>
-						<p class="advanced-note">Filters are optional and apply to the main search bar when this panel is open.</p>
 					</div>
 				</div>
 			</section>
@@ -1816,9 +1734,7 @@
 			showEmptyState();
 			
 		// Hero Search Bar Handler
-		const heroSearchBar = document.getElementById('heroSearchBar');
-		const searchIcon = document.querySelector('.search-icon');
-		const advancedToggle = document.getElementById('advancedToggle');
+		const advancedSearchBtn = document.getElementById('advancedSearchBtn');
 		const advancedPanel = document.getElementById('advancedPanel');
 		const advancedTopics = document.getElementById('advancedTopics');
 		const advancedAuthors = document.getElementById('advancedAuthors');
@@ -1842,15 +1758,8 @@
 			}
 		}
 
-		function buildSearchQuery(baseQuery) {
-			if (!advancedPanel || !advancedPanel.classList.contains('open')) {
-				return baseQuery;
-			}
-
+		function buildSearchQuery() {
 			const queryParts = [];
-			if (baseQuery) {
-				queryParts.push(`(${baseQuery})`);
-			}
 
 			const topics = parseCsv(advancedTopics ? advancedTopics.value : '');
 			const authors = parseCsv(advancedAuthors ? advancedAuthors.value : '');
@@ -1875,8 +1784,7 @@
 		}
 		
 		function performSearch() {
-			const baseQuery = heroSearchBar.value.trim();
-			const query = buildSearchQuery(baseQuery).trim();
+			const query = buildSearchQuery().trim();
 			
 			// Hide suggested searches section
 			const suggestedSection = document.getElementById('suggestedSearchesSection');
@@ -1889,27 +1797,22 @@
 			}
 		}
 
-		if (advancedToggle && advancedPanel) {
-			advancedToggle.addEventListener('click', function() {
-				const isOpen = advancedPanel.classList.toggle('open');
-				advancedToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-				advancedPanel.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
-			});
-		}
-
 		setDefaultAdvancedYears();
-		
-		if (heroSearchBar) {
-			heroSearchBar.addEventListener('keypress', function(e) {
+
+		[advancedTopics, advancedAuthors, advancedStartYear, advancedEndYear].forEach(function(field) {
+			if (!field) {
+				return;
+			}
+			field.addEventListener('keypress', function(e) {
 				if (e.key === 'Enter') {
 					e.preventDefault();
 					performSearch();
 				}
 			});
-		}
-		
-		if (searchIcon) {
-			searchIcon.addEventListener('click', function(e) {
+		});
+
+		if (advancedSearchBtn) {
+			advancedSearchBtn.addEventListener('click', function(e) {
 				e.preventDefault();
 				performSearch();
 			});
@@ -1920,7 +1823,9 @@
 		suggestedTerms.forEach(term => {
 			term.addEventListener('click', function() {
 				const query = this.getAttribute('data-query');
-				heroSearchBar.value = query;
+				if (advancedTopics) {
+					advancedTopics.value = query;
+				}
 				performSearch();
 			});
 		});
@@ -1928,8 +1833,8 @@
 		// Auto-search from URL param (?q=...)
 		const urlParams = new URLSearchParams(window.location.search);
 		const queryParam = urlParams.get('q');
-		if (queryParam && heroSearchBar) {
-			heroSearchBar.value = queryParam;
+		if (queryParam && advancedTopics) {
+			advancedTopics.value = queryParam;
 			performSearch();
 		}
 	});
