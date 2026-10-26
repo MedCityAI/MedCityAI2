@@ -10,7 +10,7 @@
             <div class="top-bar-content">
                 <div class="logo">
                     <a href="index.html" style="text-decoration: none; border: none; outline: none;">
-                        <img src="images/medcityai_logo1.png" alt="MedCityAI Logo" style="height:48px; width:auto; display: block;" />
+                        <img src="images/MedCityResearch_logo.png" alt="MedCityResearch Logo" style="height:48px; width:auto; display: block;" />
                     </a>
                 </div>
                 <div class="nav-links" role="menubar">
