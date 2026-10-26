@@ -514,9 +514,26 @@
 		outline-offset: -2px;
 	}
 
+	.summary-mode-fade-in {
+		animation: summary-mode-fade-in 240ms ease-out both;
+	}
+
+	@keyframes summary-mode-fade-in {
+		from {
+			opacity: 0;
+			transform: translateY(3px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
 	@media (prefers-reduced-motion: reduce) {
-		.summary-mode-toggle button {
+		.summary-mode-toggle button,
+		.summary-mode-fade-in {
 			transition: none;
+			animation: none;
 		}
 	}
 		
@@ -3101,12 +3118,38 @@ function showSharePageLoading() {
 			if (!cardBack) return;
 
 			const showExpert = button.dataset.mode !== 'expert';
-			cardBack.querySelector('.card-summary-basic').hidden = showExpert;
-			cardBack.querySelector('.card-summary-expert').hidden = !showExpert;
-			button.dataset.mode = showExpert ? 'expert' : 'basic';
-			button.textContent = showExpert ? 'Expert' : 'Basic';
-			button.setAttribute('aria-pressed', String(showExpert));
-			button.setAttribute('aria-label', `Summary mode: ${showExpert ? 'Expert' : 'Basic'}. Activate to switch to ${showExpert ? 'Basic' : 'Expert'}.`);
+			const basicSummary = cardBack.querySelector('.card-summary-basic');
+			const expertSummary = cardBack.querySelector('.card-summary-expert');
+			const setMode = isExpert => {
+				basicSummary.hidden = isExpert;
+				expertSummary.hidden = !isExpert;
+				const activeSummary = isExpert ? expertSummary : basicSummary;
+				activeSummary.classList.remove('summary-mode-fade-in');
+				void activeSummary.offsetWidth;
+				activeSummary.classList.add('summary-mode-fade-in');
+				button.dataset.mode = isExpert ? 'expert' : 'basic';
+				button.textContent = isExpert ? 'Expert' : 'Basic';
+				button.setAttribute('aria-pressed', String(isExpert));
+				button.setAttribute('aria-label', `Summary mode: ${isExpert ? 'Expert' : 'Basic'}. Activate to switch to ${isExpert ? 'Basic' : 'Expert'}.`);
+			};
+
+			if (button.summaryModeTimer) {
+				window.clearTimeout(button.summaryModeTimer);
+				button.summaryModeTimer = null;
+			}
+
+			if (showExpert && button.dataset.expertFallback === 'true') {
+				expertSummary.textContent = 'Insufficient information available for an expert summary for this paper.';
+				setMode(true);
+				button.summaryModeTimer = window.setTimeout(() => {
+					if (!button.isConnected || button.dataset.mode !== 'expert') return;
+					setMode(false);
+					button.summaryModeTimer = null;
+				}, 2500);
+				return;
+			}
+
+			setMode(showExpert);
 		}
 
 		// Function to flip card and match heights (with keyboard support)
@@ -3757,6 +3800,7 @@ function showSharePageLoading() {
 				const url = article.url;
 				const llmSummary = article.llm_summary || '';
 				const expertSummary = article.llm_summary_expert || abstract || llmSummary;
+				const basicSummaryNeedsExpertFallback = /^Background\s*:/i.test(llmSummary.replace(/<[^>]*>/g, '').trim());
 				const hasLlmSummary = llmSummary.trim() !== '' && llmSummary !== 'No abstract available.';
 				const hasAbstract = !!(abstract && abstract.trim());
 				const pubmedUrl = url || `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`;
@@ -4022,7 +4066,7 @@ function showSharePageLoading() {
 									</h4>
 									${hasLlmSummary ? `
 										<div class="summary-mode-toggle" role="group" aria-label="Summary detail level" onclick="event.stopPropagation();">
-											<button type="button" data-mode="basic" aria-pressed="false" aria-label="Summary mode: Basic. Activate to switch to Expert." onclick="toggleCardSummaryMode(event, this)">Basic</button>
+											<button type="button" data-mode="basic" data-expert-fallback="${basicSummaryNeedsExpertFallback}" aria-pressed="false" aria-label="Summary mode: Basic. Activate to switch to Expert." onclick="toggleCardSummaryMode(event, this)">Basic</button>
 										</div>
 									` : ''}
 								</div>
