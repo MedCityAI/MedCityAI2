@@ -474,68 +474,48 @@
 	}
 
 	.summary-mode-toggle {
-		position: relative;
 		display: inline-flex;
-		flex: 0 0 auto;
-		width: 140px;
-		height: 32px;
-		padding: 3px;
+		flex: 0 0 72px;
+		width: 72px;
+		height: 30px;
+		padding: 0;
 		box-sizing: border-box;
 		border: 1px solid #c8d7e4;
-		border-radius: 18px;
+		border-radius: 15px;
 		overflow: hidden;
 		background: #f1f6fa;
 	}
 
-	.summary-mode-toggle::before {
-		content: '';
-		position: absolute;
-		z-index: 1;
-		top: 10px;
-		left: 9px;
-		width: 10px;
-		height: 10px;
-		border-radius: 50%;
-		background: #176b9f;
-		box-shadow: 0 0 0 2px #f1f6fa, 0 0 0 3px #8eafc5;
-		transition: transform 220ms cubic-bezier(0.2, 0.75, 0.25, 1);
-		pointer-events: none;
-	}
-
-	.summary-mode-toggle.expert-mode::before {
-		transform: translateX(66px);
-	}
-
 	.summary-mode-toggle button {
-		position: relative;
-		z-index: 0;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 50%;
+		width: 100%;
+		height: 100%;
 		border: 0;
-		padding: 0 4px 0 15px;
+		padding: 0 6px;
+		border-radius: inherit;
 		background: transparent;
 		color: #657789;
 		font-size: 12px;
-		font-weight: 500;
+		font-weight: 600;
 		line-height: 1.2;
 		cursor: pointer;
+		transition: background-color 160ms ease, color 160ms ease;
 	}
 
 	.summary-mode-toggle button[aria-pressed="true"] {
+		background: #e0eff8;
 		color: #174f73;
-		font-weight: 700;
 	}
 
 	.summary-mode-toggle button:focus-visible {
 		outline: 2px solid #0d47a1;
-		outline-offset: -3px;
-		border-radius: 14px;
+		outline-offset: -2px;
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.summary-mode-toggle::before {
+		.summary-mode-toggle button {
 			transition: none;
 		}
 	}
@@ -3114,21 +3094,19 @@ function showSharePageLoading() {
 			return false;
 		}
 
-		function setCardSummaryMode(event, button, mode) {
+		function toggleCardSummaryMode(event, button) {
 			event.preventDefault();
 			event.stopPropagation();
 			const cardBack = button.closest('.card-back');
 			if (!cardBack) return;
 
-			const showExpert = mode === 'expert';
+			const showExpert = button.dataset.mode !== 'expert';
 			cardBack.querySelector('.card-summary-basic').hidden = showExpert;
 			cardBack.querySelector('.card-summary-expert').hidden = !showExpert;
-			const modeToggle = cardBack.querySelector('.summary-mode-toggle');
-			modeToggle.classList.toggle('expert-mode', showExpert);
-			modeToggle.querySelectorAll('button').forEach(toggle => {
-				const isActive = toggle.dataset.mode === mode;
-				toggle.setAttribute('aria-pressed', String(isActive));
-			});
+			button.dataset.mode = showExpert ? 'expert' : 'basic';
+			button.textContent = showExpert ? 'Expert' : 'Basic';
+			button.setAttribute('aria-pressed', String(showExpert));
+			button.setAttribute('aria-label', `Summary mode: ${showExpert ? 'Expert' : 'Basic'}. Activate to switch to ${showExpert ? 'Basic' : 'Expert'}.`);
 		}
 
 		// Function to flip card and match heights (with keyboard support)
@@ -4044,8 +4022,7 @@ function showSharePageLoading() {
 									</h4>
 									${hasLlmSummary ? `
 										<div class="summary-mode-toggle" role="group" aria-label="Summary detail level" onclick="event.stopPropagation();">
-											<button type="button" data-mode="basic" aria-pressed="true" onclick="setCardSummaryMode(event, this, 'basic')">Basic</button>
-											<button type="button" data-mode="expert" aria-pressed="false" onclick="setCardSummaryMode(event, this, 'expert')">Expert</button>
+											<button type="button" data-mode="basic" aria-pressed="false" aria-label="Summary mode: Basic. Activate to switch to Expert." onclick="toggleCardSummaryMode(event, this)">Basic</button>
 										</div>
 									` : ''}
 								</div>
