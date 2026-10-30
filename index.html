@@ -3375,6 +3375,39 @@ function showSharePageLoading() {
 			return sentences.slice(-2).join(' ').trim();
 		}
 
+		// Inserts a random Instagram post card after roughly every 10 article cards.
+		// Post permalinks live in assets/data/instagram-posts.json (no API token needed).
+		async function insertInstagramCards() {
+			const IG_PROFILE = 'https://www.instagram.com/medcitymakerspace/';
+			let posts = [];
+			try {
+				const res = await fetch('assets/data/instagram-posts.json', { cache: 'no-cache' });
+				if (res.ok) posts = await res.json();
+			} catch (e) { /* fall back to profile card */ }
+			posts = (Array.isArray(posts) ? posts : [])
+				.filter(u => /^https:\/\/www\.instagram\.com\/(p|reel)\/[\w-]+\/?/.test(u));
+			// Shuffle so posts appear in random order
+			for (let i = posts.length - 1; i > 0; i--) {
+				const j = Math.floor(Math.random() * (i + 1));
+				[posts[i], posts[j]] = [posts[j], posts[i]];
+			}
+			document.querySelectorAll('.instagram-card').forEach(el => el.remove());
+			const items = Array.from(document.querySelectorAll('#pubmed-results .result-item'));
+			let n = 0;
+			for (let i = 9; i < items.length; i += 10 + Math.floor(Math.random() * 3) - 1) {
+				const card = document.createElement('div');
+				card.className = 'result-item instagram-card';
+				if (posts.length) {
+					const base = posts[n % posts.length].replace(/\/?(\?.*)?$/, '/');
+					card.innerHTML = `<iframe src="${base}embed/" title="Instagram post from Med City Makerspace" loading="lazy" allowtransparency="true" scrolling="no" style="width:100%;height:540px;border:0;border-radius:8px;background:#fff;"></iframe>`;
+				} else {
+					card.innerHTML = `<div style="padding:24px;text-align:center;background:#fff;border-radius:8px;"><i class="fab fa-instagram" style="font-size:32px;color:#c13584;"></i><p style="margin:10px 0;color:#1a237e;font-weight:600;">Med City Makerspace</p><a href="${IG_PROFILE}" target="_blank" rel="noopener">See our latest posts on Instagram</a></div>`;
+				}
+				n++;
+				items[i].after(card);
+			}
+		}
+
 		function buildArticleShareUrl(pmid) {
 			const fallbackOrigin = 'https://medcityai.com';
 			const origin = window.location.origin && window.location.origin !== 'null'
@@ -4185,6 +4218,7 @@ function showSharePageLoading() {
     
 	// Initialize like buttons after articles are rendered
 	initializeLikes();
+	insertInstagramCards();
 	// Store selected specialty globally for conditional rendering
 	if (typeof window !== 'undefined' && window.selectedSpecialty !== undefined) {
 		// already set by filter bar
