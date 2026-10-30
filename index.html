@@ -2371,10 +2371,35 @@
 				   </svg>
 				<div class="hero-content">
 					<div class="hero-left">
-							<p class="hero-tagline">
+							<p class="hero-tagline" id="heroTagline">
 								<span class="hero-tagline-line">a real-time biomedical research</span>
 								<span class="hero-tagline-line">feed for <span class="rochester-bold">Rochester,&nbsp;MN</span></span>
 							</p>
+							<style>
+								/* Sizing: tiny side margins on small screens */
+								@media (max-width: 900px) {
+									:root { --layout-max-width: 100%; --layout-side-padding: 6px; }
+									.hero-content { padding: 24px 6px 16px 6px !important; }
+									.results { padding: 0 !important; }
+									.filter-bar-content { padding: 0 6px !important; }
+									.filter-bar-content #pubmed-results { padding: 20px 0 !important; }
+									.top-bar-content { box-sizing: border-box; gap: 8px; }
+									.top-bar-content .logo { flex: 0 1 auto; min-width: 0; margin: 0 !important; }
+									.top-bar-content .logo img { height: auto !important; width: min(309px, 55vw) !important; max-width: none; }
+									.top-bar-content > div:last-child { gap: 8px !important; flex-shrink: 0; }
+									.top-bar-content { position: relative; justify-content: center; }
+									.top-bar-content > div:last-child { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); }
+									.hero-left p.hero-tagline { text-align: center !important; }
+								}
+								/* Hero tagline: always exactly two lines, scaled to the column width */
+								.hero-content { width: 100%; box-sizing: border-box; }
+								.hero-left { container-type: inline-size; width: 100%; min-width: 0; }
+								.hero-left p.hero-tagline {
+									font-size: min(56px, 6.2cqw) !important;
+									line-height: 1.22 !important;
+								}
+								.hero-tagline-line { white-space: nowrap !important; }
+							</style>
 						
 						<!-- Mobile Specialty Dropdown (only visible on mobile) -->
 						<div id="mobile-specialty-dropdown" style="display: none;">
