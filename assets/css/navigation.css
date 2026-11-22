@@ -202,7 +202,24 @@ body {
 	padding-top: 70px;
 }
 
-/* UMR branding is intentionally limited to large screens. */
+/* Keep the floating logo visible on non-mobile screens. */
+@media (min-width: 769px) {
+	.umr-floating-logo {
+		display: block;
+		position: fixed;
+		right: 24px;
+		bottom: 24px;
+		width: 76px;
+		height: 76px;
+		object-fit: cover;
+		border: 3px solid #fff;
+		border-radius: 50%;
+		box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+		z-index: 999;
+	}
+}
+
+/* The banner is reserved for large screens. */
 @media (min-width: 901px) {
 	.top-bar-content {
 		position: relative;
@@ -219,19 +236,5 @@ body {
 		object-fit: contain;
 		border-radius: 10px;
 		transform: translate(-50%, -50%);
-	}
-
-	.umr-floating-logo {
-		display: block;
-		position: fixed;
-		right: 24px;
-		bottom: 24px;
-		width: 76px;
-		height: 76px;
-		object-fit: cover;
-		border: 3px solid #fff;
-		border-radius: 50%;
-		box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
-		z-index: 999;
 	}
 }
