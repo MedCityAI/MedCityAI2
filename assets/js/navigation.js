@@ -13,6 +13,7 @@
                         <img src="images/MedCityResearch_logo.png" alt="MedCityResearch Logo" style="height:48px; width:auto; display: block;" />
                     </a>
                 </div>
+                <img class="umr-banner" src="images/UMR_banner_V1.png" alt="University of Minnesota Rochester" />
                 <div class="nav-links" role="menubar">
                     <a href="index.html" role="menuitem" data-page="index">New Today</a>
                     <a href="search.html" role="menuitem" data-page="search">Search</a>
@@ -29,6 +30,7 @@
                 </div>
             </div>
         </nav>
+        <img class="umr-floating-logo" src="images/UMR_logo_V1.jpg" alt="University of Minnesota Rochester" />
         
         <!-- Mobile Menu -->
         <div id="mobile-menu" class="mobile-menu" aria-hidden="true">

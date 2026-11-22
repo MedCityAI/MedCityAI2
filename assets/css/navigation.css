@@ -30,6 +30,11 @@
 	padding: 0 20px;
 }
 
+.umr-banner,
+.umr-floating-logo {
+	display: none;
+}
+
 .logo {
 	display: flex;
 	align-items: center;
@@ -195,4 +200,38 @@
 /* Page content offset for fixed nav */
 body {
 	padding-top: 70px;
+}
+
+/* UMR branding is intentionally limited to large screens. */
+@media (min-width: 901px) {
+	.top-bar-content {
+		position: relative;
+	}
+
+	.umr-banner {
+		display: block;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: min(360px, 30vw);
+		height: auto;
+		max-height: 42px;
+		object-fit: contain;
+		border-radius: 10px;
+		transform: translate(-50%, -50%);
+	}
+
+	.umr-floating-logo {
+		display: block;
+		position: fixed;
+		right: 24px;
+		bottom: 24px;
+		width: 76px;
+		height: 76px;
+		object-fit: cover;
+		border: 3px solid #fff;
+		border-radius: 50%;
+		box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+		z-index: 999;
+	}
 }

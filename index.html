@@ -3410,7 +3410,7 @@ function showSharePageLoading() {
 				if (res.ok) posts = await res.json();
 			} catch (e) { /* fall back to profile card */ }
 			posts = (Array.isArray(posts) ? posts : [])
-				.filter(u => /^https:\/\/www\.instagram\.com\/(p|reel)\/[\w-]+\/?/.test(u));
+				.filter(u => /^https:\/\/www\.instagram\.com\/(?:[^/?#]+\/)?(?:p|reel)\/[\w-]+\/?(?:\?.*)?$/.test(u));
 			// Shuffle so posts appear in random order
 			for (let i = posts.length - 1; i > 0; i--) {
 				const j = Math.floor(Math.random() * (i + 1));
